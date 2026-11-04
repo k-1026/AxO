@@ -13,6 +13,7 @@
 | `research/_template.md` | 조사 저장 양식 | **복사해서** 내 파일로 쓰기 (원본 수정 ❌) |
 | `prompts/source-grading-prompt.md` | 출처 등급(🟢🟡🔴) 매기는 AI 프롬프트 | AI에 붙여 넣고 자료와 함께 실행 |
 | `CLAUDE.md` | Claude Code용 자동 지시 | 신경 안 써도 됨 (Claude Code가 알아서 읽음) |
+| `AGENTS.md` | 다른 AI 코딩 도구용 자동 지시 (`CLAUDE.md`와 같은 내용) | 신경 안 써도 됨 (규칙이 바뀌면 `CLAUDE.md`와 함께 수정) |
 | `research/glossary.md` | 팀 단어장 | 새 용어를 쓰면 추가 |
 | `CHANGELOG.md` | 주간 정리 | 매주 3줄 쓰기 |
  
@@ -20,6 +21,7 @@
 저장소/
 ├── README.md
 ├── CLAUDE.md
+├── AGENTS.md
 ├── CHANGELOG.md
 ├── prompts/
 │   └── source-grading-prompt.md
