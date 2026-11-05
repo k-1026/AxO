@@ -40,3 +40,10 @@
 - 비교 기업 같은 항목: 07(사업 내용), 08(계열회사), 10(재무)
 - 재무·교차검증·지역 접점 보충: 09·11·12·13·14·16
 - 원문에 없는 정보와 원문 접근 실패는 parts/check.md 및 onepager.md의 [U] 목록으로 이관한다.
+
+## 공식 공시 사이트 URL 구분
+
+- DART 영문 공식 사이트: [https://englishdart.fss.or.kr/](https://englishdart.fss.or.kr/) — 확인일: 2026-11-05.
+- 국문 DART: [https://dart.fss.or.kr/](https://dart.fss.or.kr/)
+- 위 홈페이지는 검색 진입 링크이고, 출처 표의 공시·KIND·IR URL은 실제 근거 문서 링크다.
+- 국문 공시 URL의 도메인을 영문 사이트로 단순 치환하지 않았다. 기업별 영문 공시 제공 여부는 별도 확인 대상이다.

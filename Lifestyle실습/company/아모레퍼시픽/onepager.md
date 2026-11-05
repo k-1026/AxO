@@ -54,3 +54,5 @@
 [F] 출처 URL·자료 날짜·저장 파일은 [sources.md](sources.md), 5개 사실 대조는 [verify.md](verify.md)에 연결했다. 본문 5번의 산업 이슈 3개에 대한 상세 근거·한계는 [industry_issues.md](industry_issues.md)에 정리했다.
 [U] 연구개발비는 사업 내용과 연결주석의 수치가 달라 범위 확인 전 통합하지 않는다. 고객 연령·데이터 권한·ODM 의존도·제품별 원가·지역 협업·최신 정정 여부는 미확인이다. [출처 1][출처 9]
 [U] 자동 대조를 수행했더라도 수업의 **사람 검증·팀 접점 확인·옆 팀 교차검토**는 사용자의 최종 확인 전이다.
+
+**공식 공시 접근 URL:** DART 영문 공식 사이트: [https://englishdart.fss.or.kr/](https://englishdart.fss.or.kr/) — 확인일: 2026-11-05. 개별 보고서·IR URL은 [sources.md](sources.md)에 전체 주소로 표시했다.
