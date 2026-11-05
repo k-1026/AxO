@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>에이전트 워크플로우와 역할 분담</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: 팀 작업판. 결정 → 흐름 → 지식 파일 현황판 → 조사 항목 → 진행 단계 → 규칙 → 지난 기록(접힘) */
+:root {
+  --bg: #f5f6f3;
+  --surface: #ffffff;
+  --ink: #23272a;
+  --muted: #646b6e;
+  --line: #dfe2dc;
+  --accent: #3e4a43;
+  --soft: #e9ede7;
+  --ok: #2f7a4d; --ok-bg: #e3f1e8;
+  --mid: #9a6a00; --mid-bg: #f6edd6;
+  --no: #a8452f; --no-bg: #f6e2dc;
+  --display: "Gowun Batang", "Noto Serif KR", serif;
+  --body: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --mono: "IBM Plex Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root {
+  --bg: #161917; --surface: #1e2220; --ink: #e6e9e5; --muted: #9aa29d; --line: #303632;
+  --accent: #b9c8be; --soft: #262b28;
+  --ok: #74c99a; --ok-bg: #1f3328; --mid: #e0b85a; --mid-bg: #352d1a; --no: #ee8a76; --no-bg: #3a2420; color-scheme: dark } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.6; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 36px 16px 64px; display: flex; flex-direction: column; gap: 44px; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+h1 { font-family: var(--display); font-size: clamp(1.6rem, 4vw, 2.2rem); }
+h2 { font-family: var(--display); font-size: 1.3rem; }
+h3 { font-size: .98rem; }
+p { margin: 0; }
+section { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.eyebrow { font-size: .75rem; letter-spacing: .08em; color: var(--muted); font-weight: 700; }
+.meta { font-size: .82rem; color: var(--muted); }
+code { font-family: var(--mono); font-size: .8em; background: var(--soft); padding: 1px 5px; border-radius: 4px; word-break: break-all; }
+
+/* 0. 결정 */
+.decisions { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
+.dec { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.dec b { font-size: .78rem; color: var(--muted); }
+.dec.hold { border-style: dashed; }
+.dec.hold b::after { content: " · 보류"; color: var(--mid); }
+
+/* 1. 흐름 */
+.flow { display: flex; flex-direction: column; gap: 0; }
+.fstep { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.fstep:last-child { border-bottom: 0; }
+.fnum { width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: var(--bg); display: grid; place-items: center; font-weight: 700; font-size: .85rem; }
+.fnum.io { background: transparent; color: var(--accent); border: 2px solid var(--accent); font-size: .7rem; }
+.ktags { display: flex; gap: 4px; flex-wrap: wrap; justify-content: end; }
+.k { font-family: var(--mono); font-size: .75rem; border-radius: 5px; padding: 1px 6px; border: 1px solid var(--line); background: var(--surface); }
+.k.ok { color: var(--ok); background: var(--ok-bg); border-color: transparent; }
+.k.mid { color: var(--mid); background: var(--mid-bg); border-color: transparent; }
+.k.no { color: var(--no); background: var(--no-bg); border-color: transparent; }
+.flowbox { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 6px 16px; }
+
+/* 1. 지식 파일 현황판 */
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: .82rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.board { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
+.kcard { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--line); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.kcard.ok { border-left-color: var(--ok); } .kcard.mid { border-left-color: var(--mid); } .kcard.no { border-left-color: var(--no); }
+.khead { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.kid { font-family: var(--mono); font-weight: 500; }
+.st { font-size: .75rem; font-weight: 700; border-radius: 999px; padding: 1px 8px; white-space: nowrap; }
+.st.ok { color: var(--ok); background: var(--ok-bg); } .st.mid { color: var(--mid); background: var(--mid-bg); } .st.no { color: var(--no); background: var(--no-bg); }
+.kcard p { font-size: .88rem; }
+.kcard .src { font-size: .78rem; color: var(--muted); }
+.owner { font-size: .8rem; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 6px; }
+.owner b { color: var(--ink); }
+
+/* 2. 조사 항목 */
+.tasks { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+.tgroup { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.tgroup h3 { display: flex; gap: 8px; align-items: center; }
+.tlist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.tlist li { display: grid; grid-template-columns: 2.6em minmax(0, 1fr); gap: 8px; font-size: .88rem; }
+.pri { font-size: .72rem; font-weight: 700; border-radius: 4px; text-align: center; padding: 1px 0; align-self: start; background: var(--soft); color: var(--muted); }
+.pri.hi { background: var(--accent); color: var(--bg); }
+.tlist small { display: block; color: var(--muted); font-size: .78rem; }
+.who { font-size: .75rem; color: var(--ok); font-weight: 700; }
+
+/* 오늘 역할 분담 */
+.roles { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.role { background: var(--surface); border: 1px solid var(--accent); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.role.later { border: 1px dashed var(--line); }
+.role .person { font-weight: 700; font-size: 1.02rem; }
+.role .person span { font-family: var(--mono); font-size: .78rem; color: var(--muted); font-weight: 500; margin-left: 4px; }
+.role p { font-size: .86rem; color: var(--muted); }
+.ownerchip { margin-left: auto; font-size: .75rem; font-weight: 700; color: var(--accent); border: 1px solid var(--accent); border-radius: 999px; padding: 0 8px; white-space: nowrap; }
+.ownerchip.later { color: var(--muted); border-color: var(--line); }
+
+/* 3. 진행 단계 */
+.stages { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; counter-reset: s; }
+.stage { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 6px; position: relative; min-width: 0; }
+.stage::before { counter-increment: s; content: counter(s); font-family: var(--mono); font-size: .8rem; color: var(--muted); }
+.stage h3 { font-size: .95rem; }
+.stage p { font-size: .82rem; color: var(--muted); }
+.stage .done { font-size: .78rem; border-top: 1px dashed var(--line); padding-top: 6px; color: var(--ink); }
+.stage.now { border-color: var(--accent); }
+.stage.now::after { content: "지금"; position: absolute; top: 10px; right: 10px; font-size: .7rem; font-weight: 700; color: var(--bg); background: var(--accent); border-radius: 999px; padding: 0 8px; }
+
+/* 4·5 */
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+.rule { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.rule ul { margin: 0; padding-left: 1.1em; font-size: .86rem; color: var(--muted); display: flex; flex-direction: column; gap: 3px; }
+
+details { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; }
+details summary { cursor: pointer; font-weight: 700; }
+details summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.table-wrap { overflow-x: auto; margin-top: 12px; }
+table { border-collapse: collapse; width: 100%; font-size: .84rem; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 700; font-size: .78rem; white-space: nowrap; }
+td:first-child { white-space: nowrap; font-family: var(--mono); font-size: .78rem; }
+footer { font-size: .8rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span class="eyebrow">팀 작업판 · 2026-11-04 전면 수정 · 성지(HSJ) · 은진(MEJ) · 진하(LJH)</span>
+    <h1>계절 제품 개발 아이디어 에이전트: 워크플로우와 역할 분담</h1>
+    <p class="meta">기준 기획안 <code>idea/LJH_계절-제품개발-에이전트-기획안.md</code> · 원문 <code>idea/런칭기획에이전트_워크플로우_역할분담.md</code></p>
+  </header>
+
+  <section>
+    <span class="eyebrow">0. 팀 결정 사항</span>
+    <h2>지금까지 정한 것</h2>
+    <div class="decisions">
+      <div class="dec"><b>에이전트</b>계절을 고르면 스킨케어 라인 후보와 출시 순위를 추천</div>
+      <div class="dec"><b>사용자</b>상품기획팀 BM이 결과를 확인</div>
+      <div class="dec"><b>입력</b>4계절 중 하나 선택</div>
+      <div class="dec"><b>라인 후보</b>3개 기본, 조건을 못 채우면 2개</div>
+      <div class="dec"><b>기능성 라인</b>꼭 넣지 않아도 됨, AI가 고름</div>
+      <div class="dec"><b>원료 지역</b>지역 무관, 경북 산지면 가산점</div>
+      <div class="dec"><b>출시가</b>시장 기준 vs 원가 기준 비교</div>
+      <div class="dec"><b>디자인</b>라인 색·용기·소재 + 실사 제품 사진</div>
+      <div class="dec"><b>출시 순위</b>시장 필요도 40 · 경쟁 우위 30 · 성공 가능성 30 (임시)</div>
+      <div class="dec"><b>결과 화면</b>라인 카드 → 누르면 상세 카드</div>
+      <div class="dec"><b>브랜드명</b>미정, 자료를 다 채운 뒤 정함</div>
+      <div class="dec"><b>제작 시점</b>지식 파일을 다 채운 뒤 만듦</div>
+      <div class="dec hold"><b>절기·대구</b>절기 캠페인, 약전골목 팝업은 2차 기능 후보</div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">1. 에이전트 워크플로우</span>
+    <h2>계절 하나에서 결과 화면까지</h2>
+    <div class="flowbox flow">
+      <div class="fstep"><span class="fnum io">IN</span><span>4계절 중 하나 선택</span><span class="ktags"></span></div>
+      <div class="fstep"><span class="fnum">1</span><span>계절 → 기후 이슈 → 피부 고민 후보 (3~5개)</span><span class="ktags"><span class="k no">K4</span></span></div>
+      <div class="fstep"><span class="fnum">2</span><span>피부 고민 → 라인 + 약재 추천 (3개, 안 되면 2개)</span><span class="ktags"><span class="k ok">K2</span><span class="k mid">K3</span></span></div>
+      <div class="fstep"><span class="fnum">3</span><span>라인별 1차 출시 구성 / 2차 확장 후보</span><span class="ktags"><span class="k ok">K2</span></span></div>
+      <div class="fstep"><span class="fnum">4</span><span>출시가 제안 (시장 기준 vs 원가 기준)</span><span class="ktags"><span class="k ok">K5</span><span class="k mid">K7</span></span></div>
+      <div class="fstep"><span class="fnum">5</span><span>디자인 + 실사 제품 사진</span><span class="ktags"><span class="k no">K8</span></span></div>
+      <div class="fstep"><span class="fnum">6</span><span>가중치 점수 → 출시 순위</span><span class="ktags"><span class="k mid">K3</span><span class="k no">K4</span><span class="k ok">K5</span></span></div>
+      <div class="fstep"><span class="fnum">7</span><span>광고 표현 셀프 체크 + 근거</span><span class="ktags"><span class="k ok">K6</span></span></div>
+      <div class="fstep"><span class="fnum io">OUT</span><span>결과 화면: 라인 카드 → 상세 카드</span><span class="ktags"><span class="k mid">K9</span></span></div>
+    </div>
+    <p class="meta">K 태그 색은 아래 지식 파일 상태와 같아요. 빨간 태그가 있는 단계는 아직 자료가 없어서 돌릴 수 없어요.</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">지식 파일 현황판</span>
+    <h2>에이전트가 읽는 자료 K1~K9</h2>
+    <div class="legend"><span><i style="background:var(--ok)"></i>있음</span><span><i style="background:var(--mid)"></i>보완 필요</span><span><i style="background:var(--no)"></i>없음 · 만들어야 함</span></div>
+    <div class="board">
+      <div class="kcard mid"><div class="khead"><span class="kid">K1</span><span class="st mid">요약 필요</span></div><p>브랜드 정보 (이름, 타깃, 제품명 규칙, 톤앤매너)</p><span class="src">브랜드 네이밍 기획안 · 브랜드 페르소나 단계에서 확정</span><span class="owner">담당 <b>미정</b></span></div>
+      <div class="kcard ok"><div class="khead"><span class="kid">K2</span><span class="st ok">있음</span></div><p>라인 구성 규칙 (13개 피부 목적, 구성 틀)</p><span class="src">MEJ_피부목적별_기초라인_종류</span><span class="owner">담당 <b>미정</b></span></div>
+      <div class="kcard mid"><div class="khead"><span class="kid">K3</span><span class="st mid">칸 합치기</span></div><p>원료 후보표 (향, 산지, 배합 제한, 선점, 고시 성분)</p><span class="src">MEJ 원료후보표 · 배합제한 · LJH 원료별 경쟁제품 · glossary</span><span class="owner">담당 <b>진하(LJH)</b> · 11/4</span></div>
+      <div class="kcard no"><div class="khead"><span class="kid">K4</span><span class="st no">조사 필요</span></div><p>계절 기후·피부 이슈 표 (새로 만듦)</p><span class="src">05 고객인사이트 일부 · MEJ 피부목적별 3장</span><span class="owner">담당 <b>성지(HSJ)</b> · 11/4</span></div>
+      <div class="kcard ok"><div class="khead"><span class="kid">K5</span><span class="st ok">있음</span></div><p>가격 기준표 (중저가 ml당 정가)</p><span class="src">LJH_올리브영-상위제품-가격</span><span class="owner">담당 <b>미정</b></span></div>
+      <div class="kcard ok"><div class="khead"><span class="kid">K6</span><span class="st ok">있음</span></div><p>광고 표현 규칙</p><span class="src">LJH_K6_광고표현규칙</span><span class="owner">담당 <b>미정</b></span></div>
+      <div class="kcard mid"><div class="khead"><span class="kid">K7</span><span class="st mid">조사 중</span></div><p>원가 자료 (OEM 견적, 목표 원가율)</p><span class="src">MEJ OEM 견적비교표 · 문의준비 · 업체정보표</span><span class="owner">담당 <b>은진(MEJ)</b> · 11/4</span></div>
+      <div class="kcard no"><div class="khead"><span class="kid">K8</span><span class="st no">만들어야 함</span></div><p>디자인 규칙 (브랜드 색, 약재별 색, 용기)</p><span class="src">없음</span><span class="owner">담당 <b>추후</b> (브랜드 페르소나 이후)</span></div>
+      <div class="kcard mid"><div class="khead"><span class="kid">K9</span><span class="st mid">시안 있음</span></div><p>결과 화면 템플릿</p><span class="src">LJH_K9_결과화면_시안 (1위 실사 예시 포함)</span><span class="owner">담당 <b>추후</b> (브랜드 페르소나 이후)</span></div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">2. 부족한 데이터와 조사 항목</span>
+    <h2>채워야 할 것</h2>
+    <span class="eyebrow">오늘(11/4) 역할 분담</span>
+    <div class="roles">
+      <div class="role"><span class="person">성지<span>HSJ</span></span><span><span class="k no">K4</span> 계절 기후·피부 이슈 표</span><p>기상청 기후 이슈·수치 + 계절 피부 고민 근거 → 기후 이슈 → 피부 고민 → 피부 목적 표</p></div>
+      <div class="role"><span class="person">진하<span>LJH</span></span><span><span class="k mid">K3</span> 원료 후보표 보완</span><p>선점 정도 칸 붙이기, 식약처 미백 등 기능성 고시 성분 대조</p></div>
+      <div class="role"><span class="person">은진<span>MEJ</span></span><span><span class="k mid">K7</span> 원가 자료</span><p>OEM·ODM 견적, 목표 원가율 업계 기준, 원료·용기 단가</p></div>
+      <div class="role later"><span class="person">추후</span><span><span class="k no">K8</span> <span class="k mid">K9</span> 디자인 규칙 · 결과 화면</span><p>브랜드 페르소나 단계 이후에 진행</p></div>
+    </div>
+    <p class="meta">각자 자기 브랜치에 commit + push하고, PR(base: research)로 합쳐요. K1·K2·K5·K6은 이미 있는 자료라 이번 분담에서 뺐어요.</p>
+    <div class="tasks">
+      <div class="tgroup">
+        <h3><span class="k no">K4</span>계절 기후·피부 이슈 표<span class="ownerchip">성지</span></h3>
+        <ul class="tlist">
+          <li><span class="pri hi">★</span><span>계절별 기후 이슈와 수치 (황사, 일교차, 습도, 장마, 폭염·한파, 자외선)<small>기상자료개방포털 · 생활기상지수 · 에어코리아</small></span></li>
+          <li><span class="pri hi">★</span><span>계절별 피부 고민 근거 (시즌 키워드, 리뷰·질문글)<small>올리브영(Aside) · 화해·글로우픽 · 05 고객인사이트</small></span></li>
+          <li><span class="pri hi">★</span><span>기후 이슈 → 피부 고민 → 피부 목적 표로 합치기<small>에이전트에는 완성된 표만 넣음</small></span></li>
+        </ul>
+      </div>
+      <div class="tgroup">
+        <h3><span class="k mid">K3</span>원료 후보표 보완<span class="ownerchip">진하</span></h3>
+        <ul class="tlist">
+          <li><span class="pri hi">★</span><span>원료 50종에 선점 정도 칸 붙이기<small>LJH 원료별 경쟁제품 표 2</small></span></li>
+          <li><span class="pri hi">★</span><span>식약처 미백 등 기능성 고시 성분 대조<small>기능성화장품 심사에 관한 규정 별표 · 의약품안전나라</small></span></li>
+          <li><span class="pri">보통</span><span>경쟁 제품의 기능성 효능 확인<small>의약품안전나라 기능성화장품(보고) 상세</small></span></li>
+          <li><span class="pri">보통</span><span>한방 브랜드(더후·수려한·다나한·미샤) 원료별 제품<small>공식몰 다시 시도</small></span></li>
+        </ul>
+      </div>
+      <div class="tgroup">
+        <h3><span class="k mid">K7</span>원가 자료<span class="ownerchip">은진</span></h3>
+        <ul class="tlist">
+          <li><span class="pri hi">★</span><span>OEM·ODM 견적 (제조 단가, 최소 주문 수량)<small>MEJ OEM 견적 문의준비의 후보 업체</small></span></li>
+          <li><span class="pri hi">★</span><span>목표 원가율 업계 기준<small>DART 상장 화장품사 매출원가율 · 업계 기사</small></span></li>
+          <li><span class="pri">보통</span><span>원료 추출물·용기·포장 단가<small>업체 견적</small></span></li>
+        </ul>
+      </div>
+      <div class="tgroup">
+        <h3><span class="k no">K8</span>디자인 규칙<span class="ownerchip later">추후</span></h3>
+        <ul class="tlist">
+          <li><span class="pri hi">★</span><span>브랜드 기본 색·보조 색, 폰트<small>브랜드 페르소나와 함께 정함</small></span></li>
+          <li><span class="pri hi">★</span><span>약재별 대표 색<small>약재 실물 색 · 공정서 성상</small></span></li>
+          <li><span class="pri">보통</span><span>유형별 용기 모양·소재, 실사 이미지 프롬프트 공통 규칙<small>기획안 "실사 이미지 만드는 방법"</small></span></li>
+        </ul>
+      </div>
+      <div class="tgroup">
+        <h3><span class="k mid">K9</span>결과 화면 + 실사 이미지<span class="ownerchip later">추후</span></h3>
+        <ul class="tlist">
+          <li><span class="pri hi">★</span><span>실사 이미지 방법 정하기<small>A 반자동(이미지 AI에 프롬프트) / B 커넥터 자동</small></span></li>
+          <li><span class="pri hi">★</span><span>시안의 2·3위 라인 실사 사진 만들기<small>프롬프트는 기획안에 있음</small></span></li>
+          <li><span class="pri">보통</span><span>시안을 실제 템플릿으로 정리<small>브랜드명·색이 정해진 뒤</small></span></li>
+        </ul>
+      </div>
+    </div>
+    <p class="meta">K3 원본(MEJ 원료후보표)은 은진 파일이라, 진하는 새 칸을 자기 파일에 정리하고 은진에게 합치기를 제안해요.</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">3. 진행 단계 (날짜는 나중에)</span>
+    <h2>자료조사에서 마무리까지</h2>
+    <div class="stages">
+      <div class="stage now"><h3>자료조사 마무리</h3><p>K4 성지 · K3 진하 · K7 은진</p><span class="done">K3·K4·K7이 있음</span></div>
+      <div class="stage"><h3>브랜드 페르소나</h3><p>브랜드명, 타깃 페르소나, 톤앤매너, 브랜드 색 → 이어서 K8·K9</p><span class="done">K1·K8·K9 확정</span></div>
+      <div class="stage"><h3>에이전트 만들기</h3><p>지침 정리, K9 템플릿 확정, 지식 파일 업로드</p><span class="done">봄 입력으로 결과 화면이 나옴</span></div>
+      <div class="stage"><h3>실행·검토</h3><p>4계절 입력, 가중치 3가지로 흔들림 확인, 재실행</p><span class="done">실행 기록표 작성</span></div>
+      <div class="stage"><h3>발표 준비</h3><p>시연 시나리오(봄·겨울), 근거 슬라이드</p><span class="done">리허설 1회</span></div>
+      <div class="stage"><h3>마무리</h3><p>research → main 정리, 조사 파일 완료 처리</p><span class="done">main 반영</span></div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">4·5. 단어장과 Git 규칙</span>
+    <h2>같이 지킬 것</h2>
+    <div class="rules">
+      <div class="rule"><h3>glossary.md</h3><ul><li>은진이 원료 14개 대조표로 만듦</li><li>표기 규칙(익숙한 이름 / 정식 약재명) 3명이 정하기</li><li>새 원료는 처음 쓴 사람이 추가</li></ul></div>
+      <div class="rule"><h3>커밋 · 푸시</h3><ul><li>한 덩어리 끝날 때마다 커밋, <code>[브랜치명] 한 일</code></li><li>작업 전 <code>git branch</code> 확인 → <code>git pull origin research</code></li><li>하루 끝에 반드시 push</li></ul></div>
+      <div class="rule"><h3>PR</h3><ul><li>base는 <code>research</code>, 직접 push 금지</li><li>리뷰 순서 HSJ → LJH → MEJ → HSJ</li><li>실행·발표 전날은 그날 merge</li></ul></div>
+      <div class="rule"><h3>학습로그</h3><ul><li>매일 3줄: 한 것 / 넘길 것 / 막힌 것</li><li>실행 직후 기록표와 캡처</li><li>매주 CHANGELOG.md에 옮기기</li></ul></div>
+    </div>
+  </section>
+
+  <details>
+    <summary>지난 일정 기록 (이전 버전 · 11/3~11/4 1차 실행 계획)</summary>
+    <div class="table-wrap"><table>
+      <thead><tr><th>시간</th><th>성지(HSJ)</th><th>은진(MEJ)</th><th>진하(LJH)</th></tr></thead>
+      <tbody>
+        <tr><td>11/3 15:10</td><td>브랜드 정보 초안, 절기 캘린더</td><td>원료 후보표 8개</td><td>올리브영 상위 제품 목록·가격</td></tr>
+        <tr><td>11/3 16:10</td><td>대구 자산 5개</td><td>라인별 1차 출시 구성</td><td>중저가 범위, 경쟁 제품</td></tr>
+        <tr><td>11/3 16:50</td><td>취합, 지침 수정</td><td>glossary 초안</td><td>향 반응 리뷰</td></tr>
+        <tr><td>11/4 09:00</td><td>지침 점검, 업로드</td><td>원료 빈칸 메우기</td><td>금지어 요약, 가격 빈칸</td></tr>
+        <tr><td>11/4 10:00</td><td>시험 실행 4개</td><td>라인·원료 검토</td><td>가격·경쟁·금지어 검토</td></tr>
+        <tr><td>11/4 11:00</td><td>재실행 1회</td><td>수정본 전달</td><td>수정본 전달</td></tr>
+        <tr><td>11/4 12:30</td><td>최종 commit, PR</td><td>commit + push</td><td>commit + push</td></tr>
+      </tbody>
+    </table></div>
+  </details>
+
+  <footer>원문 문서를 그대로 옮긴 시각화예요. 내용이 바뀌면 <code>idea/런칭기획에이전트_워크플로우_역할분담.md</code>를 먼저 고치고 이 화면도 같이 고쳐요.</footer>
+</div>
+</body>
+</html>
