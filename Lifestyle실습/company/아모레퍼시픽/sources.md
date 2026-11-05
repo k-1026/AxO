@@ -47,3 +47,22 @@
 - 국문 DART: [https://dart.fss.or.kr/](https://dart.fss.or.kr/)
 - 위 홈페이지는 검색 진입 링크이고, 출처 표의 공시·KIND·IR URL은 실제 근거 문서 링크다.
 - 국문 공시 URL의 도메인을 영문 사이트로 단순 치환하지 않았다. 기업별 영문 공시 제공 여부는 별도 확인 대상이다.
+
+## 개별 공시자료 식별표 — 홈페이지와 구분
+
+각 행의 URL은 실제 분석에 사용한 문서다. 같은 보고서의 다른 항목은 출처 번호·항목으로 구분한다. 확인일은 모두 2026-11-05다.
+
+| 출처 번호 | 회사·공시자료명 | 제출일 | 사용 항목 | 실제 근거 원문 URL |
+|---|---|---|---|---|
+| 1 | 아모레퍼시픽 사업보고서(2025.12) | 2026-03-18 | II. 사업의 내용 | [https://dart.fss.or.kr/report/viewer.do?rcpNo=20260318000785&dcmNo=11138020&eleId=9&offset=101755&length=95501&dtd=dart4.xsd](https://dart.fss.or.kr/report/viewer.do?rcpNo=20260318000785&dcmNo=11138020&eleId=9&offset=101755&length=95501&dtd=dart4.xsd) |
+| 2 | 아모레퍼시픽 사업보고서(2025.12) | 2026-03-18 | IX. 계열회사 등에 관한 사항 | [https://kind.krx.co.kr/external/2026/03/18/001026/20260318004903/11011.htm](https://kind.krx.co.kr/external/2026/03/18/001026/20260318004903/11011.htm) |
+| 9 | 아모레퍼시픽 사업보고서(2025.12) | 2026-03-18 | III. 재무에 관한 사항 | [https://kind.krx.co.kr/external/2026/03/18/001026/20260318004903/11011.htm](https://kind.krx.co.kr/external/2026/03/18/001026/20260318004903/11011.htm) |
+| 11 | 아모레퍼시픽 사업보고서(2025.12) | 2026-03-18 | I. 회사의 개요 | [https://kind.krx.co.kr/external/2026/03/18/001026/20260318004903/11011.htm](https://kind.krx.co.kr/external/2026/03/18/001026/20260318004903/11011.htm) |
+| 7 | LG생활건강 사업보고서(2025.12) | 2026-03-16 | II. 사업의 내용 | [https://www.lghnh.com/ir/download.jsp?seq=2301&kind=audit&idx=1](https://www.lghnh.com/ir/download.jsp?seq=2301&kind=audit&idx=1) |
+| 8 | LG생활건강 사업보고서(2025.12) | 2026-03-16 | IX. 계열회사 등에 관한 사항 | [https://www.lghnh.com/ir/download.jsp?seq=2301&kind=audit&idx=1](https://www.lghnh.com/ir/download.jsp?seq=2301&kind=audit&idx=1) |
+| 10 | LG생활건강 사업보고서(2025.12) | 2026-03-16 | III. 재무에 관한 사항 | [https://www.lghnh.com/ir/download.jsp?seq=2301&kind=audit&idx=1](https://www.lghnh.com/ir/download.jsp?seq=2301&kind=audit&idx=1) |
+
+- 출처 1은 DART의 개별 보고서 항목 링크다. 출처 2·9·11은 같은 아모레퍼시픽 사업보고서의 KIND 원문을 사용한 대체 경로이며, 서로 다른 보고서가 아니다.
+- 출처 7·8·10은 LG생활건강이 공식 배포한 같은 사업보고서 PDF의 서로 다른 항목이다. 이를 DART 직접 열람 완료로 표시하지 않았다.
+- IR·보도자료·외부 기사·팀 기획은 상단 출처 표에 별도 자료원으로 표시했다. 회사 전체 홈페이지를 개별 근거 문서 대신 쓰지 않는다.
+- 영문 DART 홈페이지는 검색을 위한 참고 주소이며, 이 분석의 개별 공시 원문을 대신하지 않는다.
