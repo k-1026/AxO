@@ -34,6 +34,22 @@
 4. 고객 연령·데이터 권한·ODM 의존도·단위원가·지역 계약은 미확인.
 5. 팀 자산 접점은 [I] 초안이며, 사람 검증과 팀 공유는 사용자 행동이 필요함.
 
-## Git 상태
+## Git 상태 — 이전 기록
 
 이번 실습 파일만 MEJ 브랜치에 로컬 커밋했다. 기존 README와 다른 미추적 작업은 포함하지 않았다. GitHub push는 실행하지 않았다.
+
+## 2026-11-06 — 밸류체인 결과물 정리
+
+기존 저장소 루트의 `valuechain/` 결과물을 `Lifestyle실습/valuechain/`으로 이동했다. 원페이지·출처·리뷰 링크는 새 폴더 기준으로 수정했다. 위 Git 상태는 이전 작업 당시 기록이며, 현재 원격 공유 상태는 [MEJ 브랜치의 최신 기록](https://github.com/k-1026/AxO/tree/MEJ/Lifestyle실습)으로 확인한다.
+
+| 결과물 | 내용 |
+|---|---|
+| [activities_v0.md](valuechain/activities_v0.md) | 활동 후보·팀 결정과 근거 |
+| [stakeholders.md](valuechain/stakeholders.md) | 이해관계자·수행자·영향자 |
+| [signals.md](valuechain/signals.md) | 신호·리뷰 근거·AI 기회 후보 |
+| [valuechain_v0.md](valuechain/valuechain_v0.md) | Mermaid 초안 |
+| [valuechain_v1.md](valuechain/valuechain_v1.md) | 원페이지·출처 목록 대조본 |
+| [valuechain_v1.html](valuechain/valuechain_v1.html) | 1280×720 HTML·브라우저 점검본 |
+| [analysis.md](valuechain/analysis.md) | 검증·한계·수정 이력 |
+
+기존 리뷰 소표본 한계, 미확인 거래·데이터, 임시 기회 평가와 팀 미채택 상태는 유지했다.

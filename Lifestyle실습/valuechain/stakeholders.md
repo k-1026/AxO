@@ -171,9 +171,9 @@
 - [ ] 단계 이름이 원페이지 판매경로 용어와 문자 그대로 일치 — 원페이지에 같은 5단계 구분이 없어 완전 일치는 성립하지 않음. 사용자 확정 단계 이름을 유지.
 - [x] 단계마다 후보 이해관계자 2개 이상·여섯 유형 중 4유형 이상 — 각 단계 6유형, `[U]` 포함이며 실제 관여 검증과 구분.
 - [x] 팀의 1차 단계 제목을 틸 `#008080`과 `[팀 확정]`으로 표시.
-- [x] `valuechain/stakeholders.md` 저장.
+- [x] `Lifestyle실습/valuechain/stakeholders.md` 저장.
 - 커밋은 Git 기록으로 확인한다. 보드 자체 검토와 `[U]` 실명·역할 검증은 미완료다.
 
 [자료 1]: activities_v0.md
-[자료 2]: ../Lifestyle실습/company/아모레퍼시픽/onepager.md
-[출처 2]: ../Lifestyle실습/company/아모레퍼시픽/sources/02_dart_계열회사.md
+[자료 2]: ../company/아모레퍼시픽/onepager.md
+[출처 2]: ../company/아모레퍼시픽/sources/02_dart_계열회사.md

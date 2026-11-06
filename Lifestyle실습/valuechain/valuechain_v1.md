@@ -147,14 +147,14 @@ flowchart LR
 
 기업 번호·자료 제목·원문 URL·날짜·저장 파일은 [출처 목록]과 대조했다. 로컬 파일 열람일은 2026-11-06, 기존 기업 원문 확인일은 2026-11-05이며 이번 기업 웹 원문 재검증은 미실시다. 보고서 쪽수는 확인 필요. 리뷰 원출처는 🔴 C 후기·커뮤니티로, 객관적 기업 품질 사실의 근거가 아니라 반응이 기록됐다는 해석 자료로만 사용한다.
 
-[원페이지]: ../Lifestyle실습/company/아모레퍼시픽/onepager.md
-[출처 목록]: ../Lifestyle실습/company/아모레퍼시픽/sources.md
-[출처 1]: ../Lifestyle실습/company/아모레퍼시픽/sources/01_dart_사업의내용.md
-[출처 2]: ../Lifestyle실습/company/아모레퍼시픽/sources/02_dart_계열회사.md
-[출처 3]: ../Lifestyle실습/company/아모레퍼시픽/sources/03_ir_실적자료.md
-[출처 5]: ../Lifestyle실습/company/아모레퍼시픽/sources/05_pr_2026-11-04-2.md
-[출처 9]: ../Lifestyle실습/company/아모레퍼시픽/sources/09_dart_재무.md
-[출처 13]: ../Lifestyle실습/company/아모레퍼시픽/sources/13_brand_한율.md
-[출처 16]: ../Lifestyle실습/company/아모레퍼시픽/sources/16_local_context.md
-[리뷰 출처 1]: ../research/04_고객인사이트_자료조사.md
-[리뷰 출처 2]: ../research/05_고객인사이트_종합.md
+[원페이지]: ../company/아모레퍼시픽/onepager.md
+[출처 목록]: ../company/아모레퍼시픽/sources.md
+[출처 1]: ../company/아모레퍼시픽/sources/01_dart_사업의내용.md
+[출처 2]: ../company/아모레퍼시픽/sources/02_dart_계열회사.md
+[출처 3]: ../company/아모레퍼시픽/sources/03_ir_실적자료.md
+[출처 5]: ../company/아모레퍼시픽/sources/05_pr_2026-11-04-2.md
+[출처 9]: ../company/아모레퍼시픽/sources/09_dart_재무.md
+[출처 13]: ../company/아모레퍼시픽/sources/13_brand_한율.md
+[출처 16]: ../company/아모레퍼시픽/sources/16_local_context.md
+[리뷰 출처 1]: ../../research/04_고객인사이트_자료조사.md
+[리뷰 출처 2]: ../../research/05_고객인사이트_종합.md

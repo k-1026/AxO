@@ -112,7 +112,7 @@ flowchart LR
 ## 📌 다른 팀원에게
 
 - 이번 요청에 따라 세 번째 단계를 ‘뷰티 온라인 플랫폼’으로 수정했다. 단계 순서는 사용자 지정 순서이며, 상품이 반드시 온라인 플랫폼의 물리적 창고를 거친다는 뜻은 아니다.
-- `[U]`를 원문·계약·실제 운영 기록으로 검증하고 화살표를 수정한 다음 `valuechain/valuechain_v1.md`로 검증 후 버전을 만든다. 이번에는 v0를 수정하고 기존 [analysis.md](analysis.md)에 근거·수정 이력을 추가했다. 거래 검증 전이므로 v1은 만들지 않았다.
+- `[U]`를 원문·계약·실제 운영 기록으로 검증하고 화살표를 수정한 다음 `Lifestyle실습/valuechain/valuechain_v1.md`로 검증 후 버전을 만든다. 이번에는 v0를 수정하고 기존 [analysis.md](analysis.md)에 근거·수정 이력을 추가했다. 거래 검증 전이므로 v1은 만들지 않았다.
 
 ## ❓ 아직 모르는 것
 
@@ -125,7 +125,7 @@ flowchart LR
 
 ### 📄 자료 출처
 
-원페이지의 출처 번호를 그대로 유지했다. 아래 기업 자료 링크는 기존에 수집한 저장본이다. 원문 URL·자료 날짜는 [출처 목록](../Lifestyle실습/company/아모레퍼시픽/sources.md)을 따른다. 원페이지는 2026-11-06 로컬 파일로 열람했고, 기존 기업 원문 확인일은 2026-11-05다. 이번 작업에서 기업 웹 원문을 재검증하지 않았다. 보고서 쪽수는 확인 필요이며, 기업 작성 공시는 보수적으로 🟡 B로 분류했다.
+원페이지의 출처 번호를 그대로 유지했다. 아래 기업 자료 링크는 기존에 수집한 저장본이다. 원문 URL·자료 날짜는 [출처 목록](../company/아모레퍼시픽/sources.md)을 따른다. 원페이지는 2026-11-06 로컬 파일로 열람했고, 기존 기업 원문 확인일은 2026-11-05다. 이번 작업에서 기업 웹 원문을 재검증하지 않았다. 보고서 쪽수는 확인 필요이며, 기업 작성 공시는 보수적으로 🟡 B로 분류했다.
 
 | 번호 | 등급·구분 | 자료·사용 위치 | 검증 한계 |
 |---|---|---|---|
@@ -140,22 +140,22 @@ flowchart LR
 
 ### 저장 위치와 점검
 
-- 저장 파일: `C:/Users/Green/Desktop/AxO/valuechain/valuechain_v0.md`.
+- 저장 파일: `C:/Users/Green/Desktop/AxO/Lifestyle실습/valuechain/valuechain_v0.md`.
 - Markdown 안의 `mermaid` 블록, `flowchart LR`, subgraph 5개로 작성.
 - 수행자는 `font-weight:bold`, 영향 주체는 괄호로 표시.
 - 상품 `-->`, 돈 `==>`, 데이터 `-.->`를 구분하고 돈·데이터 라벨을 작성.
 - 숫자 수수료율·거래 금액을 넣지 않음. 미확인 관계는 `[I][U]` 표시.
 - 단계별 원페이지 근거 칸과 실제 거래·데이터의 검증 한계를 함께 기록.
-- `valuechain/valuechain_v0.md`: 요청한 도식·단계별 근거를 담은 초안.
-- `valuechain/valuechain_v1.md`: 실제 관계 검증 후 작성할 버전. 이번 작업에서는 미생성.
-- `valuechain/analysis.md`: 기존 리뷰 한계를 보존하고 이번 도식의 근거·수정 이력·미확인 항목을 추가 기록.
+- `Lifestyle실습/valuechain/valuechain_v0.md`: 요청한 도식·단계별 근거를 담은 초안.
+- `Lifestyle실습/valuechain/valuechain_v1.md`: 실제 관계 검증 후 작성할 버전. 이번 작업에서는 미생성.
+- `Lifestyle실습/valuechain/analysis.md`: 기존 리뷰 한계를 보존하고 이번 도식의 근거·수정 이력·미확인 항목을 추가 기록.
 
-[원페이지]: ../Lifestyle실습/company/아모레퍼시픽/onepager.md
+[원페이지]: ../company/아모레퍼시픽/onepager.md
 [기존 단계]: stakeholders.md
-[출처 1]: ../Lifestyle실습/company/아모레퍼시픽/sources/01_dart_사업의내용.md
-[출처 2]: ../Lifestyle실습/company/아모레퍼시픽/sources/02_dart_계열회사.md
-[출처 3]: ../Lifestyle실습/company/아모레퍼시픽/sources/03_ir_실적자료.md
-[출처 5]: ../Lifestyle실습/company/아모레퍼시픽/sources/05_pr_2026-11-04-2.md
-[출처 9]: ../Lifestyle실습/company/아모레퍼시픽/sources/09_dart_재무.md
-[출처 13]: ../Lifestyle실습/company/아모레퍼시픽/sources/13_brand_한율.md
-[출처 16]: ../Lifestyle실습/company/아모레퍼시픽/sources/16_local_context.md
+[출처 1]: ../company/아모레퍼시픽/sources/01_dart_사업의내용.md
+[출처 2]: ../company/아모레퍼시픽/sources/02_dart_계열회사.md
+[출처 3]: ../company/아모레퍼시픽/sources/03_ir_실적자료.md
+[출처 5]: ../company/아모레퍼시픽/sources/05_pr_2026-11-04-2.md
+[출처 9]: ../company/아모레퍼시픽/sources/09_dart_재무.md
+[출처 13]: ../company/아모레퍼시픽/sources/13_brand_한율.md
+[출처 16]: ../company/아모레퍼시픽/sources/16_local_context.md
