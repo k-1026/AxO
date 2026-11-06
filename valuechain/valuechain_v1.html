@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>아모레퍼시픽 · 뷰티 산업 밸류체인 v1</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body { background: #e7ece9; display: grid; place-items: start center; }
+    .sheet { width: min(1280px, 100vw); aspect-ratio: 16 / 9; background: #fbfcf8; }
+    svg { display: block; width: 100%; height: auto; }
+    text { font-family: "Malgun Gothic", "맑은 고딕", "Segoe UI", sans-serif; fill: #213831; }
+    .muted { fill: #65776e; }
+    .small { font-size: 11px; }
+    .body { font-size: 13px; }
+    .actor { font-size: 15px; font-weight: 700; }
+    .stage { font-size: 19px; font-weight: 700; }
+    .layer { font-size: 13px; font-weight: 700; }
+    .money { stroke: #df842b; stroke-width: 3; fill: none; marker-end: url(#orangeArrow); }
+    .data { stroke: #3985b5; stroke-width: 2; stroke-dasharray: 5 5; fill: none; marker-end: url(#blueArrow); }
+    .data-label { fill: #286b94; font-size: 12px; }
+    .money-label { fill: #9a541c; font-size: 13px; font-weight: 700; }
+    a:hover text { text-decoration: underline; }
+    @page { size: 1280px 720px; margin: 0; }
+    @media print { body { background: white; } .sheet { width: 1280px; height: 720px; } }
+  </style>
+</head>
+<body>
+<main class="sheet" aria-label="1280×720, 활동·이해관계자·돈·데이터 네 층의 밸류체인">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720" role="img" aria-labelledby="mapTitle mapDesc">
+  <title id="mapTitle">아모레퍼시픽 · 뷰티 산업 밸류체인</title>
+  <desc id="mapDesc">지역 생산자, 가공, 뷰티 온라인 플랫폼, 주문, 물류·배송의 다섯 단계. 돈은 소비자에서 원천 방향으로, 데이터는 양방향과 피드백을 표시한다. 실제 미확인 관계는 I와 U로 표시한 문서 기반 가설이다.</desc>
+  <defs>
+    <marker id="orangeArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#df842b" stroke-width="1.8"/></marker>
+    <marker id="blueArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#3985b5" stroke-width="1.8"/></marker>
+    <marker id="grayArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#799187" stroke-width="1.8"/></marker>
+  </defs>
+
+  <rect width="1280" height="720" fill="#fbfcf8"/>
+  <rect x="36" y="32" width="5" height="40" rx="2" fill="#008080"/>
+  <text x="54" y="57" font-size="27" font-weight="700">아모레퍼시픽 · 뷰티 산업 밸류체인</text>
+  <text x="55" y="80" class="body muted">원페이지 대조본 / 거래·데이터 연결은 구조 가설 [I][U] / 실제 계약·공정 검증 전</text>
+  <rect x="1088" y="36" width="120" height="28" rx="14" fill="#e7efea"/>
+  <text x="1148" y="55" text-anchor="middle" class="small" font-weight="700">v1 · 문서 대조</text>
+
+  <!-- 1. 활동: 사용자 지정 단계와 개괄 상품 방향 -->
+  <g id="activities" data-layer="활동">
+    <text x="36" y="134" class="layer">01 활동</text>
+    <text x="36" y="155" class="small muted">사용자 지정</text>
+    <rect x="146" y="108" width="198" height="76" rx="12" fill="#008080"/>
+    <text x="164" y="137" class="stage" style="fill:white">지역 생산자</text>
+    <text x="164" y="164" class="body" style="fill:#d6f4ec">팀 자산 접점 · 실제 조달 [U]</text>
+    <rect x="362" y="108" width="198" height="76" rx="12" fill="#f3f5ef" stroke="#df842b" stroke-width="2.5"/>
+    <text x="380" y="137" class="stage">가공</text>
+    <text x="380" y="164" class="body muted">화장품 제조·판매 [출처 1]</text>
+    <rect x="578" y="108" width="198" height="76" rx="12" fill="#edf2ec"/>
+    <text x="596" y="137" class="stage">뷰티 온라인 플랫폼</text>
+    <text x="596" y="164" class="body muted">온라인 경로 · 거래 방식 [U]</text>
+    <rect x="794" y="108" width="198" height="76" rx="12" fill="#edf2ec"/>
+    <text x="812" y="137" class="stage">주문</text>
+    <text x="812" y="164" class="body muted">구매·결제 절차 [I][U]</text>
+    <rect x="1010" y="108" width="198" height="76" rx="12" fill="#edf2ec"/>
+    <text x="1028" y="137" class="stage">물류·배송</text>
+    <text x="1028" y="164" class="body muted">수출 경로 · 배송 담당 [U]</text>
+    <g stroke="#799187" stroke-width="1.8" marker-end="url(#grayArrow)">
+      <path d="M347 146 H357"/><path d="M563 146 H573"/>
+      <path d="M779 146 H789"/><path d="M995 146 H1005"/>
+    </g>
+  </g>
+
+  <!-- 2. 이해관계자: 수행자 굵게 / 영향자는 괄호 -->
+  <g id="stakeholders" data-layer="이해관계자">
+    <rect x="132" y="198" width="1090" height="121" rx="12" fill="#f0f4ef"/>
+    <text x="36" y="224" class="layer">02 주체</text>
+    <text x="36" y="245" class="small muted">하는 사람</text>
+    <text x="36" y="263" class="small muted">(영향자)</text>
+    <text x="164" y="224" class="actor">원천·생산자 [U]</text>
+    <text x="164" y="250" class="body muted">(지역 커뮤니티·</text>
+    <text x="164" y="269" class="body muted">원료 조건 영향 주체 [U])</text>
+    <text x="380" y="224" class="actor">아모레퍼시픽</text>
+    <text x="380" y="250" class="body muted">(제조 규격·원료 정보</text>
+    <text x="380" y="269" class="body muted">영향 주체 [U])</text>
+    <text x="596" y="224" class="actor">뷰티 온라인 채널 [U]</text>
+    <text x="596" y="250" class="body muted">(입점·정산 조건</text>
+    <text x="596" y="269" class="body muted">영향 주체 [U])</text>
+    <text x="812" y="224" class="actor">소비자·고객사 [U]</text>
+    <text x="812" y="250" class="body muted">(구매 선택</text>
+    <text x="812" y="269" class="body muted">영향 주체 [U])</text>
+    <text x="1028" y="224" class="actor">운송·보관·배송 [U]</text>
+    <text x="1028" y="250" class="body muted">(배송 조건·기준</text>
+    <text x="1028" y="269" class="body muted">영향 주체 [U])</text>
+    <rect x="374" y="284" width="174" height="24" rx="6" fill="#fff8ee" stroke="#df842b"/>
+    <text x="461" y="300" class="small" text-anchor="middle" style="fill:#9a541c">M01 병목 후보 · 체감 차이 [I]</text>
+    <text x="596" y="300" class="small muted">M01: 한율 리뷰·소표본 / 제조 불량 미입증 / 근거 [리뷰 1·2]</text>
+  </g>
+
+  <!-- 3. 돈: 소비자 → 플랫폼 → 제조 → 원천. 수수료는 정산 차감 후보로 통합 -->
+  <g id="money" data-layer="돈 흐름">
+    <rect x="132" y="331" width="1090" height="113" rx="12" fill="#fff8ef"/>
+    <text x="36" y="357" class="layer">03 돈</text>
+    <text x="36" y="378" class="small muted">소비자 → 원천</text>
+    <text x="36" y="397" class="small muted">중개 가설 [I]</text>
+    <path class="money" d="M881 374 H690" data-direction="right-to-left"/>
+    <path class="money" d="M665 374 H474" data-direction="right-to-left"/>
+    <path class="money" d="M449 374 H258" data-direction="right-to-left"/>
+    <text x="785" y="358" text-anchor="middle" class="money-label">결제 [I][U]</text>
+    <text x="569" y="358" text-anchor="middle" class="money-label">정산 [I][U]</text>
+    <text x="353" y="358" text-anchor="middle" class="money-label">납품 단가 기준 [I][U]</text>
+    <rect x="490" y="389" width="231" height="29" rx="6" fill="#fffaf6" stroke="#ee806c" stroke-width="1.8"/>
+    <text x="605" y="408" text-anchor="middle" class="body" style="fill:#a45142">비용 · 수수료 차감 여부 [U]</text>
+    <text x="164" y="434" class="small muted">수수료는 정산 차감 후보로 표시 · 별도 송금과 중복 합산 안 함 · 금액·수수료율 없음</text>
+    <rect x="1010" y="345" width="198" height="80" rx="8" fill="#fffaf6" stroke="#ee806c" stroke-width="1.8"/>
+    <text x="1024" y="367" class="body" font-weight="700" style="fill:#a45142">회사 비용 항목 [출처 9]</text>
+    <text x="1024" y="389" class="body muted">유통 수수료·운반비</text>
+    <text x="1024" y="411" class="small muted">이 거래의 차감·부담 주체 [U]</text>
+  </g>
+
+  <!-- 4. 데이터: 모든 보유자·실제 전달은 미확인. 피드백은 추가 표현한 제안 -->
+  <g id="data" data-layer="데이터 흐름">
+    <rect x="132" y="457" width="1090" height="141" rx="12" fill="#eff6fa"/>
+    <text x="36" y="485" class="layer">04 데이터</text>
+    <text x="36" y="506" class="small muted">이름: 제안 [I]</text>
+    <text x="36" y="525" class="small muted">보유자: [U]</text>
+    <text x="36" y="544" class="small muted">전달: [U]</text>
+    <path class="data" d="M245 492 H449"/>
+    <path class="data" d="M461 492 H665"/>
+    <path class="data" d="M677 492 H1097"/>
+    <text x="347" y="480" text-anchor="middle" class="data-label">원료 규격 · 보유자 [U]</text>
+    <text x="563" y="480" text-anchor="middle" class="data-label">상품정보 · 보유자 [U]</text>
+    <text x="893" y="480" text-anchor="middle" class="data-label">배송지·출고요청 · 보유자 [U]</text>
+    <path class="data" d="M893 535 H690"/>
+    <path class="data" d="M1109 535 H906"/>
+    <text x="785" y="523" text-anchor="middle" class="data-label">주문정보 · 보유자 [U]</text>
+    <text x="1001" y="523" text-anchor="middle" class="data-label">배송상태 · 보유자 [U]</text>
+    <path id="feedback" class="data" d="M893 552 V582 H461 V552" data-role="feedback"/>
+    <rect x="486" y="562" width="379" height="20" rx="5" fill="#eff6fa"/>
+    <text x="675" y="576" text-anchor="middle" class="data-label">피드백 제안: 사용 후기 → 가공 · 보유자·전달 [U]</text>
+  </g>
+
+  <!-- 기회와 범례: 같은 색상 토큰, 원래의 임시 평가·근거 한계 보존 -->
+  <g id="opportunity">
+    <rect x="146" y="613" width="648" height="58" rx="10" fill="#e4f5ad"/>
+    <text x="164" y="636" font-size="15" font-weight="700">O01 기회 후보 · VOC 분류·조건별 비교 보조</text>
+    <text x="164" y="657" class="body">M01→S01 연계 / III사분면 · 임시 평가 / 팀 채택 전 / [리뷰 1·2]</text>
+  </g>
+  <g id="legend" aria-label="오른쪽 아래 범례">
+    <text x="835" y="625" class="small muted" font-weight="700">범례</text>
+    <rect x="877" y="613" width="16" height="14" rx="3" fill="none" stroke="#df842b" stroke-width="2"/>
+    <text x="900" y="625" class="small">병목(후보)</text>
+    <rect x="983" y="613" width="16" height="14" rx="3" fill="none" stroke="#ee806c" stroke-width="2"/>
+    <text x="1006" y="625" class="small">비용</text>
+    <rect x="1053" y="613" width="16" height="14" rx="3" fill="#e4f5ad"/>
+    <text x="1076" y="625" class="small">기회(후보)</text>
+    <rect x="877" y="641" width="16" height="14" rx="3" fill="#008080"/>
+    <text x="900" y="653" class="small">팀 자산</text>
+    <text x="983" y="653" class="small muted">[I] 해석 · [U] 미확인</text>
+  </g>
+
+  <path d="M36 684 H1208" stroke="#dce4dc"/>
+  <a href="../Lifestyle실습/company/아모레퍼시픽/onepager.md"><text x="36" y="704" class="small muted">근거: 원페이지 1·2·4·5·6·7·8칸 · 기업 출처 1·5·9·13·16</text></a>
+  <a href="analysis.md#검증"><text x="520" y="704" class="small muted">[리뷰 1·2] 04·05 고객인사이트 / 한방 브랜드·약전골목 소표본 · 검증 이력 보기</text></a>
+  <text x="1208" y="704" text-anchor="end" class="small muted">1280 × 720</text>
+</svg>
+</main>
+</body>
+</html>
