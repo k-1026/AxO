@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>스토리보드 · 한방 뷰티 기초라인 (고객 A)</title>
+<style>
+  :root{
+    --ink:#1d2430; --sub:#5d6675; --line:#dfe4ea; --bg:#f4f6f8; --card:#ffffff;
+    --accent:#0f7f78; --accent-soft:#e6f3f2; --warn:#b45309; --warn-soft:#fef3c7;
+    --pink:#f9d7e4; --mint:#d6f1ec; --sky:#dbe9fb; --cream:#fdf3e1; --lilac:#e7e1fb;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e8ecf2; --sub:#9aa4b2; --line:#2e3642; --bg:#14181f; --card:#1b2129;
+      --accent:#3fb8b0; --accent-soft:#1d3a39; --warn:#f5c26b; --warn-soft:#3a3018;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e8ecf2; --sub:#9aa4b2; --line:#2e3642; --bg:#14181f; --card:#1b2129;
+    --accent:#3fb8b0; --accent-soft:#1d3a39; --warn:#f5c26b; --warn-soft:#3a3018;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo",sans-serif;padding:28px 20px 60px}
+  .wrap{max-width:1200px;margin:0 auto}
+  .tag{font-size:14px;letter-spacing:.12em;color:var(--accent);font-weight:700}
+  h1{font-size:30px;line-height:1.3;margin:8px 0 10px}
+  h1 em{font-style:normal;color:var(--accent)}
+  .lead{font-size:16px;color:var(--sub);line-height:1.5}
+  .brief{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:18px 0 22px;font-size:15px;line-height:1.5}
+  .brief b{color:var(--accent)}
+  .acts{display:flex;gap:8px;margin:0 0 22px;flex-wrap:wrap}
+  .act{flex:1;min-width:200px;border-radius:10px;padding:10px 14px;font-size:14px;font-weight:700;color:var(--ink)}
+  .act small{display:block;font-weight:400;color:var(--sub);margin-top:2px;font-size:12.5px}
+  .a1{background:var(--pink)} .a2{background:var(--sky)} .a3{background:var(--mint)} .a4{background:var(--cream)}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+  .cut{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+  .frame{position:relative;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;text-align:center;padding:18px;overflow:hidden}
+  .frame .sub{position:absolute;left:0;right:0;bottom:12px;font-size:17px;font-weight:800;color:#1d2430}
+  .frame .sub span{background:rgba(255,255,255,.88);padding:4px 10px;border-radius:6px}
+  .frame .vis{font-size:15px;color:#33404f;line-height:1.5;max-width:86%}
+  .frame .vis .big{font-size:44px;display:block;margin-bottom:6px}
+  .f1{background:linear-gradient(135deg,#fbd3e4,#fde7ef)}
+  .f2{background:linear-gradient(135deg,#dfe7f5,#eef2f9)}
+  .f3{background:linear-gradient(135deg,#d7f0ea,#e9f8f4)}
+  .f4{background:linear-gradient(135deg,#f7e6c9,#fdf4e4)}
+  .f5{background:linear-gradient(135deg,#e2dcf7,#f2effc)}
+  .f6{background:linear-gradient(135deg,#fde0cc,#fdf1e8)}
+  .f7{background:linear-gradient(135deg,#d7f0ea,#f0faf7)}
+  .f8{background:linear-gradient(135deg,#1f3d3b,#2f5d59);color:#fff}
+  .f8 .vis{color:#e9f5f3}
+  .f8 .sub span{background:rgba(255,255,255,.95)}
+  .meta{padding:14px 16px 16px;font-size:14px;line-height:1.5;display:grid;gap:6px}
+  .meta .row{display:grid;grid-template-columns:72px 1fr;gap:8px}
+  .meta .k{color:var(--sub);font-weight:700}
+  .cutno{display:flex;justify-content:space-between;align-items:center;padding:12px 16px 0;font-size:13px;color:var(--sub)}
+  .badge{font-size:12px;font-weight:800;padding:3px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+  .badge.hook{background:var(--pink);color:#7a1d43}
+  .badge.conf{background:var(--sky);color:#1d3f7a}
+  .badge.turn{background:var(--mint);color:#0b5a53}
+  .badge.act{background:var(--cream);color:#7a4a00}
+  .key{outline:2px solid var(--accent);outline-offset:-2px}
+  .check{background:var(--warn-soft);border-radius:8px;padding:8px 10px;color:var(--warn);font-size:13px;line-height:1.45}
+  .notes{margin-top:26px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;font-size:14.5px;line-height:1.6}
+  .notes h2{font-size:17px;margin-bottom:6px}
+  .notes ul{padding-left:18px}
+  @media (max-width:800px){ .grid{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="tag">스토리보드 · 11.09 실습 · 고객 A (가상)</div>
+  <h1>"귀엽고 자꾸 보고 싶은" 기초 라인을, <em>약재의 이야기</em>로 고르게 하는 30초</h1>
+  <div class="lead">고객 A는 한방인지 따지지 않고, 귀엽고 공유하고 싶은 제품을 고르는 경향이 있어요. 그래서 화면은 귀여움과 공유 욕구로 시작하고, 전환 컷에서 약재 이야기를 붙여요.</div>
+
+  <div class="brief">
+    <b>고객</b><span>20대 여성 · 기초라인을 사려는 사람 · 한방 여부를 선택 기준으로 보지 않음 · 귀엽고 바이럴되는 제품을 사는 경향</span>
+    <b>목표</b><span>내 피부에 맞는 기초라인을 고른다 (사용감·가격·후기와 함께, 귀여움과 공유 욕구가 선택을 밀어 줌)</span>
+    <b>핵심 메시지</b><span>"오래된 약재의 지혜를, 오늘의 피부 습관으로" (팀 페르소나 메시지, 전환 컷에 사용)</span>
+    <b>길이·구성</b><span>약 30초 · 8컷 · 훅 → 갈등 → 전환 → 행동유도</span>
+  </div>
+
+  <div class="acts">
+    <div class="act a1">훅 <small>C1 · 0–3초</small></div>
+    <div class="act a2">갈등 <small>C2–C3 · 3–10초</small></div>
+    <div class="act a3">전환 <small>C4–C6 · 10–22초</small></div>
+    <div class="act a4">행동유도 <small>C7–C8 · 22–30초</small></div>
+  </div>
+
+  <div class="grid">
+
+    <!-- C1 훅 -->
+    <div class="cut">
+      <div class="cutno"><span>C1 · 0–3초</span><span class="badge hook">훅</span></div>
+      <div class="frame f1">
+        <div class="vis"><span class="big">🩷</span>파스텔 용기를 손끝에 올리고 클로즈업<br>(카메라가 천천히 다가감)</div>
+        <div class="sub"><span>이 용기 보고 바로 찜했어요</span></div>
+      </div>
+      <div class="meta">
+        <div class="row"><span class="k">음악·효과</span><span>짧은 "띵" 효과음, 경쾌한 팝 비트 시작</span></div>
+        <div class="row"><span class="k">여정</span><span>01 피부 고민 인식 (귀여움이 먼저 눈에 들어옴)</span></div>
+        <div class="row"><span class="k">감정</span><span>호기심 +1</span></div>
+      </div>
+    </div>
+
+    <!-- C2 갈등 -->
+    <div class="cut">
+      <div class="cutno"><span>C2 · 3–6초</span><span class="badge conf">갈등</span></div>
+      <div class="frame f2">
+        <div class="vis"><span class="big">🧴🧴🧴</span>기초 라인 여러 개가 선반에 빽빽이<br>고객이 눈을 가늘게 뜨고 고르는 표정</div>
+        <div class="sub"><span>다 예쁜데, 나한테 맞는 게 뭔지 모르겠어</span></div>
+      </div>
+      <div class="meta">
+        <div class="row"><span class="k">음악·효과</span><span>비트 살짝 멈춤, 정적 1초</span></div>
+        <div class="row"><span class="k">여정</span><span>02 기초라인 비교 (브랜드보다 사용감·가격 기준)</span></div>
+        <div class="row"><span class="k">감정</span><span>혼란 0</span></div>
+      </div>
+    </div>
+
+    <!-- C3 갈등 2 -->
+    <div class="cut">
+      <div class="cutno"><span>C3 · 6–10초</span><span class="badge conf">갈등</span></div>
+      <div class="frame f2">
+        <div class="vis"><span class="big">📱</span>후기 영상 스크롤 · 댓글 창이 빠르게 올라감<br>댓글 한 줄에 화면이 멈춤</div>
+        <div class="sub"><span>"이거 나만 따가운 거 아니지?"</span></div>
+      </div>
+      <div class="meta">
+        <div class="row"><span class="k">음악·효과</span><span>스크롤 소리, 댓글 알림음</span></div>
+        <div class="row"><span class="k">여정</span><span>02~03 후기 확인 · 사용감 불안</span></div>
+        <div class="row"><span class="k">감정</span><span>−1 (불안)</span></div>
+      </div>
+    </div>
+
+    <!-- C4 전환 (핵심 메시지) -->
+    <div class="cut key">
+      <div class="cutno"><span>C4 · 10–14초</span><span class="badge turn">전환 · 핵심 컷</span></div>
+      <div class="frame f3">
+        <div class="vis"><span class="big">🌿</span>약재 캐릭터가 용기 옆에서 손을 흔드는 일러스트<br>(당귀(當歸) 캐릭터 예시)</div>
+        <div class="sub"><span>오래된 약재의 지혜를, 오늘의 피부 습관으로</span></div>
+      </div>
+      <div class="meta">
+        <div class="row"><span class="k">음악·효과</span><span>비트 복귀, 따뜻한 톤의 악기 한 소절</span></div>
+        <div class="row"><span class="k">여정</span><span>03 성분·후기 확인 (귀여움 → 약재 이야기로 연결)</span></div>
+        <div class="row"><span class="k">감정</span><span>+1 (호감)</span></div>
+        <div class="check">✅ 효능을 말하지 않고, 약재의 이야기와 캐릭터로만 표현. 효능·치료 표현 없음.</div>
+      </div>
+    </div>
+
+    <!-- C5 체험 -->
+    <div class="cut">
+      <div class="cutno"><span>C5 · 14–18초</span><span class="badge turn">전환</span></div>
+      <div class="frame f4">
+        <div class="vis"><span class="big">👃</span>약전골목 팝업, 향 시향 바에서 샘플 종이를 맡는 손<br>옆에 인증샷 포토존 (스티커 벽)</div>
+        <div class="sub"><span>향부터 맡아 보고 고르기</span></div>
+      </div>
+      <div class="meta">
+        <div class="row"><span class="k">음악·효과</span><span>현장 소음 + 경쾌한 효과음</span></div>
+        <div class="row"><span class="k">여정</span><span>03 샘플·체험 (향이 호불호 확인 단계)</span></div>
+        <div class="row"><span class="k">감정</span><span>+2 (향에 반함)</span></div>
+      </div>
+    </div>
+
+    <!-- C6 소용량 -->
+    <div class="cut">
+      <div class="cutno"><span>C6 · 18–22초</span><span class="badge turn">전환</span></div>
+      <div class="frame f4">
+        <div class="vis"><span class="big">🎁</span>소용량 키트 언박싱, 작은 파우치와 샘플 3개가 차례로 나옴</div>
+        <div class="sub"><span>작은 것부터 써 보면 부담 없잖아요</span></div>
+      </div>
+      <div class="meta">
+        <div class="row"><span class="k">음악·효과</span><span>언박싱 소리, 짧은 팝 효과</span></div>
+        <div class="row"><span class="k">여정</span><span>05 첫 구매 (소용량)</span></div>
+        <div class="row"><span class="k">감정</span><span>+1 (부담 줄어듦)</span></div>
+      </div>
+    </div>
+
+    <!-- C7 공유 -->
+    <div class="cut">
+      <div class="cutno"><span>C7 · 22–26초</span><span class="badge act">행동유도</span></div>
+      <div class="frame f5">
+        <div class="vis"><span class="big">🤳</span>고객이 포토존에서 인증샷 · 짧은 영상을 찍어 올림<br>화면에 #챌린지 스티커</div>
+        <div class="sub"><span>찍고 나니 올리고 싶어짐</span></div>
+      </div>
+      <div class="meta">
+        <div class="row"><span class="k">음악·효과</span><span>셔터음, 리듬 있는 BGM</span></div>
+        <div class="row"><span class="k">여정</span><span>06 사용·공유 (바이럴 지점)</span></div>
+        <div class="row"><span class="k">감정</span><span>+2 (자랑·공유 욕구)</span></div>
+        <div class="check">⚠️ 챌린지 해시태그는 "효과 인증"이 아니라 "함께 찍기"로만 운영. 사용 후기 문구를 강요하지 않기.</div>
+      </div>
+    </div>
+
+    <!-- C8 행동유도 -->
+    <div class="cut">
+      <div class="cutno"><span>C8 · 26–30초</span><span class="badge act">행동유도 · 엔딩</span></div>
+      <div class="frame f8">
+        <div class="vis"><span class="big">✨</span>엔딩 카드 · 소용량 키트 제품 컷<br>"내 피부 3문항 체크하고 샘플 받기"</div>
+        <div class="sub"><span>지금 내 키트 고르기 →</span></div>
+      </div>
+      <div class="meta">
+        <div class="row"><span class="k">음악·효과</span><span>비트 마무리, 로고 사운드</span></div>
+        <div class="row"><span class="k">여정</span><span>05 구매 → 06 재구매 연결 (다음 계절 알림)</span></div>
+        <div class="row"><span class="k">감정</span><span>+1 (기대)</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="notes">
+    <h2>기획 메모</h2>
+    <ul>
+      <li><b>[해석]</b> 이 고객은 한방 여부보다 귀여움·공유 욕구에 반응하므로, 한방은 첫 컷이 아니라 전환 컷(C4)에서 약재 캐릭터로 등장시켰어요.</li>
+      <li><b>[가설]</b> "귀엽고 바이럴되는 제품을 사는 경향"은 고객 A 설정이에요. 실제 근거(리뷰·영상 댓글·SNS 반응)를 찾아 확인해야 해요. 확인 전에는 "가설"로만 써요.</li>
+      <li><b>[아이디어]</b> 약재 캐릭터(당귀, 감초 등)를 용기·포토존·스티커로 함께 쓰면 귀여움과 약재 이야기가 한 번에 전달돼요. 약재 이름은 한글(한자)로 통일해요.</li>
+      <li><b>광고 표현</b> 효능·치료·개선 표현은 쓰지 않아요. 화면 문구는 "약재의 이야기", "오늘의 습관"처럼 생활 표현으로만 써요.</li>
+      <li><b>다음 단계</b> C4 전환 카피와 C7 챌린지 문구를 팀 시트에서 함께 검토해요.</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>
