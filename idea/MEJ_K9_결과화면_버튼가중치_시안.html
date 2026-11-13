@@ -95,8 +95,9 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .card:nth-child(2) { animation-delay: .06s; } .card:nth-child(3) { animation-delay: .12s; }
 @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 .visual { position: relative; padding: 16px 12px 12px; display: flex; gap: 6px; justify-content: center; align-items: flex-end; }
-.tile { flex: 1 1 0; min-width: 0; max-width: 33%; aspect-ratio: 600 / 1024; border-radius: 10px; overflow: hidden; position: relative; background: #fbe3ee; box-shadow: 0 4px 14px rgba(60,40,30,.08); }
+.tile { flex: 1 1 0; min-width: 0; max-width: 33%; aspect-ratio: 600 / 1024; border-radius: 10px; overflow: hidden; position: relative; background: #FAFBFA; box-shadow: none; }
 .tile img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 22.4% 50%; }
+.tile[data-palette]::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 0; height: 3px; background: var(--package-accent); opacity: .65; }
 .tile .tl { position: absolute; left: 5px; bottom: 5px; font-size: .64rem; background: rgba(255,255,255,.9); border-radius: 5px; padding: 0 6px; color: #2B2422; }
 .ribbon { position: absolute; left: 14px; top: 12px; font-family: var(--latin); font-size: 1.05rem; font-weight: 600; letter-spacing: .08em; background: var(--ink); color: #fff; border-radius: 999px; padding: 1px 12px; z-index: 1; }
 .card:first-child .ribbon { background: var(--accent); }
@@ -216,14 +217,14 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
 <footer>
   <span>기준 구조는 화장품 출시 체크리스트(필수 통과 조건 → 가중 평가 → 근거 확보 비중 → 불확실성)를 따랐어요. 점수 = Σ(비중 × 점수 ÷ 5)이고 성공 확률이 아니에요. 확인 안 된 칸은 비워 두고 점수 범위(0점~5점으로 볼 때)와 근거 확보 비중으로 보여 줘요.</span>
   <span>후보 풀: 원료 12종(K3 원료 후보표)의 맞는 목적이 그 계절 피부 목적(K4 계절 기후 표)과 겹치면 라인 후보가 돼요. 세부 점수는 K3 · LJH 원료별 경쟁제품 · LJH 기능성 고시 성분 대조 · K5 가격 기준표의 값을 옮겼고, 점수 구간과 ★ 비중은 팀이 정할 값이에요.</span>
-  <span>제품 사진은 팀 용기 샘플 IMAGE/초안1 (CHAHAR, ⚠️ AI 생성 디자인 검토용 시안)이에요. '원료 색 입히기'는 샘플 용기 디자인은 그대로 두고 색만 원료 대표 색(K8 디자인 규칙 초안)으로 바꾼 미리보기예요. 정가는 라인 구성 예시값이에요.</span>
+  <span>제품 사진은 팀 용기 샘플 IMAGE/초안1 (CHAHAR, ⚠️ AI 생성 디자인 검토용 시안)이에요. '소프트 패키지'는 샘플 용기 디자인은 그대로 두고 강한 원료색 대신 화이트·반투명 느낌의 저채도 팔레트를 적용한 색감 미리보기예요. 실제 용기 소재나 부위별 도색을 구현한 사진은 아니에요. 정가는 라인 구성 예시값이에요.</span>
 </footer>
 
 <dialog id="detail" aria-labelledby="d-name">
   <div class="detail">
     <div class="dv"><div class="visual" id="d-visual"></div>
-      <div><div class="sec">샘플 → 원료 색 (세럼)</div><div class="steps" id="d-steps"></div></div>
-      <div><div class="sec">원료 대표 색 (K8 초안)</div><div class="palette" id="d-palette"></div></div>
+      <div><div class="sec">샘플 → 소프트 패키지 (세럼)</div><div class="steps" id="d-steps"></div></div>
+      <div><div class="sec">패키지 팔레트 (디자인 제안)</div><div class="palette" id="d-palette"></div></div>
       <div class="note" id="d-vnote"></div></div>
     <div class="di">
       <div class="dh"><div><div class="herb" id="d-rank"></div><h2 id="d-name"></h2></div><button class="close" id="d-close" type="button">닫기</button></div>
@@ -303,20 +304,92 @@ const HERBS = [
 ];
 /* ════════ K8 디자인 규칙 초안 ════════
    원료별 대표 색: 추출물에 쓰는 부위(열매·잎·뿌리·꽃)의 색에서 가져옴
-   main = 용기·내용물 대표 색, cap = 뚜껑·라벨 색, liquid = 내용물 색, motif = 라벨 그림 */
+   main = 패키지 팔레트, cap = 라벨 포인트, liquid = 밝은 보조색, motif = 라벨 그림. 원료 고유색이 아닌 패키지 디자인 제안 */
 const DESIGN = {
-  "쑥":   { main: "#9AAE84", cap: "#4E6B45", liquid: "#C9D8B4", motif: "leaf",   from: "쑥잎의 회녹색" },
-  "어성초": { main: "#74AE96", cap: "#2F6B5A", liquid: "#BFE0D2", motif: "leaf",   from: "하트 모양 잎의 맑은 초록" },
-  "인삼":  { main: "#E4CFA6", cap: "#A07B45", liquid: "#F4E8CF", motif: "root",   from: "인삼 뿌리의 상아색" },
-  "홍삼":  { main: "#93413A", cap: "#55221E", liquid: "#C98A7E", motif: "root",   from: "쪄서 말린 홍삼의 적갈색" },
-  "당귀":  { main: "#A07E66", cap: "#5E4536", liquid: "#D8C2B0", motif: "root",   from: "당귀 뿌리의 따뜻한 갈색" },
-  "감초":  { main: "#D8B067", cap: "#7A5524", liquid: "#F0DDB0", motif: "root",   from: "감초 단면의 노란색과 겉껍질의 갈색" },
-  "병풀":  { main: "#7FA88A", cap: "#3E6A4C", liquid: "#CBE3D1", motif: "leaf",   from: "둥근 잎의 초록" },
-  "황기":  { main: "#EBDB9F", cap: "#97782C", liquid: "#F7EECB", motif: "root",   from: "황기 단면의 연한 노란색" },
-  "작약":  { main: "#F4C3D0", cap: "#E58FA8", liquid: "#FBE4EA", motif: "flower", from: "작약 꽃의 연분홍 (파스텔톤, 진한 빨강 오미자와 구분)", filter: "saturate(.38) brightness(1.32) contrast(.9)" },
-  "오미자": { main: "#CF3A4A", cap: "#8E1F2B", liquid: "#F1A0AA", motif: "berry",  from: "잘 익은 오미자 열매의 붉은색 (팀 샘플 색과 같음)" },
-  "오가피": { main: "#8A7B6A", cap: "#4F4337", liquid: "#D6CCBF", motif: "root",   from: "오가피 뿌리껍질의 회갈색 (원료가 뿌리 추출물)" },
-  "길경":  { main: "#8C7FC4", cap: "#4E4589", liquid: "#CFC8EC", motif: "flower", from: "도라지꽃의 보라색" }
+  "쑥": {
+    "main": "#E4EBDF",
+    "cap": "#647A5B",
+    "liquid": "#F3F6F0",
+    "motif": "leaf",
+    "from": "화이트 · 소프트 세이지"
+  },
+  "어성초": {
+    "main": "#DFEEEA",
+    "cap": "#4D8077",
+    "liquid": "#F0F8F6",
+    "motif": "leaf",
+    "from": "반투명 민트 · 딥 그린 포인트"
+  },
+  "인삼": {
+    "main": "#F0EBDD",
+    "cap": "#9C9275",
+    "liquid": "#FAF8F1",
+    "motif": "root",
+    "from": "밀키 아이보리 · 샌드 포인트"
+  },
+  "홍삼": {
+    "main": "#EEDFE0",
+    "cap": "#9A7279",
+    "liquid": "#F8F0F1",
+    "motif": "root",
+    "from": "화이트 · 더스티 로즈 포인트"
+  },
+  "당귀": {
+    "main": "#ECE7DF",
+    "cap": "#8D8275",
+    "liquid": "#F8F5EF",
+    "motif": "root",
+    "from": "크림 아이보리 · 토프 베이지"
+  },
+  "감초": {
+    "main": "#E3EBE1",
+    "cap": "#72896D",
+    "liquid": "#F5F8F2",
+    "motif": "root",
+    "from": "밀키 화이트 · 세이지 그린"
+  },
+  "병풀": {
+    "main": "#DEEBE3",
+    "cap": "#628573",
+    "liquid": "#F1F7F3",
+    "motif": "leaf",
+    "from": "프로스트 화이트 · 시카 그린"
+  },
+  "황기": {
+    "main": "#F1EEDC",
+    "cap": "#A29870",
+    "liquid": "#FAF9EF",
+    "motif": "root",
+    "from": "화이트 · 버터 크림 포인트"
+  },
+  "작약": {
+    "main": "#F2E5EB",
+    "cap": "#B08D9C",
+    "liquid": "#FBF5F8",
+    "motif": "flower",
+    "from": "불투명 화이트 · 페일 핑크"
+  },
+  "오미자": {
+    "main": "#EDDBE3",
+    "cap": "#A9798E",
+    "liquid": "#F8EDF2",
+    "motif": "berry",
+    "from": "반투명 블러시 · 차분한 로즈"
+  },
+  "오가피": {
+    "main": "#E7E3EC",
+    "cap": "#8B819B",
+    "liquid": "#F6F3F9",
+    "motif": "root",
+    "from": "화이트 · 그레이 라벤더"
+  },
+  "길경": {
+    "main": "#E4E8F2",
+    "cap": "#7B8EAE",
+    "liquid": "#F2F5FA",
+    "motif": "flower",
+    "from": "화이트 · 미스트 블루"
+  }
 };
 /* 피부 목적별 소재·마감 (같은 원료라도 목적에 따라 달라짐) */
 const FINISH = {
@@ -326,8 +399,8 @@ const FINISH = {
   "보습":    { clear: false, mat: "우윳빛 불투명 · 부드러운 광택", band: false },
   "민감·장벽": { clear: false, mat: "우윳빛 불투명 · 순한 무광", band: false },
   "미백(톤)":  { clear: true,  mat: "투명 유리 · 펄 광택", band: false, pearl: true },
-  "영양":    { clear: false, mat: "깊은 색 불투명 · 금색 띠", band: true },
-  "탄력":    { clear: false, mat: "깊은 색 불투명 · 금색 띠", band: true }
+  "영양":    { clear: false, mat: "밀키 아이보리 · 은은한 무광", band: false },
+  "탄력":    { clear: false, mat: "밀키 아이보리 · 은은한 무광", band: false }
 };
 const PURPOSE_LABEL = { "보습": "수분 보습", "민감·장벽": "장벽 보습", "진정": "진정", "미백(톤)": "톤", "쿨링": "쿨링", "모공·피지": "모공 피지", "영양": "영양", "탄력": "탄력" };
 const SOOTHE = ["진정", "쿨링", "모공·피지"];
@@ -436,17 +509,16 @@ function hsl(hex) {
   const h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
   return [(h * 60 + 360) % 360, d / (1 - Math.abs(2 * l - 1)), l];
 }
-/* 원료 색 입히기: 팀 샘플 사진(체리 레드·핑크, 색상각 약 345°)의 용기 디자인은 그대로 두고 색만 원료 대표 색으로 바꿔요 */
+/* 원본의 강한 빨강을 먼저 중립화한 뒤 옅은 패키지 색을 입혀요.
+   사진 전체의 색감 미리보기이며 실제 소재·뚜껑을 따로 재질 렌더링한 이미지는 아니에요. */
 const tintCss = l => {
-  if (l.design.filter) return `filter:${l.design.filter};`;
-  const [h, s, li] = hsl(l.color);
-  const sat = Math.min(1.1, s / .6 + .1), bri = Math.max(.75, Math.min(1.15, .55 + li * .6));
-  return `filter:hue-rotate(${Math.round(h - 345)}deg) saturate(${sat.toFixed(2)}) brightness(${bri.toFixed(2)});`;
+  const [h] = hsl(l.color);
+  return `filter:grayscale(1) sepia(.18) hue-rotate(${Math.round(h - 45)}deg) saturate(.7) brightness(1.72) contrast(.72);`;
 };
 const tileHtml = (l, t, k, mode) =>
-  `<span class="tile"><img src="../IMAGE/초안1/${SAMPLE[t]}" alt="${esc(k)} 용기 샘플" loading="lazy" style="${mode === "tint" ? tintCss(l) : ""}"><span class="tl">${esc(k)}</span></span>`;
+  `<span class="tile" ${mode === "tint" ? `data-palette="soft" style="--package-accent:${l.design.cap}"` : ""}><img src="../IMAGE/초안1/${SAMPLE[t]}" alt="${esc(k)} 용기 샘플" loading="lazy" style="${mode === "tint" ? tintCss(l) : ""}"><span class="tl">${esc(k)}</span></span>`;
 const tiles = (l, mode = designMode) => l.lineup.map(([t, k]) => tileHtml(l, t, k, mode)).join("");
-const tileBg = l => `background:linear-gradient(180deg, ${l.color}33, ${l.color}0d)`;
+const tileBg = l => `background:linear-gradient(180deg, #F5F7F7, #FFFFFF)`;
 
 /* ════════ 화면 ════════ */
 function renderSeasons() {
@@ -470,7 +542,7 @@ function renderStudio() {
     + `<div class="prep">자료 준비 중</div>` + off.map(c => `<button class="cbtn" type="button" disabled><span class="nm">${esc(c.nm)}</span><span class="st">준비 중</span><span class="ar">${esc(c.area)}</span></button>`).join("");
   document.querySelectorAll(".cbtn[data-k]").forEach(b => b.onclick = () => { const k = b.dataset.k; W[k] = ((W[k] || 0) + 1) % 3; if (!W[k]) delete W[k]; presetOn = -2; render(); });
   document.getElementById("gates").innerHTML = GATES.map(g => `<span class="gate"><i>✓</i>${esc(g.nm)}</span>`).join("");
-  document.getElementById("design").innerHTML = [["sample", "샘플 그대로"], ["tint", "원료 색 입히기"]].map(([k, t]) =>
+  document.getElementById("design").innerHTML = [["sample", "샘플 그대로"], ["tint", "소프트 패키지"]].map(([k, t]) =>
     `<button class="preset${designMode === k ? " on" : ""}" type="button" data-m="${k}">${t}</button>`).join("");
   document.querySelectorAll("#design .preset").forEach(b => b.onclick = () => { designMode = b.dataset.m; render(); });
 }
@@ -523,12 +595,12 @@ function renderResults() {
 function openDetail(r) {
   const l = r.l;
   const v = document.getElementById("d-visual"); v.innerHTML = tiles(l); v.style.cssText = tileBg(l) + ";border-radius:14px;padding:14px";
-  document.getElementById("d-steps").innerHTML = [["sample", "샘플 그대로"], ["tint", "원료 색 입히기"]].map(([m, t]) =>
+  document.getElementById("d-steps").innerHTML = [["sample", "샘플 그대로"], ["tint", "소프트 패키지"]].map(([m, t]) =>
     `<div>${tileHtml(l, "serum", "세럼", m)}<p>${t}</p></div>`).join("");
   const dz = l.design;
   document.getElementById("d-palette").innerHTML = `
-    <div><i style="background:${dz.main}"></i>대표 색 <code>${dz.main}</code> · ${esc(dz.from)}</div>`;
-  document.getElementById("d-vnote").textContent = "팀 샘플 IMAGE/초안1 (CHAHAR, ⚠️ AI 생성 디자인 검토용 시안)의 용기 디자인은 그대로 두고 색만 원료 대표 색으로 바꿨어요.";
+    <div><i style="background:${dz.main}"></i>베이스 <code>${dz.main}</code> · ${esc(dz.from)}</div><div><i style="background:${dz.cap}"></i>라벨 포인트 <code>${dz.cap}</code></div>`;
+  document.getElementById("d-vnote").textContent = "팀 샘플 IMAGE/초안1 (CHAHAR, ⚠️ AI 생성 디자인 검토용 시안)의 용기 디자인을 유지하면서 채도와 대비를 낮추고 밝은 패키지 팔레트를 적용했어요. 사진 전체의 색감 제안이며 실제 소재·부위별 도색을 구현한 사진은 아니에요.";
   document.getElementById("d-rank").textContent = r.rank ? `${season} No.${r.rank} · ${scoreText(r)}` : `${season} · 추가 검증 (필수 조건 미통과)`;
   document.getElementById("d-name").textContent = l.name;
   document.getElementById("d-facts").innerHTML = `
