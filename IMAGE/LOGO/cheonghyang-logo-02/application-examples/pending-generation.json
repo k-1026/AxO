@@ -1,0 +1,17 @@
+{
+  "logoVersion": "2",
+  "pending": [
+    {
+      "key": "lotion-tube",
+      "product": "로션 튜브형",
+      "status": "이미지 생성 한도로 미생성"
+    },
+    {
+      "key": "mist",
+      "product": "미스트",
+      "status": "이미지 생성 한도로 미생성"
+    }
+  ],
+  "instructions": "기존 IMAGE/수정1의 튜브형 로션과 둥근 캡 미스트의 형태·색·재질을 유지하고 청향 로고 2을 적용. 청향은 작게, 오미자는 같은 글꼴로 브랜드의 25% 크기로 아래 중앙에 적용.",
+  "referenceLogo": "../cheonghyang-logo-02.png"
+}

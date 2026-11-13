@@ -1,0 +1,67 @@
+{
+  "created": "2026-11-13",
+  "logo": "../cheonghyang-logo-02.png",
+  "logoName": "청향 로고 2",
+  "usage": "⚠️ AI 생성 디자인 검토용 시안",
+  "targetProductCount": 6,
+  "completedCount": 4,
+  "completed": [
+    {
+      "key": "serum",
+      "name": "세럼",
+      "source": "CHAHAR_세럼.png",
+      "file": "serum.png",
+      "prompt": "Precise branding-only edit. Image 1 is the existing 세럼 product photograph. Image 2 is the EXACT USER-APPROVED two-line Korean artwork. Top: 청향. Bottom: 오미자. Replace every old CHAHAR word and its enclosing circular outline with this artwork, keeping the natural full Hangul shapes and airy spacing exactly as in Image 2. The top brand is very thin light sans-serif with generously spaced 청 and 향. The bottom 오미자 must be TINY: ONLY 25% of the font size of 청향, about 35–40% of the total WIDTH of 청향. The ingredient line is a discreet small descriptor, never nearly as large or wide as the brand. Center the two lines with a clean modest gap. Print in deep raspberry RED. Keep the entire brand block SMALL with lots of empty package surface: on the original 1536-pixel-wide photograph, the main 청향 line should be only 105–115 pixels wide, roughly one quarter of the main product body width. Place it centered in the former branding area. No enclosing circle.  Do not add any English, product-type names, Chinese characters, slogans or other graphics. Preserve EVERYTHING ELSE in Image 1 exactly: transparent serum bottle, pink liquid and bubbles, pale pink rubber bulb, red rounded dropper collar, pipette inside, right-hand close-up inset, original vessel silhouette and proportions, all contents, colors, materials, glass reflections, studio lighting, shadows, pink background, all inset images, original composition and camera angle. Do not redesign or enlarge the containers. Output the edited photograph only, maintaining the original 3:2 composition.",
+      "usage": "⚠️ AI 생성 디자인 검토용 시안",
+      "generatedSourceFile": "exec-6d33c5a8-be39-4ca2-823e-370931f47721.png",
+      "sha256": "30fcc2e31692fa78469f997b941f5bb7a12df00c02f92c1a68cd665806a49205",
+      "bytes": 1617876
+    },
+    {
+      "key": "toner",
+      "name": "토너",
+      "source": "CHAHAR_토너_200ml.png",
+      "file": "toner.png",
+      "prompt": "Precise branding-only edit. Image 1 is the existing 토너 product photograph. Image 2 is the EXACT USER-APPROVED two-line Korean artwork. Top: 청향. Bottom: 오미자. Replace every old CHAHAR word and its enclosing circular outline with this artwork, keeping the natural full Hangul shapes and airy spacing exactly as in Image 2. The top brand is very thin light sans-serif with generously spaced 청 and 향. The bottom 오미자 must be TINY: ONLY 25% of the font size of 청향, about 35–40% of the total WIDTH of 청향. The ingredient line is a discreet small descriptor, never nearly as large or wide as the brand. Center the two lines with a clean modest gap. Print in deep raspberry RED. Keep the entire brand block SMALL with lots of empty package surface: on the original 1536-pixel-wide photograph, the main 청향 line should be only 100–110 pixels wide, roughly one quarter of the main product body width. Place it centered in the former branding area. No enclosing circle.  Do not add any English, product-type names, Chinese characters, slogans or other graphics. Preserve EVERYTHING ELSE in Image 1 exactly: transparent toner bottle, pink liquid, red rounded jar-like flip cap, right-hand inset of the cap opened, original vessel silhouette and proportions, all contents, colors, materials, glass reflections, studio lighting, shadows, pink background, all inset images, original composition and camera angle. Do not redesign or enlarge the containers. Output the edited photograph only, maintaining the original 3:2 composition.",
+      "usage": "⚠️ AI 생성 디자인 검토용 시안",
+      "generatedSourceFile": "exec-88f07878-31d0-415b-9d89-247760ccd0ee.png",
+      "sha256": "ae39be7daee8d931dba5ac9eef8cf189885b9be40b0bcdc8455ecf1005187378",
+      "bytes": 1573183
+    },
+    {
+      "key": "cream",
+      "name": "크림",
+      "source": "CHAHAR_크림.png",
+      "file": "cream.png",
+      "prompt": "Precise branding-only edit. Image 1 is the existing 크림 product photograph. Image 2 is the EXACT USER-APPROVED two-line Korean artwork. Top: 청향. Bottom: 오미자. Replace every old CHAHAR word and its enclosing circular outline with this artwork, keeping the natural full Hangul shapes and airy spacing exactly as in Image 2. The top brand is very thin light sans-serif with generously spaced 청 and 향. The bottom 오미자 must be TINY: ONLY 25% of the font size of 청향, about 35–40% of the total WIDTH of 청향. The ingredient line is a discreet small descriptor, never nearly as large or wide as the brand. Center the two lines with a clean modest gap. Print in WHITE. Keep the entire brand block SMALL with lots of empty package surface: on the original 1536-pixel-wide photograph, the main 청향 line should be only 145–155 pixels wide, roughly one quarter of the main product body width. Place it centered in the former branding area. No enclosing circle. Replace BOTH logos: the large closed jar and the smaller open jar in the inset, with the same small proportional treatment. Do not add any English, product-type names, Chinese characters, slogans or other graphics. Preserve EVERYTHING ELSE in Image 1 exactly: opaque pink round cream jar, glossy red rounded lid and foot, right-hand open-jar inset with small cream capsules, original vessel silhouette and proportions, all contents, colors, materials, glass reflections, studio lighting, shadows, pink background, all inset images, original composition and camera angle. Do not redesign or enlarge the containers. Output the edited photograph only, maintaining the original 3:2 composition.",
+      "usage": "⚠️ AI 생성 디자인 검토용 시안",
+      "generatedSourceFile": "exec-f5c6bdd7-c6de-4ea8-bba0-7eea36fd3a0f.png",
+      "sha256": "fb60ed872b0717fb0350580b60f4885c2cac0e5ecd1cd45a292de3caf45c24a9",
+      "bytes": 1501416
+    },
+    {
+      "key": "lotion-pump",
+      "name": "로션 펌프형",
+      "source": "CHAHAR_로션_펌프형.png",
+      "file": "lotion-pump.png",
+      "prompt": "Precise branding-only edit. Image 1 is the existing 로션 펌프형 product photograph. Image 2 is the EXACT USER-APPROVED two-line Korean artwork. Top: 청향. Bottom: 오미자. Replace every old CHAHAR word and its enclosing circular outline with this artwork, keeping the natural full Hangul shapes and airy spacing exactly as in Image 2. The top brand is very thin light sans-serif with generously spaced 청 and 향. The bottom 오미자 must be TINY: ONLY 25% of the font size of 청향, about 35–40% of the total WIDTH of 청향. The ingredient line is a discreet small descriptor, never nearly as large or wide as the brand. Center the two lines with a clean modest gap. Print in deep raspberry RED. Keep the entire brand block SMALL with lots of empty package surface: on the original 1536-pixel-wide photograph, the main 청향 line should be only 90–100 pixels wide, roughly one quarter of the main product body width. Place it centered in the former branding area. No enclosing circle.  Do not add any English, product-type names, Chinese characters, slogans or other graphics. Preserve EVERYTHING ELSE in Image 1 exactly: opaque milky pink lotion body, slim red pump and round jar-like collar, right-hand close-up of the dispensing pump, original vessel silhouette and proportions, all contents, colors, materials, glass reflections, studio lighting, shadows, pink background, all inset images, original composition and camera angle. Do not redesign or enlarge the containers. Output the edited photograph only, maintaining the original 3:2 composition.",
+      "usage": "⚠️ AI 생성 디자인 검토용 시안",
+      "generatedSourceFile": "exec-be387c4f-81e4-483f-90c5-a9641807a723.png",
+      "sha256": "e9fb2eb26921d4f87a70ab2ceedbcd8d81e008b04800b614f7f3a9f92b1f6ba6",
+      "bytes": 1490433
+    }
+  ],
+  "pending": [
+    {
+      "key": "lotion-tube",
+      "product": "로션 튜브형",
+      "status": "이미지 생성 한도로 미생성"
+    },
+    {
+      "key": "mist",
+      "product": "미스트",
+      "status": "이미지 생성 한도로 미생성"
+    }
+  ],
+  "generationMethod": "built-in image_gen, branding-only editing"
+}

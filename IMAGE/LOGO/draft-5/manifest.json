@@ -1,0 +1,84 @@
+{
+  "brand": "청향",
+  "created": "2026-11-13",
+  "status": "⚠️ 디자인 검토용 시안",
+  "source": "research/assets/cheonghyang-logo-20261113/청향_정상비율_글씨체5종.zip",
+  "method": "사용자가 지정한 ZIP의 5종을 내용 변경 없이 영문 이름으로 복사",
+  "files": [
+    {
+      "file": "01-noto-sans-kr-light.svg",
+      "source": "청향_정상비율_01.svg",
+      "sha256": "1d78c1db8a8f321a39b9be7079cf0ecbbef2d27f53f4ba89f1cc81ccce794aa9"
+    },
+    {
+      "file": "01-noto-sans-kr-light.png",
+      "source": "청향_정상비율_01_투명.png",
+      "sha256": "649322f36a6c6ae8a7db88ed53423c544452198d89745d7db710179d73102649"
+    },
+    {
+      "file": "01-noto-sans-kr-light-preview.png",
+      "source": "청향_정상비율_01_미리보기.png",
+      "sha256": "e963b5abf376429bd10133c22ca78becac581d06dbfd8155b91e448e6ce0057b"
+    },
+    {
+      "file": "02-nanum-gothic.svg",
+      "source": "청향_정상비율_02.svg",
+      "sha256": "961763fff171852ae16a8663891a6ec25f8ed50a264e4be2242f41c1e5649d1c"
+    },
+    {
+      "file": "02-nanum-gothic.png",
+      "source": "청향_정상비율_02_투명.png",
+      "sha256": "5b7e9d2cfdb119a5b2aa5d1afe709a55a92538ce396bfe32145dfe12413f6bfc"
+    },
+    {
+      "file": "02-nanum-gothic-preview.png",
+      "source": "청향_정상비율_02_미리보기.png",
+      "sha256": "1ff10d6236cac81bfb1050481ffae72d4dc0b8f86e55fcfcade4cb9a65157679"
+    },
+    {
+      "file": "03-hancom-gothic.svg",
+      "source": "청향_정상비율_03.svg",
+      "sha256": "4e9f98135424458c74a62587bba870725bbf9d9df2174d8c1823f60a614561b9"
+    },
+    {
+      "file": "03-hancom-gothic.png",
+      "source": "청향_정상비율_03_투명.png",
+      "sha256": "8cfba4274c2674471485ed98198ce8ac63e223f5752648a91b5731730f2f5ad0"
+    },
+    {
+      "file": "03-hancom-gothic-preview.png",
+      "source": "청향_정상비율_03_미리보기.png",
+      "sha256": "64d77fd9eaf6ae2bfb2ad2782fa1e4be499de8925ba16ac4f8e16f7f9aee16bd"
+    },
+    {
+      "file": "04-noto-serif-kr-light.svg",
+      "source": "청향_정상비율_04.svg",
+      "sha256": "7d17c7e7f4d6f2f2fd1dfcfc26021bcc15397217dc50a4058e04aec819206f63"
+    },
+    {
+      "file": "04-noto-serif-kr-light.png",
+      "source": "청향_정상비율_04_투명.png",
+      "sha256": "46fe3985b582a25adc72fca85725a73a1e31c14e7ff4dd663083843f4cdbd88e"
+    },
+    {
+      "file": "04-noto-serif-kr-light-preview.png",
+      "source": "청향_정상비율_04_미리보기.png",
+      "sha256": "6115ba2861877a166662151442277055e553a81fbf61a2a15d144412f1db7e36"
+    },
+    {
+      "file": "05-hancom-batang.svg",
+      "source": "청향_정상비율_05.svg",
+      "sha256": "075488843a12998518c332860ff1ef727fcf8e9a6e515c2cb60ec357fd7c0ddc"
+    },
+    {
+      "file": "05-hancom-batang.png",
+      "source": "청향_정상비율_05_투명.png",
+      "sha256": "18fbf948080609aa9bebb7694e5fe564c7d1829c17eebaa5d299e4b20c267fbf"
+    },
+    {
+      "file": "05-hancom-batang-preview.png",
+      "source": "청향_정상비율_05_미리보기.png",
+      "sha256": "bd69b38aef911ef5ae6175f494076a7df2eacf910c3eff0fe01de62abc9e58d0"
+    }
+  ]
+}

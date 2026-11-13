@@ -1,0 +1,26 @@
+{
+  "created": "2026-11-13",
+  "name": "청향 로고 1",
+  "brand": "청향",
+  "font": "Noto Sans KR Light",
+  "design": "원래 한글 자형과 기본 자간, 오미자 표기 없음",
+  "selection": "사용자가 첨부한 펌프형 로션 이미지에 사용한 로고",
+  "usage": "⚠️ 브랜드 검토용 디자인",
+  "files": [
+    {
+      "file": "cheonghyang-logo-01.svg",
+      "sha256": "1d78c1db8a8f321a39b9be7079cf0ecbbef2d27f53f4ba89f1cc81ccce794aa9",
+      "bytes": 4562
+    },
+    {
+      "file": "cheonghyang-logo-01.png",
+      "sha256": "649322f36a6c6ae8a7db88ed53423c544452198d89745d7db710179d73102649",
+      "bytes": 43377
+    },
+    {
+      "file": "cheonghyang-logo-01-preview.png",
+      "sha256": "e963b5abf376429bd10133c22ca78becac581d06dbfd8155b91e448e6ce0057b",
+      "bytes": 38119
+    }
+  ]
+}
