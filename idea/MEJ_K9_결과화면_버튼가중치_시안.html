@@ -453,7 +453,7 @@ function trendScore(l) {
 const CRIT = [
   { k: "demand", nm: "🛒 계절 고민 크기", area: "고객 문제와 수요 · K4", subs: [
       { nm: "이 목적과 이어지는 기후 이슈 수", get: l => { const n = l.issues.length; return [n >= 3 ? 5 : n === 2 ? 4 : 3, `${n}개 · ${l.issues.map(i => i[0]).join(", ")}`]; } } ] },
-  { k: "edge", nm: "🎯 경쟁 적은 원료", area: "경쟁 차별성 · LJH 경쟁제품", subs: [
+  { k: "edge", nm: "🎯 빈자리 공략", area: "경쟁 차별성 · LJH 경쟁제품", subs: [
       { nm: "약재 선점", get: l => l.preempt }, { nm: "한방 브랜드 선점", get: l => l.hanbang } ] },
   { k: "feel", nm: "🌿 순한 향", area: "사용감 · K3 향 세기", subs: [ { nm: "향 세기", get: l => l.scent } ] },
   { k: "price", nm: "🏷️ 가격 경쟁력", area: "지불 가격 · K5 · 경쟁제품", subs: [
