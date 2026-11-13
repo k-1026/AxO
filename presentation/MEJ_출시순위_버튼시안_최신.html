@@ -232,6 +232,23 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
 @media (max-width: 560px) { .bl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .next-line { font-size: .72rem; color: var(--muted); }
 .next-line:empty { display: none; }
+.talk-line { font-size: .74rem; color: var(--ink); background: var(--accent-soft); border-radius: 10px; padding: 6px 9px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.combo-box { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font-size: .84rem; line-height: 1.6; }
+.combo-box .talk { background: var(--accent-soft); border-radius: 10px; padding: 8px 10px; color: var(--ink); }
+.fit-line { font-size: .72rem; color: var(--accent); font-weight: 700; }
+.persona-box { margin-top: 2px; }
+.persona-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.pcard { border: 1px solid var(--line); border-radius: 12px; padding: 9px 11px; background: var(--surface); font-size: .8rem; line-height: 1.5; display: flex; flex-direction: column; gap: 4px; }
+.pcard.good { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.pcard .ph { display: flex; justify-content: space-between; gap: 6px; }
+.pcard .fit { color: var(--accent); letter-spacing: 1px; font-size: .72rem; }
+.pcard .pw { color: var(--muted); font-size: .72rem; }
+.pcard .pp span { font-weight: 700; color: var(--muted); }
+.pcard .pt { background: var(--accent-soft); border-radius: 8px; padding: 5px 8px; }
+@media (max-width: 1000px) { .persona-grid { grid-template-columns: 1fr; } }
+dl.kw { display: grid; grid-template-columns: 3.4em minmax(0, 1fr); gap: 5px 8px; margin: 2px 0 0; font-size: .8rem; align-items: center; }
+dl.kw dt { color: var(--muted); font-weight: 700; } dl.kw dd { margin: 0; display: flex; flex-wrap: wrap; gap: 4px; }
+.kwc { background: var(--accent-soft); color: var(--ink); border-radius: 999px; padding: 1px 9px; font-size: .76rem; }
 </style>
 </head>
 <body data-season="봄">
@@ -338,6 +355,8 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
     <div class="di">
       <div class="dh"><div><div class="herb" id="d-rank"></div><h2 id="d-name"></h2></div><button class="close" id="d-close" type="button">닫기</button></div>
       <dl id="d-facts"></dl>
+      <div class="combo-box"><div class="sec">이 조합을 추천한 이유</div><dl class="kw" id="d-why-combo"></dl></div>
+      <div class="persona-box"><div class="sec">이런 고객에게 권해 보세요</div><div class="persona-grid" id="d-persona"></div><p class="note">고객 페르소나 유형별 카드의 가상 인물 중 이 라인과 잘 맞는 고객만 골랐어요 · 광고 표현 규칙의 쓸 수 있는 말만 사용</p></div>
       <div><div class="sec">출시 구성 (예시)</div>
         <table><thead><tr><th>제품</th><th>용량</th><th>정가</th><th>ml당</th></tr></thead><tbody id="d-lineup"></tbody></table></div>
       <div><div class="sec">필수 통과 조건</div><div class="gl" id="d-gates"></div></div>
@@ -524,6 +543,109 @@ const LINE_RULE = {
 const lineupFor = p => (LINE_RULE[p] || LINE_RULE["보습"]).first.map(k => ITEM[k]);
 
 /* ════════ 후보 풀 만들기: 원료의 목적 ∩ 계절 목적 ════════ */
+
+/* ════════ 조합 추천 이유 · 셀러 한마디 ════════
+   라인 구성 규칙의 목적별 구성 틀(●)과 계절 고민으로 이유를 만들고,
+   셀러 문구는 원료 후보표의 '쓸 수 있는 말'과 광고 표현 규칙 안에서만 써요 (치료·염증 완화·재생 같은 의약품식 표현 없음). */
+const ROLE = { "토너": "결 정돈", "세럼": "원료를 진하게 담는 대표 단계", "크림": "보습 마무리", "젤 크림": "산뜻한 마무리",
+  "리치 크림": "영양감 마무리", "미스트": "수시로 뿌리는 쿨링", "로션": "가벼운 보습" };
+const COMBO_WHY = {
+  "진정": "예민한 시기엔 단계를 줄여야 부담이 적어서, 토너로 정돈하고 젤 크림으로 가볍게 끝나는 2단계로 묶었어요.",
+  "쿨링": "더운 날 바로 쓰도록 미스트를 1차에 넣고, 토너와 젤 크림으로 산뜻한 사용감을 맞췄어요.",
+  "민감·장벽": "자극을 줄이려 토너와 크림 2단계로 장벽 보습에 집중했어요. 클렌저도 1차 구성이지만 용기 샘플이 아직 없어요.",
+  "보습": "수분은 토너 → 세럼 → 크림으로 겹쳐 채울수록 촉촉함이 이어져서 3단계로 묶었어요. 세럼이 대표 제품이에요.",
+  "영양": "푸석함엔 진한 크림이 중심이라, 토너로 결을 정돈하고 리치 크림으로 영양감을 채우는 2단계로 묶었어요.",
+  "미백(톤)": "톤 라인은 원료를 진하게 담는 세럼이 대표 제품이라, 토너 → 세럼 → 크림 루틴으로 묶었어요.",
+  "탄력": "탄력 라인은 세럼과 크림에 집중하고, 토너는 2차 확장으로 미뤘어요.",
+  "모공·피지": "번들거릴 땐 가벼운 토너 하나로 시작하고, 세럼·젤 크림은 2차로 넓혀요. 클렌저도 1차 구성이지만 용기 샘플이 아직 없어요."
+};
+const TALK = {
+  "진정": (h, s) => `${s} 들어 피부가 예민해졌다고 느끼시죠? ${h} 진정 라인은 토너로 정돈하고 젤 크림으로 산뜻하게 끝나는 두 단계라, 예민한 날에도 부담 없이 쓰기 좋아요.`,
+  "쿨링": (h, s) => `더운 날 열감이 올라오면 ${h} 미스트를 가볍게 뿌려 보세요. 쿨링감이 산뜻하고, 아침엔 토너와 젤 크림으로 가볍게 마무리하시면 돼요.`,
+  "민감·장벽": (h, s) => `${s}엔 피부가 쉽게 건조하고 예민해져서 단계를 줄이는 게 좋아요. ${h} 라인은 토너와 크림 두 가지로 장벽 보습에 집중했어요.`,
+  "보습": (h, s) => `${s}엔 피부가 쉽게 당기니까 토너, 세럼, 크림을 차례로 겹쳐 발라 보세요. ${h} 수분 라인이 촉촉하게 채워 줘요.`,
+  "영양": (h, s) => `피부가 푸석해 보이는 날엔 리치 크림을 넉넉히 발라 보세요. ${h} 영양 라인은 토너로 결을 정돈하고 크림으로 윤기를 채워 줘요.`,
+  "미백(톤)": (h, s) => `피부톤이 칙칙해 보일 때는 세럼을 먼저 챙겨 보세요. ${h} 톤 라인은 맑아 보이는 피부톤을 위한 토너·세럼·크림 루틴이에요.`,
+  "탄력": (h, s) => `탄력 있어 보이는 피부를 원하시면 세럼과 크림 두 가지로 시작해 보세요. ${h} 라인은 쫀쫀한 마무리가 좋아요.`,
+  "모공·피지": (h, s) => `번들거림이 고민이시면 산뜻한 ${h} 토너 하나로 피지 관리를 시작해 보세요. 보송한 마무리가 좋아요.`
+};
+const eulReul = w => { const c = w.charCodeAt(w.length - 1) - 0xAC00; return c >= 0 && c <= 11171 && c % 28 ? "을" : "를"; };
+function sellerTalk(l, season) {
+  let t = (TALK[l.purpose] || TALK["보습"])(l.herb, season);
+  const extra = [];
+  if (l.gb && l.gb[0] === 5) extra.push(`경북에서 가장 많이 나는 ${l.herb}${eulReul(l.herb)} 담았어요`);
+  else if (l.gb && l.gb[0] === 4) extra.push(`경북에서 많이 나는 ${l.herb}${eulReul(l.herb)} 담았어요`);
+  if (l.scent && l.scent[0] === 5) extra.push("한약 냄새가 강하지 않아 처음 쓰시는 분도 편해요");
+  if (extra.length) t += " " + extra.join(". ") + ".";
+  return t;
+}
+function comboWhy(l, season) {
+  const roles = l.lineup.map(([, k]) => `${k}(${ROLE[k] || "기초 단계"})`).join(" + ");
+  return `${season} ${l.issues.map(i => i[0]).join("·")} 때문에 '${l.concern}' 고민이 커지는 시기라 '${l.purpose}' 라인으로 잡았어요. ${COMBO_WHY[l.purpose] || ""} 구성: ${roles}.`;
+}
+
+/* ════════ 고객 페르소나별 어필 ════════
+   고객 페르소나 유형별 카드(presentation/13_고객페르소나_유형별_카드.html)의 4가지 거부 유형에 맞춰
+   라인마다 맞춤도(1~5)·기획 포인트·셀러 한마디를 만들어요. 문구는 쓸 수 있는 말 안에서만 써요. */
+const PERSONAS = [
+  { k: "scent", icon: "👃", type: "향 거부형", who: "이하은 · 24세 · 민감성", pain: "한약 냄새가 세고 오래 남아요" },
+  { k: "weight", icon: "🧴", type: "무게감 거부형", who: "최유진 · 28세 · 지성", pain: "한방 크림은 무겁고 번들거려요" },
+  { k: "image", icon: "👵", type: "이미지 거부형", who: "정다은 · 25세 · 복합성", pain: "엄마 화장품 같아서 내 것 같지 않아요" },
+  { k: "trust", icon: "❓", type: "불신형", who: "강수빈 · 29세 · 건성", pain: "무슨 약재가 어디서 왔는지 몰라 못 믿겠어요" }
+];
+const LIGHT = { "쿨링": 5, "모공·피지": 5, "진정": 5, "민감·장벽": 3, "보습": 3, "미백(톤)": 3, "탄력": 2, "영양": 1 };
+const josa = (w, a, b) => { const c = w.charCodeAt(w.length - 1) - 0xAC00; return c >= 0 && c <= 11171 && c % 28 ? a : b; };
+function personaAppeal(l) {
+  const items = l.lineup.map(([, k]) => k);
+  const light = items.includes("미스트") ? "미스트" : items.includes("젤 크림") ? "젤 크림" : "토너";
+  const s = l.scent ? l.scent[0] : null, gb = l.gb ? l.gb[0] : null;
+  const color = String(l.design.from || "").split("(")[0].trim();
+  const out = {};
+  // 향 거부형
+  const fs_ = s == null ? 2 : s;
+  out.scent = { fit: fs_,
+    point: s === 5 ? "향 약 원료 → 향 거부감이 낮아요" : s === 3 ? "향 중 원료 → 향 세기 고르기 옵션이 있으면 좋아요" : "향이 세거나 확인 전 → 얼굴용은 무향에 가깝게 조절 필요",
+    talk: s === 5 ? `향에 민감하시면 ${l.herb} 라인이 잘 맞아요. 한약 냄새가 강하지 않은 원료라, 토너부터 가볍게 시작해 보세요.`
+      : s === 3 ? `${l.herb}${josa(l.herb, "은", "는")} 은은한 약재 향이 있어요. 향이 신경 쓰이시면 손등에 먼저 발라 보시고 토너부터 시작해 보세요.`
+      : `${l.herb}${josa(l.herb, "은", "는")} 약재 향이 있는 편이라, 향에 민감하시면 테스터로 먼저 확인해 보세요.` };
+  // 무게감 거부형
+  const fw = LIGHT[l.purpose] || 3;
+  out.weight = { fit: fw,
+    point: fw === 5 ? `${light} 중심의 가벼운 구성 → 지성 고객 진입용` : fw >= 3 ? "크림이 들어가 아침·저녁 나눠 쓰기를 안내" : "리치 크림 중심 → 지성 고객에겐 토너만 먼저 권하기",
+    talk: fw === 5 ? `가벼운 사용감을 좋아하시면 ${items.join("과 ")}면 충분해요. ${light}${josa(light, "으로", "로")} 산뜻하게 마무리돼요.`
+      : fw >= 3 ? `크림이 무겁게 느껴지시면 아침엔 ${items.filter(k => !k.includes("크림")).join("·") || "토너"}만, 저녁에만 크림을 더해 보세요.`
+      : `리치 크림이라 지성 피부엔 무거울 수 있어요. 토너만 먼저 써 보시고 건조한 날 크림을 더해 보세요.` };
+  // 이미지 거부형
+  let fi = 3 + (l.purpose === "미백(톤)" ? 1 : 0) + (gb != null && gb >= 4 ? 1 : 0);
+  fi = Math.min(5, fi);
+  out.image = { fit: fi,
+    point: `${color || "원료 색"} 패키지${gb != null && gb >= 4 ? " + 경북 산지·약전골목 이야기" : ""}${l.purpose === "미백(톤)" ? " + 맑아 보이는 톤 고민과 연결" : ""}`,
+    talk: `한방 화장품이 엄마 화장품 같다고 느끼셨다면 이 라인을 보세요. ${color ? color + " 패키지라 " : ""}화장대에 두기만 해도 예뻐요.${gb != null && gb >= 4 ? ` 대구 약전골목이 있는 경북에서 많이 나는 ${l.herb} 이야기도 담겼어요.` : ""}${l.purpose === "미백(톤)" ? " 맑아 보이는 피부톤을 원하실 때 잘 어울려요." : ""}` };
+  // 불신형
+  let ft = gb == null ? 2 : gb >= 5 ? 5 : gb >= 3 ? 4 : 3;
+  if (["보습", "영양"].includes(l.purpose) && ft < 5) ft += 1;
+  out.trust = { fit: ft,
+    point: gb == null ? "산지 통계 확인 전 → 원산지 자료부터 확보" : `2024년 생산 통계로 산지 확인 (${l.gb[1].replace(" (", ", ").replace(")", "")}) → 원산지·함량 공개로 신뢰 높이기`,
+    talk: gb == null ? `${l.herb}${josa(l.herb, "은", "는")} 산지 자료를 아직 확인하고 있어요. 원산지 정보를 받아 보신 뒤 골라 주셔도 좋아요.`
+      : `어디서 온 원료인지 궁금하시죠? ${l.herb}${josa(l.herb, "은", "는")} 국내 생산 통계로 산지가 확인되는 원료예요 (${l.gb[1].replace(" (", ", ").replace(")", "")}).` };
+  return out;
+}
+const dots = n => "●".repeat(n) + "○".repeat(5 - n);
+
+/* 상세 화면 키워드 (줄글 대신 짧게) */
+const COMBO_KW = { "진정": "단계 줄이기 · 젤 크림으로 가볍게", "쿨링": "미스트로 바로 쿨링 · 젤 크림 마무리", "민감·장벽": "2단계 · 장벽 보습 집중",
+  "보습": "겹쳐 바르기 · 세럼이 대표", "영양": "리치 크림 중심", "미백(톤)": "세럼이 대표 · 톤 루틴", "탄력": "세럼 + 크림 집중", "모공·피지": "토너 하나로 가볍게" };
+const PAIN_KW = { scent: "한약 냄새", weight: "무거운 크림", image: "엄마 화장품 느낌", trust: "원료 출처를 몰라요" };
+function personaKw(k, l, a) {
+  const items = l.lineup.map(([, n]) => n), light = items.includes("미스트") ? "미스트" : items.includes("젤 크림") ? "젤 크림" : "토너";
+  const s = l.scent ? l.scent[0] : null, gb = l.gb ? l.gb[0] : null, color = String(l.design.from || "").split("(")[0].trim();
+  if (k === "scent") return s === 5 ? ["향 약한 원료", "토너부터 가볍게"] : s === 3 ? ["은은한 약재 향", "손등 테스트 후 토너부터"] : ["향 조절 필요", "테스터 먼저"];
+  if (k === "weight") return a.fit === 5 ? [light + " 중심 구성", "산뜻한 마무리"] : a.fit >= 3 ? ["아침엔 토너만", "저녁에 크림 더하기"] : ["리치 크림이라 무거울 수 있음", "토너만 먼저"];
+  if (k === "image") return [color ? color + " 패키지" : "원료 색 패키지", ...(gb != null && gb >= 4 ? ["경북·약전골목 이야기"] : []), ...(l.purpose === "미백(톤)" ? ["맑아 보이는 톤"] : [])];
+  return gb == null ? ["산지 자료 확인 중", "원산지 정보 먼저 안내"] : ["국내 산지 확인 원료", l.gb[1].replace(" (", ", ").replace(")", ""), "원산지 공개"];
+}
+const chips = arr => arr.map(t => `<span class="kwc">${esc(t)}</span>`).join("");
+
 function candidates(season) {
   const iss = SEASONS[season].issues;
   return HERBS.map(h => {
@@ -534,7 +656,7 @@ function candidates(season) {
     const { p, issues } = hits[0];
     return { ...h, color: DESIGN[h.herb].main, design: DESIGN[h.herb], finish: FINISH[p], purpose: p, issues, name: `${h.herb} ${PURPOSE_LABEL[p]} 라인`, functional: p === "미백(톤)",
       concern: issues.map(i => i[2]).join(" / "), lineup: lineupFor(p), next: (LINE_RULE[p] || {}).next || [], extra: (LINE_RULE[p] || {}).extra || "" };
-  }).filter(Boolean);
+  }).filter(Boolean).map(l => ({ ...l, why: comboWhy(l, season), talk: sellerTalk(l, season), persona: personaAppeal(l) }));
 }
 
 /* ════════ 필수 통과 조건 (PASS / FAIL / UNKNOWN / NA) ════════ */
@@ -1115,6 +1237,11 @@ function openDetail(r) {
     <dt>피부 목적</dt><dd>${esc(l.purpose)} · ${l.functional ? "기능성 보고 필요" : "일반 화장품"}</dd>
     <dt>대표 약재</dt><dd>${esc(l.herb)}${l.hanja ? `(${l.hanja})` : ""} · ${esc(l.scent[1])}</dd>
     <dt>쓸 수 있는 말</dt><dd>${esc(l.words)}</dd>`;
+  document.getElementById("d-why-combo").innerHTML = `<dt>날씨</dt><dd>${chips(l.issues.map(i => i[0]))}</dd><dt>고민</dt><dd>${chips([...new Set(l.issues.flatMap(i => i[2].split(" · ")))].slice(0, 4))}</dd><dt>목적</dt><dd>${chips([l.purpose])}</dd><dt>구성</dt><dd>${chips([l.lineup.map(([, k]) => k).join(" → ")])}</dd><dt>포인트</dt><dd>${chips(String(COMBO_KW[l.purpose] || "").split(" · "))}</dd>`;
+  { const ranked = PERSONAS.map(pp => ({ pp, a: l.persona[pp.k] })).sort((x, y) => y.a.fit - x.a.fit);
+    const pick = ranked.filter(x => x.a.fit >= 4).slice(0, 2);
+    const show = pick.length ? pick : ranked.slice(0, 1);
+    document.getElementById("d-persona").innerHTML = show.map(({ pp, a }) => `<div class="pcard good"><div class="ph"><b>${pp.icon} ${esc(pp.type)} 고객</b></div><dl class="kw"><dt>고민</dt><dd>${chips([PAIN_KW[pp.k]])}</dd><dt>어필</dt><dd>${chips(personaKw(pp.k, l, a))}</dd></dl></div>`).join(""); }
   document.getElementById("d-lineup").innerHTML = l.lineup.map(([, k, ml, p]) => `<tr><td>${esc(k)} <span class="note">1차</span></td><td>${ml}ml</td><td>${won(p)}</td><td>${won(Math.round(p / ml))}</td></tr>`).join("")
     + (l.extra ? `<tr><td>${esc(l.extra)} <span class="note">1차</span></td><td colspan="3" class="note">용기 샘플·가격 기준 준비 중</td></tr>` : "")
     + (l.next.length ? `<tr><td colspan="4" class="note">2차 확장 후보: ${l.next.map(esc).join(" · ")}</td></tr>` : "");
