@@ -58,7 +58,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .studio h2 { font-family: var(--serif); font-size: 1.2rem; }
 .studio .eng { font-family: var(--latin); color: var(--accent); letter-spacing: .18em; text-transform: uppercase; font-weight: 700; font-size: .72rem; }
 .steps { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-.steps .tile { max-width: none; display: block; width: 100%; }
+.steps .tile { max-width: none !important; display: block; width: 100%; }
 .tile svg { display: block; }
 .steps p { font-size: .72rem; color: var(--muted); text-align: center; margin-top: 4px; }
 .palette { display: flex; flex-direction: column; gap: 4px; font-size: .78rem; }
@@ -252,21 +252,24 @@ dl.kw dt { color: var(--muted); font-weight: 700; } dl.kw dd { margin: 0; displa
 .gl .gchips, .gchips { display: flex !important; flex-wrap: wrap; gap: 4px; }
 .gchip { font-size: .74rem; border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; }
 .gchip.PASS { color: var(--ok); } .gchip.NA { color: var(--muted); } .gchip.FAIL, .gchip.UNKNOWN { color: var(--warn); border-color: var(--warn); }
+.visual { aspect-ratio: 1600 / 960; height: auto; box-sizing: border-box; }
+.visual .tile { flex: none !important; width: var(--w); height: auto; }
+.steps .tile { height: auto !important; }
 </style>
 </head>
 <body data-season="봄">
 <svg width="0" height="0" aria-hidden="true" style="position:absolute;overflow:hidden" xmlns="http://www.w3.org/2000/svg"><defs id="package-filters"></defs>
 <defs>
-  <clipPath id="pkg-clip-toner" clipPathUnits="objectBoundingBox"><rect x=".22" y=".089" width=".36" height=".141" rx=".065"/></clipPath>
-  <clipPath id="pkg-clip-serum" clipPathUnits="objectBoundingBox"><rect x=".315" y=".053" width=".218" height=".165" rx=".105"/><ellipse cx=".429" cy=".28" rx=".248" ry=".081"/></clipPath>
-  <clipPath id="pkg-clip-cream" clipPathUnits="objectBoundingBox"><path d="M .06 .477 L .066 .379 C .085 .305 .24 .283 .435 .282 C .68 .28 .88 .31 .92 .38 L .929 .477 Q .49 .506 .06 .477 Z"/></clipPath>
-<clipPath id="pkg-logo-toner" clipPathUnits="objectBoundingBox"><ellipse cx=".438" cy=".49" rx=".151" ry=".09"/></clipPath>
-<clipPath id="pkg-logo-serum" clipPathUnits="objectBoundingBox"><ellipse cx=".438" cy=".586" rx=".145" ry=".084"/></clipPath>
-<clipPath id="pkg-logo-cream" clipPathUnits="objectBoundingBox"><ellipse cx=".517" cy=".614" rx=".155" ry=".092"/></clipPath>
-<clipPath id="pkg-clip-lotion" clipPathUnits="objectBoundingBox"><rect x=".205" y=".258" width=".375" height=".232" rx=".05"/></clipPath>
-<clipPath id="pkg-clip-mist" clipPathUnits="objectBoundingBox"><rect x=".198" y=".178" width=".297" height=".058" rx=".03"/><rect x=".298" y=".086" width=".088" height=".096" rx=".01"/></clipPath>
-<clipPath id="pkg-logo-lotion" clipPathUnits="objectBoundingBox"><ellipse cx=".403" cy=".674" rx=".135" ry=".08"/></clipPath>
-<clipPath id="pkg-logo-mist" clipPathUnits="objectBoundingBox"><ellipse cx=".35" cy=".515" rx=".137" ry=".08"/></clipPath><clipPath id="pkg-silhouette-toner" clipPathUnits="objectBoundingBox"><path d="M .25 .089 C .23 .089 .22 .105 .22 .13 C .195 .15 .21 .20 .26 .224 L .28 .24 C .20 .26 .105 .29 .097 .35 L .097 .874 Q .10 .932 .415 .932 Q .74 .932 .744 .874 L .744 .35 C .73 .29 .64 .26 .55 .239 L .53 .224 C .59 .21 .60 .16 .574 .13 L .572 .11 Q .56 .089 .50 .089 Z"/></clipPath>
+  <clipPath id="pkg-clip-toner" clipPathUnits="objectBoundingBox"><rect x="0.2224" y=".089" width="0.1406" height=".141" rx="0.0254"/></clipPath>
+  <clipPath id="pkg-clip-serum" clipPathUnits="objectBoundingBox"><rect x="0.2595" y=".053" width="0.0852" height=".165" rx="0.041"/><ellipse cx="0.3041" cy=".28" rx="0.0969" ry=".081"/></clipPath>
+  <clipPath id="pkg-clip-cream" clipPathUnits="objectBoundingBox"><path d="M 0.1599 0.477 L 0.1623 0.379 C 0.1697 0.305 0.2302 0.283 0.3064 0.282 C 0.4021 0.28 0.4803 0.31 0.4959 0.38 L 0.4994 0.477 Q 0.3279 0.506 0.1599 0.477 Z"/></clipPath>
+<clipPath id="pkg-logo-toner" clipPathUnits="objectBoundingBox"><ellipse cx="0.3076" cy=".49" rx="0.059" ry=".09"/></clipPath>
+<clipPath id="pkg-logo-serum" clipPathUnits="objectBoundingBox"><ellipse cx="0.3076" cy=".586" rx="0.0566" ry=".084"/></clipPath>
+<clipPath id="pkg-logo-cream" clipPathUnits="objectBoundingBox"><ellipse cx="0.3385" cy=".614" rx="0.0605" ry=".092"/></clipPath>
+<clipPath id="pkg-clip-lotion" clipPathUnits="objectBoundingBox"><rect x="0.2166" y=".258" width="0.1465" height=".232" rx="0.0195"/></clipPath>
+<clipPath id="pkg-clip-mist" clipPathUnits="objectBoundingBox"><rect x="0.2138" y=".178" width="0.116" height=".058" rx="0.0117"/><rect x="0.2529" y=".086" width="0.0344" height=".096" rx="0.0039"/></clipPath>
+<clipPath id="pkg-logo-lotion" clipPathUnits="objectBoundingBox"><ellipse cx="0.2939" cy=".674" rx="0.0527" ry=".08"/></clipPath>
+<clipPath id="pkg-logo-mist" clipPathUnits="objectBoundingBox"><ellipse cx="0.2732" cy=".515" rx="0.0535" ry=".08"/></clipPath><clipPath id="pkg-silhouette-toner" clipPathUnits="objectBoundingBox"><path d="M .25 .089 C .23 .089 .22 .105 .22 .13 C .195 .15 .21 .20 .26 .224 L .28 .24 C .20 .26 .105 .29 .097 .35 L .097 .874 Q .10 .932 .415 .932 Q .74 .932 .744 .874 L .744 .35 C .73 .29 .64 .26 .55 .239 L .53 .224 C .59 .21 .60 .16 .574 .13 L .572 .11 Q .56 .089 .50 .089 Z"/></clipPath>
 <clipPath id="pkg-silhouette-serum" clipPathUnits="objectBoundingBox"><path d="M .42 .053 C .34 .053 .315 .08 .315 .13 L .315 .205 C .235 .207 .19 .246 .187 .283 C .18 .329 .215 .353 .285 .361 L .285 .38 C .18 .41 .09 .46 .083 .57 L .075 .78 C .06 .87 .19 .895 .42 .895 C .66 .895 .785 .87 .778 .78 L .77 .57 C .76 .46 .68 .41 .575 .38 L .575 .36 C .65 .35 .68 .32 .67 .28 C .66 .24 .61 .21 .53 .205 L .53 .13 C .53 .08 .50 .053 .42 .053 Z"/></clipPath>
 <clipPath id="pkg-silhouette-cream" clipPathUnits="objectBoundingBox"><path d="M .435 .282 C .22 .282 .09 .31 .066 .38 L .06 .477 C .028 .50 .01 .56 .017 .62 C .02 .73 .14 .79 .30 .80 L .68 .80 C .84 .79 .97 .72 .97 .62 C .98 .55 .95 .50 .929 .477 L .92 .38 C .88 .31 .68 .28 .435 .282 Z"/></clipPath><filter id="pkg-edge-feather" x="-10%" y="-10%" width="120%" height="120%" primitiveUnits="objectBoundingBox" color-interpolation-filters="sRGB"><feMorphology in="SourceGraphic" operator="erode" radius=".006"/><feGaussianBlur stdDeviation=".0035"/></filter>
 <mask id="pkg-mask-toner" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox" x="0" y="0" width="1" height="1" style="mask-type:alpha"><g fill="white" filter="url(#pkg-edge-feather)"><path d="M .25 .089 C .23 .089 .22 .105 .22 .13 C .195 .15 .21 .20 .26 .224 L .28 .24 C .20 .26 .105 .29 .097 .35 L .097 .874 Q .10 .932 .415 .932 Q .74 .932 .744 .874 L .744 .35 C .73 .29 .64 .26 .55 .239 L .53 .224 C .59 .21 .60 .16 .574 .13 L .572 .11 Q .56 .089 .50 .089 Z"/></g></mask>
@@ -763,9 +766,13 @@ function renderPackageFilters() {
   }).join("")).join("");
 }
 const tintCss = l => `filter:url(#pkg-body-${packageIndex(l.herb)});`;
+/* 원본 1536×1024 사진에서 본품만 둘러싼 영역 [x0, y0, x1, y1] (기본 라인·후보 카드·상세 화면 공통) */
+const PRODUCT_BOX = { toner: [245, 75, 675, 965], serum: [245, 40, 690, 950], cream: [195, 275, 820, 830], lotion: [240, 260, 655, 935], mist: [250, 25, 590, 935] };
+const boxStyle = t => { const b = PRODUCT_BOX[t] || PRODUCT_BOX.toner, w = b[2] - b[0], h = b[3] - b[1], p = v => (+v.toFixed(3)) + "%";
+  return { tile: `aspect-ratio:${w} / ${h};max-width:none;--w:${(w / 16).toFixed(3)}%;`, img: `position:absolute;max-width:none;object-fit:fill;width:${p(1536 / w * 100)};height:${p(1024 / h * 100)};left:${p(-b[0] / w * 100)};top:${p(-b[1] / h * 100)};` }; };
 const tileHtml = (l, t, k, mode) => {
-  const original = `../IMAGE/수정1/${SAMPLE[t]}`, recolor = mode === "tint";
-  return `<span class="tile" ${recolor ? `data-palette="color-only" style="--package-accent:${l.design.cap}"` : ""}><span class="product-cutout" ><img src="${original}" alt="${esc(k)} · 수정1 원본 형태와 재질" loading="lazy" style="${recolor ? tintCss(l) : ""}">${recolor ? `<img class="palette-point" src="${original}" alt="" aria-hidden="true" loading="lazy" style="filter:url(#pkg-point-${packageIndex(l.herb)});clip-path:url(#pkg-clip-${t});"><img class="palette-logo" src="${original}" alt="" aria-hidden="true" loading="lazy" style="filter:url(#pkg-ink-${t === "cream" ? "light" : "dark"}-${packageIndex(l.herb)});clip-path:url(#pkg-logo-${t});">` : ""}</span><span class="tl">${esc(k)}</span></span>`;
+  const original = `../IMAGE/수정1/${SAMPLE[t]}`, recolor = mode === "tint", bx = boxStyle(t);
+  return `<span class="tile" ${recolor ? `data-palette="color-only"` : ""} style="${bx.tile}${recolor ? `--package-accent:${l.design.cap};` : ""}"><span class="product-cutout" ><img src="${original}" alt="${esc(k)} · 수정1 원본 형태와 재질" loading="lazy" style="${bx.img}${recolor ? tintCss(l) : ""}">${recolor ? `<img class="palette-point" src="${original}" alt="" aria-hidden="true" loading="lazy" style="${bx.img}filter:url(#pkg-point-${packageIndex(l.herb)});clip-path:url(#pkg-clip-${t});"><img class="palette-logo" src="${original}" alt="" aria-hidden="true" loading="lazy" style="${bx.img}filter:url(#pkg-ink-${t === "cream" ? "light" : "dark"}-${packageIndex(l.herb)});clip-path:url(#pkg-logo-${t});">` : ""}</span><span class="tl">${esc(k)}</span></span>`;
 };
 const tiles = (l, mode = designMode) => l.lineup.map(([t, k]) => tileHtml(l, t, k, mode)).join("");
 const tileBg = l => `background:#FAF8F3`;
