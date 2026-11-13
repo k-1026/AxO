@@ -1,20 +1,107 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-13T01:44:27Z",
+  "updatedAt": "2026-11-13T02:34:42Z",
   "intervalMinutes": 60,
   "lookbackDays": 90,
   "sourceChecks": [
     {
-      "source": "올리브영 공식 뉴스룸",
-      "status": "checked",
+      "id": "oliveyoung",
+      "source": "올리브영",
       "url": "https://corp.oliveyoung.com/ko/newsroom/press",
-      "checkedAt": "2026-11-13T01:44:27Z"
+      "checkedAt": "2026-11-13T02:34:38Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
     },
     {
+      "id": "jangup",
       "source": "장업신문",
-      "status": "checked",
       "url": "https://www.jangup.com/",
-      "checkedAt": "2026-11-13T01:44:27Z"
+      "checkedAt": "2026-11-13T02:34:38Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "google-trends",
+      "source": "Google Trends",
+      "url": "https://trends.google.com/trends/explore",
+      "checkedAt": "2026-11-13T02:34:38Z",
+      "status": "unavailable",
+      "http": 429,
+      "note": "자동 접근 차단 → 내용 판단에서 제외, 우회하지 않음"
+    },
+    {
+      "id": "spate",
+      "source": "Spate",
+      "url": "https://www.spate.nyc/resources/reports",
+      "checkedAt": "2026-11-13T02:34:39Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "mintel",
+      "source": "Mintel · GNPD",
+      "url": "https://www.mintel.com/insights/beauty-and-personal-care/",
+      "checkedAt": "2026-11-13T02:34:39Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "niq",
+      "source": "NielsenIQ",
+      "url": "https://nielseniq.com/global/en/insights/report/2026/niq-state-of-global-beauty-2026/",
+      "checkedAt": "2026-11-13T02:34:39Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "mckinsey",
+      "source": "McKinsey — State of Beauty",
+      "url": "https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/state-of-beauty",
+      "checkedAt": "2026-11-13T02:34:39Z",
+      "status": "unavailable",
+      "http": 403,
+      "note": "자동 접근 차단 → 내용 판단에서 제외, 우회하지 않음"
+    },
+    {
+      "id": "cosmetics-business",
+      "source": "Cosmetics Business",
+      "url": "https://www.cosmeticsbusiness.com/cosmetics-business-reveals-the-top-5-skin-care-2",
+      "checkedAt": "2026-11-13T02:34:40Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "cosmotrends",
+      "source": "Cosmoprof × BEAUTYSTREAMS — CosmoTrends",
+      "url": "https://lp.cosmoprof.com/hubfs/BEAUTYSTREAMS_CosmoProfWorldwideBologna_CosmoTrends_2026_compressed.pdf",
+      "checkedAt": "2026-11-13T02:34:41Z",
+      "status": "checked",
+      "http": 200,
+      "note": "PDF 보고서 열림"
+    },
+    {
+      "id": "pinterest",
+      "source": "Pinterest Predicts",
+      "url": "https://business.pinterest.com/en-gb/pinterest-predicts/",
+      "checkedAt": "2026-11-13T02:34:41Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "cosme",
+      "source": "@cosme 랭킹",
+      "url": "https://s.cosme.net/ranking",
+      "checkedAt": "2026-11-13T02:34:42Z",
+      "status": "unavailable",
+      "http": 403,
+      "note": "자동 접근 차단 → 내용 판단에서 제외, 우회하지 않음"
     },
     {
       "source": "올리브영 판매랭킹",
