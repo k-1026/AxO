@@ -177,3 +177,25 @@
 
 - 화면에서 가중치 비중(%)과 근거 확보율(%)은 표시하지 않습니다. 점수·추천 이유·확인 필요 항목은 유지합니다.
 - 가중치 계산과 기존 순위 판정은 유지합니다.
+
+### 글로벌 트렌드 수집 근거
+
+- 출처 설정: `idea/trend/sources.json`. 모든 출처를 매시간 신규·변경 여부 확인 대상으로 등록합니다. 등록 자체가 최신 내용 수집 완료를 뜻하지는 않습니다.
+- 검색 관심·소셜 관심·구매 데이터·시장 전망·신제품 사례·리뷰 랭킹을 구분하고, 국가·기간·조사 범위를 확인합니다. 유료·로그인 자료는 공개 범위만 사용합니다.
+- 최근 신호는 90일, 연간 보고서 등 기획 배경 자료는 400일 이내를 사용하고 배경 자료임을 표시합니다. 오래된 전망을 실시간 인기·판매 증가로 바꾸어 말하지 않습니다.
+
+| 출처 | 기획에서 참고할 내용 |
+|---|---|
+| [올리브영](https://corp.oliveyoung.com/ko/newsroom/press) | 공식 제품·큐레이션 사례. 판매랭킹은 직접 확인된 경우에만 사용 |
+| [장업신문](https://www.jangup.com/) | 신제품·원료·제형·계절 케어 사례 |
+| [Google Trends](https://trends.google.com/trends/explore) | 국가·기간별 제형·피부 고민 키워드의 상대 검색 관심. 검색량·판매량으로 해석하지 않음 |
+| [Spate](https://www.spate.nyc/resources/reports) | 성분·고민·제형의 관심 신호. 각 보고서의 국가·플랫폼·조사기간을 확인 |
+| [Mintel · GNPD](https://www.mintel.com/insights/beauty-and-personal-care/) | 소비자 변화·신제품·성분·제품 표현. 공개 요약과 접근 가능한 자료만 사용 |
+| [NielsenIQ](https://nielseniq.com/global/en/insights/report/2026/niq-state-of-global-beauty-2026/) | 조사 대상 국가·채널·카테고리·기간이 확인된 구매 흐름 |
+| [McKinsey — State of Beauty](https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/state-of-beauty) | 타깃 국가·가격대·채널을 정하는 배경 근거 |
+| [Cosmetics Business](https://www.cosmeticsbusiness.com/cosmetics-business-reveals-the-top-5-skin-care-2) | 스킨케어 트렌드·신제품·브랜드 움직임. 기업 홍보와 시장 조사를 구분 |
+| [Cosmoprof × BEAUTYSTREAMS — CosmoTrends](https://lp.cosmoprof.com/hubfs/BEAUTYSTREAMS_CosmoProfWorldwideBologna_CosmoTrends_2026_compressed.pdf) | 제형·패키지·콘셉트 발굴. 전시 선정은 판매 성공의 증거가 아님 |
+| [Pinterest Predicts](https://business.pinterest.com/en-gb/pinterest-predicts/) | 색감·패키지·비주얼 방향. 플랫폼의 지역·언어·분석기간을 확인 |
+| [@cosme 랭킹](https://s.cosme.net/ranking) | 일본 시장의 제품 평가 참고. 리뷰·인기·판매 순위의 산정 기준을 확인 |
+
+- 메인 화면에서는 샘플 그대로 버튼을 제거했습니다. 원본 샘플은 제품 상세 화면의 비교 영역에서 확인합니다.
