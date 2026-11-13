@@ -691,32 +691,32 @@ let BEAUTY_TRENDS = {
   ],
   "insights": {
     "봄": {
-      "line": "올리브영의 수분·진정 콘텐츠와 장업신문의 환절기 보습 보도를 함께 보면, ‘순한 사용감과 충분한 보습’을 비교할 기획 근거가 있어요.",
-      "tip": "감초 등 진정·보습 후보의 제형과 사용감을 비교해 보세요. 봄 선호가 실제로 증가했다는 뜻은 아니에요.",
+      "line": "봄 기초라인은 ‘순한 진정과 장벽 보습’을 중심으로 잡아보세요. 가벼운 보습 제형과 편안한 사용감을 먼저 비교하면 좋아요.",
+      "tip": "토너·세럼·크림의 역할을 나누고, 환절기에도 부담 없이 쓰기 좋은 사용감을 차별점으로 검토해 보세요.",
       "evidenceIds": [
         "oy-editorial-311",
         "jangup-100295"
       ]
     },
     "여름": {
-      "line": "수분·진정 큐레이션과 보송한 선케어 사례를 참고해, ‘보습은 채우고 마무리는 산뜻하게’를 기획 키워드로 검토해 보세요.",
-      "tip": "폭염·고습에는 가벼운 젤 제형과 사용감을 비교해 보세요. 선케어 사례를 기초라인의 자외선 차단 효능으로 연결하지 않아요.",
+      "line": "여름 기초라인은 ‘수분은 채우고, 마무리는 산뜻하게’를 방향으로 잡아보세요. 가벼운 토너·세럼과 젤 크림 조합부터 검토하면 좋아요.",
+      "tip": "샘플을 비교할 때 흡수감·끈적임·덧바른 뒤 밀림을 우선 확인하고, 산뜻한 수분·진정을 핵심 메시지로 잡아보세요.",
       "evidenceIds": [
         "oy-editorial-311",
         "jangup-100226"
       ]
     },
     "가을": {
-      "line": "장업신문은 가을 환절기 보습과 야외 활동용 선케어 사례를 다뤘어요. ‘보습 지속감과 가벼운 마무리’를 함께 비교할 시점이에요.",
-      "tip": "토너·세럼의 겹쳐 바르기와 크림의 마무리감을 비교해 보세요. 기사 사례가 시장 전체의 구매 증가를 뜻하지는 않아요.",
+      "line": "가을 기초라인은 ‘겹쳐 바르는 수분 보습과 편안한 마무리’를 제안해 보세요. 토너·세럼·크림이 단계별로 다른 역할을 갖도록 구성하면 좋아요.",
+      "tip": "토너·세럼의 레이어링 사용감과 크림의 마무리감을 함께 비교해, 건조함이 시작되는 계절에 맞는 루틴을 설계해 보세요.",
       "evidenceIds": [
         "jangup-100295",
         "jangup-100226"
       ]
     },
     "겨울": {
-      "line": "가을 보습 보도와 수분 케어 콘텐츠를 겨울 기획에 연결하면, ‘보습 지속감과 편안한 사용감’을 먼저 비교해 볼 수 있어요.",
-      "tip": "겨울 기획에 적용한 해석이에요. 겨울 판매 증가를 확인한 자료는 아니며, 크림의 보습감·끈적임을 함께 비교해 보세요.",
+      "line": "겨울 기초라인은 ‘오래가는 보습과 편안한 사용감’을 중심으로 잡아보세요. 크림을 중심 제품으로 두고 토너·세럼이 보완하는 구성을 검토하면 좋아요.",
+      "tip": "보습 지속감과 끈적임의 균형을 먼저 비교하고, 낮에도 쓰기 좋은 조합과 밤에 충분히 바르는 조합을 나눠 제안해 보세요.",
       "evidenceIds": [
         "jangup-100295",
         "oy-editorial-311"
@@ -760,7 +760,7 @@ function renderTrendComment() {
   const comment = beautyComment(season, BEAUTY_TRENDS) || trendComment(season, TREND);
   document.getElementById("trend-status").textContent = comment.status;
   document.getElementById("trend-line").textContent = comment.line.replace(/올리브영의\s*|장업신문의\s*/g, "").replace(/올리브영은\s*/g, "관련 콘텐츠에서는 ").replace(/장업신문은\s*/g, "관련 기사에서는 ");
-  document.getElementById("trend-plan").innerHTML = "<b>기획 참고</b> · " + esc(comment.tip);
+  document.getElementById("trend-plan").innerHTML = "<b>기획 포인트</b> · " + esc(comment.tip);
   document.getElementById("trend-source").textContent = comment.source;
   document.getElementById("trend-evidence").innerHTML = (comment.evidence || []).map(item => `<a href="${esc(item.url)}" target="_blank" rel="noopener noreferrer" title="${esc(item.title)}">${esc(item.source)} · ${esc(item.publishedAt)} · ${esc(item.kind || "자료")} ↗</a>`).join("");
 }
