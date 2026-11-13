@@ -172,6 +172,19 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
   .menu { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .card, .row { animation: none; } }
+
+/* 기후 정보와 기획 판단을 연결하는 트렌드 에이전트의 한마디 */
+.trend-assist { grid-column: 1 / -1; display: flex; align-items: flex-start; gap: 12px; margin-top: 2px; }
+.trend-avatar { flex: 0 0 38px; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; color: var(--accent); background: #fff; border: 1px solid var(--line); font-size: 1.3rem; }
+.trend-bubble { position: relative; flex: 1; min-width: 0; padding: 14px 18px; border: 1px solid var(--line); border-radius: 0 16px 16px 16px; background: rgba(255,255,255,.94); }
+.trend-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 5px; font-size: .78rem; }
+.trend-meta strong { color: var(--accent); }
+.trend-status { color: var(--muted); font-size: .7rem; border-radius: 999px; background: var(--accent-soft); padding: 1px 7px; }
+.trend-line { font-size: .94rem; line-height: 1.65; color: var(--ink); }
+.trend-plan { margin-top: 5px; font-size: .84rem; color: var(--muted); }
+.trend-plan b { color: var(--ink); font-weight: 500; }
+.trend-source { display: block; margin-top: 7px; font-size: .7rem; color: var(--muted); }
+@media(max-width:600px) { .trend-assist { gap: 8px; } .trend-bubble { padding: 12px; } .trend-avatar { flex-basis: 30px; width: 30px; height: 30px; font-size: 1.1rem; } }
 </style>
 </head>
 <body data-season="봄">
@@ -203,6 +216,15 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
   </div>
   <div class="seasons" role="tablist" aria-label="계절 선택" id="seasons"></div>
   <div class="issues" id="issues"></div>
+  <aside class="trend-assist" aria-labelledby="trend-assist-title">
+    <span class="trend-avatar" aria-hidden="true">↗</span>
+    <div class="trend-bubble" aria-live="polite" aria-atomic="true">
+      <div class="trend-meta"><strong id="trend-assist-title">트렌드 반영 에이전트</strong><span class="trend-status" id="trend-status"></span></div>
+      <p class="trend-line" id="trend-line"></p>
+      <p class="trend-plan" id="trend-plan"></p>
+      <small class="trend-source" id="trend-source"></small>
+    </div>
+  </aside>
 </div></section>
 
 <div class="main">
@@ -449,7 +471,8 @@ const GATES = [
 
 /* ════════ 매력 기준 버튼 (세부 기준은 버튼 비중을 나눠 씀) ════════ */
 let TREND = null;
-fetch("trend/trend.json").then(r => r.ok ? r.json() : null).then(j => { if (j) { TREND = j; render(); } }).catch(() => {});
+const trendDataUrl = typeof location !== "undefined" && location.hostname === "htmlpreview.github.io" ? "https://raw.githubusercontent.com/k-1026/AxO/research/idea/trend/trend.json" : "trend/trend.json";
+fetch(trendDataUrl).then(r => r.ok ? r.json() : null).then(j => { if (j) { TREND = j; render(); } }).catch(() => {});
 const trendLabel = () => TREND ? `기준일 ${TREND.collectedAt}` : "트렌드 파일 수집 전";
 function trendScore(l) {
   if (!TREND) return [null, "트렌드 파일 없음 · idea/trend/datalab_collect.js 실행 필요"];
@@ -552,6 +575,45 @@ function renderSeasons() {
   document.getElementById("issues").innerHTML = SEASONS[season].issues.map(([t, n, c, p]) =>
     `<div class="issue"><div class="t">${esc(t)}</div><div class="n">${esc(n)}</div><div class="c">${esc(c)} → ${p.map(esc).join(", ")}</div></div>`).join("");
 }
+
+/* 데이터가 없을 때는 시장 사실이 아닌, 기후를 바탕으로 한 기획 가설만 제안해요. */
+const SEASON_TREND_NOTES = {
+  "봄": { line: "환절기에는 ‘순한 진정·장벽 보습’을 소비자 관심 가설로 살펴볼 만해요.", tip: "감초 등 진정·보습 후보의 순한 사용감과 보습 메시지를 비교해 보세요." },
+  "여름": { line: "폭염·고습에는 ‘속은 촉촉하게, 겉은 산뜻하게’를 소비자 관심 가설로 볼 수 있어요.", tip: "쿨링감·피지 케어·가벼운 젤 제형을 우선 비교해 보세요." },
+  "가을": { line: "건조함이 시작되면 ‘수분 레이어링·부담 없는 보습’을 소비자 관심 가설로 살펴볼 만해요.", tip: "토너·세럼의 겹쳐 바르기와 크림의 마무리감을 함께 비교해 보세요." },
+  "겨울": { line: "한파·난방 환경에서는 ‘오래가는 보습·편안한 장벽 케어’를 소비자 관심 가설로 볼 수 있어요.", tip: "보습 지속감과 끈적임의 균형을 크림 기획의 비교 기준으로 잡아보세요." }
+};
+function trendComment(s, data, now = Date.now()) {
+  const note = SEASON_TREND_NOTES[s];
+  const age = data && (now - Date.parse(data.collectedAt)) / 864e5;
+  const fresh = data && Number.isFinite(age) && age >= 0 && age <= 30;
+  const available = new Set(candidates(s).map(l => l.herb));
+  const rows = fresh && data.herbs ? Object.entries(data.herbs).filter(([herb, r]) =>
+    available.has(herb) && r && Number.isFinite(r.change) && r.change >= 0).map(([herb,r]) => ({herb,...r})) : [];
+  const up = rows.filter(r => r.signal === "상승" && r.change >= 1.2).sort((a,b) => b.change-a.change).slice(0,2);
+  if (up.length) return {
+    status: "수집 데이터 기반 · 검색 관심",
+    line: `이번 ${s} 후보 중 ${up.map(r => r.herb + ' 화장품').join('·')}의 검색 관심이 이전 기간보다 높아졌어요. 관련 라인의 기획 우선순위를 검토해 보세요.`,
+    tip: note.tip,
+    source: `네이버 데이터랩 · ${data.collectedAt} 수집 · 최근 4주 / 이전 12주 비교: ${up.map(r => r.herb + ' ' + r.change.toFixed(2) + '배').join(', ')} · 판매량·구매 선호와는 달라요.`
+  };
+  if (rows.length) return {
+    status: "수집 데이터 기반 · 상승 신호 없음",
+    line: `수집된 ${s} 후보에서는 뚜렷한 검색 관심 상승이 아직 확인되지 않았어요. 계절 고민과 제형 적합성을 함께 살펴보세요.`,
+    tip: note.tip,
+    source: `네이버 데이터랩 · ${data.collectedAt} 수집 · 최근 4주 / 이전 12주 · 비교 기준 1.2배 이상 상승`
+  };
+  return { status: "예시 인사이트 · 수집 전", line: note.line, tip: note.tip,
+    source: "기후 정보를 바탕으로 한 기획 가설이에요. 최신 검색·판매 트렌드가 확인된 내용은 아니에요." };
+}
+function renderTrendComment() {
+  const comment = trendComment(season, TREND);
+  document.getElementById("trend-status").textContent = comment.status;
+  document.getElementById("trend-line").textContent = comment.line;
+  document.getElementById("trend-plan").innerHTML = "<b>기획 참고</b> · " + esc(comment.tip);
+  document.getElementById("trend-source").textContent = comment.source;
+}
+
 function renderStudio() {
   const pr = document.getElementById("presets");
   pr.innerHTML = PRESETS.map((p, i) => `<button class="preset${i === presetOn ? " on" : ""}" type="button" data-i="${i}">${esc(p.nm)}</button>`).join("")
@@ -641,7 +703,7 @@ function openDetail(r) {
 }
 document.getElementById("d-close").onclick = () => document.getElementById("detail").close();
 document.getElementById("detail").addEventListener("click", e => { if (e.target.id === "detail") e.target.close(); });
-function render() { renderPackageFilters(); renderSeasons(); renderStudio(); renderResults(); }
+function render() { renderPackageFilters(); renderSeasons(); renderTrendComment(); renderStudio(); renderResults(); }
 render();
 </script>
 </body>
