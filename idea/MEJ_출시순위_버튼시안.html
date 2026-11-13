@@ -95,8 +95,8 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .card:nth-child(2) { animation-delay: .06s; } .card:nth-child(3) { animation-delay: .12s; }
 @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 .visual { position: relative; padding: 16px 12px 12px; display: flex; gap: 6px; justify-content: center; align-items: flex-end; }
-.tile { flex: 1 1 0; min-width: 0; max-width: 33%; aspect-ratio: 600 / 1024; border-radius: 10px; overflow: hidden; position: relative; background: transparent; box-shadow: none; }
-.product-cutout { position: absolute; inset: 0; display: block; z-index: 1; transform: translateY(var(--product-offset, 0%)); }
+.tile { flex: 1 1 0; min-width: 0; max-width: 33%; aspect-ratio: 600 / 1024; border-radius: 10px; overflow: hidden; position: relative; background: #FAF8F3; box-shadow: none; }
+.product-cutout { position: absolute; inset: 0; display: block; z-index: 1; mix-blend-mode: multiply; }
 .product-ground { position: absolute; left: 19%; right: 12%; top: 89%; height: 3%; border-radius: 50%; background: rgba(65,49,31,.23); filter: blur(2.5px); transform: rotate(-3deg); pointer-events: none; }
 .tile img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 22.4% 50%; }
 
@@ -192,6 +192,7 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
 .card-rank { min-height: 40px; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; gap: 8px; background: #fff; border-bottom: 1px solid var(--line); }
 .card-rank .ribbon, .card-rank .move { position: static; }
 .card-rank .ribbon { font-size: .9rem; }
+.trend-details { margin-top:6px; font-size:.72rem; color:var(--muted); } .trend-details summary { cursor:pointer; }
 </style>
 </head>
 <body data-season="봄">
@@ -229,7 +230,7 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
       <div class="trend-meta"><strong id="trend-assist-title">실시간 뷰티 트렌드는?</strong><span class="trend-status" id="trend-status"></span><button type="button" class="trend-refresh" id="beauty-refresh">최신 수집본 확인</button></div>
       <p class="trend-line" id="trend-line"></p>
       <p class="trend-plan" id="trend-plan"></p>
-      <small class="trend-source" id="trend-source"></small><div class="trend-evidence" id="trend-evidence"></div>
+      <small class="trend-source" id="trend-source"></small><details class="trend-details"><summary>근거 보기</summary><div class="trend-evidence" id="trend-evidence"></div></details>
     </div>
   </aside>
 </div></section>
@@ -566,10 +567,10 @@ function renderPackageFilters() {
 const tintCss = l => `filter:url(#pkg-body-${packageIndex(l.herb)});`;
 const tileHtml = (l, t, k, mode) => {
   const original = `../IMAGE/수정1/${SAMPLE[t]}`, recolor = mode === "tint";
-  return `<span class="tile" ${recolor ? `data-palette="color-only" style="--package-accent:${l.design.cap}"` : ""}><span class="product-ground" aria-hidden="true" ></span><span class="product-cutout" style="mask:url(#pkg-mask-${t});-webkit-mask:url(#pkg-mask-${t});--product-offset:${t === "cream" ? "10%" : t === "toner" ? "-3%" : "0%"};"><img src="${original}" alt="${esc(k)} · 수정1 원본 형태와 재질" loading="lazy" style="${recolor ? tintCss(l) : ""}">${recolor ? `<img class="palette-point" src="${original}" alt="" aria-hidden="true" loading="lazy" style="filter:url(#pkg-point-${packageIndex(l.herb)});clip-path:url(#pkg-clip-${t});"><img class="palette-logo" src="${original}" alt="" aria-hidden="true" loading="lazy" style="filter:url(#pkg-ink-${t === "cream" ? "light" : "dark"}-${packageIndex(l.herb)});clip-path:url(#pkg-logo-${t});">` : ""}</span><span class="tl">${esc(k)}</span></span>`;
+  return `<span class="tile" ${recolor ? `data-palette="color-only" style="--package-accent:${l.design.cap}"` : ""}><span class="product-cutout" ><img src="${original}" alt="${esc(k)} · 수정1 원본 형태와 재질" loading="lazy" style="${recolor ? tintCss(l) : ""}">${recolor ? `<img class="palette-point" src="${original}" alt="" aria-hidden="true" loading="lazy" style="filter:url(#pkg-point-${packageIndex(l.herb)});clip-path:url(#pkg-clip-${t});"><img class="palette-logo" src="${original}" alt="" aria-hidden="true" loading="lazy" style="filter:url(#pkg-ink-${t === "cream" ? "light" : "dark"}-${packageIndex(l.herb)});clip-path:url(#pkg-logo-${t});">` : ""}</span><span class="tl">${esc(k)}</span></span>`;
 };
 const tiles = (l, mode = designMode) => l.lineup.map(([t, k]) => tileHtml(l, t, k, mode)).join("");
-const tileBg = l => `background:#F2EEE7 url('../research/assets/chahar-stage/ivory-tabletop.png') center 35% / cover no-repeat`;
+const tileBg = l => `background:#FAF8F3`;
 
 /* ════════ 화면 ════════ */
 function renderSeasons() {
@@ -758,7 +759,7 @@ function beautyComment(s, data, now = Date.now()) {
 function renderTrendComment() {
   const comment = beautyComment(season, BEAUTY_TRENDS) || trendComment(season, TREND);
   document.getElementById("trend-status").textContent = comment.status;
-  document.getElementById("trend-line").textContent = comment.line;
+  document.getElementById("trend-line").textContent = comment.line.replace(/올리브영의\s*|장업신문의\s*/g, "").replace(/올리브영은\s*/g, "관련 콘텐츠에서는 ").replace(/장업신문은\s*/g, "관련 기사에서는 ");
   document.getElementById("trend-plan").innerHTML = "<b>기획 참고</b> · " + esc(comment.tip);
   document.getElementById("trend-source").textContent = comment.source;
   document.getElementById("trend-evidence").innerHTML = (comment.evidence || []).map(item => `<a href="${esc(item.url)}" target="_blank" rel="noopener noreferrer" title="${esc(item.title)}">${esc(item.source)} · ${esc(item.publishedAt)} · ${esc(item.kind || "자료")} ↗</a>`).join("");
