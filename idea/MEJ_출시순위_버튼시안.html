@@ -194,6 +194,8 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
 .card-rank .ribbon { font-size: .9rem; }
 .trend-evidence .ev-h { width: 100%; font-weight: 700; color: var(--ink); margin-top: 6px; }
 .trend-evidence .ev-links { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.tier { width: 100%; margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--line); }
+.tier-h { color: var(--ink); } .tier-h span { display: block; color: var(--muted); }
 .src-list { list-style: none; margin: 2px 0 0; padding: 0; width: 100%; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 4px 16px; }
 .src-list li { display: flex; gap: 6px; align-items: baseline; flex-wrap: wrap; }
 .src-type { color: var(--muted); }
@@ -639,28 +641,10 @@ let BEAUTY_TRENDS = {
   "lookbackDays": 90,
   "sourceChecks": [
     {
-      "id": "oliveyoung",
-      "source": "올리브영",
-      "url": "https://corp.oliveyoung.com/ko/newsroom/press",
-      "checkedAt": "2026-11-13T02:34:38Z",
-      "status": "checked",
-      "http": 200,
-      "note": "공개 페이지 열림"
-    },
-    {
-      "id": "jangup",
-      "source": "장업신문",
-      "url": "https://www.jangup.com/",
-      "checkedAt": "2026-11-13T02:34:38Z",
-      "status": "checked",
-      "http": 200,
-      "note": "공개 페이지 열림"
-    },
-    {
       "id": "google-trends",
       "source": "Google Trends",
       "url": "https://trends.google.com/trends/explore",
-      "checkedAt": "2026-11-13T02:34:38Z",
+      "checkedAt": "2026-11-13T02:41:55Z",
       "status": "unavailable",
       "http": 429,
       "note": "자동 접근 차단 → 내용 판단에서 제외, 우회하지 않음"
@@ -669,61 +653,7 @@ let BEAUTY_TRENDS = {
       "id": "spate",
       "source": "Spate",
       "url": "https://www.spate.nyc/resources/reports",
-      "checkedAt": "2026-11-13T02:34:39Z",
-      "status": "checked",
-      "http": 200,
-      "note": "공개 페이지 열림"
-    },
-    {
-      "id": "mintel",
-      "source": "Mintel · GNPD",
-      "url": "https://www.mintel.com/insights/beauty-and-personal-care/",
-      "checkedAt": "2026-11-13T02:34:39Z",
-      "status": "checked",
-      "http": 200,
-      "note": "공개 페이지 열림"
-    },
-    {
-      "id": "niq",
-      "source": "NielsenIQ",
-      "url": "https://nielseniq.com/global/en/insights/report/2026/niq-state-of-global-beauty-2026/",
-      "checkedAt": "2026-11-13T02:34:39Z",
-      "status": "checked",
-      "http": 200,
-      "note": "공개 페이지 열림"
-    },
-    {
-      "id": "mckinsey",
-      "source": "McKinsey — State of Beauty",
-      "url": "https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/state-of-beauty",
-      "checkedAt": "2026-11-13T02:34:39Z",
-      "status": "unavailable",
-      "http": 403,
-      "note": "자동 접근 차단 → 내용 판단에서 제외, 우회하지 않음"
-    },
-    {
-      "id": "cosmetics-business",
-      "source": "Cosmetics Business",
-      "url": "https://www.cosmeticsbusiness.com/cosmetics-business-reveals-the-top-5-skin-care-2",
-      "checkedAt": "2026-11-13T02:34:40Z",
-      "status": "checked",
-      "http": 200,
-      "note": "공개 페이지 열림"
-    },
-    {
-      "id": "cosmotrends",
-      "source": "Cosmoprof × BEAUTYSTREAMS — CosmoTrends",
-      "url": "https://lp.cosmoprof.com/hubfs/BEAUTYSTREAMS_CosmoProfWorldwideBologna_CosmoTrends_2026_compressed.pdf",
-      "checkedAt": "2026-11-13T02:34:41Z",
-      "status": "checked",
-      "http": 200,
-      "note": "PDF 보고서 열림"
-    },
-    {
-      "id": "pinterest",
-      "source": "Pinterest Predicts",
-      "url": "https://business.pinterest.com/en-gb/pinterest-predicts/",
-      "checkedAt": "2026-11-13T02:34:41Z",
+      "checkedAt": "2026-11-13T02:41:56Z",
       "status": "checked",
       "http": 200,
       "note": "공개 페이지 열림"
@@ -732,17 +662,181 @@ let BEAUTY_TRENDS = {
       "id": "cosme",
       "source": "@cosme 랭킹",
       "url": "https://s.cosme.net/ranking",
-      "checkedAt": "2026-11-13T02:34:42Z",
+      "checkedAt": "2026-11-13T02:41:56Z",
       "status": "unavailable",
       "http": 403,
       "note": "자동 접근 차단 → 내용 판단에서 제외, 우회하지 않음"
     },
     {
-      "source": "올리브영 판매랭킹",
+      "id": "naver-datalab",
+      "source": "네이버 데이터랩 (검색어 트렌드·쇼핑인사이트)",
+      "url": "https://datalab.naver.com/",
+      "checkedAt": "2026-11-13T02:41:56Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "nedrug",
+      "source": "의약품안전나라 (기능성화장품 보고)",
+      "url": "https://nedrug.mfds.go.kr/",
+      "checkedAt": "2026-11-13T02:41:56Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "hwahae",
+      "source": "화해 랭킹",
+      "url": "https://www.hwahae.co.kr/rankings",
+      "checkedAt": "2026-11-13T02:41:57Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "oliveyoung-ranking",
+      "source": "올리브영 판매 랭킹",
+      "url": "https://www.oliveyoung.co.kr/store/main/getBestList.do",
+      "checkedAt": "2026-11-13T02:41:57Z",
       "status": "unavailable",
-      "url": "https://www.oliveyoung.co.kr/store/main/getBestList.do?dispCatNo=900000100100001&fltDispCatNo=10000010001",
-      "checkedAt": "2026-11-13T01:44:27Z",
-      "note": "직접 페이지 확인에 실패하여 순위·판매 흐름 판단에서 제외"
+      "http": 403,
+      "note": "자동 접근 차단 → 내용 판단에서 제외, 우회하지 않음"
+    },
+    {
+      "id": "kosis-online",
+      "source": "통계청 온라인쇼핑동향 (KOSIS)",
+      "url": "https://kosis.kr/",
+      "checkedAt": "2026-11-13T02:41:57Z",
+      "status": "checked",
+      "http": 302,
+      "note": "허용된 주소로 이동 (kosis.kr)"
+    },
+    {
+      "id": "customs-trade",
+      "source": "관세청 수출입 무역통계",
+      "url": "https://tradedata.go.kr/",
+      "checkedAt": "2026-11-13T02:41:57Z",
+      "status": "checked",
+      "http": 302,
+      "note": "허용된 주소로 이동 (tradedata.go.kr)"
+    },
+    {
+      "id": "oliveyoung",
+      "source": "올리브영",
+      "url": "https://corp.oliveyoung.com/ko/newsroom/press",
+      "checkedAt": "2026-11-13T02:41:57Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "jangup",
+      "source": "장업신문",
+      "url": "https://www.jangup.com/",
+      "checkedAt": "2026-11-13T02:41:57Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "cosmetics-business",
+      "source": "Cosmetics Business",
+      "url": "https://www.cosmeticsbusiness.com/cosmetics-business-reveals-the-top-5-skin-care-2",
+      "checkedAt": "2026-11-13T02:41:57Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "cosmorning",
+      "source": "코스모닝",
+      "url": "https://www.cosmorning.com/",
+      "checkedAt": "2026-11-13T02:41:58Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "thebk",
+      "source": "뷰티경제",
+      "url": "https://www.thebk.co.kr/",
+      "checkedAt": "2026-11-13T02:41:59Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "mintel",
+      "source": "Mintel · GNPD",
+      "url": "https://www.mintel.com/insights/beauty-and-personal-care/",
+      "checkedAt": "2026-11-13T02:42:00Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "niq",
+      "source": "NielsenIQ",
+      "url": "https://nielseniq.com/global/en/insights/report/2026/niq-state-of-global-beauty-2026/",
+      "checkedAt": "2026-11-13T02:42:00Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "mckinsey",
+      "source": "McKinsey — State of Beauty",
+      "url": "https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/state-of-beauty",
+      "checkedAt": "2026-11-13T02:42:01Z",
+      "status": "unavailable",
+      "http": 403,
+      "note": "자동 접근 차단 → 내용 판단에서 제외, 우회하지 않음"
+    },
+    {
+      "id": "cosmotrends",
+      "source": "Cosmoprof × BEAUTYSTREAMS — CosmoTrends",
+      "url": "https://lp.cosmoprof.com/hubfs/BEAUTYSTREAMS_CosmoProfWorldwideBologna_CosmoTrends_2026_compressed.pdf",
+      "checkedAt": "2026-11-13T02:42:01Z",
+      "status": "checked",
+      "http": 200,
+      "note": "PDF 보고서 열림"
+    },
+    {
+      "id": "pinterest",
+      "source": "Pinterest Predicts",
+      "url": "https://business.pinterest.com/en-gb/pinterest-predicts/",
+      "checkedAt": "2026-11-13T02:42:01Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "kcii",
+      "source": "대한화장품산업연구원",
+      "url": "https://www.kcii.re.kr/",
+      "checkedAt": "2026-11-13T02:42:03Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "kotra",
+      "source": "KOTRA 해외시장뉴스",
+      "url": "https://dream.kotra.or.kr/",
+      "checkedAt": "2026-11-13T02:42:03Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "opensurvey",
+      "source": "오픈서베이 뷰티 트렌드 리포트",
+      "url": "https://blog.opensurvey.co.kr/trendreport/beauty-2026/",
+      "checkedAt": "2026-11-13T02:42:04Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
     }
   ],
   "items": [
@@ -830,7 +924,8 @@ let BEAUTY_TRENDS = {
   }
 };
 /* 트렌드 수집 에이전트가 확인하는 출처 (idea/trend/sources.json) */
-const TREND_SOURCES = [{"id":"oliveyoung","name":"올리브영","url":"https://corp.oliveyoung.com/ko/newsroom/press","type":"공식 콘텐츠·판매랭킹"},{"id":"jangup","name":"장업신문","url":"https://www.jangup.com/","type":"업계 기사"},{"id":"google-trends","name":"Google Trends","url":"https://trends.google.com/trends/explore","type":"검색 관심"},{"id":"spate","name":"Spate","url":"https://www.spate.nyc/resources/reports","type":"검색·소셜 분석"},{"id":"mintel","name":"Mintel · GNPD","url":"https://www.mintel.com/insights/beauty-and-personal-care/","type":"시장 전망·신제품 데이터"},{"id":"niq","name":"NielsenIQ","url":"https://nielseniq.com/global/en/insights/report/2026/niq-state-of-global-beauty-2026/","type":"구매·시장 데이터"},{"id":"mckinsey","name":"McKinsey — State of Beauty","url":"https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/state-of-beauty","type":"시장·채널 전망"},{"id":"cosmetics-business","name":"Cosmetics Business","url":"https://www.cosmeticsbusiness.com/cosmetics-business-reveals-the-top-5-skin-care-2","type":"업계 기사·제품 사례"},{"id":"cosmotrends","name":"Cosmoprof × BEAUTYSTREAMS — CosmoTrends","url":"https://lp.cosmoprof.com/hubfs/BEAUTYSTREAMS_CosmoProfWorldwideBologna_CosmoTrends_2026_compressed.pdf","type":"전시·제품 혁신"},{"id":"pinterest","name":"Pinterest Predicts","url":"https://business.pinterest.com/en-gb/pinterest-predicts/","type":"시각 트렌드·검색 전망"},{"id":"cosme","name":"@cosme 랭킹","url":"https://s.cosme.net/ranking","type":"일본 제품 리뷰·랭킹"}];
+const TREND_SOURCES = [{"id":"google-trends","name":"Google Trends","url":"https://trends.google.com/trends/explore","type":"검색 관심","tier":"signal"},{"id":"spate","name":"Spate","url":"https://www.spate.nyc/resources/reports","type":"검색·소셜 분석","tier":"signal"},{"id":"cosme","name":"@cosme 랭킹","url":"https://s.cosme.net/ranking","type":"일본 제품 리뷰·랭킹","tier":"signal"},{"id":"naver-datalab","name":"네이버 데이터랩 (검색어 트렌드·쇼핑인사이트)","url":"https://datalab.naver.com/","type":"국내 검색·쇼핑 관심","tier":"signal"},{"id":"nedrug","name":"의약품안전나라 (기능성화장품 보고)","url":"https://nedrug.mfds.go.kr/","type":"기능성 제품 보고 현황","tier":"signal"},{"id":"hwahae","name":"화해 랭킹","url":"https://www.hwahae.co.kr/rankings","type":"리뷰 기반 랭킹","tier":"signal"},{"id":"oliveyoung-ranking","name":"올리브영 판매 랭킹","url":"https://www.oliveyoung.co.kr/store/main/getBestList.do","type":"판매 랭킹","tier":"signal"},{"id":"kosis-online","name":"통계청 온라인쇼핑동향 (KOSIS)","url":"https://kosis.kr/","type":"화장품 온라인 거래액 (매월)","tier":"signal"},{"id":"customs-trade","name":"관세청 수출입 무역통계","url":"https://tradedata.go.kr/","type":"화장품 수출 (매월)","tier":"signal"},{"id":"oliveyoung","name":"올리브영","url":"https://corp.oliveyoung.com/ko/newsroom/press","type":"공식 콘텐츠·판매랭킹","tier":"case"},{"id":"jangup","name":"장업신문","url":"https://www.jangup.com/","type":"업계 기사","tier":"case"},{"id":"cosmetics-business","name":"Cosmetics Business","url":"https://www.cosmeticsbusiness.com/cosmetics-business-reveals-the-top-5-skin-care-2","type":"업계 기사·제품 사례","tier":"case"},{"id":"cosmorning","name":"코스모닝","url":"https://www.cosmorning.com/","type":"국내 업계 기사","tier":"case"},{"id":"thebk","name":"뷰티경제","url":"https://www.thebk.co.kr/","type":"국내 업계 기사","tier":"case"},{"id":"mintel","name":"Mintel · GNPD","url":"https://www.mintel.com/insights/beauty-and-personal-care/","type":"시장 전망·신제품 데이터","tier":"background"},{"id":"niq","name":"NielsenIQ","url":"https://nielseniq.com/global/en/insights/report/2026/niq-state-of-global-beauty-2026/","type":"구매·시장 데이터","tier":"background"},{"id":"mckinsey","name":"McKinsey — State of Beauty","url":"https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/state-of-beauty","type":"시장·채널 전망","tier":"background"},{"id":"cosmotrends","name":"Cosmoprof × BEAUTYSTREAMS — CosmoTrends","url":"https://lp.cosmoprof.com/hubfs/BEAUTYSTREAMS_CosmoProfWorldwideBologna_CosmoTrends_2026_compressed.pdf","type":"전시·제품 혁신","tier":"background"},{"id":"pinterest","name":"Pinterest Predicts","url":"https://business.pinterest.com/en-gb/pinterest-predicts/","type":"시각 트렌드·검색 전망","tier":"background"},{"id":"kcii","name":"대한화장품산업연구원","url":"https://www.kcii.re.kr/","type":"국내 산업 보고서","tier":"background"},{"id":"kotra","name":"KOTRA 해외시장뉴스","url":"https://dream.kotra.or.kr/","type":"국가별 시장 동향","tier":"background"},{"id":"opensurvey","name":"오픈서베이 뷰티 트렌드 리포트","url":"https://blog.opensurvey.co.kr/trendreport/beauty-2026/","type":"국내 소비자 조사","tier":"background"}];
+const TREND_TIERS = {"signal":{"name":"실시간 신호","cadence":"매주","rule":"숫자로 나오는 최근 흐름. 트렌드 한마디의 주 근거"},"case":{"name":"업계 사례","cadence":"매일~매주","rule":"실제로 나온 제품·움직임. '이런 사례가 있다'로만 사용"},"background":{"name":"배경 자료","cadence":"연 1~2회","rule":"큰 방향 설명용. '지금 뜬다'·'판매 증가'로 바꿔 말하지 않음"}};
 let beautyFetchNote = "";
 const beautyDataUrl = typeof location !== "undefined" && location.hostname === "htmlpreview.github.io" ? "https://raw.githubusercontent.com/k-1026/AxO/research/idea/trend/beauty_trends.json" : "trend/beauty_trends.json";
 async function refreshBeautyTrends() {
@@ -871,13 +966,17 @@ function renderTrendComment() {
   document.getElementById("trend-source").textContent = comment.source;
   const evHtml = (comment.evidence || []).map(item => `<a href="${esc(item.url)}" target="_blank" rel="noopener noreferrer" title="${esc(item.title)}">${esc(item.source)} · ${esc(item.publishedAt)} · ${esc(item.kind || "자료")} ↗</a>`).join("");
   const checksNow = (BEAUTY_TRENDS && BEAUTY_TRENDS.sourceChecks) || [];
-  const srcHtml = TREND_SOURCES.map(s => {
+  const srcItem = s => {
     const c = checksNow.find(x => x.id === s.id || x.url === s.url);
     const st = !c ? ["wait", "확인 전"] : c.status === "checked" ? ["ok", "확인됨"] : ["no", c.http === 403 || c.http === 429 ? "자동 접근 차단 · 직접 확인" : "확인 못 함"];
     return `<li><a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.name)} ↗</a><span class="src-type">${esc(s.type)}</span><span class="src-st ${st[0]}">${st[1]}</span></li>`;
+  };
+  const tierHtml = Object.keys(TREND_TIERS).map(k => {
+    const t = TREND_TIERS[k], rows = TREND_SOURCES.filter(s => s.tier === k);
+    return `<div class="tier"><div class="tier-h"><b>${esc(t.name)}</b> · ${esc(t.cadence)} · ${rows.length}곳<span>${esc(t.rule)}</span></div><ul class="src-list">${rows.map(srcItem).join("")}</ul></div>`;
   }).join("");
   document.getElementById("trend-evidence").innerHTML = (evHtml ? `<div class="ev-h">이번 한마디의 근거</div><div class="ev-links">${evHtml}</div>` : "")
-    + `<div class="ev-h">트렌드 에이전트가 확인하는 출처 ${TREND_SOURCES.length}곳</div><ul class="src-list">${srcHtml}</ul>`;
+    + `<div class="ev-h">트렌드 에이전트가 확인하는 출처 ${TREND_SOURCES.length}곳</div>${tierHtml}`;
 }
 
 function renderStudio() {
