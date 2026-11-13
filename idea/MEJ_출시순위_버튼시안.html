@@ -293,7 +293,7 @@ dl.kw dt { color: var(--muted); font-weight: 700; } dl.kw dd { margin: 0; displa
   <aside class="trend-assist" aria-labelledby="trend-assist-title">
     <span class="trend-avatar" aria-hidden="true">↗</span>
     <div class="trend-bubble" aria-live="polite" aria-atomic="true">
-      <div class="trend-meta"><strong id="trend-assist-title">실시간 뷰티 트렌드는?</strong><span class="trend-status" id="trend-status"></span><button type="button" class="trend-refresh" id="beauty-refresh">최신 수집본 확인</button></div>
+      <div class="trend-meta"><strong id="trend-assist-title">실시간 뷰티 트렌드는?</strong><span class="trend-status" id="trend-status"></span><button type="button" class="trend-refresh" id="beauty-refresh" title="트렌드 수집 파일을 다시 불러와요">↻ 새로고침</button></div>
       <p class="trend-line" id="trend-line"></p>
       <p class="trend-plan" id="trend-plan"></p>
       <small class="trend-source" id="trend-source"></small><details class="trend-details"><summary>근거 보기</summary><div class="trend-evidence" id="trend-evidence"></div></details>
@@ -1112,17 +1112,18 @@ const TREND_SOURCES = [{"id":"google-trends","name":"Google Trends","url":"https
 const TREND_TIERS = {"signal":{"name":"실시간 신호","cadence":"매주","rule":"숫자로 나오는 최근 흐름. 트렌드 한마디의 주 근거"},"case":{"name":"업계 사례","cadence":"매일~매주","rule":"실제로 나온 제품·움직임. '이런 사례가 있다'로만 사용"},"background":{"name":"배경 자료","cadence":"연 1~2회","rule":"큰 방향 설명용. '지금 뜬다'·'판매 증가'로 바꿔 말하지 않음"}};
 let beautyFetchNote = "";
 const beautyDataUrl = typeof location !== "undefined" && location.hostname === "htmlpreview.github.io" ? "https://raw.githubusercontent.com/k-1026/AxO/research/idea/trend/beauty_trends.json" : "trend/beauty_trends.json";
+document.addEventListener("click", e => { if (e.target && e.target.id === "beauty-refresh") refreshBeautyTrends(); });
 async function refreshBeautyTrends() {
   const button = document.getElementById("beauty-refresh");
-  button.disabled = true; button.textContent = "확인 중…";
+  button.disabled = true; button.textContent = "↻ 새로고침 중…";
   try {
     const response = await fetch(beautyDataUrl + "?v=" + Date.now(), { cache: "no-store" });
     if (!response.ok) throw new Error("snapshot unavailable");
     const next = await response.json();
     if (!next || next.version !== 1 || !Array.isArray(next.items) || !next.insights || !Number.isFinite(Date.parse(next.updatedAt))) throw new Error("invalid snapshot");
-    BEAUTY_TRENDS = next; beautyFetchNote = "";
+    BEAUTY_TRENDS = next; beautyFetchNote = "방금 새로고침 " + new Date().toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit", hour12: false });
   } catch (_) { beautyFetchNote = "최신 수집본 조회 실패 · 저장된 근거 표시"; }
-  button.disabled = false; button.textContent = "최신 수집본 확인";
+  button.disabled = false; button.textContent = "↻ 새로고침";
   renderTrendComment();
 }
 
