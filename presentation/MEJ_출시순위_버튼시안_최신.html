@@ -213,6 +213,25 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
 .sample-lens::after { content: ""; position: absolute; left: calc(50% - 5px); top: calc(50% - 5px); width: 10px; height: 10px; background: linear-gradient(#56616c66,#56616c66) center / 1px 10px no-repeat, linear-gradient(#56616c66,#56616c66) center / 10px 1px no-repeat; }
 .zoom-hint { margin: 5px 0 0; font-size: .72rem; color: var(--muted); text-align: right; }
 @media (hover: none) { .sample-lens { display: none !important; } .zoom-hint { display: none; } }
+
+/* 기본 라인 한눈에 보기 */
+.baseline { max-width: 1280px; margin: 0 auto 28px; padding: 0 24px; }
+.baseline > .bl-head, .baseline > .bl-grid, .baseline > .bl-note { background: transparent; }
+.bl-head h2 { font-size: 1.5rem; font-weight: 700; margin-top: 2px; }
+.bl-sub { color: var(--muted); font-size: .88rem; margin-top: 4px; }
+.bl-grid { margin-top: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 18px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 14px; align-items: end; }
+.bl-item { margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.bl-img { display: block; aspect-ratio: 600 / 1024; border-radius: 12px; overflow: hidden; background: #fbe3ee; }
+.bl-img img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 22.4% 50%; transition: transform .25s; }
+.bl-item:hover .bl-img img { transform: scale(1.04); }
+.bl-item figcaption { display: flex; flex-direction: column; }
+.bl-item b { color: var(--accent); font-size: .95rem; }
+.bl-item figcaption span { color: var(--muted); font-size: .76rem; }
+.bl-note { font-size: .74rem; color: var(--muted); margin-top: 8px; }
+@media (max-width: 1000px) { .bl-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .bl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.next-line { font-size: .72rem; color: var(--muted); }
+.next-line:empty { display: none; }
 </style>
 </head>
 <body data-season="봄">
@@ -223,7 +242,11 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
   <clipPath id="pkg-clip-cream" clipPathUnits="objectBoundingBox"><path d="M .06 .477 L .066 .379 C .085 .305 .24 .283 .435 .282 C .68 .28 .88 .31 .92 .38 L .929 .477 Q .49 .506 .06 .477 Z"/></clipPath>
 <clipPath id="pkg-logo-toner" clipPathUnits="objectBoundingBox"><ellipse cx=".438" cy=".49" rx=".151" ry=".09"/></clipPath>
 <clipPath id="pkg-logo-serum" clipPathUnits="objectBoundingBox"><ellipse cx=".438" cy=".586" rx=".145" ry=".084"/></clipPath>
-<clipPath id="pkg-logo-cream" clipPathUnits="objectBoundingBox"><ellipse cx=".517" cy=".614" rx=".155" ry=".092"/></clipPath><clipPath id="pkg-silhouette-toner" clipPathUnits="objectBoundingBox"><path d="M .25 .089 C .23 .089 .22 .105 .22 .13 C .195 .15 .21 .20 .26 .224 L .28 .24 C .20 .26 .105 .29 .097 .35 L .097 .874 Q .10 .932 .415 .932 Q .74 .932 .744 .874 L .744 .35 C .73 .29 .64 .26 .55 .239 L .53 .224 C .59 .21 .60 .16 .574 .13 L .572 .11 Q .56 .089 .50 .089 Z"/></clipPath>
+<clipPath id="pkg-logo-cream" clipPathUnits="objectBoundingBox"><ellipse cx=".517" cy=".614" rx=".155" ry=".092"/></clipPath>
+<clipPath id="pkg-clip-lotion" clipPathUnits="objectBoundingBox"><rect x=".205" y=".258" width=".375" height=".232" rx=".05"/></clipPath>
+<clipPath id="pkg-clip-mist" clipPathUnits="objectBoundingBox"><rect x=".198" y=".178" width=".297" height=".058" rx=".03"/><rect x=".298" y=".086" width=".088" height=".096" rx=".01"/></clipPath>
+<clipPath id="pkg-logo-lotion" clipPathUnits="objectBoundingBox"><ellipse cx=".403" cy=".674" rx=".135" ry=".08"/></clipPath>
+<clipPath id="pkg-logo-mist" clipPathUnits="objectBoundingBox"><ellipse cx=".35" cy=".515" rx=".137" ry=".08"/></clipPath><clipPath id="pkg-silhouette-toner" clipPathUnits="objectBoundingBox"><path d="M .25 .089 C .23 .089 .22 .105 .22 .13 C .195 .15 .21 .20 .26 .224 L .28 .24 C .20 .26 .105 .29 .097 .35 L .097 .874 Q .10 .932 .415 .932 Q .74 .932 .744 .874 L .744 .35 C .73 .29 .64 .26 .55 .239 L .53 .224 C .59 .21 .60 .16 .574 .13 L .572 .11 Q .56 .089 .50 .089 Z"/></clipPath>
 <clipPath id="pkg-silhouette-serum" clipPathUnits="objectBoundingBox"><path d="M .42 .053 C .34 .053 .315 .08 .315 .13 L .315 .205 C .235 .207 .19 .246 .187 .283 C .18 .329 .215 .353 .285 .361 L .285 .38 C .18 .41 .09 .46 .083 .57 L .075 .78 C .06 .87 .19 .895 .42 .895 C .66 .895 .785 .87 .778 .78 L .77 .57 C .76 .46 .68 .41 .575 .38 L .575 .36 C .65 .35 .68 .32 .67 .28 C .66 .24 .61 .21 .53 .205 L .53 .13 C .53 .08 .50 .053 .42 .053 Z"/></clipPath>
 <clipPath id="pkg-silhouette-cream" clipPathUnits="objectBoundingBox"><path d="M .435 .282 C .22 .282 .09 .31 .066 .38 L .06 .477 C .028 .50 .01 .56 .017 .62 C .02 .73 .14 .79 .30 .80 L .68 .80 C .84 .79 .97 .72 .97 .62 C .98 .55 .95 .50 .929 .477 L .92 .38 C .88 .31 .68 .28 .435 .282 Z"/></clipPath><filter id="pkg-edge-feather" x="-10%" y="-10%" width="120%" height="120%" primitiveUnits="objectBoundingBox" color-interpolation-filters="sRGB"><feMorphology in="SourceGraphic" operator="erode" radius=".006"/><feGaussianBlur stdDeviation=".0035"/></filter>
 <mask id="pkg-mask-toner" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox" x="0" y="0" width="1" height="1" style="mask-type:alpha"><g fill="white" filter="url(#pkg-edge-feather)"><path d="M .25 .089 C .23 .089 .22 .105 .22 .13 C .195 .15 .21 .20 .26 .224 L .28 .24 C .20 .26 .105 .29 .097 .35 L .097 .874 Q .10 .932 .415 .932 Q .74 .932 .744 .874 L .744 .35 C .73 .29 .64 .26 .55 .239 L .53 .224 C .59 .21 .60 .16 .574 .13 L .572 .11 Q .56 .089 .50 .089 Z"/></g></mask>
@@ -232,7 +255,7 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
 
 <div class="topbar"><div class="in">
   <div class="logo">CHAHAR<small>가칭 · 브랜드명 미정</small></div>
-  <nav class="menu"><span>시즌 컬렉션</span><span>원료 이야기</span><b>출시 기획실</b></nav>
+  <nav class="menu"><a href="#baseline" style="color:inherit;text-decoration:none">기본 라인</a><span>시즌 컬렉션</span><span>원료 이야기</span><b>출시 기획실</b></nav>
   <span class="sample-badge">상품기획 시안 · 팀 자료 기반</span>
 </div></div>
 
@@ -279,6 +302,26 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
     <div id="results"></div>
   </section>
 </div>
+
+<section class="baseline" id="baseline" aria-labelledby="baseline-title">
+  <div class="bl-head">
+    <div>
+      <div class="eyebrow">Base Line</div>
+      <h2 id="baseline-title">기본 라인 한눈에 보기</h2>
+      <p class="bl-sub">5개 제품군, 6가지 형태 · 로션 2종 · 미스트 캡 2안. 위 후보 라인들은 이 기본 용기에 원료 색을 입혀 만들어요.</p>
+    </div>
+  </div>
+  <div class="bl-grid">
+    <figure class="bl-item"><span class="bl-img"><img src="../IMAGE/수정1/CHAHAR_토너_200ml.png" alt="토너 기본 용기" loading="lazy"></span><figcaption><b>토너</b><span>단지형 플립 캡</span></figcaption></figure>
+    <figure class="bl-item"><span class="bl-img"><img src="../IMAGE/수정1/CHAHAR_세럼.png" alt="세럼 기본 용기" loading="lazy"></span><figcaption><b>세럼</b><span>둥근 받침 스포이드</span></figcaption></figure>
+    <figure class="bl-item"><span class="bl-img"><img src="../IMAGE/수정1/CHAHAR_크림.png" alt="크림 기본 용기" loading="lazy"></span><figcaption><b>크림</b><span>캡슐 제형</span></figcaption></figure>
+    <figure class="bl-item"><span class="bl-img"><img src="../IMAGE/수정1/CHAHAR_로션_펌프형.png" alt="로션 · 펌프형 기본 용기" loading="lazy"></span><figcaption><b>로션 · 펌프형</b><span>불투명 몸체</span></figcaption></figure>
+    <figure class="bl-item"><span class="bl-img"><img src="../IMAGE/수정1/CHAHAR_로션_튜브형.png" alt="로션 · 튜브형 기본 용기" loading="lazy"></span><figcaption><b>로션 · 튜브형</b><span>반투명 몸체</span></figcaption></figure>
+    <figure class="bl-item"><span class="bl-img"><img src="../IMAGE/수정1/CHAHAR_미스트_둥근캡_닫힘.png" alt="미스트 · 둥근 캡 기본 용기" loading="lazy"></span><figcaption><b>미스트 · 둥근 캡</b><span>둥근 캡 안</span></figcaption></figure>
+    <figure class="bl-item"><span class="bl-img"><img src="../IMAGE/수정1/CHAHAR_미스트_네모캡_닫힘.png" alt="미스트 · 네모 캡 기본 용기" loading="lazy"></span><figcaption><b>미스트 · 네모 캡</b><span>네모 캡 안</span></figcaption></figure>
+  </div>
+  <p class="bl-note">최신 선택본: 수정1 · ⚠️ AI 생성 패키지 디자인 검토용 시안이에요. 크기는 비교를 위해 맞췄고 실제 용량 비율이 아니에요.</p>
+</section>
 
 <footer>
   <span>필수 조건을 통과한 후보를 선택한 기준으로 비교해요. 점수는 성공 확률이 아니며, 확인이 필요한 항목은 점수 범위로 보여 줘요.</span>
@@ -460,14 +503,25 @@ const DESIGN = {
 /* 재질은 수정1 원본을 그대로 사용하며 피부 목적에 따라 바꾸지 않아요. */
 const FINISH = Object.fromEntries(["진정", "쿨링", "모공·피지", "보습", "민감·장벽", "미백(톤)", "영양", "탄력"].map(p => [p, { mat: "수정1의 제품별 재질·투명도·광택 유지" }]));
 const PURPOSE_LABEL = { "보습": "수분 보습", "민감·장벽": "장벽 보습", "진정": "진정", "미백(톤)": "톤", "쿨링": "쿨링", "모공·피지": "모공 피지", "영양": "영양", "탄력": "탄력" };
-const SOOTHE = ["진정", "쿨링", "모공·피지"];
-/* 중저가 ml당 정가 범위 · 라인 구성은 예시값 */
-const PRICE_RANGE = { toner: [36, 90], serum: [148, 430], cream: [280, 410] };
-const lineupFor = p => SOOTHE.includes(p)
-  ? [["toner", "토너", 200, 15000], ["serum", "세럼", 50, 19000], ["cream", "젤 크림", 50, 19000]]
-  : ["영양", "탄력"].includes(p)
-    ? [["toner", "토너", 200, 15000], ["serum", "세럼", 50, 19000], ["cream", "크림", 50, 20000]]
-    : [["toner", "토너", 200, 15000], ["serum", "세럼", 50, 19000], ["cream", "크림", 50, 19000]];
+/* 중저가 ml당 정가 범위 (가격 기준표) · 용량·정가는 범위 안의 예시값 */
+const PRICE_RANGE = { toner: [36, 90], serum: [148, 430], cream: [280, 410], lotion: [98, 193], mist: [88, 192] };
+/* 피부 목적별 라인 구성 틀 (라인 구성 규칙): ● 1차 출시 → first, ○ 2차 확장 → next */
+const ITEM = {
+  toner: ["toner", "토너", 200, 15000], serum: ["serum", "세럼", 50, 19000], cream: ["cream", "크림", 50, 19000],
+  gel: ["cream", "젤 크림", 50, 19000], rich: ["cream", "리치 크림", 50, 20000],
+  lotion: ["lotion", "로션", 200, 30000], mist: ["mist", "미스트", 100, 15000]
+};
+const LINE_RULE = {
+  "진정":     { first: ["toner", "gel"], next: ["세럼", "미스트", "패드"] },
+  "민감·장벽": { first: ["toner", "cream"], next: ["세럼", "로션", "미스트"], extra: "클렌저" },
+  "보습":     { first: ["toner", "serum", "cream"], next: ["클렌저", "미스트", "마스크"] },
+  "영양":     { first: ["toner", "rich"], next: ["세럼", "로션", "마스크"] },
+  "쿨링":     { first: ["toner", "gel", "mist"], next: [] },
+  "모공·피지": { first: ["toner"], next: ["세럼", "젤 크림", "패드·팩"], extra: "클렌저" },
+  "미백(톤)":  { first: ["toner", "serum", "cream"], next: ["마스크"] },
+  "탄력":     { first: ["serum", "cream"], next: ["토너", "아이크림"] }
+};
+const lineupFor = p => (LINE_RULE[p] || LINE_RULE["보습"]).first.map(k => ITEM[k]);
 
 /* ════════ 후보 풀 만들기: 원료의 목적 ∩ 계절 목적 ════════ */
 function candidates(season) {
@@ -475,10 +529,11 @@ function candidates(season) {
   return HERBS.map(h => {
     const hits = h.purposes.map(p => ({ p, issues: iss.filter(i => i[3].includes(p)) })).filter(x => x.issues.length);
     if (!hits.length) return null;
-    hits.sort((a, b) => b.issues.length - a.issues.length);
+    const firstAt = p => { for (let i = 0; i < iss.length; i++) { const j = iss[i][3].indexOf(p); if (j >= 0) return i * 10 + j; } return 99; };
+    hits.sort((a, b) => b.issues.length - a.issues.length || firstAt(a.p) - firstAt(b.p));
     const { p, issues } = hits[0];
     return { ...h, color: DESIGN[h.herb].main, design: DESIGN[h.herb], finish: FINISH[p], purpose: p, issues, name: `${h.herb} ${PURPOSE_LABEL[p]} 라인`, functional: p === "미백(톤)",
-      concern: issues.map(i => i[2]).join(" / "), lineup: lineupFor(p) };
+      concern: issues.map(i => i[2]).join(" / "), lineup: lineupFor(p), next: (LINE_RULE[p] || {}).next || [], extra: (LINE_RULE[p] || {}).extra || "" };
   }).filter(Boolean);
 }
 
@@ -559,7 +614,7 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;",
 const scoreText = r => (r.lo === r.hi ? `${r.lo}` : `${r.lo}~${r.hi}`) + "점";
 
 /* ════════ 용기 샘플 (IMAGE/수정1) ════════ */
-const SAMPLE = { toner: "CHAHAR_토너_200ml.png", serum: "CHAHAR_세럼.png", cream: "CHAHAR_크림.png" };
+const SAMPLE = { toner: "CHAHAR_토너_200ml.png", serum: "CHAHAR_세럼.png", cream: "CHAHAR_크림.png", lotion: "CHAHAR_로션_펌프형.png", mist: "CHAHAR_미스트_둥근캡_닫힘.png" };
 function hsl(hex) {
   const n = parseInt(hex.slice(1), 16), r = (n >> 16) / 255, g = ((n >> 8) & 255) / 255, b = (n & 255) / 255;
   const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn, l = (mx + mn) / 2;
@@ -1026,6 +1081,7 @@ function renderResults() {
         <div class="herb">${esc(r.l.herb)}${r.l.hanja ? `(${r.l.hanja})` : ""} · ${esc(r.l.purpose)} · ${r.l.functional ? "기능성 보고 필요" : "일반 화장품"}</div>
         <h3>${esc(r.l.name)}</h3>
         <div class="price">${r.l.lineup.map(([, k, ml, p]) => `${esc(k)} ${ml}ml ${won(p)}`).join(" · ")}</div>
+        <div class="next-line">${r.l.extra ? `+ ${esc(r.l.extra)} (용기 샘플 준비 중)` : ""}${r.l.extra && r.l.next.length ? " · " : ""}${r.l.next.length ? `2차 확장: ${r.l.next.map(esc).join(" · ")}` : ""}</div>
         <div class="meter"><span class="bar"><i style="left:${r.lo}%;width:${r.hi - r.lo}%"></i><b style="width:${r.lo}%"></b></span><strong>${r.lo === r.hi ? r.lo : r.lo + "~" + r.hi}</strong>점</div>
         <div class="why">${whyChips(r)}</div>
         ${r.unsure ? `<div class="flag">점수 범위가 겹쳐 확인 필요 칸에 따라 순위가 바뀔 수 있어요</div>` : ""}
@@ -1059,7 +1115,9 @@ function openDetail(r) {
     <dt>피부 목적</dt><dd>${esc(l.purpose)} · ${l.functional ? "기능성 보고 필요" : "일반 화장품"}</dd>
     <dt>대표 약재</dt><dd>${esc(l.herb)}${l.hanja ? `(${l.hanja})` : ""} · ${esc(l.scent[1])}</dd>
     <dt>쓸 수 있는 말</dt><dd>${esc(l.words)}</dd>`;
-  document.getElementById("d-lineup").innerHTML = l.lineup.map(([, k, ml, p]) => `<tr><td>${esc(k)}</td><td>${ml}ml</td><td>${won(p)}</td><td>${won(Math.round(p / ml))}</td></tr>`).join("");
+  document.getElementById("d-lineup").innerHTML = l.lineup.map(([, k, ml, p]) => `<tr><td>${esc(k)} <span class="note">1차</span></td><td>${ml}ml</td><td>${won(p)}</td><td>${won(Math.round(p / ml))}</td></tr>`).join("")
+    + (l.extra ? `<tr><td>${esc(l.extra)} <span class="note">1차</span></td><td colspan="3" class="note">용기 샘플·가격 기준 준비 중</td></tr>` : "")
+    + (l.next.length ? `<tr><td colspan="4" class="note">2차 확장 후보: ${l.next.map(esc).join(" · ")}</td></tr>` : "");
   const lab = { PASS: "PASS", FAIL: "FAIL", UNKNOWN: "UNKNOWN", NA: "해당 없음" };
   document.getElementById("d-gates").innerHTML = r.gates.map(x => `<div><span class="s ${x.r[0]}">${lab[x.r[0]]}</span><span>${esc(x.g.nm)}</span><span class="note">${esc(x.r[1])}</span></div>`).join("");
   document.getElementById("d-crit").innerHTML = r.parts.map(p => `<div><div class="h"><span>${esc(p.c.nm)} ${stars(W[p.c.k])}</span><span>${p.avg == null ? "확인 필요" : (Math.round(p.avg * 10) / 10) + " / 5"}</span></div>
