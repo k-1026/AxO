@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>기획자 페르소나 원페이지</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css">
+<style>
+:root{
+  --paper:#FFFFFF; --ink:#173F48; --ink2:#3E5A61; --muted:#5F7A80; --line:#CFE3E1;
+  --teal:#007C80; --mint:#E1F6ED; --peach:#FFE1CA; --coral:#E9785A; --hot:#B4472C; --sun:#FFD24D; --lemon:#FFF4C2;
+  --sans:"Pretendard","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#DCEBEA;overflow:hidden}
+body{font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;word-break:keep-all}
+.slide{position:absolute;left:50%;top:50%;width:1600px;height:900px;transform-origin:center center;background:linear-gradient(120deg,#FFFEFB 60%,#F0FAF7);padding:24px 44px 66px;display:none;flex-direction:column}
+.slide.on{display:flex}
+
+/* 상단 진행 표시 */
+.track{display:flex;gap:6px;margin-bottom:12px}
+.track span{font-size:13px;font-weight:800;color:var(--muted);background:#EAF2F1;border-radius:999px;padding:4px 11px}
+.track span.on{background:var(--teal);color:#fff}
+.top{display:flex;align-items:flex-end;gap:16px}
+.top h1{font-size:31px;font-weight:900;letter-spacing:-.01em}
+.top h1 em{font-style:normal;color:var(--teal)}
+.top p{font-size:15px;color:var(--muted);margin-bottom:4px;font-weight:600}
+.ai{margin-left:auto;font-size:12.5px;font-weight:700;color:var(--hot);background:var(--peach);padding:5px 12px;border-radius:999px;margin-bottom:3px;white-space:nowrap}
+.guide{margin-top:12px;background:var(--ink);color:#fff;border-radius:14px;padding:10px 16px;font-size:15px;font-weight:700;line-height:1.45;display:flex;gap:12px;align-items:center}
+.guide b{flex:none;font-size:12px;font-weight:900;color:var(--ink);background:var(--sun);border-radius:999px;padding:3px 10px}
+.guide em{font-style:normal;color:var(--sun)}
+.src{position:absolute;left:44px;right:44px;bottom:10px;font-size:12px;color:var(--muted);line-height:1.45}
+a.r{display:inline-block;font-size:11.5px;font-weight:800;color:var(--teal);background:var(--mint);border-radius:5px;padding:0 4px;margin-left:2px;vertical-align:1px;text-decoration:none;border-bottom:1.5px solid var(--teal)}
+a.r:hover{background:var(--teal);color:#fff}
+.src a.r{font-size:11px}
+
+/* ---------- 0. 읽는 순서 ---------- */
+.flow0{flex:1;display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:22px;align-content:start}
+.fs{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:18px 18px 16px;position:relative;display:flex;flex-direction:column;gap:10px;min-height:330px}
+.fs:not(:last-child)::after{content:"→";position:absolute;right:-15px;top:46%;font-size:22px;font-weight:900;color:var(--teal)}
+.fs .n{width:40px;height:40px;border-radius:50%;background:var(--teal);color:#fff;font-size:19px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.fs.key .n{background:var(--hot)}
+.fs .q{font-size:22px;font-weight:900;line-height:1.3}
+.fs .a{font-size:15px;font-weight:600;color:var(--ink2);line-height:1.5}
+.fs .pg{margin-top:auto;font-size:13px;font-weight:800;color:var(--teal);background:var(--mint);border-radius:10px;padding:6px 10px}
+.fs.key{border:2px solid var(--hot)}
+.fs.key .pg{background:#FFF0E7;color:var(--hot)}
+.rule0{margin-top:12px;background:var(--lemon);border:2px solid #F2D46B;border-radius:16px;padding:10px 18px;display:flex;gap:22px;align-items:center}
+.rule0 .t{font-size:15px;font-weight:900;color:#7A5B00;white-space:nowrap}
+.rule0 .c{display:flex;gap:10px;align-items:center;font-size:17px;font-weight:900;flex-wrap:wrap}
+.rule0 .c i{font-style:normal;font-size:15px;color:#7A5B00}
+.legend0{margin-top:14px;display:flex;gap:22px;font-size:14px;font-weight:700;color:var(--ink2)}
+.legend0 span b{display:inline-block;margin-right:6px}
+
+/* ---------- 1. 페르소나 + 여정 ---------- */
+.body{flex:1;display:grid;grid-template-columns:300px 1fr;gap:16px;margin-top:10px;min-height:0}
+.who{background:var(--paper);border:1px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:column}
+.who .hd{background:var(--mint);padding:14px 16px 12px}
+.pill{display:inline-block;font-size:12px;font-weight:800;color:#fff;background:var(--teal);padding:3px 10px;border-radius:999px}
+.idrow{display:flex;align-items:center;gap:12px;margin-top:10px}
+.av{width:50px;height:50px;border-radius:50%;background:#fff;border:3px solid var(--teal);display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:900;color:var(--teal);flex:none}
+.nm{font-size:23px;font-weight:900;line-height:1.1}
+.nm small{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-top:3px}
+.facts{padding:2px 14px 0}
+.facts div{display:grid;grid-template-columns:54px 1fr;gap:6px;padding:6px 0;border-bottom:1px solid #E8F1F0;font-size:14px;line-height:1.4}
+.facts div:last-child{border-bottom:0}
+.facts span{color:var(--teal);font-weight:800;font-size:12.5px;padding-top:2px}
+.facts b{font-weight:600}
+.facts em{font-style:normal;font-weight:900;color:var(--teal)}
+.want{margin:auto 12px 12px;border-radius:12px;padding:10px 12px;background:var(--teal);color:#fff}
+.want b{display:inline-block;font-size:11px;font-weight:800;background:#fff;color:var(--teal);border-radius:999px;padding:2px 8px}
+.want p{font-size:14.5px;line-height:1.45;font-weight:700;margin-top:5px}
+
+.chain{display:grid;grid-template-columns:118px repeat(6,1fr);grid-template-rows:auto auto auto auto auto 1fr;gap:8px 8px;min-height:0}
+.rl{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;text-align:right;font-size:14px;font-weight:900;color:var(--muted);padding-right:2px;line-height:1.3}
+.rl small{font-size:12px;font-weight:700;margin-top:2px}
+.rl.p{color:var(--hot)} .rl.a{color:#5B6B70} .rl.o{color:var(--teal)}
+.st{position:relative;background:var(--ink);color:#fff;border-radius:12px;padding:9px 10px;font-size:16px;font-weight:800;line-height:1.2}
+.st small{display:block;font-size:11px;font-weight:700;opacity:.65;margin-bottom:2px}
+.st.hot{background:var(--hot)}
+.st.hot::after{content:"핵심 기회";position:absolute;right:6px;top:-10px;background:var(--sun);color:var(--ink);font-size:11px;font-weight:900;padding:2px 7px;border-radius:999px}
+.do{font-size:13.5px;line-height:1.4;color:var(--ink2);font-weight:600;padding:0 2px}
+.pain{background:#FFF6F0;border:1.5px solid #F6CDB8;border-radius:12px;padding:9px 9px;display:flex;flex-direction:column;gap:6px}
+.pain.hot{background:#FFE9DE;border-color:var(--coral)}
+.pain p{font-size:14.5px;line-height:1.4;font-weight:800}
+.pain .num{font-size:24px;font-weight:900;color:var(--hot);line-height:1.15;letter-spacing:-.02em}
+.pain .num small{font-size:13px;margin:0 1px}
+.pain .ba{font-size:13px;font-weight:800;color:var(--ink2);background:#fff;border-radius:8px;padding:4px 6px;line-height:1.35}
+.pain .ev{font-size:12.5px;line-height:1.4;color:var(--ink2);font-weight:500;border-top:1px dashed #F1C3AC;padding-top:5px}
+.alt{background:#F3F6F7;border:1.5px solid #D9E3E5;border-radius:12px;padding:9px 10px;font-size:14px;line-height:1.45;font-weight:600;color:var(--ink2);display:flex;flex-direction:column;justify-content:center;gap:6px}
+.alt .v{align-self:flex-start;font-size:12.5px;font-weight:900;border-radius:999px;padding:2px 8px}
+.v.no{background:var(--hot);color:#fff} .v.yes{background:#8A9A9E;color:#fff} .v.half{background:#E0A13A;color:#fff}
+.opp{background:var(--mint);border:1.5px solid #B9DCD3;border-radius:12px;padding:9px 10px;display:flex;flex-direction:column;justify-content:center}
+.opp.hot{background:var(--teal);border-color:var(--teal);color:#fff}
+.opp.none{background:#F3F3F3;border-color:#DDD;color:#888}
+.opp .k{align-self:flex-start;display:inline-block;font-size:12px;font-weight:900;color:#fff;background:var(--teal);padding:2px 8px;border-radius:999px}
+.opp.hot .k{background:#fff;color:var(--teal)}
+.opp.none .k{background:#AAA}
+.opp p{font-size:14.5px;line-height:1.45;font-weight:700;margin-top:6px}
+.opp.hot a.r{background:#fff}
+.sum1{grid-column:1/-1;display:flex;align-items:center;gap:16px;background:var(--lemon);border:2px solid #F2D46B;border-radius:14px;padding:10px 18px}
+.sum1 b{flex:none;font-size:15px;font-weight:900;color:#7A5B00}
+.sum1 span{font-size:20px;font-weight:800;line-height:1.45}
+.sum1 em{font-style:normal;color:var(--hot)}
+
+/* ---------- 2. 대안 비교 ---------- */
+.why2{flex:1;display:grid;grid-template-columns:1.6fr 1fr;gap:18px;margin-top:14px;min-height:0}
+table.cmp{width:100%;height:100%;border-collapse:separate;border-spacing:0;background:var(--paper);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.cmp th{background:var(--ink);color:#fff;font-size:15px;font-weight:800;padding:11px 8px;text-align:center;line-height:1.3}
+.cmp th:first-child{text-align:left;padding-left:14px}
+.cmp th small{display:block;font-size:11px;font-weight:600;opacity:.75;margin-top:2px}
+.cmp td{font-size:17px;font-weight:800;text-align:center;padding:18px 8px;border-top:1px solid #E8F1F0;line-height:1.3}
+.cmp td small{display:block;font-size:11.5px;font-weight:600;color:var(--muted);margin-top:3px}
+.cmp td:first-child{text-align:left;padding-left:14px;font-size:15.5px}
+.cmp td:first-child small{margin-left:30px}
+.cmp td.y{color:var(--teal)} .cmp td.n{color:var(--hot)} .cmp td.m{color:#9AA8AB}
+.ano{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;font-size:12px;font-weight:900;margin-right:8px;vertical-align:1px}
+.cmp tr.us td{background:var(--lemon);color:var(--ink);border-top:2px solid #F2D46B}
+.cmp tr.us td small{color:#7A6A2E}
+.ano.us{background:#B98A00}
+.vp2{background:var(--paper);border:2px solid var(--teal);border-radius:20px;padding:20px 22px;display:flex;flex-direction:column;gap:14px}
+.vp2 .lbl{font-size:14px;font-weight:900;color:var(--teal);letter-spacing:.06em}
+.vp2 .big2{font-size:26px;font-weight:900;line-height:1.45}
+.vp2 .big2 em{font-style:normal;color:var(--teal);background:var(--mint);border-radius:6px;padding:0 4px}
+.logic{flex:1;display:flex;flex-direction:column;gap:10px}
+.logic div{flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px;font-size:18px;line-height:1.5;font-weight:600;background:#F5F9F9;border-radius:12px;padding:12px 16px}
+.logic div span{display:block}
+.logic div small{display:block;font-size:13px;font-weight:600;color:var(--muted);line-height:1.45}
+.logic b{font-weight:900}
+
+/* ---------- 3. BM 캔버스 ---------- */
+.bmc{flex:1;display:grid;grid-template-columns:repeat(10,1fr);grid-template-rows:1fr 1fr 1.05fr;gap:8px;margin-top:10px;min-height:0}
+.bk{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;overflow:hidden}
+.bk h3{font-size:16.5px;font-weight:900;color:var(--teal);display:flex;align-items:center;gap:6px}
+.bk h3 i{margin-left:auto;font-style:normal;font-size:10.5px;font-weight:800;color:#fff;background:var(--teal);border-radius:999px;padding:1px 7px;white-space:nowrap}
+.bk.hyp h3 i{background:var(--hot)}
+.bq{font-size:13.5px;font-weight:800;color:var(--ink);background:var(--lemon);border-radius:8px;padding:4px 8px;line-height:1.35}
+.bq small{display:block;font-weight:600;color:#7A6A2E;font-size:12px}
+.mt{display:flex;flex-direction:column;gap:4px}
+.mt>div{display:grid;grid-template-columns:36% 1fr;gap:6px;align-items:start;background:#F5F9F9;border-radius:8px;padding:5px 7px}
+.hyp .mt>div{background:#FFF3EC}
+.mt b{font-size:14px;font-weight:900;line-height:1.3}
+.mt span{font-size:13px;font-weight:600;line-height:1.35;color:var(--ink2)}
+.mt em{display:block;font-style:normal;font-size:12px;font-weight:800;color:var(--teal);margin-top:1px}
+.hyp .mt em{color:var(--hot)}
+.kp{grid-column:1/3;grid-row:1/3}
+.ka{grid-column:3/5;grid-row:1/2}
+.kr{grid-column:3/5;grid-row:2/3}
+.vp{grid-column:5/7;grid-row:1/3;background:var(--teal);border-color:var(--teal);color:#fff}
+.vp h3{color:#fff} .vp h3 i{background:#fff;color:var(--teal)}
+.vp .lead{font-size:17px;font-weight:900;line-height:1.4}
+.vrow{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border-radius:10px;padding:7px 9px}
+.vrow .pn{flex:none;font-size:12px;font-weight:900;background:var(--sun);color:var(--ink);border-radius:999px;padding:2px 7px}
+.vrow p{font-size:15px;font-weight:800;line-height:1.3}
+.cr{grid-column:7/9;grid-row:1/2}
+.ch{grid-column:7/9;grid-row:2/3}
+.cs{grid-column:9/11;grid-row:1/3}
+.co{grid-column:1/6;grid-row:3/4}
+.rs{grid-column:6/11;grid-row:3/4}
+.big{font-size:38px;font-weight:900;color:var(--teal);line-height:1.15;letter-spacing:-.03em}
+.big small{font-size:16px;margin-left:3px}
+.seg{font-size:14px;font-weight:900;line-height:1.35}
+.seg small{display:block;font-size:12.5px;font-weight:700;color:var(--muted);margin-top:1px}
+.hyp{border:1.5px dashed #E9B79F;background:#FFFBF8}
+.hyp h3{color:var(--hot)}
+.need{margin-top:auto;font-size:12.5px;line-height:1.35;font-weight:700;color:var(--hot);background:#FFF0E7;border-radius:8px;padding:5px 8px}
+.need::before{content:"아직 근거 없음 → ";font-weight:900}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.cost{background:#FFF3EC;border-radius:10px;padding:6px 9px}
+.cost .ct{font-size:15px;font-weight:900}
+.cost .ct small{font-size:10.5px;font-weight:700;color:var(--muted);margin-left:4px}
+.cost ul{list-style:none;margin-top:3px;display:flex;flex-direction:column;gap:2px}
+.cost li{font-size:13.5px;font-weight:700;line-height:1.35;padding-left:9px;position:relative}
+.cost li::before{content:"·";position:absolute;left:0;color:var(--hot);font-weight:900}
+.cost li small{font-size:12px;font-weight:600;color:var(--muted);margin-left:3px}
+.sides{display:flex;gap:8px;margin-top:10px;font-size:12.5px;font-weight:800}
+.sides span{border-radius:999px;padding:4px 12px;background:#EAF2F1;color:var(--ink2)}
+.sides span.c{background:var(--teal);color:#fff}
+
+/* ---------- 4. 추가자료 ---------- */
+.done{display:flex;gap:10px;margin-top:10px}
+.done div{flex:1;border-radius:12px;padding:8px 12px;font-size:14px;font-weight:700;line-height:1.4}
+.done .ok{background:var(--mint);color:var(--teal)}
+.done .half{background:#FFF4DD;color:#8A5A00}
+.done b{font-weight:900}
+.needs{flex:1;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr;gap:10px;margin-top:10px;min-height:0}
+.nd{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:11px 13px;display:flex;flex-direction:column;gap:6px;position:relative}
+.nd.first{border:2px solid var(--hot)}
+.nd.first::after{content:"먼저";position:absolute;right:10px;top:-10px;background:var(--sun);color:var(--ink);font-size:11px;font-weight:900;padding:2px 8px;border-radius:999px}
+.nd .hd{display:flex;align-items:center;gap:6px}
+.nd .hd b{font-size:17px;font-weight:900}
+.nd .hd span{font-size:10.5px;font-weight:800;color:#fff;background:var(--ink);border-radius:999px;padding:2px 7px}
+.nd dl{display:grid;grid-template-columns:62px 1fr;gap:5px 7px;font-size:14px;line-height:1.4}
+.nd dt{font-size:12.5px;font-weight:900;color:var(--teal);padding-top:1px}
+.nd dd{font-weight:600}
+.nd dd.q{font-weight:800;color:var(--hot)}
+.nd dd.u{font-weight:800}
+
+.nav{position:fixed;right:12px;bottom:10px;display:flex;gap:6px;z-index:5;align-items:center}
+.nav em{font:700 11.5px var(--sans);font-style:normal;color:var(--muted);background:rgba(255,255,255,.85);padding:4px 8px;border-radius:8px}
+.nav button{font:700 13px var(--sans);border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:5px 11px;cursor:pointer}
+/* ===== 색 정리: 청색 · 빨간색 · 노란색만 ===== */
+html,body{background:#EDEDED}
+.slide{background:#FFFFFF}
+.track span{background:#fff;border:1px solid var(--line)}
+.track span.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.ai{background:#fff;border:1.5px solid var(--hot);color:var(--hot)}
+.guide{background:#fff;color:var(--ink);border:2px solid var(--teal)}
+.guide em{color:var(--hot)}
+.guide b{background:var(--sun);color:var(--ink)}
+a.r{background:#fff}
+.who .hd{background:#fff;border-bottom:1px solid var(--line)}
+.st{background:var(--teal)}
+.st.hot{background:var(--hot)}
+.pain{background:#fff;border-color:var(--line)}
+.pain.hot{background:#fff;border:2px solid var(--hot)}
+.pain .ba{background:#fff;border:1px solid var(--line)}
+.pain .ev{border-top-color:var(--line)}
+.alt{background:#fff;border-color:var(--line)}
+.v.no{background:var(--hot);color:#fff}
+.v.half{background:var(--sun);color:var(--ink)}
+.v.yes{background:#fff;color:var(--muted);border:1px solid var(--line)}
+.opp{background:#fff;border-color:var(--teal)}
+.opp .k{background:var(--teal)}
+.opp.none{background:#fff;border-color:var(--line);color:var(--muted)}
+.opp.none .k{background:#fff;color:var(--muted);border:1px solid var(--line)}
+.cmp th{background:var(--teal)}
+.ano{background:var(--teal)}
+.logic div{background:#fff;border:1px solid var(--line)}
+.vp2 .big2 em{background:#fff;color:var(--teal);border-bottom:3px solid var(--sun);border-radius:0}
+.sides span{background:#fff;border:1px solid var(--line)}
+.sides span.c{background:var(--teal);border-color:var(--teal);color:#fff}
+.mt>div,.hyp .mt>div{background:#fff;border:1px solid var(--line)}
+.hyp{background:#fff}
+.need{background:#fff;border-left:3px solid var(--hot);border-radius:0 8px 8px 0}
+.cost{background:#fff;border:1px solid var(--line)}
+.done .ok{background:#fff;border:1.5px solid var(--teal);color:var(--teal)}
+.done .half{background:var(--lemon);color:var(--ink)}
+.nd .hd span{background:var(--teal)}
+</style>
+</head>
+<body>
+
+<!-- ================= 1. 페르소나 + 여정 ================= -->
+<section class="slide on">
+  <div class="track"><span class="on">1 누가·어디서 막히나</span><span>2 왜 우리여야 하나</span><span>3 사업으로 정리</span><span>4 아직 부족한 근거</span></div>
+  <div class="top">
+    <h1>기획자 페르소나 · <em>어디서 막히고, 무엇이 기회인가</em></h1>
+    <span class="ai">이름·나이 = AI 초안 🔴</span>
+  </div>
+  <div class="guide"><b>이 자료의 질문</b><span>"기획자는 왜 굳이 우리 에이전트를 써야 하나?" · 단계마다 위에서 아래로 읽어요: ① 이 일에서 무엇이 힘든지 → ② 기획자가 지금 쓸 수 있는 다른 서비스로 해결되는지 → ③ 우리가 조사해 둔 자료로 해결해 줄 수 있는지. <em>②는 안 되고 ③은 되는 곳</em>이 우리 기회예요.</span></div>
+  <div class="body">
+    <div class="who">
+      <div class="hd">
+        <span class="pill">상품기획 BM · 4년 차</span>
+        <div class="idrow"><div class="av">윤</div><div class="nm">윤소라<small>32세 · 가상 인물</small></div></div>
+      </div>
+      <div class="facts">
+        <div><span>회사</span><b>대구 한방 화장품 브랜드, <em>직원 10명 미만</em>. 화장품 생산 업체 10곳 중 9곳이 이 규모 [1][21]</b></div>
+        <div><span>팀</span><b>BM 1~2명. 연구·규제·원가 담당 없음 (해석)</b></div>
+        <div><span>경력</span><b>4년 차. BM 공고 경력 요건 2~5년, 3~8년 [4][5]</b></div>
+        <div><span>하는 일</span><b>조사 → 기획 → 원료 → 원가 → 용기 → 법규·출시를 혼자 [3][4][5]</b></div>
+        <div><span>생산</span><b>ODM에 위탁 [4][5]</b></div>
+        <div><span>지역</span><b>대구 (책임판매업체 653곳) [14]</b></div>
+      </div>
+      <div class="want"><b>원하는 것</b><p>계절만 고르면 쓸 수 있는 약재와 걸리지 않는 문구까지 확인된 라인 후보</p></div>
+    </div>
+
+    <div class="chain">
+      <div></div>
+      <div class="st"><small>1</small>시장·트렌드 조사</div>
+      <div class="st"><small>2</small>상품 기획</div>
+      <div class="st hot"><small>3</small>원료·제형 고르기</div>
+      <div class="st"><small>4</small>원가·견적</div>
+      <div class="st"><small>5</small>용기·패키지</div>
+      <div class="st hot"><small>6</small>광고 표현·출시</div>
+
+      <div class="rl">하는 일<small>공고·워크넷</small></div>
+      <div class="do">소비자 구매 패턴·취향 조사 [3]</div>
+      <div class="do">신규 아이템 기획·제안 [5]</div>
+      <div class="do">원료·제형 방향 기획 [5]</div>
+      <div class="do">원가·견적 관리 [4]</div>
+      <div class="do">용기·패키지 업체 소통 [5]</div>
+      <div class="do">법규·인증 확인 [5]</div>
+
+      <div class="rl p">① 무엇이<br>막히나<small>페인포인트</small></div>
+      <div class="pain"><p>기획 자료 찾기·규제 검토에 시간이 들어요</p><div class="num">약 12<small>일</small></div><div class="ba">AI 없이 약 12일 → AI로 약 5분</div><div class="ev">아모레퍼시픽 연구원 베타 테스트 [6][7]</div></div>
+      <div class="pain"><p>기획안 하나 만드는 데 오래 걸려요</p><div class="num">1~3<small>개월</small></div><div class="ba">기존 1~3개월 → AI로 30초</div><div class="ev">콜마 측 설명 [8][22]</div></div>
+      <div class="pain hot"><p>쓰면 안 되는 원료를 넣으면 판매가 멈춰요</p><div class="num">14<small>/41건</small></div><div class="ba">안전기준 위반 41건 중 사용금지·제한 원료 14건</div><div class="ev">2021~2025.6 [24] · 원료 검토 AI 없이 약 6일 → 5분 [6]</div></div>
+      <div class="pain"><p>원가가 올라 출시가를 정하기 어려워요</p><div class="num">10%<small> 이내</small></div><div class="ba">한 ODM이 일부 고객사 납품단가 인상</div><div class="ev">나프타 부족 [15] · 업계 최대 애로는 원부자재 수급·단가 [25]</div></div>
+      <div class="pain"><p>용기를 구하는 데 몇 달이 걸려요</p><div class="num">3~6<small>개월</small></div><div class="ba">기존 패키지 소싱 기간</div><div class="ev">[26] · 작은 브랜드일수록 조달 어려움 [11]</div></div>
+      <div class="pain hot"><p>효능 문구 하나로 적발될 수 있어요</p><div class="num">64<small>%</small></div><div class="ba">위반 83건 중 53건이 의약품 오인 광고</div><div class="ev">식약처 온라인 점검 209건 [12][23]</div></div>
+
+      <div class="rl a">② 다른 서비스로<br>해결되나?<small>지금 쓸 수 있는 것</small></div>
+      <div class="alt"><span class="v no">작은 브랜드는 못 씀</span>대기업 사내 AI는 사내 연구원 전용 [6]</div>
+      <div class="alt"><span class="v yes">이미 풀림</span>콜마 AI가 30초에 기획안 제공, 중소 브랜드 대상 [8]</div>
+      <div class="alt"><span class="v no">안 풀림</span>콜마 AI 기사에 원료 규제 확인 언급 없음 [8]</div>
+      <div class="alt"><span class="v half">일부</span>단가는 ODM 견적을 받아야 알 수 있음 (해석)</div>
+      <div class="alt"><span class="v yes">이미 풀림</span>콜마 AI 패키지 검색이 1개월 이내로 줄임 [26]</div>
+      <div class="alt"><span class="v no">안 풀림</span>콜마 AI 기사에 광고 문구 확인 언급 없음 [8], BM이 직접 확인 [5]</div>
+
+      <div class="rl o">③ 우리 자료로<br>해결되나?<small>그래서 우리 기회</small></div>
+      <div class="opp"><span class="k">보조</span><p>기상청 평년값 기반 계절 → 피부 고민 표 [17]</p></div>
+      <div class="opp none"><span class="k">차별점 아님</span><p>속도는 대안이 있음. 계절 근거로만 보탬</p></div>
+      <div class="opp hot"><span class="k">핵심 기회</span><p>약재 18종 규제·선점 표 + 고시 성분 대조로 쓸 수 있는 약재만 [16][18]</p></div>
+      <div class="opp"><span class="k">보조</span><p>견적 전 중저가 ml당 정가로 출시가 범위 [19]</p></div>
+      <div class="opp none"><span class="k">기회 아님</span><p>대안이 있고 우리 자료도 없음</p></div>
+      <div class="opp hot"><span class="k">핵심 기회</span><p>식약처 지침 기준 금지 표현을 출시 전에 표시 [20]</p></div>
+
+      <div class="sum1"><b>결론</b><span>기획자가 지금 다른 서비스로는 해결할 수 없고, 우리가 조사해 둔 자료로 해결해 줄 수 있는 곳은 <em>'쓸 수 있는 약재 고르기'</em>와 <em>'광고 문구 확인'</em> 두 곳뿐이에요. 이게 기획자가 우리 에이전트를 써야 하는 이유예요.</span></div>
+    </div>
+  </div>
+  <div class="src">[번호]를 누르면 원문이 열려요 · 직접 계산한 값은 "10곳 중 9곳"(12,266 ÷ 13,976 = 87.8%) 하나 · 페인 숫자는 기사의 "AI 도입 전 → 후" 값을 그대로 옮겼고, 대기업·콜마 기준이라 작은 브랜드 BM 기준 시간은 확인 필요(4장) · "언급 없음"은 기사 기준이며 기능이 없다는 뜻은 아님 ·
+  [1] 뉴스서울 2025-05-27 · [3] 워크넷 상품기획자 🟢 · [4][5] 원티드 BM 공고 · [6] 아모레퍼시픽 보도자료 2026-07-28 · [7] 한국경제 2026-07-28 · [8] 이데일리 2026-02-02 · [11] 파이낸셜뉴스 2026-10-20 · [12] 뉴시스 2025-08-06 · [14] KOSIS 🟢 · [15] 파이낸셜뉴스 2026-04-22 · [16]~[20] 팀 조사 자료 · [21]~[26] 장업신문</div>
+</section>
+
+<!-- ================= 2. 왜 우리 에이전트인가 ================= -->
+<section class="slide">
+  <div class="track"><span>1 누가·어디서 막히나</span><span class="on">2 왜 우리여야 하나</span><span>3 사업으로 정리</span><span>4 아직 부족한 근거</span></div>
+  <div class="top">
+    <h1>왜 굳이 <em>우리 에이전트</em>여야 하나</h1>
+    <span class="ai">○ 있음 · — 기사에 언급 없음 · ✕ 쓸 수 없음</span>
+  </div>
+  <div class="rule0"><span class="t">이 표를 보는 이유</span><span class="c" style="font-size:16px;font-weight:800">기획자가 이미 쓸 수 있는 서비스가 해결해 주는 일이라면 우리 에이전트를 쓸 이유가 없어요. 그래서 <i style="font-size:16px">다른 서비스는 못 하고(— · ✕)</i> 우리는 할 수 있는(노란 줄 ○) 칸을 찾아요.</span></div>
+  <div class="why2">
+    <table class="cmp">
+      <tr><th>지금 쓸 수 있는 방법</th><th>작은 브랜드 BM이<br>쓸 수 있나</th><th>기획 속도<small>1장 페인 1·2</small></th><th>한방 약재<br>규제 확인<small>1장 페인 3</small></th><th>광고 표현<br>확인<small>1장 페인 6</small></th><th>계절 기후<br>근거</th></tr>
+      <tr><td><span class="ano">1</span>혼자 직접 찾기</td><td class="y">○</td><td class="n">느림<small>대기업도 AI 없이 12일 [6]</small></td><td class="m">직접 확인</td><td class="m">직접 확인<small>BM 업무 [5]</small></td><td class="m">직접 확인</td></tr>
+      <tr><td><span class="ano">2</span>ODM 기획 컨설팅<small>예: 코스맥스 인큐베이팅</small></td><td class="y">○<small>의뢰하면 [9]</small></td><td class="y">짧게는 3개월<small>브랜드 출시까지 [9]</small></td><td class="m">—</td><td class="m">—</td><td class="m">—</td></tr>
+      <tr><td><span class="ano">3</span>콜마 AI 상품기획<small>라우드랩스</small></td><td class="y">○<small>1인·중소 브랜드 [8]</small></td><td class="y">30초 [8][22]</td><td class="m">—<small>기사에 언급 없음</small></td><td class="m">—<small>기사에 언급 없음</small></td><td class="m">—<small>트렌드 키워드 기반</small></td></tr>
+      <tr><td><span class="ano">4</span>대기업 사내 AI<small>예: 아모레퍼시픽 LEMON</small></td><td class="n">✕<small>사내 연구원 전용 [6]</small></td><td class="y">12일 → 5분 [6]</td><td class="y">○<small>규제 검토 [6]</small></td><td class="m">—</td><td class="m">—</td></tr>
+      <tr class="us"><td><span class="ano us">5</span>우리 에이전트</td><td>○<small>작은 브랜드 BM 기준</small></td><td>미검증<small>시험 실행 필요</small></td><td>○<small>약재 18종 표·고시 성분 [16][18]</small></td><td>○<small>식약처 지침 기준 [20]</small></td><td>○<small>기상청 평년값 [17]</small></td></tr>
+    </table>
+    <div class="vp2">
+      <div class="lbl">표에서 읽히는 것</div>
+      <div class="logic">
+        <div><span><b>속도</b>는 ③ 콜마 AI가 이미 해요 → 우리 차별점이 아니에요</span><small>근거: ③ 콜마 AI 30초 [8][22] · ② ODM 짧게는 3개월 [9]</small></div>
+        <div><span><b>약재 규제 확인</b>은 ④ 대기업 AI만 하는데 작은 브랜드는 못 써요 → 우리 기회</span><small>근거: ④ 사내 연구원 전용 [6] · ③ 기사에 언급 없음 [8] · 우리: 약재 18종 표·고시 성분 대조 [16][18]</small></div>
+        <div><span><b>광고 표현 확인</b>은 ①~④ 어디서도 안 보여요 → 우리 기회</span><small>근거: 위반의 64%가 의약품 오인 [12][23] · 우리: 식약처 지침 기준 규칙 [20]</small></div>
+      </div>
+      <div class="lbl" style="margin-top:6px">그래서 우리의 가치 제안</div>
+      <p class="big2">작은 한방 브랜드 BM이 혼자서도, <em>쓸 수 있는 약재</em>와 <em>걸리지 않는 표현</em>까지 확인된 계절 라인 후보를 받는다</p>
+    </div>
+  </div>
+  <div class="src">비교는 기사·보도자료에 소개된 내용 기준이에요. "—"는 기능이 없다는 뜻이 아니라 언급이 없다는 뜻이라, 라우드랩스 플랫폼을 직접 써 보고 확인해야 해요(4장) · [5] 원티드 공고 · [6] 아모레퍼시픽 보도자료 · [8] 이데일리 · [9] 한국경제 2026-07-01 · [16]~[20] 팀 조사 자료 · [22] 장업신문 2026-02-02</div>
+</section>
+
+<!-- ================= 3. BM 캔버스 ================= -->
+<section class="slide">
+  <div class="track"><span>1 누가·어디서 막히나</span><span>2 왜 우리여야 하나</span><span class="on">3 사업으로 정리</span><span>4 아직 부족한 근거</span></div>
+  <div class="top">
+    <h1>BM 캔버스 · <em>사업을 9가지 질문으로 나눠 보기</em></h1>
+    <span class="ai">점선 = 아직 근거 없음</span>
+  </div>
+  <div class="guide"><b>왜 9칸?</b><span>사업이 되려면 "누구에게 · 무엇을 · 어떻게 전하고 · 무엇으로 만들고 · 돈은 어떻게"에 모두 답해야 해요. <em>노란 줄 = 그 칸이 답하는 질문</em>이에요. <em>빨간 줄 = 아직 근거가 없어서 찾아야 할 자료</em>예요. 가운데 가치 제안은 2장 결론이고, 오른쪽 고객은 1장 페르소나예요.</span></div>
+  <div class="sides"><span>← 왼쪽: 어떻게 만드나 (파트너·활동·자원)</span><span class="c">가운데: 왜 쓰나 (가치)</span><span>오른쪽: 누구에게 어떻게 전하나 (관계·채널·고객) →</span><span>아래: 돈 (비용·수익)</span></div>
+  <div class="bmc">
+    <div class="bk kp hyp"><h3>핵심 파트너<i>근거 부족</i></h3>
+      <div class="bq">누구 도움이 있어야 하나?<small>우리 혼자 못 구하는 것을 받을 곳</small></div>
+      <div class="mt">
+        <div><b>식약처·기상청·KOSIS</b><span>규제·광고 지침·기후·업체 통계<em>데이터 제공처 (공개 자료)</em></span></div>
+        <div><b>ODM</b><span>제형 가능 여부·견적 기준<em>생산 연계 (가설)</em></span></div>
+        <div><b>약령시 약재상</b><span>약재 산지·유통 이야기<em>콘텐츠 협력 (가설)</em></span></div>
+        <div><b>지원기관</b><span>시범 사용 기업 소개<em>채널 연계 (가설)</em></span></div>
+      </div>
+      <div class="need">누가 어떤 조건으로 협력할지 확인 필요</div></div>
+    <div class="bk ka"><h3>핵심 활동<i>근거 있음</i></h3>
+      <div class="bq">계속 해야 하는 일은?<small>안 하면 가치가 사라지는 일</small></div>
+      <div class="mt">
+        <div><b>자료 갱신</b><span>계절마다, 식약처 규정 바뀔 때 [13]</span></div>
+        <div><b>결과 검토</b><span>실행마다 출처 확인 [13]</span></div>
+      </div></div>
+    <div class="bk kr"><h3>핵심 자원<i>근거 있음</i></h3>
+      <div class="bq">무엇이 있어야 만들 수 있나?<small>2장 "우리만 있는 것"</small></div>
+      <div class="mt">
+        <div><b>팀 조사 자료</b><span>계절표·약재 18종 표·가격 기준·광고 규칙 [16][17][19][20]</span></div>
+        <div><b>공공 DB</b><span>KOSIS·식약처·기상청 원자료</span></div>
+      </div></div>
+    <div class="bk vp"><h3>가치 제안<i>2장 결론</i></h3>
+      <div class="bq" style="background:#fff">왜 우리 것을 써야 하나?<small>대안이 못 하는 것</small></div>
+      <div class="lead">계절만 고르면 쓸 수 있는 약재·걸리지 않는 표현까지 확인된 라인 후보</div>
+      <div class="vrow"><span class="pn">핵심</span><p>쓸 수 있는 약재만 (1장 페인 3)</p></div>
+      <div class="vrow"><span class="pn">핵심</span><p>걸리는 광고 표현 미리 표시 (1장 페인 6)</p></div>
+      <div class="vrow"><span class="pn">보조</span><p>계절 근거·출시가 범위 (1장 페인 1·4)</p></div>
+    </div>
+    <div class="bk cr hyp"><h3>고객 관계<i>근거 부족</i></h3>
+      <div class="bq">어떻게 계속 쓰게 하나?</div>
+      <div class="mt">
+        <div><b>셀프 서비스</b><span>BM이 계절을 골라 직접 실행</span></div>
+        <div><b>재사용</b><span>시즌 시작 전마다 (연 4회 가정)</span></div>
+      </div><div class="need">실제 사용 횟수 조사 필요</div></div>
+    <div class="bk ch hyp"><h3>채널<i>근거 부족</i></h3>
+      <div class="bq">어떻게 만나서 전하나?</div>
+      <div class="mt">
+        <div><b>지금</b><span>Claude 프로젝트 (팀 안) [13]</span></div>
+        <div><b>확장</b><span>지원기관 교육에서 소개 (가설)</span></div>
+      </div><div class="need">BM에게 알릴 경로 사례 필요</div></div>
+    <div class="bk cs hyp"><h3>고객 세그먼트<i>일부 근거</i></h3>
+      <div class="bq">누구를 위한 것인가?<small>1장 페르소나</small></div>
+      <div class="seg">1차 · 우리 브랜드 BM<small>팀 결정 [13]</small></div>
+      <div class="seg">확장 · 직원 10명 미만 생산 업체 BM</div>
+      <div class="big">12,266<small>곳</small></div>
+      <div class="seg"><small>2024년 [1][21] · 실제로 쓸지는 모름</small></div>
+      <div class="need">실제로 쓸 의향이 있는지 조사 필요</div>
+    </div>
+    <div class="bk co hyp"><h3>비용 구조<i>금액 없음</i></h3>
+      <div class="bq">무엇에 돈이 드나?<small>고정비 = 안 써도 나감 · 변동비 = 쓸수록 늘어남</small></div>
+      <div class="two">
+        <div class="cost"><div class="ct">고정비</div><ul><li>자료 갱신 인력 시간 <small>계절마다</small></li><li>AI 서비스 구독료</li></ul></div>
+        <div class="cost"><div class="ct">변동비</div><ul><li>실행 1회당 AI 사용료</li><li>실사 이미지 생성 <small>후보 수만큼</small></li></ul></div>
+      </div>
+      <div class="need">요금표·1회 사용량으로 금액 계산 필요</div></div>
+    <div class="bk rs hyp"><h3>수익원<i>가설</i></h3>
+      <div class="bq">무엇으로 돈을 버나?<small>비용보다 커야 사업이 됨</small></div>
+      <div class="two">
+        <div class="cost"><div class="ct">지금 <small>팀 과제</small></div><ul><li>사내 도구라 수익 없음</li></ul></div>
+        <div class="cost"><div class="ct">확장 가설</div><ul><li>건당: 시즌 리포트 1건마다</li><li>구독: 월·연 단위</li></ul></div>
+      </div>
+      <div class="need">얼마면 돈을 낼지, 비슷한 서비스 요금 조사 필요</div></div>
+  </div>
+  <div class="src">BM 캔버스는 오스터왈더·피그누어 『비즈니스 모델의 탄생』(2010)의 9블록 틀이에요 · [1] 뉴스서울 · [13] 팀 에이전트 기획안 · [16]~[20] 팀 조사 자료 · [21] 장업신문 2025-06-02</div>
+</section>
+
+<!-- ================= 4. 추가자료 ================= -->
+<section class="slide">
+  <div class="track"><span>1 누가·어디서 막히나</span><span>2 왜 우리여야 하나</span><span>3 사업으로 정리</span><span class="on">4 아직 부족한 근거</span></div>
+  <div class="top">
+    <h1>아직 부족한 근거 · <em>무엇을 찾아서 어디를 고치나</em></h1>
+    <span class="ai">찾을 곳 = 제안 (아직 확인 안 함)</span>
+  </div>
+  <div class="guide"><b>왜 필요?</b><span>지금 근거가 비어 있거나 약한 칸은 <em>발표에서 질문을 받으면 답할 수 없는 곳</em>이에요. 카드마다 받을 질문과, 자료를 찾으면 어느 장의 어느 칸이 바뀌는지 적었어요.</span></div>
+  <div class="done">
+    <div class="ok"><b>✅ 확인 끝난 것</b> "화장품 만드는 회사 10곳 중 9곳은 직원 10명 미만"은 다른 기사로 한 번 더 확인해서 맞았어요 [1][21]</div>
+  </div>
+  <div class="needs">
+    <div class="nd first"><div class="hd"><b>작은 브랜드 BM의 실제 시간</b><span>1장</span></div>
+      <dl><dt>지금 상태</dt><dd>1장에 쓴 "12일", "1~3개월" 같은 숫자는 대기업과 콜마가 밝힌 값이라, 작은 회사 BM이 실제로 얼마나 걸리는지는 아직 몰라요</dd>
+      <dt>받을 질문</dt><dd class="q">"작은 회사 BM도 정말 그만큼 걸리나요?"</dd>
+      <dt>찾을 것</dt><dd>BM 5~10명 설문·인터뷰: 단계별 시간, 가장 막히는 단계</dd>
+      <dt>바뀌는 곳</dt><dd class="u">1장 숫자를 작은 회사 BM이 직접 답한 값으로 바꿔요</dd></dl></div>
+    <div class="nd first"><div class="hd"><b>콜마 AI도 되는지</b><span>2장</span></div>
+      <dl><dt>지금 상태</dt><dd>콜마 AI가 원료·광고 문구까지 확인해 주는지 기사만 보고 판단했어요</dd>
+      <dt>받을 질문</dt><dd class="q">"콜마 AI도 그거 되지 않나요?"</dd>
+      <dt>찾을 것</dt><dd>라우드랩스 플랫폼을 직접 써 보고 기능 기록</dd>
+      <dt>바뀌는 곳</dt><dd class="u">2장 표의 "—" 칸을 "된다/안 된다"로 확실히 채워요</dd></dl></div>
+    <div class="nd first"><div class="hd"><b>정말 쓸까</b><span>3장 고객</span></div>
+      <dl><dt>지금 상태</dt><dd>작은 회사가 12,266곳 있다는 것만 알고, 그중 몇 곳이 실제로 쓸지는 몰라요</dd>
+      <dt>받을 질문</dt><dd class="q">"그 사람들이 진짜 이걸 쓸까요?"</dd>
+      <dt>찾을 것</dt><dd>위 설문에 "써 볼 의향·가장 원하는 기능" 질문 추가</dd>
+      <dt>바뀌는 곳</dt><dd class="u">3장 "누구를 위한 것인가"·"왜 써야 하나" 칸</dd></dl></div>
+    <div class="nd"><div class="hd"><b>얼마나 자주 쓸까</b><span>3장 관계</span></div>
+      <dl><dt>지금 상태</dt><dd>"1년에 4번 쓴다"는 계절이 4개라서 그렇게 짐작한 거예요</dd>
+      <dt>받을 질문</dt><dd class="q">"작은 브랜드가 1년에 몇 번 신제품을 내요?"</dd>
+      <dt>찾을 것</dt><dd>연간 신제품 출시 횟수 보도, 유통사 시즌 행사 일정</dd>
+      <dt>바뀌는 곳</dt><dd class="u">3장 "계속 쓰게 하는 법"·"돈 버는 법" 칸</dd></dl></div>
+    <div class="nd"><div class="hd"><b>어떻게 알릴까</b><span>3장 채널</span></div>
+      <dl><dt>지금 상태</dt><dd>지원기관을 통해 알린다는 건 아직 짐작이에요</dd>
+      <dt>받을 질문</dt><dd class="q">"작은 회사 BM에게 어떻게 알려요?"</dd>
+      <dt>찾을 것</dt><dd>영세 업체 대상 정부 사업 사례 (예: 식약처 중소업체 1:1 컨설팅 1,500곳 [27])</dd>
+      <dt>바뀌는 곳</dt><dd class="u">3장 "어떻게 만나서 전하나"·"누구 도움이 필요하나" 칸</dd></dl></div>
+    <div class="nd"><div class="hd"><b>누가 도와줄까</b><span>3장 파트너</span></div>
+      <dl><dt>지금 상태</dt><dd>ODM·약재상이 왜, 무엇을 도와줄지 아직 짐작이에요</dd>
+      <dt>받을 질문</dt><dd class="q">"ODM이 왜 협력해 주죠?"</dd>
+      <dt>찾을 것</dt><dd>ODM 소량 생산·기획 지원 공개 안내, 공공데이터 이용 조건</dd>
+      <dt>바뀌는 곳</dt><dd class="u">3장 "누구 도움이 필요하나" 칸의 "(가설)"을 지워요</dd></dl></div>
+    <div class="nd"><div class="hd"><b>돈이 얼마 드나</b><span>3장 비용</span></div>
+      <dl><dt>지금 상태</dt><dd>무엇에 돈이 드는지는 적었지만, 금액은 비어 있어요</dd>
+      <dt>받을 질문</dt><dd class="q">"한 번 돌리는 데 얼마 들어요?"</dd>
+      <dt>찾을 것</dt><dd>AI·이미지 생성 공식 요금표, 시험 실행 사용량</dd>
+      <dt>바뀌는 곳</dt><dd class="u">3장 "무엇에 돈이 드나" 칸 → 최소 이만큼은 받아야 한다는 기준</dd></dl></div>
+    <div class="nd"><div class="hd"><b>얼마에 팔까</b><span>3장 수익</span></div>
+      <dl><dt>지금 상태</dt><dd>"한 번에 얼마" 또는 "한 달에 얼마"로 받는다는 건 아직 짐작이에요</dd>
+      <dt>받을 질문</dt><dd class="q">"얼마면 돈을 내요?"</dd>
+      <dt>찾을 것</dt><dd>콜마 AI가 유료로 바뀐 뒤 가격, 설문에서 "얼마면 낼지"</dd>
+      <dt>바뀌는 곳</dt><dd class="u">3장 "무엇으로 돈을 버나" 칸</dd></dl></div>
+  </div>
+  <div class="src">"먼저" = 1·2장의 핵심 기회 논리에 바로 영향을 주는 자료 · [1] 뉴스서울 2025-05-27 · [8] 이데일리 2026-02-02 · [21] 장업신문 2025-06-02 · [22] 장업신문 2026-02-02 · [27] 장업신문 2026-04-06</div>
+</section>
+
+<div class="nav"><em>[번호] = 원문 링크</em><button id="pv">←</button><button id="nx">→</button></div>
+<script>
+(function(){
+  var SRC={
+    1:'https://newsseoul.co.kr/news/view/1065583816094186',
+    2:'https://www.hankyung.com/article/2025041041651',
+    3:'https://m.work.go.kr/jobInfo/occuInfo/srchJobInfoDetail.do?jobNm=024301',
+    4:'https://www.wanted.co.kr/wd/376004',
+    5:'https://www.wanted.co.kr/wd/364144',
+    6:'https://www.apgroup.com/int/ko/news/2026-07-28-1.html',
+    7:'https://www.hankyung.com/article/202607289716g',
+    8:'https://edaily.co.kr/News/Read?mediaCodeNo=257&newsId=03135686645346584',
+    9:'https://www.hankyung.com/article/2026070102781',
+    10:'https://www.hankyung.com/article/2026102943301',
+    11:'https://www.fnnews.com/news/202610201834292996',
+    12:'https://www.newsis.com/view/NISX20250806_0003280269',
+    13:'https://github.com/k-1026/AxO/blob/research/idea/런칭기획에이전트_워크플로우_역할분담.md',
+    14:'https://kosis.kr/statHtml/statHtml.do?orgId=145&tblId=DT_145011_A001',
+    15:'https://www.fnnews.com/news/202604221446310106',
+    16:'https://github.com/k-1026/AxO/blob/research/research/HSJ_원료후보_K3.md',
+    17:'https://github.com/k-1026/AxO/blob/research/research/HSJ_계절기후_K4.md',
+    18:'https://github.com/k-1026/AxO/blob/research/research/LJH_K3_기능성고시성분_약재대조.md',
+    19:'https://github.com/k-1026/AxO/blob/research/research/HSJ_가격기준_K5.md',
+    20:'https://github.com/k-1026/AxO/blob/research/research/LJH_K6_광고표현규칙.md',
+    21:'https://www.jangup.com/news/articleView.html?idxno=96042',
+    22:'https://www.jangup.com/news/articleView.html?idxno=97890',
+    23:'https://www.jangup.com/news/articleView.html?idxno=96513',
+    24:'https://www.jangup.com/news/articleView.html?idxno=97097',
+    25:'https://www.jangup.com/news/articleView.html?idxno=98478',
+    26:'https://www.jangup.com/news/articleView.html?idxno=96984',
+    27:'https://www.jangup.com/news/articleView.html?idxno=98402'
+  };
+  function walk(node){
+    if(node.nodeType===3){
+      if(!/\[\d+\]/.test(node.nodeValue)) return;
+      var span=document.createElement('span');
+      span.innerHTML=node.nodeValue.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\[(\d+)\]/g,function(m,n){
+        return SRC[n]?'<a class="r" href="'+SRC[n]+'" target="_blank" rel="noopener" title="원문 열기: '+SRC[n]+'">['+n+']</a>':m;
+      });
+      node.parentNode.replaceChild(span,node);
+    } else if(node.nodeType===1 && node.tagName!=='SCRIPT' && node.tagName!=='A'){
+      [].slice.call(node.childNodes).forEach(walk);
+    }
+  }
+  [].slice.call(document.querySelectorAll('.slide')).forEach(walk);
+  var ss=[].slice.call(document.querySelectorAll('.slide')), i=0;
+  function fit(){var s=Math.min(window.innerWidth/1600,window.innerHeight/900);ss.forEach(function(e){e.style.transform='translate(-50%,-50%) scale('+s+')'})}
+  function go(n){i=Math.max(0,Math.min(ss.length-1,n));ss.forEach(function(e,k){e.classList.toggle('on',k===i)})}
+  document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown')go(i+1);if(e.key==='ArrowLeft'||e.key==='PageUp')go(i-1)});
+  document.getElementById('pv').onclick=function(){go(i-1)};document.getElementById('nx').onclick=function(){go(i+1)};
+  window.addEventListener('resize',fit);fit();
+})();
+</script>
+</body>
+</html>

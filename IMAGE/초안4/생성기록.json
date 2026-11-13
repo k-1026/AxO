@@ -1,0 +1,25 @@
+{
+  "created": "2026-11-13",
+  "tool": "built-in image_gen edit",
+  "status": "세럼 색상만 복원; 미스트 둥근캡·네모캡 각각 펌프만 덮고 단지 받침 외부 노출; 튜브 토출구 기본형 변경",
+  "prompts": {
+    "serum": "Precise local COLOR-ONLY edit. Image 1 is the current CHAHAR serum edit target; Image 2 is reference ONLY for the original pale PINK silicone bulb color. Recolor ONLY the white rubber dropper bulb in both the left hero and right macro of Image 1 to soft pastel rose-pink matching Image 2's bulb. Maintain Image 1 rubber bulb silhouette, width, height, aspect ratio, mounting and rounded crown EXACTLY, do not shorten or widen or reshape it. Keep every other design element unchanged: red pot collar, body, liquid, pipette, CHAHAR logo, composition, framing, illumination, backdrop, detail inset and reflections. Preserve highlights and material texture while changing white to pale pink. No other edits.",
+    "mistRound": "Precise-object-edit of this CHAHAR mist Image. Make a CLOSED ROUND clear protective cap version of the original round dome cap. CRITICAL MECHANICAL STRUCTURE: Only the narrow straight cylindrical RED SPRAY ACTUATOR at the very top is INSIDE the clear cap. The WIDE GLOSSY RED POT-SHAPED COLLAR BELOW THE ACTUATOR IS ENTIRELY OUTSIDE the cap, uncovered, freely visible with no clear wall across it. Fit the clear cap bottom lip onto the small circular mounting ring on TOP of the red pot collar. The cap bottom must stop at TOP of pot collar, never go down its sides. Cap is NARROW, about 1.25 times spray actuator width and only about 65 percent of red pot collar maximum width. It has vertical cylindrical walls and rounded dome crown like original loose cap, but resized to fit ONLY the spray pump. Left hero shows fitted CLOSED NARROW ROUND CAP around spray actuator, clear lip atop red pot collar; remove loose cap next to bottle. Right detail inset shows IDENTICAL closed narrow dome cap with red pump visible through it, red pot collar fully exposed BELOW clear cap bottom. Keep original bottle body, shoulder, foot, red pot collar shape, spray actuator, pink liquid, logo, glass tube, image arrangement, backdrop, scale and lighting unchanged. No other text or labels; CHAHAR only. Do not enclose the pot-shaped collar in cap.",
+    "mistSquare": "Precise local edit of this correctly capped CHAHAR mist image. Change ONLY the shape of the clear protective cap from round dome/cylindrical to narrow SQUARE CROSS-SECTION cuboid with a FLAT horizontal top, straight planar vertical walls and visible square corners with tiny softened edges. Maintain existing cap's bottom mounting height: its bottom lip sits on TOP of the wide cherry-red pot-shaped collar. Clear cap covers ONLY the tall narrow red spray actuator. The wide red pot-shaped collar remains ENTIRELY OUTSIDE AND BELOW the clear cap, not encased. Keep cap narrow (about 1.3 times spray actuator width; substantially narrower than red pot collar). Keep spray actuator unchanged behind clear flat walls. Apply SAME square cap to left hero and right enlarged inset. Keep all else EXACTLY as input: pot collar, bottle body, shoulders, foot, liquid level, dip tube, CHAHAR mark, camera scale, composition, backdrop, lighting and reflections. Both images show cap fitted closed; no loose cap. The ONLY change from input is round protective cap becomes square cuboid cap, pump-only enclosure. No text added.",
+    "tube": "Precise LOCAL edit of the right-hand close-up dispensing orifice ONLY in this CHAHAR tube image. Replace the sculpted bulbous pot-shaped nozzle on the FIXED upper dispensing surface with a BASIC STANDARD FLIP-TOP TUBE OUTLET: a flat smooth circular dispensing deck and one very short plain cylindrical outlet with a small round hole, no bulging belly, no pinched pot neck, no decorative rolled rim, no protruding jar-shaped spout. A tiny drop of the same pale-pink encapsulated gel-cream emerges from the round hole. Lower hinged lid keeps a small solid sealing pin aligned to close that hole. Keep hinge attached, functional physically coherent. Preserve the entire LEFT hero EXACTLY including external pot-shaped red cap silhouette. Preserve right close-up overall cap outer shape and its rounded pot-like exterior, tube body, translucent capsule gel-cream and tiny capsules, CHAHAR logo, background, framing, composition, lighting. Only change the dispensing outlet to the ordinary simple type. Do not remove the capsules or change cream texture. No new words."
+  },
+  "unchanged": [
+    "CHAHAR_토너.png",
+    "CHAHAR_크림.png",
+    "CHAHAR_로션_펌프형.png"
+  ],
+  "capacity": {
+    "basis": "미스트·로션은 초안1 이미지와 상대적인 형태 지시만 참고. 특정 mL 실물 규격을 제작 기준으로 사용하지 않음.",
+    "mist": "긴 몸체, 세럼보다 큰 용량의 인상 유지",
+    "pumpLotion": "작은 용량 인상의 아담한 불투명 몸체 유지",
+    "tubeLotion": "짧고 통통한 반투명 튜브 유지",
+    "measuredML": null,
+    "reason": "이미지에 실제 길이의 기준과 내부 깊이·벽 두께 정보가 없어 픽셀을 mL로 환산 불가.",
+    "planningExamples": "토너 200mL·세럼 50mL·크림 50mL는 별도 기획안의 예시이며 이미지 생성에 입력한 용량이 아님."
+  }
+}

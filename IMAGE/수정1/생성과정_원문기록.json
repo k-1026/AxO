@@ -1,0 +1,341 @@
+{
+  "created": "2026-11-13",
+  "purpose": "생성 이력 보존용. 실행 기준은 CHAHAR_이미지생성_통합지시문.txt이며 과거 지시와 실패·대기 프롬프트는 그대로 실행하지 않는다.",
+  "records": [
+    {
+      "source": "IMAGE/CHAHAR_수정지시서.txt",
+      "content": "CHAHAR 공병·내용물 시각화 — v5 수정 지시서\r\n정리일: 2026-11-12\r\n상태: 이미지 생성 대기 — 생성 한도로 신규 이미지 미생성\r\n\r\n- 초안1 폴더에는 최신 생성 시안 6종을 보관했습니다. 이 지시서의 추가 수정은 아직 이미지에 반영되지 않았습니다.\r\n- 브랜드: CHAHAR만 표기. 제품 유형·용량·효능 문구는 표기하지 않습니다.\r\n- 톤: 20–30대 대상, 밝고 눈에 띄는 체리 레드·핑크의 오미자 예시. 내용물은 채워진 상태입니다.\r\n- 크림: 기존 완전 불투명 지시를 변경하여 반투명하게 합니다. 크림 안에는 작은 캡슐이 보이도록 합니다. 실제 캡슐 성분·배합·효능은 미정입니다.\r\n- 크림 뚜껑: 측면의 세로 홈과 장식 줄·금속 띠를 제거합니다. 매끈한 곡면으로 하고, 아래로 내려오는 뚜껑 옆면 길이를 조금 늘립니다. 아래 받침도 조금 더 높게 합니다.\r\n- 앰플·세럼: 첨부 아누아 사진에서 고무 누름부의 비율만 참고합니다. 브랜드·광고 문구·골이 있는 캡은 따라 하지 않습니다. 직전 납작한 타원과 뾰족한 긴 형태 사이의 둥근 일반 스포이드 비율로 조정합니다.\r\n- 세럼 몸체: v4 기준 가로 90%, 세로 107%가 목표입니다. 카메라 확대·축소 대신 몸체 형태를 변경합니다.\r\n- 세럼·미스트·펌프형 로션: 공통 항아리의 어깨·받침·곡선과 캡 받침의 비율을 맞춥니다. 미스트의 많은 용량에 따른 긴 몸체는 유지합니다.\r\n- 펌프형 로션: 작은 용량의 비율과 완전 불투명 소재를 유지합니다.\r\n- 튜브형 로션: 짧고 똥똥한 반투명 몸체를 유지하고, 아래 짜는 부분을 항아리의 배·오목한 목·둥근 입구가 보이는 형태로 만듭니다.\r\n- 토너: 이번 수정 요청이 없으므로 v3 유지.\r\n- 참고 사진: 사용자 첨부, 작성자·권리 조건 확인 필요. 사용 표기 ❌ 참고용. 스포이드 비율 확인에만 사용하며 제3자 사진·로고·광고 문구를 결과물에 넣지 않습니다.\r\n- 향후 생성 방식: 내장 이미지 생성 도구의 편집 기능. 현재 생성 한도로 미실행.\r\n\r\n참고 사진: CHAHAR_스포이드_비율참고.png\r\n상세 이미지 생성 요청문: CHAHAR_이미지수정_요청문.json\r\n"
+    },
+    {
+      "source": "IMAGE/CHAHAR_이미지수정_요청문.json",
+      "content": {
+        "created": "2026-11-12",
+        "status": "이미지 생성 대기 — 생성 한도로 신규 이미지 미생성",
+        "referenceSource": "사용자 첨부 아누아 앰플 사진",
+        "referenceDestination": "IMAGE/CHAHAR_스포이드_비율참고.png",
+        "notes": [
+          "IMAGE/초안1에는 최신 생성 시안 6종을 보관했습니다. 이 요청문의 추가 수정은 미반영 상태입니다.",
+          "브랜드: CHAHAR만 표기. 제품 유형·용량·효능 문구는 표기하지 않습니다.",
+          "톤: 20–30대 대상, 밝고 눈에 띄는 체리 레드·핑크의 오미자 예시. 내용물은 채워진 상태입니다.",
+          "크림: 기존 완전 불투명 지시를 변경하여 반투명하게 합니다. 크림 안에는 작은 캡슐이 보이도록 합니다. 실제 캡슐 성분·배합·효능은 미정입니다.",
+          "크림 뚜껑: 측면의 세로 홈과 장식 줄·금속 띠를 제거합니다. 매끈한 곡면으로 하고, 아래로 내려오는 뚜껑 옆면 길이를 조금 늘립니다. 아래 받침도 조금 더 높게 합니다.",
+          "앰플·세럼: 첨부 아누아 사진에서 고무 누름부의 비율만 참고합니다. 브랜드·광고 문구·골이 있는 캡은 따라 하지 않습니다. 직전 납작한 타원과 뾰족한 긴 형태 사이의 둥근 일반 스포이드 비율로 조정합니다.",
+          "세럼 몸체: v4 기준 가로 90%, 세로 107%가 목표입니다. 카메라 확대·축소 대신 몸체 형태를 변경합니다.",
+          "세럼·미스트·펌프형 로션: 공통 항아리의 어깨·받침·곡선과 캡 받침의 비율을 맞춥니다. 미스트의 많은 용량에 따른 긴 몸체는 유지합니다.",
+          "펌프형 로션: 작은 용량의 비율과 완전 불투명 소재를 유지합니다.",
+          "튜브형 로션: 짧고 똥똥한 반투명 몸체를 유지하고, 아래 짜는 부분을 항아리의 배·오목한 목·둥근 입구가 보이는 형태로 만듭니다.",
+          "토너: 이번 수정 요청이 없으므로 v3 유지.",
+          "참고 사진: 사용자 첨부, 작성자·권리 조건 확인 필요. 사용 표기 ❌ 참고용. 스포이드 비율 확인에만 사용하며 제3자 사진·로고·광고 문구를 결과물에 넣지 않습니다.",
+          "향후 생성 방식: 내장 이미지 생성 도구의 편집 기능. 현재 생성 한도로 미실행."
+        ],
+        "specs": [
+          {
+            "key": "serum",
+            "references": [
+              "IMAGE/초안1/CHAHAR_세럼.png",
+              "IMAGE/CHAHAR_스포이드_비율참고.png"
+            ],
+            "prompt": "Use case: precise-object-edit, photorealistic CHAHAR skincare packaging. Preserve lively youthful cherry-red/pink omija example colors, filled contents, bright pink-white studio background and full product hero at left plus coordinated detail at right. The ONLY text anywhere is exact uppercase CHAHAR in the established thin circular mark; no product labels, capacities, Korean, promotional copy or ingredient claims. Keep smooth contemporary Korean medicine-jar-inspired forms. No flutes, ribs, parallel lines or metallic decorative stripes. All vessels and hardware must be physically coherent. Across serum, facial mist and lotion pump, match the shoulder curvature, foot design, rounded collar curvature and collar-to-body width/height proportions as one designed family, with size differences allowed for capacity. Keep materials and functions as specified per product.\nImage 1 is the CHAHAR serum EDIT TARGET. Image 2 is a USER-PROVIDED commercial Anua product image used ONLY as a RUBBER DROPPER BULB PROPORTION REFERENCE. Do not copy its logo, ribbed collar, packaging labels or advertising.\nChange the actual CHAHAR bottle BODY width to 90% of its current width, and body height to 107% of its current height. Keep camera scale unchanged; modify physical proportions, not just zoom. Preserve rosy filled serum, pipette, transparent body and smooth cherry-red plump jar-shaped collar.\nReplace current flat broad oval rubber top with the proportion visible in Image 2: a short upright squeezable dome with gently straight sides and broadly rounded crown, neither a thin pointed spike nor a flat horizontal bean. Bulb height around 1.1–1.2 times its width, width about half the threaded collar maximum width, refined pale-pink silicone. Ensure bulb is clearly functional.\nSlightly increase height of the smooth rounded supporting collar below the bulb while keeping its jar-inspired shape; no ribbing or decorative parallel lines. Main hero and right macro must show the same revised bulb and supporting collar. CHAHAR only."
+          },
+          {
+            "key": "cream",
+            "references": [
+              "IMAGE/초안1/CHAHAR_크림.png"
+            ],
+            "prompt": "Use case: precise-object-edit, photorealistic CHAHAR skincare packaging. Preserve lively youthful cherry-red/pink omija example colors, filled contents, bright pink-white studio background and full product hero at left plus coordinated detail at right. The ONLY text anywhere is exact uppercase CHAHAR in the established thin circular mark; no product labels, capacities, Korean, promotional copy or ingredient claims. Keep smooth contemporary Korean medicine-jar-inspired forms. No flutes, ribs, parallel lines or metallic decorative stripes. All vessels and hardware must be physically coherent. Across serum, facial mist and lotion pump, match the shoulder curvature, foot design, rounded collar curvature and collar-to-body width/height proportions as one designed family, with size differences allowed for capacity. Keep materials and functions as specified per product.\nImage 1 is the cream jar EDIT TARGET. Latest material decision overrides prior opacity: make the pink jar body SEMITRANSPARENT frosted/translucent material so the contents show softly through the body. Filled with pale-pink translucent gel-cream containing scattered tiny spherical CREAM CAPSULE BEADS, clearly visible as a cosmetic texture concept. Small pearl-white and soft-pink capsules, irregular natural dispersion, not fruit seeds, bubbles or giant marbles; do not imply any clinical composition.\nREMOVE ALL fine vertical grip ribs and the metal stripe around the lid. Smooth continuous cherry-red dome and smooth sidewall instead. Slightly lengthen the lid skirt DOWNWARD, a small increase of around 8–10% in lid height, covering a little more of jar shoulder; do not dramatically enlarge the dome. Increase the height of the small circular foot/base beneath the body slightly, keeping a balanced compact round premium jar.\nPremium precision and material depth, fine clean seam and soft optical frosting; no cheap featureless high-gloss toy plastic, no ribbed jam-jar cap. Main hero closed but softly showing encapsulated gel-cream through frosted walls. Right inset same jar open, revealing gel-cream with tiny capsules and smooth removed red lid beside it. CHAHAR only."
+          },
+          {
+            "key": "mist",
+            "references": [
+              "IMAGE/초안1/CHAHAR_미스트.png",
+              "IMAGE/초안1/CHAHAR_세럼.png"
+            ],
+            "prompt": "Use case: precise-object-edit, photorealistic CHAHAR skincare packaging. Preserve lively youthful cherry-red/pink omija example colors, filled contents, bright pink-white studio background and full product hero at left plus coordinated detail at right. The ONLY text anywhere is exact uppercase CHAHAR in the established thin circular mark; no product labels, capacities, Korean, promotional copy or ingredient claims. Keep smooth contemporary Korean medicine-jar-inspired forms. No flutes, ribs, parallel lines or metallic decorative stripes. All vessels and hardware must be physically coherent. Across serum, facial mist and lotion pump, match the shoulder curvature, foot design, rounded collar curvature and collar-to-body width/height proportions as one designed family, with size differences allowed for capacity. Keep materials and functions as specified per product.\nImage 1 is MIST EDIT TARGET; Image 2 is supporting SERUM family shape reference. Keep mist taller and higher-capacity than serum, with round body, transparent glass-like material, filled clear rosy liquid, meniscus and dip tube. Match the serum's revised smooth rounded shoulders, raised round foot and supporting jar-shaped collar proportions so the two read as scaled members of one family. Remove any ribs/stripes; supporting collar slightly taller than prior version. Preserve small narrow practical push-button facial-mist actuator and nozzle. Main hero spray head uncovered with exactly one clear round overcap standing beside it. Right inset actuator, smooth taller collar and shoulder. CHAHAR only."
+          },
+          {
+            "key": "lotion_pump",
+            "references": [
+              "IMAGE/초안1/CHAHAR_로션_펌프형.png",
+              "IMAGE/초안1/CHAHAR_세럼.png"
+            ],
+            "prompt": "Use case: precise-object-edit, photorealistic CHAHAR skincare packaging. Preserve lively youthful cherry-red/pink omija example colors, filled contents, bright pink-white studio background and full product hero at left plus coordinated detail at right. The ONLY text anywhere is exact uppercase CHAHAR in the established thin circular mark; no product labels, capacities, Korean, promotional copy or ingredient claims. Keep smooth contemporary Korean medicine-jar-inspired forms. No flutes, ribs, parallel lines or metallic decorative stripes. All vessels and hardware must be physically coherent. Across serum, facial mist and lotion pump, match the shoulder curvature, foot design, rounded collar curvature and collar-to-body width/height proportions as one designed family, with size differences allowed for capacity. Keep materials and functions as specified per product.\nImage 1 is LOTION PUMP EDIT TARGET; Image 2 supports the serum-family proportions. Keep the reduced-capacity compact lotion bottle FULLY OPAQUE milky-pink solid material, no inner tube or fill visible. Match rounded shoulders, slightly raised circular foot and smooth jar-shaped pump collar with the serum and mist family; scale hardware consistently to body, increase smooth supporting collar height slightly. No grooves, ribbing or metallic stripes. Keep narrow refined cherry-red functional pump and small outlet; right macro shows tiny milky-pink lotion bead only at outlet. Body must remain completely opaque. CHAHAR only."
+          },
+          {
+            "key": "lotion_tube",
+            "references": [
+              "IMAGE/초안1/CHAHAR_로션_튜브형.png"
+            ],
+            "prompt": "Use case: precise-object-edit, photorealistic CHAHAR skincare packaging. Preserve lively youthful cherry-red/pink omija example colors, filled contents, bright pink-white studio background and full product hero at left plus coordinated detail at right. The ONLY text anywhere is exact uppercase CHAHAR in the established thin circular mark; no product labels, capacities, Korean, promotional copy or ingredient claims. Keep smooth contemporary Korean medicine-jar-inspired forms. No flutes, ribs, parallel lines or metallic decorative stripes. All vessels and hardware must be physically coherent. Across serum, facial mist and lotion pump, match the shoulder curvature, foot design, rounded collar curvature and collar-to-body width/height proportions as one designed family, with size differences allowed for capacity. Keep materials and functions as specified per product.\nImage 1 is LOTION TUBE EDIT TARGET. Preserve the short plump semitransparent frosted pink flexible tube, visibly filled milky pink emulsion, broad soft body, flat upper crimp and circular CHAHAR logo. The opaque cherry-red BOTTOM DISPENSING ASSEMBLY must clearly look like a cute small Korean ceramic jar: rounded bulging belly, softly tucked circular foot, slight pinched shoulder, continuous smooth molded curves. It remains a practical stable attached flip-top closure for a squeezable tube, not an actual loose separate pot.\nRight close-up: flip lid attached open, central dispensing mouth is a small sculpted pot-neck shape with round shoulder, gentle inward neck and softly rolled circular rim surrounding the small dispensing orifice. Tiny lotion bead. The shape must be noticeably jar-like rather than an ordinary flat cylindrical flip cap with generic nozzle. No ribs or decorative lines, no extra label. CHAHAR only."
+          }
+        ]
+      }
+    },
+    {
+      "source": "IMAGE/초안1/초안1_안내.txt",
+      "content": "CHAHAR 이미지 초안1\r\n저장일: 2026-11-12\r\n\r\n구성: 토너 / 세럼 / 크림 / 로션(펌프형) / 로션(튜브형) / 미스트 — 총 6종.\r\n브랜드 표기는 CHAHAR만 사용합니다.\r\n20–30대 대상의 밝은 체리 레드·핑크 오미자 라인 예시입니다.\r\n\r\n각 이미지의 사용 표기: ⚠️ AI 생성 디자인 검토용 시안.\r\n이미지는 내장 AI 이미지 생성 도구로 제작했습니다.\r\n내용물 색·제형은 시각화 예시이며 실제 배합·소재·용량을 증명하지 않습니다.\r\n\r\n토너는 직전 v3, 나머지는 직전 v4에서 생성된 최신 이미지를 초안1로 모았습니다.\r\n크림 반투명·캡슐, 첨부 사진을 참고한 스포이드 비율, 세럼 가로 10% 축소·세로 7% 확대 등\r\n추가 수정 사항은 상위 폴더의 CHAHAR_수정지시서.txt와 CHAHAR_이미지수정_요청문.json을 참고하세요.\r\n해당 추가 수정은 생성 한도로 아직 이 초안에 반영되지 않았습니다.\r\n\r\n스포이드 비율 참고 사진: ../CHAHAR_스포이드_비율참고.png\r\n사용 표기: ❌ 제3자 브랜드 사진, 비율 참고용. 원본 사진·로고·광고 문구를 결과물에 재사용하지 않습니다."
+    },
+    {
+      "source": "IMAGE/초안2/생성기록.json",
+      "content": {
+        "created": "2026-11-13",
+        "tool": "built-in image_gen edit",
+        "status": "수정 5종 생성 및 시각 확인 완료. 토너 v3 유지 복사.",
+        "usage": "⚠️ AI 생성 디자인 검토용 시안. 내용물·소재·배합·용량을 증명하지 않음. 가로 90%·세로 107%는 생성 목표이며 정밀 설계 치수 보증 아님.",
+        "originalSpec": "../CHAHAR_이미지수정_요청문.json",
+        "specs": [
+          {
+            "key": "serum",
+            "references": [
+              "IMAGE/초안1/CHAHAR_세럼.png",
+              "IMAGE/CHAHAR_스포이드_비율참고.png"
+            ],
+            "prompt": "Use case: precise-object-edit, photorealistic CHAHAR skincare packaging. Preserve lively youthful cherry-red/pink omija example colors, filled contents, bright pink-white studio background and full product hero at left plus coordinated detail at right. The ONLY text anywhere is exact uppercase CHAHAR in the established thin circular mark; no product labels, capacities, Korean, promotional copy or ingredient claims. Keep smooth contemporary Korean medicine-jar-inspired forms. No flutes, ribs, parallel lines or metallic decorative stripes. All vessels and hardware must be physically coherent. Across serum, facial mist and lotion pump, match the shoulder curvature, foot design, rounded collar curvature and collar-to-body width/height proportions as one designed family, with size differences allowed for capacity. Keep materials and functions as specified per product.\nImage 1 is the CHAHAR serum EDIT TARGET. Image 2 is a USER-PROVIDED commercial Anua product image used ONLY as a RUBBER DROPPER BULB PROPORTION REFERENCE. Do not copy its logo, ribbed collar, packaging labels or advertising.\nChange the actual CHAHAR bottle BODY width to 90% of its current width, and body height to 107% of its current height. Keep camera scale unchanged; modify physical proportions, not just zoom. Preserve rosy filled serum, pipette, transparent body and smooth cherry-red plump jar-shaped collar.\nReplace current flat broad oval rubber top with the proportion visible in Image 2: a short upright squeezable dome with gently straight sides and broadly rounded crown, neither a thin pointed spike nor a flat horizontal bean. Bulb height around 1.1–1.2 times its width, width about half the threaded collar maximum width, refined pale-pink silicone. Ensure bulb is clearly functional.\nSlightly increase height of the smooth rounded supporting collar below the bulb while keeping its jar-inspired shape; no ribbing or decorative parallel lines. Main hero and right macro must show the same revised bulb and supporting collar. CHAHAR only."
+          },
+          {
+            "key": "cream",
+            "references": [
+              "IMAGE/초안1/CHAHAR_크림.png"
+            ],
+            "prompt": "Use case: precise-object-edit, photorealistic CHAHAR skincare packaging. Preserve lively youthful cherry-red/pink omija example colors, filled contents, bright pink-white studio background and full product hero at left plus coordinated detail at right. The ONLY text anywhere is exact uppercase CHAHAR in the established thin circular mark; no product labels, capacities, Korean, promotional copy or ingredient claims. Keep smooth contemporary Korean medicine-jar-inspired forms. No flutes, ribs, parallel lines or metallic decorative stripes. All vessels and hardware must be physically coherent. Across serum, facial mist and lotion pump, match the shoulder curvature, foot design, rounded collar curvature and collar-to-body width/height proportions as one designed family, with size differences allowed for capacity. Keep materials and functions as specified per product.\nImage 1 is the cream jar EDIT TARGET. Latest material decision overrides prior opacity: make the pink jar body SEMITRANSPARENT frosted/translucent material so the contents show softly through the body. Filled with pale-pink translucent gel-cream containing scattered tiny spherical CREAM CAPSULE BEADS, clearly visible as a cosmetic texture concept. Small pearl-white and soft-pink capsules, irregular natural dispersion, not fruit seeds, bubbles or giant marbles; do not imply any clinical composition.\nREMOVE ALL fine vertical grip ribs and the metal stripe around the lid. Smooth continuous cherry-red dome and smooth sidewall instead. Slightly lengthen the lid skirt DOWNWARD, a small increase of around 8–10% in lid height, covering a little more of jar shoulder; do not dramatically enlarge the dome. Increase the height of the small circular foot/base beneath the body slightly, keeping a balanced compact round premium jar.\nPremium precision and material depth, fine clean seam and soft optical frosting; no cheap featureless high-gloss toy plastic, no ribbed jam-jar cap. Main hero closed but softly showing encapsulated gel-cream through frosted walls. Right inset same jar open, revealing gel-cream with tiny capsules and smooth removed red lid beside it. CHAHAR only."
+          },
+          {
+            "key": "mist",
+            "references": [
+              "IMAGE/초안1/CHAHAR_미스트.png",
+              "IMAGE/초안1/CHAHAR_세럼.png"
+            ],
+            "prompt": "Use case: precise-object-edit, photorealistic CHAHAR skincare packaging. Preserve lively youthful cherry-red/pink omija example colors, filled contents, bright pink-white studio background and full product hero at left plus coordinated detail at right. The ONLY text anywhere is exact uppercase CHAHAR in the established thin circular mark; no product labels, capacities, Korean, promotional copy or ingredient claims. Keep smooth contemporary Korean medicine-jar-inspired forms. No flutes, ribs, parallel lines or metallic decorative stripes. All vessels and hardware must be physically coherent. Across serum, facial mist and lotion pump, match the shoulder curvature, foot design, rounded collar curvature and collar-to-body width/height proportions as one designed family, with size differences allowed for capacity. Keep materials and functions as specified per product.\nImage 1 is MIST EDIT TARGET; Image 2 is supporting SERUM family shape reference. Keep mist taller and higher-capacity than serum, with round body, transparent glass-like material, filled clear rosy liquid, meniscus and dip tube. Match the serum's revised smooth rounded shoulders, raised round foot and supporting jar-shaped collar proportions so the two read as scaled members of one family. Remove any ribs/stripes; supporting collar slightly taller than prior version. Preserve small narrow practical push-button facial-mist actuator and nozzle. Main hero spray head uncovered with exactly one clear round overcap standing beside it. Right inset actuator, smooth taller collar and shoulder. CHAHAR only.\nImage 2 is the ALREADY REVISED serum: match its raised smooth pot-shaped collar and shoulders as the family reference, but keep mist's longer body and mist spray mechanism.",
+            "revisedReference": "CHAHAR_세럼.png"
+          },
+          {
+            "key": "lotion_pump",
+            "references": [
+              "IMAGE/초안1/CHAHAR_로션_펌프형.png",
+              "IMAGE/초안1/CHAHAR_세럼.png"
+            ],
+            "prompt": "Use case: precise-object-edit, photorealistic CHAHAR skincare packaging. Preserve lively youthful cherry-red/pink omija example colors, filled contents, bright pink-white studio background and full product hero at left plus coordinated detail at right. The ONLY text anywhere is exact uppercase CHAHAR in the established thin circular mark; no product labels, capacities, Korean, promotional copy or ingredient claims. Keep smooth contemporary Korean medicine-jar-inspired forms. No flutes, ribs, parallel lines or metallic decorative stripes. All vessels and hardware must be physically coherent. Across serum, facial mist and lotion pump, match the shoulder curvature, foot design, rounded collar curvature and collar-to-body width/height proportions as one designed family, with size differences allowed for capacity. Keep materials and functions as specified per product.\nImage 1 is LOTION PUMP EDIT TARGET; Image 2 supports the serum-family proportions. Keep the reduced-capacity compact lotion bottle FULLY OPAQUE milky-pink solid material, no inner tube or fill visible. Match rounded shoulders, slightly raised circular foot and smooth jar-shaped pump collar with the serum and mist family; scale hardware consistently to body, increase smooth supporting collar height slightly. No grooves, ribbing or metallic stripes. Keep narrow refined cherry-red functional pump and small outlet; right macro shows tiny milky-pink lotion bead only at outlet. Body must remain completely opaque. CHAHAR only.\nImage 2 is the ALREADY REVISED serum: match its smooth pot-shaped raised collar and curved shoulders, but retain the compact FULLY OPAQUE lotion body and functional pump.",
+            "revisedReference": "CHAHAR_세럼.png"
+          },
+          {
+            "key": "lotion_tube",
+            "references": [
+              "IMAGE/초안1/CHAHAR_로션_튜브형.png"
+            ],
+            "prompt": "Use case: precise-object-edit, photorealistic CHAHAR skincare packaging. Preserve lively youthful cherry-red/pink omija example colors, filled contents, bright pink-white studio background and full product hero at left plus coordinated detail at right. The ONLY text anywhere is exact uppercase CHAHAR in the established thin circular mark; no product labels, capacities, Korean, promotional copy or ingredient claims. Keep smooth contemporary Korean medicine-jar-inspired forms. No flutes, ribs, parallel lines or metallic decorative stripes. All vessels and hardware must be physically coherent. Across serum, facial mist and lotion pump, match the shoulder curvature, foot design, rounded collar curvature and collar-to-body width/height proportions as one designed family, with size differences allowed for capacity. Keep materials and functions as specified per product.\nImage 1 is LOTION TUBE EDIT TARGET. Preserve the short plump semitransparent frosted pink flexible tube, visibly filled milky pink emulsion, broad soft body, flat upper crimp and circular CHAHAR logo. The opaque cherry-red BOTTOM DISPENSING ASSEMBLY must clearly look like a cute small Korean ceramic jar: rounded bulging belly, softly tucked circular foot, slight pinched shoulder, continuous smooth molded curves. It remains a practical stable attached flip-top closure for a squeezable tube, not an actual loose separate pot.\nRight close-up: flip lid attached open, central dispensing mouth is a small sculpted pot-neck shape with round shoulder, gentle inward neck and softly rolled circular rim surrounding the small dispensing orifice. Tiny lotion bead. The shape must be noticeably jar-like rather than an ordinary flat cylindrical flip cap with generic nozzle. No ribs or decorative lines, no extra label. CHAHAR only."
+          }
+        ],
+        "tubeRefinement": "Precise-object-edit of this CHAHAR tube packaging image. Keep the entire left hero EXACTLY as is, short plump frosted translucent pink tube filled with milky pink lotion, round CHAHAR logo, cherry-red pot-shaped attached bottom closure, pink studio background, composition, size and lighting. Change only the RIGHT CLOSE-UP functional dispensing mouth: the protruding mouth on the upper fixed cap surface where the lotion emerges must be a tiny sculpted ceramic-pot-like spout, with clearly visible small rounded belly at its root, a gently pinched concave neck, and a rolled circular rim surrounding the small orifice, with a tiny milky lotion bead emerging. This tiny pot-neck outlet points downward in the open-flipcap view. The lower hinged flip lid should have only a small solid sealing plug aligned with that orifice (not a second hollow pot-shaped nozzle). Keep open lid attached by hinge, physically coherent functional flip-top. Preserve smooth curves, translucent body, cherry red and pink palette, CHAHAR as only text. No ribs, metal strips or other new elements."
+      }
+    },
+    {
+      "source": "IMAGE/초안3/생성기록.json",
+      "content": {
+        "created": "2026-11-13",
+        "tool": "built-in image_gen edit",
+        "status": "4종 수정, 토너·펌프형 로션 기존 유지",
+        "priority": "이번 사용자의 직접 요청을 기존 지시서보다 우선 적용",
+        "prompts": {
+          "serum": "Precise local edit, product packaging photograph. Image 1 is the CURRENT CHAHAR serum full composition, EDIT TARGET. Image 2 is a crop identifying the ONLY part to edit. Image 3 is Anua reference used ONLY to match the white rubber dropper bulb silhouette and aspect ratio; do not copy any other element or text. Change ONLY the white/pale rubber squeeze bulb in both left hero and right inset to EXACTLY the Anua reference white bulb height-to-width proportion: a short upright bulb with near straight sides and rounded dome crown, approximately 1.3 times high as wide above collar. Maintain its current mounting width and center; adjust bulb height/silhouette only. White silicone under existing pink studio illumination. Do not alter cherry-red collar AT ALL, no added ribbing, no white screw cap. Preserve ALL rest of Image 1: exact bottle body shape/size, shoulder, red pot-shaped collar, pipette, liquid level, bubbles, CHAHAR logo, camera scale, frame, shadows, background and right macro rounded rectangle. Only the rubber bulb pixels and immediately adjacent background needed for its taller outline may change. No other text than existing CHAHAR.",
+          "serumRefinement": "LOCAL EDIT of the white rubber dropper bulbs ONLY. Keep all bottle, red hardware, logo, inset, backgrounds, and image pixels outside the white bulbs unchanged. The current white bulbs are still too squat. On the left hero, keep bulb bottom attached at y=215 and existing width roughly 130 pixels but MOVE THE TOP UP to y=50 (currently y=95), making its above-collar visible height about 165 pixels, height/width about 1.27. Extend the near-vertical white silicone sidewalls upward then round the crown; do not form pointed tip. On the right inset, apply the exact same 1.27 height/width silhouette: keep bulb bottom at y=440, width roughly160px, crown at y=235, expanding into pink background above current crown. Pure white silicone with existing lighting. Reference Anua image 2 ONLY for white bulb silhouette. Do NOT change cherry red collar, bottle, liquid, shadows, crop, inset frame or any other element. No new text. The taller white bulb silhouette is the ONLY geometry change.",
+          "cream": "Precise-object-edit. Edit only jar BODY MATERIAL in this CHAHAR cream product image. Change translucent frosted pink jar to COMPLETELY OPAQUE solid milky-pink material in BOTH left closed hero and right open detail. No beads, gel, fill, or internal texture may show through exterior walls; uniform opaque pink, same highlights and surface finish. Preserve EXACT existing round pot silhouette, raised circular foot, smooth cherry-red lid, lid size/skirt, CHAHAR thin circular logo, all camera and layout positions, pink studio lighting and background. In the RIGHT OPEN jar, retain the existing pale pink translucent gel-cream with tiny pearl-white and pink capsules visible from the open top ONLY; do not change its gel formulation texture, capsule size, colors or dispersion. Keep lid beside open jar as is, smooth without ribs/metal lines. Only opacity of jar exterior changes. No extra text.",
+          "mist": "Precise-object-edit of supplied CHAHAR mist product image, preserve all design except removable protective OVERCAP and its fitted/closed state. Keep rounded tall transparent bottle, pink liquid fill and meniscus, dip tube, thin circular red CHAHAR mark, cherry-red rounded pot-shaped collar and functional spray actuator EXACTLY unchanged. Replace the existing round dome transparent protective overcap with a CLEAR TRANSPARENT SQUARE-SECTION RECTANGULAR PRISM protective cap, flat horizontal top, four straight flat vertical sides and distinct nearly right-angle corners with very slight edge softening. It is a hollow clear square cuboid, NOT cylindrical, NOT domed. Fit it CLOSED over the actuator AND red collar, down to the bottle neck/shoulder; ensure sufficient internal width to enclose widest collar without intersections. Left hero shows the closed square cap on bottle; REMOVE the loose cap beside the bottle. Right inset is the exact same CLOSED cuboid cap enlarged, with red actuator and red collar clearly visible through its flat transparent walls. Bottle retains all rounded shoulder, base and body contours, only removable protective cap is angular. Keep identical background, photography, shadows, composition (large hero left, rounded rectangular detail inset right), no new words or labels. Exact CHAHAR only.",
+          "tube": "Precise-object-edit of CHAHAR lotion tube. Image 1 is tube EDIT TARGET. Image 2 is cream formulation REFERENCE ONLY; do not copy jar packaging. Keep Image 1 entire packaging geometry, short plump semitransparent frosted flexible pink tube, top crimp, thin red CHAHAR circle, exact cherry-red pot-shaped bottom flip cap and sculpted pot-neck nozzle, right close-up arrangement, lighting and pink background unchanged. Change ONLY the contents visible through tube and the tiny dispensed bead at right nozzle: use SAME pale pink translucent GEL-CREAM texture as the open cream in Image 2, with dispersed tiny pearl-white and soft pink spherical cosmetic capsules. Tube capsules should be NOTICEABLY SMALLER than cream capsules, target about 40 percent of cream capsule diameter at equal physical scale, fine micro-beads naturally dispersed, not bubbles, not seeds, not large balls. Tube remains filled and softly translucent, contents and fine smaller capsules visible through frosted walls. Right close-up dispensed tiny gel-cream droplet contains a few very fine micro-capsules; do not enlarge droplet. No new text or ingredient/efficacy claims. Do not change package shape, color or cap. CHAHAR only."
+        },
+        "capacity": {
+          "confirmed": false,
+          "note": "생성 이미지에는 확정된 용량·실측 치수 없음. 용량을 이미지에서 측정하거나 추정하지 않음.",
+          "planningExamples": {
+            "toner": "200mL",
+            "serum": "50mL",
+            "cream": "50mL"
+          },
+          "planningSource": "../../idea/LJH_계절-제품개발-에이전트-기획안.md:188",
+          "unspecified": [
+            "미스트",
+            "펌프형 로션",
+            "튜브형 로션"
+          ]
+        },
+        "usage": "AI 생성 디자인 검토용 시안. 스포이드 비율·캡슐 상대 크기는 시각적 표현이며 정밀 제작 치수 보증 아님."
+      }
+    },
+    {
+      "source": "IMAGE/초안4/생성기록.json",
+      "content": {
+        "created": "2026-11-13",
+        "tool": "built-in image_gen edit",
+        "status": "세럼 색상만 복원; 미스트 둥근캡·네모캡 각각 펌프만 덮고 단지 받침 외부 노출; 튜브 토출구 기본형 변경",
+        "prompts": {
+          "serum": "Precise local COLOR-ONLY edit. Image 1 is the current CHAHAR serum edit target; Image 2 is reference ONLY for the original pale PINK silicone bulb color. Recolor ONLY the white rubber dropper bulb in both the left hero and right macro of Image 1 to soft pastel rose-pink matching Image 2's bulb. Maintain Image 1 rubber bulb silhouette, width, height, aspect ratio, mounting and rounded crown EXACTLY, do not shorten or widen or reshape it. Keep every other design element unchanged: red pot collar, body, liquid, pipette, CHAHAR logo, composition, framing, illumination, backdrop, detail inset and reflections. Preserve highlights and material texture while changing white to pale pink. No other edits.",
+          "mistRound": "Precise-object-edit of this CHAHAR mist Image. Make a CLOSED ROUND clear protective cap version of the original round dome cap. CRITICAL MECHANICAL STRUCTURE: Only the narrow straight cylindrical RED SPRAY ACTUATOR at the very top is INSIDE the clear cap. The WIDE GLOSSY RED POT-SHAPED COLLAR BELOW THE ACTUATOR IS ENTIRELY OUTSIDE the cap, uncovered, freely visible with no clear wall across it. Fit the clear cap bottom lip onto the small circular mounting ring on TOP of the red pot collar. The cap bottom must stop at TOP of pot collar, never go down its sides. Cap is NARROW, about 1.25 times spray actuator width and only about 65 percent of red pot collar maximum width. It has vertical cylindrical walls and rounded dome crown like original loose cap, but resized to fit ONLY the spray pump. Left hero shows fitted CLOSED NARROW ROUND CAP around spray actuator, clear lip atop red pot collar; remove loose cap next to bottle. Right detail inset shows IDENTICAL closed narrow dome cap with red pump visible through it, red pot collar fully exposed BELOW clear cap bottom. Keep original bottle body, shoulder, foot, red pot collar shape, spray actuator, pink liquid, logo, glass tube, image arrangement, backdrop, scale and lighting unchanged. No other text or labels; CHAHAR only. Do not enclose the pot-shaped collar in cap.",
+          "mistSquare": "Precise local edit of this correctly capped CHAHAR mist image. Change ONLY the shape of the clear protective cap from round dome/cylindrical to narrow SQUARE CROSS-SECTION cuboid with a FLAT horizontal top, straight planar vertical walls and visible square corners with tiny softened edges. Maintain existing cap's bottom mounting height: its bottom lip sits on TOP of the wide cherry-red pot-shaped collar. Clear cap covers ONLY the tall narrow red spray actuator. The wide red pot-shaped collar remains ENTIRELY OUTSIDE AND BELOW the clear cap, not encased. Keep cap narrow (about 1.3 times spray actuator width; substantially narrower than red pot collar). Keep spray actuator unchanged behind clear flat walls. Apply SAME square cap to left hero and right enlarged inset. Keep all else EXACTLY as input: pot collar, bottle body, shoulders, foot, liquid level, dip tube, CHAHAR mark, camera scale, composition, backdrop, lighting and reflections. Both images show cap fitted closed; no loose cap. The ONLY change from input is round protective cap becomes square cuboid cap, pump-only enclosure. No text added.",
+          "tube": "Precise LOCAL edit of the right-hand close-up dispensing orifice ONLY in this CHAHAR tube image. Replace the sculpted bulbous pot-shaped nozzle on the FIXED upper dispensing surface with a BASIC STANDARD FLIP-TOP TUBE OUTLET: a flat smooth circular dispensing deck and one very short plain cylindrical outlet with a small round hole, no bulging belly, no pinched pot neck, no decorative rolled rim, no protruding jar-shaped spout. A tiny drop of the same pale-pink encapsulated gel-cream emerges from the round hole. Lower hinged lid keeps a small solid sealing pin aligned to close that hole. Keep hinge attached, functional physically coherent. Preserve the entire LEFT hero EXACTLY including external pot-shaped red cap silhouette. Preserve right close-up overall cap outer shape and its rounded pot-like exterior, tube body, translucent capsule gel-cream and tiny capsules, CHAHAR logo, background, framing, composition, lighting. Only change the dispensing outlet to the ordinary simple type. Do not remove the capsules or change cream texture. No new words."
+        },
+        "unchanged": [
+          "CHAHAR_토너.png",
+          "CHAHAR_크림.png",
+          "CHAHAR_로션_펌프형.png"
+        ],
+        "capacity": {
+          "basis": "미스트·로션은 초안1 이미지와 상대적인 형태 지시만 참고. 특정 mL 실물 규격을 제작 기준으로 사용하지 않음.",
+          "mist": "긴 몸체, 세럼보다 큰 용량의 인상 유지",
+          "pumpLotion": "작은 용량 인상의 아담한 불투명 몸체 유지",
+          "tubeLotion": "짧고 통통한 반투명 튜브 유지",
+          "measuredML": null,
+          "reason": "이미지에 실제 길이의 기준과 내부 깊이·벽 두께 정보가 없어 픽셀을 mL로 환산 불가.",
+          "planningExamples": "토너 200mL·세럼 50mL·크림 50mL는 별도 기획안의 예시이며 이미지 생성에 입력한 용량이 아님."
+        }
+      }
+    },
+    {
+      "source": "IMAGE/초안5/생성기록_및_대기요청문.json",
+      "content": {
+        "created": "2026-11-13",
+        "tool": "built-in image_gen edit",
+        "status": "partial: toner generated; subsequent serum/cream calls failed usage_limit_reached; remaining outputs not generated",
+        "resetAtSeoul": "2026-11-14 09:15:39 +09:00",
+        "blocker": "image generation HTTP429 usage_limit_reached",
+        "capacityOrigin": "사용자 지정값, 이전 자료의 기획 예시 대신 이번 값을 적용",
+        "dimensionsOrigin": "외형 치수는 크기 비교용 작업 가정이며 사용자 확정 치수나 실측값이 아님",
+        "specs": [
+          {
+            "key": "toner",
+            "capacityML": 200,
+            "status": "generated",
+            "source": "D:\\L.L.M Academy (AX부트캠프)\\AX크리에이티브트랙 팀AxO\\HSJ\\AxO\\IMAGE\\초안1\\CHAHAR_토너.png",
+            "output": "CHAHAR_토너_200ml.png",
+            "prompt": "Precise-object-edit, CHAHAR toner 200 mL design visualization. Image 1 is original TONER edit target. Image 2 is LOTION TUBE reference for only the red pot-shaped flip-top cap exterior. Change toner cylindrical flip-top cap into smooth cherry-red Korean pot/jar-shaped flip-top closure: gently bulging rounded belly, subtly tucked base, curved shoulders, no ribs, no metal bands. It sits on existing narrow bottle neck; do not add a pump or tube. Main hero cap is CLOSED; right macro shows this same pot-shaped cap flipped open with plain round toner orifice, hinge and sealing peg physically coherent. CRITICAL preserve Image 1 bottle BODY width-to-height proportion and shoulder/base curvature EXACTLY, do not make body shorter or wider: original body approximately 1.80 tall per unit maximum width. Keep transparent body filled with rosy watery toner, thin circular CHAHAR logo, glass-like thickness, studio pink background, hero left and right rounded-detail panel. This is now user-selected nominal 200mL design, not measured capacity. For relative-size family reference assume bottle BODY around 60mm width x108mm height (body includes shoulder and foot, excludes closure), closed overall around132mm. This is an illustrative external size assumption, preserve original shape ratio. Left hero stays substantial, about760px overall height, baseline y930 on 1536x1024 composition. Only CHAHAR text on packaging; no volume label or other copy. Do not copy lotion body or cream contents."
+          },
+          {
+            "key": "serum",
+            "capacityML": 50,
+            "status": "blocked_usage_limit",
+            "source": "D:\\L.L.M Academy (AX부트캠프)\\AX크리에이티브트랙 팀AxO\\HSJ\\AxO\\IMAGE\\초안4\\CHAHAR_세럼.png",
+            "prompt": "Precise-object-edit for nominal CHAHAR SERUM 50mL capacity design. Preserve established transparent rounded bottle, rosy filled serum and pipette, red pot-shaped dropper collar, and tall soft PINK rubber bulb with EXACT current bulb aspect ratio. Preserve CHAHAR circle logo, shoulders, foot, all smooth curves, pink-white studio and hero-left detail-right layout. Rework bottle as a compact 50mL serum with illustrative external body about46mm diameter x61mm height (excluding collar and dropper); overall around96mm tall. Physical volume target 50mL is user specified, not a measurement. The body must feel pocket-sized and be visually smaller than toner200mL and mist250mL, not a large full-size toner. Keep body width/height shape close to reference; scale body and hardware proportionately as a real small serum package. In 1536x1024 frame, main bottle hero occupies about590px overall height, BASELINE y920 and center x450, leaving more air above, instead of filling entire frame. Right macro remains large and shows same redesigned compact product details. No numeric labels on packaging; only CHAHAR. Preserve pink bulb, never white."
+          },
+          {
+            "key": "cream",
+            "capacityML": 50,
+            "status": "blocked_usage_limit",
+            "source": "D:\\L.L.M Academy (AX부트캠프)\\AX크리에이티브트랙 팀AxO\\HSJ\\AxO\\IMAGE\\초안4\\CHAHAR_크림.png",
+            "prompt": "Precise-object-edit, nominal CHAHAR CREAM 50mL capacity design. Preserve this EXACT smooth red pot lid with no ribs/metal band, fully OPAQUE milky-pink round pot body, slightly raised circular foot, white CHAHAR circle and right open-jar capsule gel-cream. Keep pink gel-cream with existing small pearl-white and pink capsules visible ONLY through open top; opaque walls reveal nothing inside. Shape jar as compact 50mL cream: illustrative external maximum diameter64mm, body height36mm, closed total height53mm. This is user-design capacity target, not measured capacity. Keep original pot silhouette proportions; relative to a200mL toner this is a short palm-sized jar. On1536x1024 frame the LEFT closed hero should occupy about400px total height at baseline y920, centerx460, maximum widthabout480px, with intentional elegant negative space above. RIGHT inset open jar remains the existing large clear detail, same redesigned pot geometry. Preserve background, pink-white lighting, material quality, smooth lid. No dimensions or capacity text on packaging; CHAHAR only."
+          },
+          {
+            "key": "mist_round",
+            "capacityML": 250,
+            "status": "pending",
+            "source": "D:\\L.L.M Academy (AX부트캠프)\\AX크리에이티브트랙 팀AxO\\HSJ\\AxO\\IMAGE\\초안4\\CHAHAR_미스트_둥근캡_닫힘.png",
+            "prompt": "Precise-object-edit of existing CHAHAR design. Preserve cherry-red/pink palette, only CHAHAR circular logo on packaging, materials, formulation, hero-left and detail-right composition. Capacities below are USER-SPECIFIED design targets, not measured or certified fill capacities. Adjust actual physical body geometry and relative size to target capacity, not just liquid level. Retain smooth pot-family shoulders and foot. No dimensions or numeric capacity labels on packaging. Nominal MIST 250mL, high-capacity tall transparent bottle with rosy watery liquid, dip tube, pot-shaped red collar. Suggested external BODY envelope58mm diameter x130mm height excluding neck/actuator, overall160mm; illustrative size assumption, not verified engineering dimensions. Keep elongated body and increase volume impression over toner200mL (25 percent more contents, not25 percent extra linear length). Clear protective cap closes over ONLY narrow red spray pump; bottom lip stops on TOP of pot collar. Red pot collar is entirely OUTSIDE and BELOW cap. On1536x1024 main hero about850px overall height baseliney920. Right detail identical structure. Round narrow cylindrical cap with rounded dome crown; retain this round-cap version."
+          },
+          {
+            "key": "mist_square",
+            "capacityML": 250,
+            "status": "pending",
+            "source": "D:\\L.L.M Academy (AX부트캠프)\\AX크리에이티브트랙 팀AxO\\HSJ\\AxO\\IMAGE\\초안4\\CHAHAR_미스트_네모캡_닫힘.png",
+            "prompt": "Precise-object-edit of existing CHAHAR design. Preserve cherry-red/pink palette, only CHAHAR circular logo on packaging, materials, formulation, hero-left and detail-right composition. Capacities below are USER-SPECIFIED design targets, not measured or certified fill capacities. Adjust actual physical body geometry and relative size to target capacity, not just liquid level. Retain smooth pot-family shoulders and foot. No dimensions or numeric capacity labels on packaging. Nominal MIST 250mL, high-capacity tall transparent bottle with rosy watery liquid, dip tube, pot-shaped red collar. Suggested external BODY envelope58mm diameter x130mm height excluding neck/actuator, overall160mm; illustrative size assumption, not verified engineering dimensions. Keep elongated body and increase volume impression over toner200mL (25 percent more contents, not25 percent extra linear length). Clear protective cap closes over ONLY narrow red spray pump; bottom lip stops on TOP of pot collar. Red pot collar is entirely OUTSIDE and BELOW cap. On1536x1024 main hero about850px overall height baseliney920. Right detail identical structure. Narrow square-section cuboid protective cap with flat top and straight flat sides. Same250mL body as round-cap version."
+          },
+          {
+            "key": "lotion_pump",
+            "capacityML": 80,
+            "status": "pending",
+            "source": "D:\\L.L.M Academy (AX부트캠프)\\AX크리에이티브트랙 팀AxO\\HSJ\\AxO\\IMAGE\\초안4\\CHAHAR_로션_펌프형.png",
+            "prompt": "Precise-object-edit of existing CHAHAR design. Preserve cherry-red/pink palette, only CHAHAR circular logo on packaging, materials, formulation, hero-left and detail-right composition. Capacities below are USER-SPECIFIED design targets, not measured or certified fill capacities. Adjust actual physical body geometry and relative size to target capacity, not just liquid level. Retain smooth pot-family shoulders and foot. No dimensions or numeric capacity labels on packaging. Nominal PUMP LOTION80mL. Compact fully OPAQUE milky pink rounded body, no tube or fill visible; refined red functional pump with smooth pot collar. Illustrative body envelope51mm diameter x57mm bodyheight excluding pump, overall97mm; not measured/verified dimension. Small bottle, much less body volume than toner200mL and mist250mL, somewhat larger body volume than serum50mL. On1536x1024 main hero about620px overallheight baseline920, centerx450. Preserve right macro pump and small lotion bead. Preserve all established forms/materials."
+          },
+          {
+            "key": "lotion_tube",
+            "capacityML": 120,
+            "status": "pending",
+            "source": "D:\\L.L.M Academy (AX부트캠프)\\AX크리에이티브트랙 팀AxO\\HSJ\\AxO\\IMAGE\\초안4\\CHAHAR_로션_튜브형.png",
+            "prompt": "Precise-object-edit of existing CHAHAR design. Preserve cherry-red/pink palette, only CHAHAR circular logo on packaging, materials, formulation, hero-left and detail-right composition. Capacities below are USER-SPECIFIED design targets, not measured or certified fill capacities. Adjust actual physical body geometry and relative size to target capacity, not just liquid level. Retain smooth pot-family shoulders and foot. No dimensions or numeric capacity labels on packaging. Nominal TUBE LOTION120mL. Preserve short plump frosted semitransparent pink flexible tube, tiny capsules in same pale pink gel-cream as cream, capsules smaller than cream, red pot-shaped bottom flip cap exterior. BASIC short cylindrical dispensing orifice on flat deck and matching sealing pin in right open-detail; no pot-shaped spout. Illustrative external envelope70mm laid-flat width x92mm bodyheight x30mm inflated maximumdepth, overall114mm including cap, not measured or engineering guarantee. Physical120mL impression: volume between pump80mL and toner200mL. Keep short plump outline, increase real body depth/width instead of making tall thin tube. On1536x1024 main hero about730px totalheight baseline920. Preserve all other details."
+          },
+          {
+            "key": "lineup",
+            "status": "pending_after_all_individuals",
+            "prompt": "Create one shared-scale photorealistic CHAHAR six-product family lineup, all on SAME baseline, SAME camera distance, no individual zoom, retain exact approved revised designs from input images. Left to right TONER200mL (original bottle body1.80height/width, new pot-shaped flipcap), SERUM50mL (pink tall rubber bulb exact approved proportions), CREAM50mL (opaque pink jar red smooth lid), MIST250mL (tall transparent rosy body, narrow clear rounded cap covering only spray pump, red pot collar external), PUMP LOTION80mL (fully opaque compact pink body red pump), TUBE LOTION120mL (short plump translucent pink microcapsule gel-cream tube, pot-shaped outer flipcap). Common illustrative relative external body envelopes in mm: toner60diameterx108bodyheight closed132; serum46diameterx61bodyheight total96; cream64diameterx36bodyheight total53; mist58diameterx130bodyheight total160; pump51diameterx57bodyheight total97; tube70laidflatwidthx92bodyheightx30depth total114. These are visual sizing assumptions to express user capacities, not certified measured fill volumes. Mist tallest, toner next, tube next, pump and serum short, cream shortest and wide. One continuous pink-white studio floor, consistent lighting and scale, full silhouettes separated, brand CHAHAR only on products. Put clean small captions UNDER products on background, exactly 'TONER 200 mL', 'SERUM 50 mL', 'CREAM 50 mL', 'MIST 250 mL', 'LOTION 80 mL', 'TUBE 120 mL'. No inset panels. This is design size comparison, not engineering drawing."
+          }
+        ]
+      }
+    },
+    {
+      "source": "IMAGE/CHAHAR_수정지시서.txt",
+      "revision": "origin/research@0dcb0fe",
+      "role": "커밋 전 확인한 원격 과거 지시문. 현재 사용자가 지정한 선택본·용량·최종 지시와 충돌하는 내용은 실행 기준에 반영하지 않음.",
+      "content": "CHAHAR 공병·내용물 시각화 — v5 수정 지시서\n정리일: 2026-11-12\n최종수정: 2026-11-13\n상태: 이미지 생성 대기 — 수정 지시만 반영, 신규 이미지 미생성\n\n최신 요청(2026-11-13): 초안1의 용기 몸체 형태·색은 유지합니다. 아래 이전 비율 변경 기록과 충돌하면 이 최신 요청을 우선합니다. 미스트 보호캡을 다듬고, 토너 뚜껑은 단지 형태로 수정합니다.\n\n- 초안1 폴더에는 최신 생성 시안 6종을 보관했습니다. 이 지시서의 추가 수정은 아직 이미지에 반영되지 않았습니다.\n- 브랜드는 CHAHAR로 표기하고, 모든 6종의 로고 아래에 한글 원료명 오미자를 추가합니다. 제품 유형·용량·효능 문구는 표기하지 않습니다.\n- 톤: 20–30대 대상, 밝고 눈에 띄는 체리 레드·핑크의 오미자 예시. 내용물은 채워진 상태입니다.\n- 크림: 기존 완전 불투명 지시를 변경하여 반투명하게 합니다. 크림 안에는 작은 캡슐이 보이도록 합니다. 실제 캡슐 성분·배합·효능은 미정입니다.\n- 크림 뚜껑: 측면의 세로 홈과 장식 줄·금속 띠를 제거합니다. 매끈한 곡면으로 하고, 아래로 내려오는 뚜껑 옆면 길이를 조금 늘립니다. 아래 받침도 조금 더 높게 합니다.\n- 앰플·세럼: 첨부 아누아 사진에서 고무 누름부의 비율만 참고합니다. 브랜드·광고 문구·골이 있는 캡은 따라 하지 않습니다. 직전 납작한 타원과 뾰족한 긴 형태 사이의 둥근 일반 스포이드 비율로 조정합니다.\n- 세럼 몸체: v4 기준 가로 90%, 세로 107%가 목표입니다. 카메라 확대·축소 대신 몸체 형태를 변경합니다.\n- 세럼·미스트·펌프형 로션: 공통 항아리의 어깨·받침·곡선과 캡 받침의 비율을 맞춥니다. 미스트의 많은 용량에 따른 긴 몸체는 유지합니다.\n- 펌프형 로션: 작은 용량의 비율과 완전 불투명 소재를 유지합니다.\n- 튜브형 로션: 짧고 똥똥한 반투명 몸체를 유지하고, 아래 짜는 부분을 항아리의 배·오목한 목·둥근 입구가 보이는 형태로 만듭니다.\n- 토너: 초안1/CHAHAR_토너.png는 요청한 chahar_omija_toner_v3.png와 동일한 이미지입니다. 210mL 투명 몸체와 채워진 내용물은 유지하고, 뚜껑을 항아리 같은 작은 단지 형태로 수정합니다. 좁은 가로 폭 안에서 둥근 배·부드러운 어깨·살짝 오목한 목의 곡선을 표현합니다. 전체 캡의 나사 분리와 위쪽 딸깍 열림 기능을 함께 유지합니다.\n- 참고 사진: 사용자 첨부, 작성자·권리 조건 확인 필요. 사용 표기 ❌ 참고용. 스포이드 비율 확인에만 사용하며 제3자 사진·로고·광고 문구를 결과물에 넣지 않습니다.\n- 향후 생성 방식: 내장 이미지 생성 도구의 편집 기능. 현재 생성 한도로 미실행.\n\n참고 사진: CHAHAR_스포이드_비율참고.png\n상세 이미지 생성 요청문: CHAHAR_이미지수정_요청문.json"
+    },
+    {
+      "source": "IMAGE/CHAHAR_이미지수정_요청문.json",
+      "revision": "origin/research@0dcb0fe",
+      "role": "커밋 전 확인한 원격 과거 지시문. 현재 사용자가 지정한 선택본·용량·최종 지시와 충돌하는 내용은 실행 기준에 반영하지 않음.",
+      "content": {
+        "created": "2026-11-12",
+        "status": "이미지 생성 대기 — 생성 한도로 신규 이미지 미생성",
+        "referenceSource": "사용자 첨부 아누아 앰플 사진",
+        "referenceDestination": "IMAGE/CHAHAR_스포이드_비율참고.png",
+        "notes": [
+          "최신 요청(2026-11-13): 초안1의 용기 몸체 형태·색은 유지합니다. 아래 이전 비율 변경 기록과 충돌하면 이 최신 요청을 우선합니다. 미스트 보호캡을 다듬고, 토너 뚜껑은 단지 형태로 수정합니다.",
+          "IMAGE/초안1에는 최신 생성 시안 6종을 보관했습니다. 이 요청문의 추가 수정은 미반영 상태입니다.",
+          "6종 모두 CHAHAR 아래에 오미자를 한글로 추가합니다. 제품 유형·용량·효능 문구는 표기하지 않습니다.",
+          "톤: 20–30대 대상, 밝고 눈에 띄는 체리 레드·핑크의 오미자 예시. 내용물은 채워진 상태입니다.",
+          "크림: 기존 완전 불투명 지시를 변경하여 반투명하게 합니다. 크림 안에는 작은 캡슐이 보이도록 합니다. 실제 캡슐 성분·배합·효능은 미정입니다.",
+          "크림 뚜껑: 측면의 세로 홈과 장식 줄·금속 띠를 제거합니다. 매끈한 곡면으로 하고, 아래로 내려오는 뚜껑 옆면 길이를 조금 늘립니다. 아래 받침도 조금 더 높게 합니다.",
+          "앰플·세럼: 첨부 아누아 사진에서 고무 누름부의 비율만 참고합니다. 브랜드·광고 문구·골이 있는 캡은 따라 하지 않습니다. 직전 납작한 타원과 뾰족한 긴 형태 사이의 둥근 일반 스포이드 비율로 조정합니다.",
+          "세럼 몸체: v4 기준 가로 90%, 세로 107%가 목표입니다. 카메라 확대·축소 대신 몸체 형태를 변경합니다.",
+          "세럼·미스트·펌프형 로션: 공통 항아리의 어깨·받침·곡선과 캡 받침의 비율을 맞춥니다. 미스트의 많은 용량에 따른 긴 몸체는 유지합니다.",
+          "펌프형 로션: 작은 용량의 비율과 완전 불투명 소재를 유지합니다.",
+          "튜브형 로션: 짧고 똥똥한 반투명 몸체를 유지하고, 아래 짜는 부분을 항아리의 배·오목한 목·둥근 입구가 보이는 형태로 만듭니다.",
+          "토너: 초안1/CHAHAR_토너.png는 요청한 chahar_omija_toner_v3.png와 동일한 이미지입니다. 210mL 투명 몸체와 채워진 내용물은 유지하고, 뚜껑을 항아리 같은 작은 단지 형태로 수정합니다. 좁은 가로 폭 안에서 둥근 배·부드러운 어깨·살짝 오목한 목의 곡선을 표현합니다. 전체 캡의 나사 분리와 위쪽 딸깍 열림 기능을 함께 유지합니다.",
+          "참고 사진: 사용자 첨부, 작성자·권리 조건 확인 필요. 사용 표기 ❌ 참고용. 스포이드 비율 확인에만 사용하며 제3자 사진·로고·광고 문구를 결과물에 넣지 않습니다.",
+          "향후 생성 방식: 내장 이미지 생성 도구의 편집 기능. 현재 생성 한도로 미실행."
+        ],
+        "specs": [
+          {
+            "key": "serum",
+            "references": [
+              "IMAGE/초안1/CHAHAR_세럼.png",
+              "IMAGE/CHAHAR_스포이드_비율참고.png"
+            ],
+            "prompt": "Use case: precise-object-edit, photorealistic CHAHAR skincare packaging. Preserve lively youthful cherry-red/pink omija example colors, filled contents, bright pink-white studio background and full product hero at left plus coordinated detail at right. The ONLY text anywhere is exact uppercase CHAHAR in the established thin circular mark; no product labels, capacities, Korean, promotional copy or ingredient claims. Keep smooth contemporary Korean medicine-jar-inspired forms. No flutes, ribs, parallel lines or metallic decorative stripes. All vessels and hardware must be physically coherent. Across serum, facial mist and lotion pump, match the shoulder curvature, foot design, rounded collar curvature and collar-to-body width/height proportions as one designed family, with size differences allowed for capacity. Keep materials and functions as specified per product.\nImage 1 is the CHAHAR serum EDIT TARGET. Image 2 is a USER-PROVIDED commercial Anua product image used ONLY as a RUBBER DROPPER BULB PROPORTION REFERENCE. Do not copy its logo, ribbed collar, packaging labels or advertising.\nChange the actual CHAHAR bottle BODY width to 90% of its current width, and body height to 107% of its current height. Keep camera scale unchanged; modify physical proportions, not just zoom. Preserve rosy filled serum, pipette, transparent body and smooth cherry-red plump jar-shaped collar.\nReplace current flat broad oval rubber top with the proportion visible in Image 2: a short upright squeezable dome with gently straight sides and broadly rounded crown, neither a thin pointed spike nor a flat horizontal bean. Bulb height around 1.1–1.2 times its width, width about half the threaded collar maximum width, refined pale-pink silicone. Ensure bulb is clearly functional.\nSlightly increase height of the smooth rounded supporting collar below the bulb while keeping its jar-inspired shape; no ribbing or decorative parallel lines. Main hero and right macro must show the same revised bulb and supporting collar. CHAHAR only.\nLATEST USER OVERRIDE 2026-11-13: preserve the approved draft1 body shape, proportions, material and color rather than earlier pending body-proportion changes. Print exact Korean 오미자 below the circular CHAHAR brand on every product. These two words are the only allowed lettering. Refine the mist protective overcap, and change the toner closure to a compact Korean jar-shaped cap. Earlier instructions conflicting with this paragraph are superseded."
+          },
+          {
+            "key": "cream",
+            "references": [
+              "IMAGE/초안1/CHAHAR_크림.png"
+            ],
+            "prompt": "Use case: precise-object-edit, photorealistic CHAHAR skincare packaging. Preserve lively youthful cherry-red/pink omija example colors, filled contents, bright pink-white studio background and full product hero at left plus coordinated detail at right. The ONLY text anywhere is exact uppercase CHAHAR in the established thin circular mark; no product labels, capacities, Korean, promotional copy or ingredient claims. Keep smooth contemporary Korean medicine-jar-inspired forms. No flutes, ribs, parallel lines or metallic decorative stripes. All vessels and hardware must be physically coherent. Across serum, facial mist and lotion pump, match the shoulder curvature, foot design, rounded collar curvature and collar-to-body width/height proportions as one designed family, with size differences allowed for capacity. Keep materials and functions as specified per product.\nImage 1 is the cream jar EDIT TARGET. Latest material decision overrides prior opacity: make the pink jar body SEMITRANSPARENT frosted/translucent material so the contents show softly through the body. Filled with pale-pink translucent gel-cream containing scattered tiny spherical CREAM CAPSULE BEADS, clearly visible as a cosmetic texture concept. Small pearl-white and soft-pink capsules, irregular natural dispersion, not fruit seeds, bubbles or giant marbles; do not imply any clinical composition.\nREMOVE ALL fine vertical grip ribs and the metal stripe around the lid. Smooth continuous cherry-red dome and smooth sidewall instead. Slightly lengthen the lid skirt DOWNWARD, a small increase of around 8–10% in lid height, covering a little more of jar shoulder; do not dramatically enlarge the dome. Increase the height of the small circular foot/base beneath the body slightly, keeping a balanced compact round premium jar.\nPremium precision and material depth, fine clean seam and soft optical frosting; no cheap featureless high-gloss toy plastic, no ribbed jam-jar cap. Main hero closed but softly showing encapsulated gel-cream through frosted walls. Right inset same jar open, revealing gel-cream with tiny capsules and smooth removed red lid beside it. CHAHAR only.\nLATEST USER OVERRIDE 2026-11-13: preserve the approved draft1 body shape, proportions, material and color rather than earlier pending body-proportion changes. Print exact Korean 오미자 below the circular CHAHAR brand on every product. These two words are the only allowed lettering. Refine the mist protective overcap, and change the toner closure to a compact Korean jar-shaped cap. Earlier instructions conflicting with this paragraph are superseded."
+          },
+          {
+            "key": "mist",
+            "references": [
+              "IMAGE/초안1/CHAHAR_미스트.png",
+              "IMAGE/초안1/CHAHAR_세럼.png"
+            ],
+            "prompt": "Use case: precise-object-edit, photorealistic CHAHAR skincare packaging. Preserve lively youthful cherry-red/pink omija example colors, filled contents, bright pink-white studio background and full product hero at left plus coordinated detail at right. The ONLY text anywhere is exact uppercase CHAHAR in the established thin circular mark; no product labels, capacities, Korean, promotional copy or ingredient claims. Keep smooth contemporary Korean medicine-jar-inspired forms. No flutes, ribs, parallel lines or metallic decorative stripes. All vessels and hardware must be physically coherent. Across serum, facial mist and lotion pump, match the shoulder curvature, foot design, rounded collar curvature and collar-to-body width/height proportions as one designed family, with size differences allowed for capacity. Keep materials and functions as specified per product.\nImage 1 is MIST EDIT TARGET; Image 2 is supporting SERUM family shape reference. Keep mist taller and higher-capacity than serum, with round body, transparent glass-like material, filled clear rosy liquid, meniscus and dip tube. Match the serum's revised smooth rounded shoulders, raised round foot and supporting jar-shaped collar proportions so the two read as scaled members of one family. Remove any ribs/stripes; supporting collar slightly taller than prior version. Preserve small narrow practical push-button facial-mist actuator and nozzle. Main hero spray head uncovered with exactly one clear round overcap standing beside it. Right inset actuator, smooth taller collar and shoulder. CHAHAR only.\nLATEST USER OVERRIDE 2026-11-13: preserve the approved draft1 body shape, proportions, material and color rather than earlier pending body-proportion changes. Print exact Korean 오미자 below the circular CHAHAR brand on every product. These two words are the only allowed lettering. Refine the mist protective overcap, and change the toner closure to a compact Korean jar-shaped cap. Earlier instructions conflicting with this paragraph are superseded."
+          },
+          {
+            "key": "lotion_pump",
+            "references": [
+              "IMAGE/초안1/CHAHAR_로션_펌프형.png",
+              "IMAGE/초안1/CHAHAR_세럼.png"
+            ],
+            "prompt": "Use case: precise-object-edit, photorealistic CHAHAR skincare packaging. Preserve lively youthful cherry-red/pink omija example colors, filled contents, bright pink-white studio background and full product hero at left plus coordinated detail at right. The ONLY text anywhere is exact uppercase CHAHAR in the established thin circular mark; no product labels, capacities, Korean, promotional copy or ingredient claims. Keep smooth contemporary Korean medicine-jar-inspired forms. No flutes, ribs, parallel lines or metallic decorative stripes. All vessels and hardware must be physically coherent. Across serum, facial mist and lotion pump, match the shoulder curvature, foot design, rounded collar curvature and collar-to-body width/height proportions as one designed family, with size differences allowed for capacity. Keep materials and functions as specified per product.\nImage 1 is LOTION PUMP EDIT TARGET; Image 2 supports the serum-family proportions. Keep the reduced-capacity compact lotion bottle FULLY OPAQUE milky-pink solid material, no inner tube or fill visible. Match rounded shoulders, slightly raised circular foot and smooth jar-shaped pump collar with the serum and mist family; scale hardware consistently to body, increase smooth supporting collar height slightly. No grooves, ribbing or metallic stripes. Keep narrow refined cherry-red functional pump and small outlet; right macro shows tiny milky-pink lotion bead only at outlet. Body must remain completely opaque. CHAHAR only.\nLATEST USER OVERRIDE 2026-11-13: preserve the approved draft1 body shape, proportions, material and color rather than earlier pending body-proportion changes. Print exact Korean 오미자 below the circular CHAHAR brand on every product. These two words are the only allowed lettering. Refine the mist protective overcap, and change the toner closure to a compact Korean jar-shaped cap. Earlier instructions conflicting with this paragraph are superseded."
+          },
+          {
+            "key": "lotion_tube",
+            "references": [
+              "IMAGE/초안1/CHAHAR_로션_튜브형.png"
+            ],
+            "prompt": "Use case: precise-object-edit, photorealistic CHAHAR skincare packaging. Preserve lively youthful cherry-red/pink omija example colors, filled contents, bright pink-white studio background and full product hero at left plus coordinated detail at right. The ONLY text anywhere is exact uppercase CHAHAR in the established thin circular mark; no product labels, capacities, Korean, promotional copy or ingredient claims. Keep smooth contemporary Korean medicine-jar-inspired forms. No flutes, ribs, parallel lines or metallic decorative stripes. All vessels and hardware must be physically coherent. Across serum, facial mist and lotion pump, match the shoulder curvature, foot design, rounded collar curvature and collar-to-body width/height proportions as one designed family, with size differences allowed for capacity. Keep materials and functions as specified per product.\nImage 1 is LOTION TUBE EDIT TARGET. Preserve the short plump semitransparent frosted pink flexible tube, visibly filled milky pink emulsion, broad soft body, flat upper crimp and circular CHAHAR logo. The opaque cherry-red BOTTOM DISPENSING ASSEMBLY must clearly look like a cute small Korean ceramic jar: rounded bulging belly, softly tucked circular foot, slight pinched shoulder, continuous smooth molded curves. It remains a practical stable attached flip-top closure for a squeezable tube, not an actual loose separate pot.\nRight close-up: flip lid attached open, central dispensing mouth is a small sculpted pot-neck shape with round shoulder, gentle inward neck and softly rolled circular rim surrounding the small dispensing orifice. Tiny lotion bead. The shape must be noticeably jar-like rather than an ordinary flat cylindrical flip cap with generic nozzle. No ribs or decorative lines, no extra label. CHAHAR only.\nLATEST USER OVERRIDE 2026-11-13: preserve the approved draft1 body shape, proportions, material and color rather than earlier pending body-proportion changes. Print exact Korean 오미자 below the circular CHAHAR brand on every product. These two words are the only allowed lettering. Refine the mist protective overcap, and change the toner closure to a compact Korean jar-shaped cap. Earlier instructions conflicting with this paragraph are superseded."
+          },
+          {
+            "key": "toner",
+            "references": [
+              "IMAGE/초안1/CHAHAR_토너.png"
+            ],
+            "prompt": "Use case: precise-object-edit. Edit IMAGE/초안1/CHAHAR_토너.png, which is the approved 210 mL clear round toner bottle filled with rosy omija-example liquid. Preserve the exact body shape, proportions, pink/red palette, contents, lighting and composition. Change ONLY the narrow cherry-red closure into a small Korean medicine-jar silhouette, with softly bulging rounded belly, gentle shoulder and lightly pinched neck, refined smooth curves. Keep the cap horizontally narrow compared with bottle body, not a huge wide jar. Preserve both screw-off lower base and attached click-open hinged flip-top with thumb notch and dispensing orifice. Hero closed, right macro open attached lid. Print CHAHAR in the existing circular mark and exact Korean 오미자 below the mark. No product type, volume, extra text or claims. This is a requested future edit, not a claim that the draft image already has the new cap."
+          }
+        ],
+        "updated": "2026-11-13"
+      }
+    }
+  ]
+}

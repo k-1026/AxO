@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>계절 제품 개발 에이전트</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* Layout: 한 장짜리 요약. 컨셉 → 흐름(①~⑦) → 결과 화면 → 순위 기준 → 지식 파일 → 남은 일 */
+:root {
+  --bg: #f5f6f3;
+  --surface: #ffffff;
+  --ink: #23272a;
+  --muted: #646b6e;
+  --line: #dfe2dc;
+  --accent: #3e4a43;
+  --soft: #e9ede7;
+  --ok: #2f7a4d; --mid: #9a6a00; --no: #a8452f;
+  --display: "Gowun Batang", "Noto Serif KR", serif;
+  --body: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root {
+  --bg: #161917; --surface: #1e2220; --ink: #e6e9e5; --muted: #9aa29d; --line: #303632;
+  --accent: #b9c8be; --soft: #262b28; --ok: #74c99a; --mid: #e0b85a; --no: #ee8a76; color-scheme: dark } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.65; }
+.wrap { max-width: 880px; margin: 0 auto; padding: 36px 16px 64px; display: flex; flex-direction: column; gap: 40px; }
+h1, h2 { margin: 0; text-wrap: balance; }
+h1 { font-family: var(--display); font-size: clamp(1.7rem, 4.5vw, 2.3rem); }
+h2 { font-family: var(--display); font-size: 1.3rem; }
+p { margin: 0; }
+section { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.eyebrow { font-size: .75rem; letter-spacing: .08em; color: var(--muted); font-weight: 700; }
+.lead { font-size: 1.05rem; }
+.meta { font-size: .82rem; color: var(--muted); }
+
+.who { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.who div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.who b { display: block; font-size: .78rem; color: var(--muted); font-weight: 700; margin-bottom: 2px; }
+
+ol.flow { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+ol.flow li { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 14px; position: relative; padding-bottom: 18px; }
+ol.flow li::before { content: attr(data-n); width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: var(--bg);
+  display: grid; place-items: center; font-weight: 700; font-size: .9rem; z-index: 1; }
+ol.flow li:not(:last-child)::after { content: ""; position: absolute; left: 15px; top: 32px; bottom: 0; width: 2px; background: var(--line); }
+.step h3 { margin: 4px 0 2px; font-size: 1rem; }
+.step p { color: var(--muted); font-size: .9rem; }
+.step .eg { display: inline-block; margin-top: 4px; font-size: .85rem; background: var(--soft); border-radius: 6px; padding: 2px 8px; color: var(--ink); }
+.input { background: var(--surface); border: 1px solid var(--accent); border-radius: 10px; padding: 12px 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.chip { border: 1px solid var(--line); border-radius: 999px; padding: 2px 12px; font-size: .88rem; background: var(--bg); }
+
+.screens { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.screen { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.screen h3 { margin: 0; font-size: 1rem; }
+.screen ul { margin: 0; padding-left: 1.1em; font-size: .9rem; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
+.ph { height: 70px; border-radius: 8px; background: repeating-linear-gradient(45deg, var(--soft), var(--soft) 8px, var(--bg) 8px, var(--bg) 16px);
+  display: grid; place-items: center; font-size: .8rem; color: var(--muted); }
+
+.weights { display: flex; flex-direction: column; gap: 8px; }
+.w { display: grid; grid-template-columns: 7em minmax(0, 1fr) 3em; gap: 10px; align-items: center; font-size: .92rem; }
+.track { height: 10px; background: var(--soft); border-radius: 5px; overflow: hidden; }
+.fill { display: block; height: 100%; background: var(--accent); }
+.w .v { text-align: right; font-variant-numeric: tabular-nums; }
+.w small { grid-column: 2 / 4; color: var(--muted); font-size: .82rem; margin-top: -4px; }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: .78rem; color: var(--muted); font-weight: 700; background: var(--soft); }
+tr:last-child td { border-bottom: 0; }
+.st { font-weight: 700; white-space: nowrap; }
+.st.ok { color: var(--ok); } .st.mid { color: var(--mid); } .st.no { color: var(--no); }
+
+.todo { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.todo div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 6px; }
+.todo h3 { margin: 0; font-size: .95rem; }
+.todo ul { margin: 0; padding-left: 1.1em; font-size: .88rem; color: var(--muted); }
+footer { font-size: .8rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span class="eyebrow">기획안 요약 · @이진하 · 2026-11-04</span>
+    <h1>계절 제품 개발 아이디어 에이전트</h1>
+    <p class="lead">상품기획팀 직원이 "이번 시즌 무슨 제품 낼까?"를 고민하며 계절을 고르면, 스킨케어 라인 후보 2~3개를 실사 제품 사진과 함께 제안하고 출시 순위를 추천해요.</p>
+  </header>
+
+  <section>
+    <div class="who">
+      <div><b>브랜드</b>우리 팀이 만드는 가상 한방 스킨케어 브랜드 (이름 미정)</div>
+      <div><b>사용자</b>상품기획팀 BM이 결과를 확인</div>
+      <div><b>입력</b>4계절 중 하나 선택</div>
+      <div><b>결과</b>라인 후보 3개 (조건이 안 되면 2개) + 출시 순위</div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">에이전트 흐름</span>
+    <h2>계절 하나로 라인 후보와 출시 순위까지</h2>
+    <div class="input"><b>입력</b><span class="chip">봄</span><span class="chip">여름</span><span class="chip">가을</span><span class="chip">겨울</span></div>
+    <ol class="flow">
+      <li data-n="1"><div class="step">
+        <h3>계절 → 기후 이슈 → 피부 고민 후보</h3>
+        <p>팀이 만든 계절 기후·피부 이슈 표(K4)만 써요. 기상청 원본은 표를 만드는 근거로만 써요.</p>
+        <span class="eg">봄: 황사 → 예민함 → 진정 · 일교차 → 당김 → 장벽 · 자외선 → 칙칙함 → 톤</span>
+      </div></li>
+      <li data-n="2"><div class="step">
+        <h3>라인 + 약재 추천 (3개, 안 되면 2개)</h3>
+        <p>13개 피부 목적(K2) 중에서 고르고, 약재는 원료 후보표(K3) 안에서만 골라요. 순서는 목적 → 향 세기 → 배합 제한 → 경쟁사 선점이에요. 기능성 라인을 넣을지는 AI가 정해요.</p>
+        <span class="eg">2개로 줄이는 때: 목적이 겹치거나, 원료가 없거나, 선점 강함인데 차별화 이유가 없을 때</span>
+      </div></li>
+      <li data-n="3"><div class="step">
+        <h3>라인별 출시 구성</h3>
+        <p>구성은 라인마다 달라요. 1차 출시 제품과 2차 확장 후보를 나눠요.</p>
+        <span class="eg">진정 = 토너 + 젤 크림 · 보습 = 토너 + 세럼 + 크림</span>
+      </div></li>
+      <li data-n="4"><div class="step">
+        <h3>출시가 제안</h3>
+        <p>시장 기준(용량 × 중저가 ml당 정가, K5)과 원가 기준(원가 ÷ 목표 원가율, K7)을 비교해요. 원가 자료가 없으면 "원가 확인 필요"라고 써요.</p>
+        <span class="eg">크림 50ml × ml당 280~410원 → 약 14,000~20,500원</span>
+      </div></li>
+      <li data-n="5"><div class="step">
+        <h3>디자인 + 실사 제품 사진</h3>
+        <p>약재와 목적으로 라인 색을 정하고, 용기 모양·소재(K8)를 골라 실사 사진용 이미지 프롬프트를 써요. 사진은 이미지 생성 도구로 만들어요.</p>
+        <span class="eg">오미자 → 채도를 낮춘 로즈 베이지 · 무광 유리</span>
+      </div></li>
+      <li data-n="6"><div class="step">
+        <h3>가중치 점수 → 출시 순위</h3>
+        <p>시장 필요도, 경쟁 우위, 성공 가능성 점수를 더해 1·2·3위를 정하고, 기준마다 이유를 한 줄 써요.</p>
+      </div></li>
+      <li data-n="7"><div class="step">
+        <h3>광고 표현 셀프 체크 + 근거</h3>
+        <p>광고 표현 규칙(K6) 6문항으로 라인 이름과 설명을 검사해요. 지식 파일에 없는 숫자는 쓰지 않아요.</p>
+      </div></li>
+    </ol>
+  </section>
+
+  <section>
+    <span class="eyebrow">결과 화면</span>
+    <h2>카드를 누르면 상세가 열려요</h2>
+    <div class="screens">
+      <div class="screen">
+        <h3>화면 1 · 라인 카드</h3>
+        <div class="ph">실사 제품 사진 자리</div>
+        <ul>
+          <li>순위 배지 (1위·2위·3위)</li>
+          <li>라인 구성 제품이 함께 놓인 실사 사진</li>
+          <li>라인 이름, 라인 색, 피부 목적</li>
+        </ul>
+      </div>
+      <div class="screen">
+        <h3>화면 2 · 상세 카드</h3>
+        <ul>
+          <li>추천 계절, 피부 고민, 피부 목적·기능성 여부</li>
+          <li>대표 약재 (향 세기, 경북 산지, 선점 정도)</li>
+          <li>출시 구성: 용량, 정가, ml당 정가, 2차 확장</li>
+          <li>라인 색·보조 색, 소재</li>
+          <li>순위 점수와 이유, 광고 표현 체크, 근거</li>
+        </ul>
+      </div>
+    </div>
+    <p class="meta">화면 배치는 팀 템플릿(K9)으로 고정하고, 에이전트는 데이터와 사진만 채워요. 배치 시안: idea/LJH_K9_결과화면_시안.html</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">출시 순위 기준 (임시값)</span>
+    <h2>세 가지 점수를 더해 순위를 매겨요</h2>
+    <div class="weights">
+      <div class="w"><span>시장 필요도</span><span class="track"><span class="fill" style="width:40%"></span></span><span class="v">40%</span>
+        <small>이 계절에 이 고민이 얼마나 크고 흔한가 (K4, 고객 인사이트, 올리브영 상위 제품)</small></div>
+      <div class="w"><span>경쟁 우위</span><span class="track"><span class="fill" style="width:30%"></span></span><span class="v">30%</span>
+        <small>경쟁이 비어 있거나 우리가 이길 수 있는가 (원료별 선점 정도)</small></div>
+      <div class="w"><span>성공 가능성</span><span class="track"><span class="fill" style="width:30%"></span></span><span class="v">30%</span>
+        <small>중저가 범위 안 2점 · 향 부담 약 1점 · 경북 산지 1점 · 일반 화장품이거나 기능성 보고 가능 1점</small></div>
+    </div>
+    <p class="meta">비중 정하는 방법: 고객 구매 기준 조사로 시작값 → 3명이 따로 매기고 평균 → 비중 3가지로 돌려 순위가 흔들리는지 확인</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">지식 파일</span>
+    <h2>에이전트가 읽는 자료</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>파일</th><th>쓰는 곳</th><th>상태</th></tr></thead>
+      <tbody>
+        <tr><td>K1</td><td>브랜드 정보 (이름, 타깃, 제품명 규칙, 톤앤매너)</td><td>라인 이름, 말투</td><td class="st mid">요약 필요</td></tr>
+        <tr><td>K2</td><td>라인 구성 규칙 (13개 피부 목적, 구성 틀)</td><td>② ③</td><td class="st ok">있음</td></tr>
+        <tr><td>K3</td><td>원료 후보표 (향, 산지, 배합 제한, 선점)</td><td>② ⑥</td><td class="st mid">선점 칸 합치기</td></tr>
+        <tr><td>K4</td><td>계절 기후·피부 이슈 표</td><td>① ⑥</td><td class="st no">조사 필요</td></tr>
+        <tr><td>K5</td><td>가격 기준표 (중저가 ml당 정가)</td><td>④</td><td class="st ok">있음</td></tr>
+        <tr><td>K6</td><td>광고 표현 규칙</td><td>⑦</td><td class="st ok">있음</td></tr>
+        <tr><td>K7</td><td>원가 자료 (OEM 견적, 목표 원가율)</td><td>④</td><td class="st mid">견적·업계 기준 조사 중</td></tr>
+        <tr><td>K8</td><td>디자인 규칙 (브랜드 색, 약재별 색, 용기)</td><td>⑤</td><td class="st no">만들어야 함</td></tr>
+        <tr><td>K9</td><td>결과 화면 템플릿</td><td>결과 화면</td><td class="st mid">배치 시안 있음</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <span class="eyebrow">남은 일</span>
+    <h2>정할 것과 다음 단계</h2>
+    <div class="todo">
+      <div>
+        <h3>팀이 정할 것</h3>
+        <ul>
+          <li>가중치 비중 확정 (지금 40/30/30 임시)</li>
+          <li>목표 원가율 (업계 기준 조사 후)</li>
+          <li>실사 사진 도구 (반자동 / 커넥터 자동)</li>
+          <li>K8·K9 담당</li>
+          <li>브랜드명</li>
+        </ul>
+      </div>
+      <div>
+        <h3>다음 단계</h3>
+        <ul>
+          <li>① 자료조사 마무리 (K4, K7, K8)</li>
+          <li>② 브랜드 페르소나 만들기</li>
+          <li>③ 자료를 다 채운 뒤 에이전트 제작</li>
+        </ul>
+      </div>
+      <div>
+        <h3>보류 (2차 기능 후보)</h3>
+        <ul>
+          <li>절기 출시 타이밍·캠페인</li>
+          <li>대구 약전골목 팝업</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>자세한 내용은 idea/LJH_계절-제품개발-에이전트-기획안.md에 있어요. 예시 숫자는 팀 자료(K5 가격 기준표, 원료별 경쟁제품)로 계산했고, 기후 수치·점수·원가는 아직 자료가 없어요.</footer>
+</div>
+</body>
+</html>
