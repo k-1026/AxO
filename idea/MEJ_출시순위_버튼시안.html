@@ -274,7 +274,7 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
 
 <footer>
   <span>필수 조건을 통과한 후보를 선택한 기준으로 비교해요. 점수는 성공 확률이 아니며, 확인이 필요한 항목은 점수 범위로 보여 줘요.</span>
-  <span>후보 풀: 원료 12종(K3 원료 후보표)의 맞는 목적이 그 계절 피부 목적(K4 계절 기후 표)과 겹치면 라인 후보가 돼요. 세부 점수는 K3 · LJH 원료별 경쟁제품 · LJH 기능성 고시 성분 대조 · K5 가격 기준표의 값을 옮겼고, 점수 구간과 ★ 비중은 팀이 정할 값이에요.</span>
+  <span>후보 풀: 원료 12종(원료 후보표)의 맞는 목적이 그 계절 피부 목적(계절 기후 표)과 겹치면 라인 후보가 돼요. 세부 점수는 원료 후보표 · 원료별 경쟁제품 · 기능성 고시 성분 대조 · 가격 기준표의 값을 옮겼고, 점수 구간과 ★ 비중은 팀이 정할 값이에요.</span>
   <span>제품 사진은 팀 용기 샘플 IMAGE/수정1 (CHAHAR, ⚠️ AI 생성 디자인 검토용 시안)이에요. 수정1 샘플의 용기 형태·재질·투명도·광택 표현을 유지하고 몸체와 뚜껑·글씨의 색상만 바꾼 시안이에요. 정가는 라인 구성 예시값이에요.</span>
 </footer>
 
@@ -297,7 +297,7 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
 
 <script>
 /* ════════ 지식 데이터 (팀 자료에서 옮김) ════════ */
-/* K4 계절 기후 → 피부 고민 → 피부 목적 */
+/* 계절 기후 → 피부 고민 → 피부 목적 */
 const SEASONS = {
   "봄":  { eng: "Spring", icon: "🌸", issues: [
     ["건조한 공기", "최소습도 30% 미만 41.9일", "당김 · 속건조", ["보습", "민감·장벽"]],
@@ -317,7 +317,7 @@ const SEASONS = {
     ["건조", "최소습도 30% 미만 31.2일", "극건조 · 각질", ["보습", "민감·장벽"]],
     ["초미세먼지", "PM2.5 나쁨 이상 11.0일", "외부 자극으로 예민함", ["진정", "민감·장벽"]] ] }
 };
-/* K3 원료 후보 12종 + LJH 원료별 경쟁제품. 점수는 [점수(1~5 또는 null), 근거] */
+/* 원료 후보 12종 + 원료별 경쟁제품. 점수는 [점수(1~5 또는 null), 근거] */
 const HERBS = [
   { herb: "쑥", hanja: "艾葉", purposes: ["진정", "쿨링"], words: "진정에 도움, 쿨링감, 산뜻함", seasons: ["봄"], color: "#9DB08A",
     scent: [1, "향 강 · 특유한 방향"], gb: [1, "경북 상위권 아님 (전남 89.8%)"], preempt: [1, "선점 강함 · 한율, 아임프롬"],
@@ -358,9 +358,9 @@ const HERBS = [
   { herb: "길경", hanja: "桔梗", purposes: ["모공·피지"], words: "피부·모공 노폐물 세정, 피지 관리", seasons: ["여름"], color: "#C9B7D6",
     scent: [5, "향 약 · 특유한 냄새 약간"], gb: [3, "경북 19.6% (2위)"], preempt: [null, "경쟁 제품 조사 대상 밖"],
     hanbang: [null, "확인 필요"], rival: [null, "확인 필요"], origin: [null, "확인 필요"],
-    typeGate: ["FAIL", "K3에서 클렌저용 원료로 분류 · 토너·세럼·크림 기초라인에는 맞지 않음"] }
+    typeGate: ["FAIL", "원료 후보표에서 클렌저용 원료로 분류 · 토너·세럼·크림 기초라인에는 맞지 않음"] }
 ];
-/* ════════ K8 디자인 규칙 초안 ════════
+/* ════════ 디자인 규칙 초안 ════════
    원료별 대표 색: 추출물에 쓰는 부위(열매·잎·뿌리·꽃)의 색에서 가져옴
    main = 패키지 팔레트, cap = 라벨 포인트, liquid = 밝은 보조색, motif = 라벨 그림. 원료 고유색이 아닌 패키지 디자인 제안 */
 const DESIGN = {
@@ -453,7 +453,7 @@ const DESIGN = {
 const FINISH = Object.fromEntries(["진정", "쿨링", "모공·피지", "보습", "민감·장벽", "미백(톤)", "영양", "탄력"].map(p => [p, { mat: "수정1의 제품별 재질·투명도·광택 유지" }]));
 const PURPOSE_LABEL = { "보습": "수분 보습", "민감·장벽": "장벽 보습", "진정": "진정", "미백(톤)": "톤", "쿨링": "쿨링", "모공·피지": "모공 피지", "영양": "영양", "탄력": "탄력" };
 const SOOTHE = ["진정", "쿨링", "모공·피지"];
-/* K5 중저가 ml당 정가 범위 · 라인 구성은 예시값 */
+/* 중저가 ml당 정가 범위 · 라인 구성은 예시값 */
 const PRICE_RANGE = { toner: [36, 90], serum: [148, 430], cream: [280, 410] };
 const lineupFor = p => SOOTHE.includes(p)
   ? [["toner", "토너", 200, 15000], ["serum", "세럼", 50, 19000], ["cream", "젤 크림", 50, 19000]]
@@ -478,9 +478,9 @@ function candidates(season) {
 const perMl = l => l.lineup.map(([t, k, ml, p]) => ({ t, k, per: Math.round(p / ml), r: PRICE_RANGE[t] }));
 const GATES = [
   { nm: "기초라인 적합", get: l => l.typeGate || ["PASS", "토너·세럼·크림 구성 가능"] },
-  { nm: "한방 원료 근거", get: l => l.hanbangGate || ["PASS", "공정서 약재 (K3)"] },
+  { nm: "한방 원료 근거", get: l => l.hanbangGate || ["PASS", "공정서 약재 (ìë£ íë³´í)"] },
   { nm: "쓸 수 있는 원료", get: () => ["PASS", "안전기준 별표1·2와 이름 일치 없음 (콘셉트 단계 기준, 성분 단위는 샘플 단계에 성적서로 확인)"] },
-  { nm: "광고 표현", get: l => ["PASS", `K3 '쓸 수 있는 말'만 사용: ${l.words}`] },
+  { nm: "광고 표현", get: l => ["PASS", `원료 후보표의 '쓸 수 있는 말'만 사용: ${l.words}`] },
   { nm: "기능성 절차", get: l => l.functional ? ["PASS", l.func || "고시 성분을 배합해 보고"] : ["NA", "일반 화장품이라 해당 없음"] },
   { nm: "중저가 가격", get: l => {
       const bad = perMl(l).filter(x => x.per < x.r[0] || x.per > x.r[1]);
@@ -501,18 +501,18 @@ function trendScore(l) {
   return h && h.score != null ? [h.score, `${h.signal} · 최근÷이전 ${h.change ?? "–"} (${TREND.collectedAt}, 네이버 데이터랩)`] : [null, `${l.herb} 검색 흐름 자료 없음`];
 }
 const CRIT = [
-  { k: "demand", nm: "🛒 계절 고민 크기", area: "고객 문제와 수요 · K4", subs: [
+  { k: "demand", nm: "🛒 계절 고민 크기", area: "고객 문제와 수요 · 계절 기후 표", subs: [
       { nm: "이 목적과 이어지는 기후 이슈 수", get: l => { const n = l.issues.length; return [n >= 3 ? 5 : n === 2 ? 4 : 3, `${n}개 · ${l.issues.map(i => i[0]).join(", ")}`]; } } ] },
-  { k: "edge", nm: "🎯 빈자리", area: "경쟁 차별성 · LJH 경쟁제품", subs: [
+  { k: "edge", nm: "🎯 빈자리", area: "경쟁 차별성 · 경쟁제품", subs: [
       { nm: "약재 선점", get: l => l.preempt }, { nm: "한방 브랜드 선점", get: l => l.hanbang } ] },
-  { k: "feel", nm: "🌿 순한 향", area: "사용감 · K3 향 세기", subs: [ { nm: "향 세기", get: l => l.scent } ] },
-  { k: "price", nm: "🏷️ 가격 경쟁력", area: "지불 가격 · K5 · 경쟁제품", subs: [
+  { k: "feel", nm: "🌿 순한 향", area: "사용감 · 원료 향 세기", subs: [ { nm: "향 세기", get: l => l.scent } ] },
+  { k: "price", nm: "🏷️ 가격 경쟁력", area: "지불 가격 · 가격 기준표 · 경쟁제품", subs: [
       { nm: "같은 약재 제품보다 낮은 ml당 가격", get: l => l.rival } ] },
   { k: "ready", nm: "⚡ 빠른 출시", area: "출시 준비도 · 기능성 고시 대조", subs: [
       { nm: "기능성 보고 필요 여부", get: l => l.functional ? [2, "미백 기능성 보고가 필요해 준비가 길어요"] : [5, "일반 화장품이라 바로 출시 가능"] } ] },
-  { k: "fresh", nm: "🌸 제철 원료", area: "처방·원료 적합성 · K3 예상 계절", subs: [
-      { nm: "출시 계절과 원료 계절", get: l => l.seasons.includes(season) ? [5, `K3 예상 계절에 ${season} 포함`] : [2, `K3 예상 계절: ${l.seasons.join("·")}`] } ] },
-  { k: "brand", nm: "🏮 우리 지역 이야기", area: "브랜드 적합성 · K3 산지", subs: [
+  { k: "fresh", nm: "🌸 제철 원료", area: "처방·원료 적합성 · 원료 예상 계절", subs: [
+      { nm: "출시 계절과 원료 계절", get: l => l.seasons.includes(season) ? [5, `원료 예상 계절에 ${season} 포함`] : [2, `원료 예상 계절: ${l.seasons.join("·")}`] } ] },
+  { k: "brand", nm: "🏮 우리 지역 이야기", area: "브랜드 적합성 · 원료 산지", subs: [
       { nm: "경북 생산 비중", get: l => l.gb }, { nm: "산지 이야기 빈자리", get: l => l.origin } ] },
   { k: "trend", nm: "📈 뜨는 원료", area: "트렌드 에이전트 · 주간 검색 흐름", subs: [ { nm: "최근 4주 검색 흐름", get: l => trendScore(l) } ] },
   { k: "profit", nm: "💰 수익성", area: "원가 자료 없음", off: true },
