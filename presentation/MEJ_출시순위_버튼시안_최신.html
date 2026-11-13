@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>시즌 출시 기획실</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap">
+<style>
+/* 화장품 브랜드 사이트 느낌의 상품기획 화면: 상단 브랜드 바 → 계절 히어로 → 왼쪽 기획 스튜디오(버튼) · 오른쪽 컬렉션(순위) */
+:root {
+  --bg: #F8FCFF; --surface: #FFFFFF; --ink: #222C3A; --muted: #627286; --line: #E1EAF2;
+  --accent: #C72D75; --accent-soft: #FFF0F7; --hero1: #FFE6F1; --hero2: #F5FCFF;
+  --gold: #B87F16; --ok: #187D55; --warn: #A45C18;
+  /* 글씨체 통일: 모든 글자를 Noto Sans KR 하나로 (굵기로만 위계) */
+  --sans: "Noto Sans KR", "Malgun Gothic", sans-serif;
+  --serif: var(--sans);
+  --latin: var(--sans);
+}
+body[data-season="여름"] { --accent: #007E8C; --accent-soft: #E5FAFC; --hero1: #DDF8FA; --hero2: #F6FEFF; }
+body[data-season="가을"] { --accent: #AE6514; --accent-soft: #FFF5E4; --hero1: #FFF1DB; --hero2: #FFFDFC; }
+body[data-season="겨울"] { --accent: #356BC6; --accent-soft: #EDF5FF; --hero1: #E5F0FF; --hero2: #F8FCFF; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #F8FCFF; } }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.6; }
+h1, h2, h3, p { margin: 0; }
+button { font-family: inherit; }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* 브랜드 바 */
+.topbar { position: sticky; top: 0; z-index: 5; background: rgba(255,255,255,.96); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.topbar .in { max-width: 1280px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; gap: 28px; }
+.logo { font-family: var(--latin); font-size: 1.7rem; font-weight: 600; letter-spacing: .32em; color: var(--ink); }
+.logo small { display: block; font-family: var(--sans); font-size: .62rem; letter-spacing: .08em; color: var(--muted); font-weight: 400; margin-top: -4px; }
+.menu { display: flex; gap: 22px; font-size: .86rem; color: var(--muted); }
+.menu b { color: var(--ink); font-weight: 500; border-bottom: 1.5px solid var(--accent); padding-bottom: 2px; }
+.sample-badge { margin-left: auto; font-size: .74rem; color: var(--warn); border: 1px solid currentColor; border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
+
+/* 계절 히어로 */
+.hero { background: linear-gradient(120deg, var(--hero1), var(--hero2) 70%); border-bottom: 1px solid var(--line); transition: background .4s; }
+.hero .in { max-width: 1280px; margin: 0 auto; padding: 34px 24px 26px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 18px 32px; align-items: end; }
+.eyebrow { font-family: var(--latin); font-size: .78rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); }
+.hero h1 { font-family: var(--serif); font-size: clamp(1.9rem, 4vw, 2.8rem); font-weight: 700; letter-spacing: -.01em; margin-top: 4px; }
+.hero p.lead { color: var(--muted); margin-top: 6px; font-size: .95rem; }
+.seasons { display: flex; gap: 8px; flex-wrap: wrap; }
+.season { border: 1px solid var(--line); background: rgba(255,255,255,.7); border-radius: 999px; padding: 8px 18px; cursor: pointer; font-size: .92rem; color: var(--ink); display: flex; gap: 6px; align-items: center; }
+.season[aria-selected="true"] { background: var(--accent); color: #fff; border-color: var(--accent); }
+.issues { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.issue { background: rgba(255,255,255,.75); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
+.issue .t { font-weight: 700; font-size: .92rem; }
+.issue .n { font-size: .78rem; color: var(--accent); margin-top: 1px; }
+.issue .c { font-size: .8rem; color: var(--muted); }
+
+/* 본문 2단 */
+.main { max-width: 1280px; margin: 0 auto; padding: 26px 24px 40px; display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 28px; align-items: start; }
+.studio { position: sticky; top: 74px; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 16px; max-height: calc(100vh - 92px); overflow-y: auto; }
+.studio h2 { font-family: var(--serif); font-size: 1.2rem; }
+.studio .eng { font-family: var(--latin); color: var(--accent); letter-spacing: .18em; text-transform: uppercase; font-weight: 700; font-size: .72rem; }
+.steps { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.steps .tile { max-width: none; display: block; width: 100%; }
+.tile svg { display: block; }
+.steps p { font-size: .72rem; color: var(--muted); text-align: center; margin-top: 4px; }
+.palette { display: flex; flex-direction: column; gap: 4px; font-size: .78rem; }
+.palette div { display: flex; align-items: center; gap: 8px; }
+.palette i { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--line); display: inline-block; }
+.palette code { font-size: .74rem; color: var(--muted); }
+.hint { font-size: .78rem; color: var(--muted); line-height: 1.5; }
+.lab { font-size: .74rem; letter-spacing: .06em; color: var(--muted); font-weight: 700; margin-bottom: 7px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.gate { font-size: .76rem; border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px; background: var(--bg); }
+.gate i { font-style: normal; color: var(--ok); font-weight: 700; margin-right: 3px; }
+.preset { font-size: .8rem; border: 1px solid var(--ink); color: var(--ink); background: transparent; border-radius: 999px; padding: 4px 11px; cursor: pointer; }
+.preset.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.cbtns { display: flex; flex-direction: column; gap: 7px; }
+.cbtn { text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: 0 8px; align-items: center; color: var(--ink); transition: background .15s, border-color .15s; }
+.cbtn .nm { font-weight: 700; font-size: .9rem; }
+.cbtn .st { color: var(--gold); font-weight: 700; letter-spacing: -1px; }
+.cbtn .ar { grid-column: 1 / -1; font-size: .72rem; color: var(--muted); }
+.cbtn[data-w="1"] { border-color: var(--accent); background: var(--accent-soft); }
+.cbtn[data-w="2"] { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1.5px var(--accent); }
+.cbtn:disabled { border-style: dashed; cursor: not-allowed; opacity: .6; }
+.cbtn:disabled .st { font-size: .7rem; color: var(--muted); letter-spacing: 0; }
+.prep { font-size: .72rem; color: var(--muted); margin-top: 4px; }
+
+/* 컬렉션 */
+.col-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 10px; margin-bottom: 14px; }
+.col-head h2 { font-family: var(--serif); font-size: 1.5rem; }
+.col-head .sub { font-size: .82rem; color: var(--muted); }
+.toggle { display: flex; gap: 6px; align-items: center; font-size: .78rem; color: var(--muted); }
+.top3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; cursor: pointer; text-align: left; color: inherit; padding: 0; display: flex; flex-direction: column;
+  animation: rise .45s ease both; transition: transform .2s, box-shadow .2s; }
+.card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(40, 80, 120, .08); }
+.card:nth-child(2) { animation-delay: .06s; } .card:nth-child(3) { animation-delay: .12s; }
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.visual { position: relative; padding: 16px 12px 12px; display: flex; gap: 6px; justify-content: center; align-items: flex-end; }
+.tile { flex: 1 1 0; min-width: 0; max-width: 33%; aspect-ratio: 600 / 1024; border-radius: 10px; overflow: hidden; position: relative; background: #FAF8F3; box-shadow: none; }
+.product-cutout { position: absolute; inset: 0; display: block; z-index: 1; mix-blend-mode: multiply; }
+.product-ground { position: absolute; left: 19%; right: 12%; top: 89%; height: 3%; border-radius: 50%; background: rgba(65,49,31,.23); filter: blur(2.5px); transform: rotate(-3deg); pointer-events: none; }
+.tile img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 22.4% 50%; }
+
+.tile img.palette-point, .tile img.palette-logo { position: absolute; inset: 0; pointer-events: none; }
+.tile .tl { position: absolute; z-index: 2; left: 5px; bottom: 5px; font-size: .64rem; background: rgba(255,255,255,.85); border-radius: 5px; padding: 0 6px; color: #46515B; }
+.ribbon { position: absolute; left: 14px; top: 12px; font-family: var(--latin); font-size: 1.05rem; font-weight: 600; letter-spacing: .08em; background: var(--ink); color: #fff; border-radius: 999px; padding: 1px 12px; z-index: 1; }
+.card:first-child .ribbon { background: var(--accent); }
+.move { position: absolute; right: 14px; top: 13px; font-size: .72rem; font-weight: 700; border-radius: 999px; padding: 1px 8px; background: #fff; z-index: 1; }
+.move.up { color: var(--ok); } .move.down { color: var(--warn); } .move.new { color: var(--accent); }
+.body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--line); }
+.herb { font-size: .76rem; color: var(--accent); letter-spacing: .04em; font-weight: 500; }
+.card h3 { font-family: var(--serif); font-size: 1.2rem; font-weight: 700; line-height: 1.35; }
+.price { font-size: .78rem; color: var(--muted); }
+.meter { display: flex; align-items: center; gap: 8px; font-size: .78rem; color: var(--muted); }
+.meter .bar { flex: 1; height: 5px; border-radius: 3px; background: var(--line); position: relative; overflow: hidden; }
+.meter .bar i { position: absolute; top: 0; bottom: 0; background: var(--accent); opacity: .35; }
+.meter .bar b { position: absolute; top: 0; bottom: 0; left: 0; background: var(--accent); }
+.meter strong { color: var(--ink); font-size: .95rem; }
+.why { display: flex; flex-wrap: wrap; gap: 4px; }
+.why span { font-size: .7rem; border: 1px solid var(--line); border-radius: 999px; padding: 0 8px; background: var(--bg); }
+.why span.weak { color: var(--warn); border-color: #EBD3BC; }
+.why span.unk { border-style: dashed; color: var(--muted); }
+.flag { font-size: .7rem; color: var(--warn); }
+
+.others { margin-top: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 8px 16px; }
+.others h3 { font-family: var(--serif); font-size: 1.05rem; padding: 8px 0 4px; }
+.row { display: grid; grid-template-columns: 2.2em 14px minmax(0, 1fr) 11.5em 3.5em; gap: 10px; align-items: center; padding: 9px 0; border-top: 1px solid var(--line); cursor: pointer; background: none; border-left: 0; border-right: 0; border-bottom: 0; width: 100%; text-align: left; color: inherit; font-size: .86rem; animation: rise .4s ease both; }
+.row .rk { font-family: var(--latin); font-size: 1.05rem; color: var(--muted); }
+.row .dot { width: 12px; height: 12px; border-radius: 50%; }
+.row .nm b { font-family: var(--serif); }
+.row .nm small { color: var(--muted); margin-left: 6px; }
+.row .sc { color: var(--muted); font-size: .8rem; text-align: right; }
+.row .mv { font-size: .74rem; text-align: right; }
+.row.blocked .nm b { color: var(--muted); }
+.empty { padding: 40px; text-align: center; color: var(--muted); background: var(--surface); border: 1px dashed var(--line); border-radius: 18px; }
+
+footer { max-width: 1280px; margin: 0 auto; padding: 0 24px 40px; font-size: .76rem; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+
+/* 상세 */
+dialog { border: none; padding: 0; border-radius: 20px; background: var(--surface); color: var(--ink); width: min(980px, calc(100vw - 32px)); max-height: calc(100vh - 32px); }
+dialog::backdrop { background: rgba(28, 43, 64, .4); }
+.detail { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+.dv { padding: 26px 18px; display: flex; flex-direction: column; gap: 12px; }
+.dv .visual { padding: 0; }
+.dv .tile { max-width: none; }
+.di { padding: 24px; display: flex; flex-direction: column; gap: 14px; border-left: 1px solid var(--line); overflow-y: auto; max-height: calc(100vh - 32px); }
+.dh { display: flex; justify-content: space-between; gap: 12px; align-items: start; }
+.dh h2 { font-family: var(--serif); font-size: 1.5rem; }
+.close { border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 3px 12px; cursor: pointer; font-size: .82rem; }
+dl { margin: 0; display: grid; grid-template-columns: 6em minmax(0, 1fr); gap: 6px 12px; font-size: .88rem; }
+dt { color: var(--muted); } dd { margin: 0; }
+.sec { font-size: .74rem; letter-spacing: .06em; color: var(--muted); font-weight: 700; margin-bottom: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: .86rem; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+th { color: var(--muted); font-weight: 500; font-size: .76rem; }
+.gl { display: flex; flex-direction: column; gap: 3px; font-size: .82rem; }
+.gl div { display: grid; grid-template-columns: 5.4em 7.6em minmax(0, 1fr); gap: 8px; }
+.gl .s { font-weight: 700; font-size: .74rem; }
+.s.PASS { color: var(--ok); } .s.NA { color: var(--muted); } .s.UNKNOWN, .s.FAIL { color: var(--warn); }
+.cr { font-size: .84rem; display: flex; flex-direction: column; gap: 6px; }
+.cr .h { display: flex; justify-content: space-between; font-weight: 700; }
+.cr .sb { font-size: .76rem; color: var(--muted); line-height: 1.5; }
+.note { font-size: .78rem; color: var(--muted); }
+
+@media (max-width: 1000px) {
+  .main { grid-template-columns: 1fr; }
+  .studio { position: static; max-height: none; }
+  .top3 { grid-template-columns: 1fr; }
+  .detail { grid-template-columns: 1fr; }
+  .di { border-left: 0; border-top: 1px solid var(--line); }
+  .row { grid-template-columns: 2em 12px minmax(0, 1fr) 6.5em; }
+  .row .mv { display: none; }
+  .menu { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .card, .row { animation: none; } }
+
+/* 기후 정보와 기획 판단을 연결하는 트렌드 에이전트의 한마디 */
+.trend-assist { grid-column: 1 / -1; display: flex; align-items: flex-start; gap: 12px; margin-top: 2px; }
+.trend-avatar { flex: 0 0 38px; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; color: var(--accent); background: #fff; border: 1px solid var(--line); font-size: 1.3rem; }
+.trend-bubble { position: relative; flex: 1; min-width: 0; padding: 14px 18px; border: 1px solid var(--line); border-radius: 0 16px 16px 16px; background: rgba(255,255,255,.94); }
+.trend-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 5px; font-size: .78rem; }
+.trend-meta strong { color: var(--accent); }
+.trend-status { color: var(--muted); font-size: .7rem; border-radius: 999px; background: var(--accent-soft); padding: 1px 7px; }
+.trend-line { font-size: .94rem; line-height: 1.65; color: var(--ink); }
+.trend-plan { margin-top: 5px; font-size: .84rem; color: var(--muted); }
+.trend-plan b { color: var(--ink); font-weight: 500; }
+.trend-source { display: block; margin-top: 7px; font-size: .7rem; color: var(--muted); }
+@media(max-width:600px) { .trend-assist { gap: 8px; } .trend-bubble { padding: 12px; } .trend-avatar { flex-basis: 30px; width: 30px; height: 30px; font-size: 1.1rem; } }
+.trend-refresh { margin-left: auto; padding: 3px 9px; border: 1px solid var(--line); border-radius: 999px; color: var(--accent); background: #fff; font: inherit; font-size: .7rem; cursor: pointer; }
+.trend-refresh:disabled { opacity: .6; cursor: progress; }
+.trend-evidence { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 6px; font-size: .72rem; }
+.trend-evidence a { color: var(--accent); text-underline-offset: 3px; }
+.card-rank { min-height: 40px; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; gap: 8px; background: #fff; border-bottom: 1px solid var(--line); }
+.card-rank .ribbon, .card-rank .move { position: static; }
+.card-rank .ribbon { font-size: .9rem; }
+.trend-details { margin-top:6px; font-size:.72rem; color:var(--muted); } .trend-details summary { cursor:pointer; }
+
+/* 원본 사진과 색상 레이어를 함께 확대하는 커서 추적 돋보기 */
+#detail .tile { cursor: zoom-in; }
+.sample-lens { position: fixed; width: 230px; height: 230px; box-sizing: content-box; border: 2px solid #fff; border-radius: 50%; overflow: hidden; z-index: 10000; pointer-events: none; box-shadow: 0 5px 24px rgba(24,36,52,.25), 0 0 0 1px rgba(24,36,52,.12); }
+.sample-lens[hidden] { display: none; }
+.sample-lens-content { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.sample-lens-content .product-cutout { width: 100%; height: 100%; }
+.sample-lens img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 22.4% 50%; }
+.sample-lens img.palette-point, .sample-lens img.palette-logo { position: absolute; inset: 0; }
+.sample-lens::after { content: ""; position: absolute; left: calc(50% - 5px); top: calc(50% - 5px); width: 10px; height: 10px; background: linear-gradient(#56616c66,#56616c66) center / 1px 10px no-repeat, linear-gradient(#56616c66,#56616c66) center / 10px 1px no-repeat; }
+.zoom-hint { margin: 5px 0 0; font-size: .72rem; color: var(--muted); text-align: right; }
+@media (hover: none) { .sample-lens { display: none !important; } .zoom-hint { display: none; } }
+</style>
+</head>
+<body data-season="봄">
+<svg width="0" height="0" aria-hidden="true" style="position:absolute;overflow:hidden" xmlns="http://www.w3.org/2000/svg"><defs id="package-filters"></defs>
+<defs>
+  <clipPath id="pkg-clip-toner" clipPathUnits="objectBoundingBox"><rect x=".22" y=".089" width=".36" height=".141" rx=".065"/></clipPath>
+  <clipPath id="pkg-clip-serum" clipPathUnits="objectBoundingBox"><rect x=".315" y=".053" width=".218" height=".165" rx=".105"/><ellipse cx=".429" cy=".28" rx=".248" ry=".081"/></clipPath>
+  <clipPath id="pkg-clip-cream" clipPathUnits="objectBoundingBox"><path d="M .06 .477 L .066 .379 C .085 .305 .24 .283 .435 .282 C .68 .28 .88 .31 .92 .38 L .929 .477 Q .49 .506 .06 .477 Z"/></clipPath>
+<clipPath id="pkg-logo-toner" clipPathUnits="objectBoundingBox"><ellipse cx=".438" cy=".49" rx=".151" ry=".09"/></clipPath>
+<clipPath id="pkg-logo-serum" clipPathUnits="objectBoundingBox"><ellipse cx=".438" cy=".586" rx=".145" ry=".084"/></clipPath>
+<clipPath id="pkg-logo-cream" clipPathUnits="objectBoundingBox"><ellipse cx=".517" cy=".614" rx=".155" ry=".092"/></clipPath><clipPath id="pkg-silhouette-toner" clipPathUnits="objectBoundingBox"><path d="M .25 .089 C .23 .089 .22 .105 .22 .13 C .195 .15 .21 .20 .26 .224 L .28 .24 C .20 .26 .105 .29 .097 .35 L .097 .874 Q .10 .932 .415 .932 Q .74 .932 .744 .874 L .744 .35 C .73 .29 .64 .26 .55 .239 L .53 .224 C .59 .21 .60 .16 .574 .13 L .572 .11 Q .56 .089 .50 .089 Z"/></clipPath>
+<clipPath id="pkg-silhouette-serum" clipPathUnits="objectBoundingBox"><path d="M .42 .053 C .34 .053 .315 .08 .315 .13 L .315 .205 C .235 .207 .19 .246 .187 .283 C .18 .329 .215 .353 .285 .361 L .285 .38 C .18 .41 .09 .46 .083 .57 L .075 .78 C .06 .87 .19 .895 .42 .895 C .66 .895 .785 .87 .778 .78 L .77 .57 C .76 .46 .68 .41 .575 .38 L .575 .36 C .65 .35 .68 .32 .67 .28 C .66 .24 .61 .21 .53 .205 L .53 .13 C .53 .08 .50 .053 .42 .053 Z"/></clipPath>
+<clipPath id="pkg-silhouette-cream" clipPathUnits="objectBoundingBox"><path d="M .435 .282 C .22 .282 .09 .31 .066 .38 L .06 .477 C .028 .50 .01 .56 .017 .62 C .02 .73 .14 .79 .30 .80 L .68 .80 C .84 .79 .97 .72 .97 .62 C .98 .55 .95 .50 .929 .477 L .92 .38 C .88 .31 .68 .28 .435 .282 Z"/></clipPath><filter id="pkg-edge-feather" x="-10%" y="-10%" width="120%" height="120%" primitiveUnits="objectBoundingBox" color-interpolation-filters="sRGB"><feMorphology in="SourceGraphic" operator="erode" radius=".006"/><feGaussianBlur stdDeviation=".0035"/></filter>
+<mask id="pkg-mask-toner" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox" x="0" y="0" width="1" height="1" style="mask-type:alpha"><g fill="white" filter="url(#pkg-edge-feather)"><path d="M .25 .089 C .23 .089 .22 .105 .22 .13 C .195 .15 .21 .20 .26 .224 L .28 .24 C .20 .26 .105 .29 .097 .35 L .097 .874 Q .10 .932 .415 .932 Q .74 .932 .744 .874 L .744 .35 C .73 .29 .64 .26 .55 .239 L .53 .224 C .59 .21 .60 .16 .574 .13 L .572 .11 Q .56 .089 .50 .089 Z"/></g></mask>
+<mask id="pkg-mask-serum" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox" x="0" y="0" width="1" height="1" style="mask-type:alpha"><g fill="white" filter="url(#pkg-edge-feather)"><path d="M .42 .053 C .34 .053 .315 .08 .315 .13 L .315 .205 C .235 .207 .19 .246 .187 .283 C .18 .329 .215 .353 .285 .361 L .285 .38 C .18 .41 .09 .46 .083 .57 L .075 .78 C .06 .87 .19 .895 .42 .895 C .66 .895 .785 .87 .778 .78 L .77 .57 C .76 .46 .68 .41 .575 .38 L .575 .36 C .65 .35 .68 .32 .67 .28 C .66 .24 .61 .21 .53 .205 L .53 .13 C .53 .08 .50 .053 .42 .053 Z"/></g></mask>
+<mask id="pkg-mask-cream" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox" x="0" y="0" width="1" height="1" style="mask-type:alpha"><g fill="white" filter="url(#pkg-edge-feather)"><path d="M .435 .282 C .22 .282 .09 .31 .066 .38 L .06 .477 C .028 .50 .01 .56 .017 .62 C .02 .73 .14 .79 .30 .80 L .68 .80 C .84 .79 .97 .72 .97 .62 C .98 .55 .95 .50 .929 .477 L .92 .38 C .88 .31 .68 .28 .435 .282 Z"/></g></mask></defs></svg>
+
+<div class="topbar"><div class="in">
+  <div class="logo">CHAHAR<small>가칭 · 브랜드명 미정</small></div>
+  <nav class="menu"><span>시즌 컬렉션</span><span>원료 이야기</span><b>출시 기획실</b></nav>
+  <span class="sample-badge">상품기획 시안 · 팀 자료 기반</span>
+</div></div>
+
+<section class="hero"><div class="in">
+  <div>
+    <div class="eyebrow" id="eng">Spring Collection Planning</div>
+    <h1 id="title">봄, 어떤 라인을 먼저 낼까요?</h1>
+    <p class="lead">계절 기후에서 피부 고민을 찾고, 한방 원료 12종 중 맞는 라인 후보를 모아 기획자가 고른 기준으로 순위를 매겨요.</p>
+  </div>
+  <div class="seasons" role="tablist" aria-label="계절 선택" id="seasons"></div>
+  <div class="issues" id="issues"></div>
+  <aside class="trend-assist" aria-labelledby="trend-assist-title">
+    <span class="trend-avatar" aria-hidden="true">↗</span>
+    <div class="trend-bubble" aria-live="polite" aria-atomic="true">
+      <div class="trend-meta"><strong id="trend-assist-title">실시간 뷰티 트렌드는?</strong><span class="trend-status" id="trend-status"></span><button type="button" class="trend-refresh" id="beauty-refresh">최신 수집본 확인</button></div>
+      <p class="trend-line" id="trend-line"></p>
+      <p class="trend-plan" id="trend-plan"></p>
+      <small class="trend-source" id="trend-source"></small><details class="trend-details"><summary>근거 보기</summary><div class="trend-evidence" id="trend-evidence"></div></details>
+    </div>
+  </aside>
+</div></section>
+
+<div class="main">
+  <aside class="studio" aria-label="출시 기준 고르기">
+    <div>
+      <div class="eng">Launch Studio</div>
+      <h2>무엇을 중요하게 볼까요?</h2>
+      <p class="hint">한 번 누르면 ★ 중요 · 두 번 ★★ 아주 중요 · 세 번 끄기</p>
+    </div>
+    <div><div class="lab">추천 조합</div><div class="chips" id="presets"></div></div>
+    <div><div class="lab">매력 기준</div><div class="cbtns" id="cbtns"></div></div>
+    <div><div class="lab">필수 통과 조건 · 항상 확인</div><div class="chips" id="gates"></div>
+      <p class="hint" style="margin-top:6px">PASS가 아니면 순위에 올리지 않고 '추가 검증'으로 보여 줘요.</p></div>
+  </aside>
+
+  <section aria-label="라인 후보">
+    <div class="col-head">
+      <div>
+        <h2 id="col-title">봄 컬렉션 후보</h2>
+        <div class="sub" id="col-sub"></div>
+      </div>
+      <div class="toggle"><span>용기 디자인</span><span class="chips" id="design"></span></div>
+    </div>
+    <div id="results"></div>
+  </section>
+</div>
+
+<footer>
+  <span>필수 조건을 통과한 후보를 선택한 기준으로 비교해요. 점수는 성공 확률이 아니며, 확인이 필요한 항목은 점수 범위로 보여 줘요.</span>
+  <span>후보 풀: 원료 12종(K3 원료 후보표)의 맞는 목적이 그 계절 피부 목적(K4 계절 기후 표)과 겹치면 라인 후보가 돼요. 세부 점수는 K3 · LJH 원료별 경쟁제품 · LJH 기능성 고시 성분 대조 · K5 가격 기준표의 값을 옮겼고, 점수 구간과 ★ 비중은 팀이 정할 값이에요.</span>
+  <span>제품 사진은 팀 용기 샘플 IMAGE/수정1 (CHAHAR, ⚠️ AI 생성 디자인 검토용 시안)이에요. 수정1 샘플의 용기 형태·재질·투명도·광택 표현을 유지하고 몸체와 뚜껑·글씨의 색상만 바꾼 시안이에요. 정가는 라인 구성 예시값이에요.</span>
+</footer>
+
+<dialog id="detail" aria-labelledby="d-name">
+  <div class="detail">
+    <div class="dv"><div class="visual" id="d-visual"></div><p class="zoom-hint">사진 위에 마우스를 올리면 확대됩니다.</p>
+      <div><div class="sec">샘플 → 색상 변경 (세럼)</div><div class="steps" id="d-steps"></div></div>
+      <div><div class="sec">패키지 팔레트 (디자인 제안)</div><div class="palette" id="d-palette"></div></div>
+      <div class="note" id="d-vnote"></div></div>
+    <div class="di">
+      <div class="dh"><div><div class="herb" id="d-rank"></div><h2 id="d-name"></h2></div><button class="close" id="d-close" type="button">닫기</button></div>
+      <dl id="d-facts"></dl>
+      <div><div class="sec">출시 구성 (예시)</div>
+        <table><thead><tr><th>제품</th><th>용량</th><th>정가</th><th>ml당</th></tr></thead><tbody id="d-lineup"></tbody></table></div>
+      <div><div class="sec">필수 통과 조건</div><div class="gl" id="d-gates"></div></div>
+      <div><div class="sec">출시 순위 근거 (고른 기준)</div><div class="cr" id="d-crit"></div></div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+/* ════════ 지식 데이터 (팀 자료에서 옮김) ════════ */
+/* K4 계절 기후 → 피부 고민 → 피부 목적 */
+const SEASONS = {
+  "봄":  { eng: "Spring", icon: "🌸", issues: [
+    ["건조한 공기", "최소습도 30% 미만 41.9일", "당김 · 속건조", ["보습", "민감·장벽"]],
+    ["황사·미세먼지", "황사 5.4일 · PM10 나쁨 7.0일", "외부 자극으로 예민함", ["진정", "민감·장벽"]],
+    ["큰 일교차", "일교차 평균 12.1℃", "환절기 예민함", ["진정", "민감·장벽"]],
+    ["자외선 증가", "자외선지수 3월 4.3 → 5월 6.7", "칙칙한 톤", ["미백(톤)"]] ] },
+  "여름": { eng: "Summer", icon: "🌊", issues: [
+    ["폭염·열대야", "폭염 10.6일 (대구 25.4일)", "열감 · 땀", ["쿨링", "진정"]],
+    ["장마·고습", "평균습도 76.7%", "번들거림 · 피지 · 모공", ["모공·피지"]],
+    ["강한 자외선", "자외선지수 여름 평균 7.5", "햇볕 노출 · 톤 고민", ["미백(톤)"]] ] },
+  "가을": { eng: "Autumn", icon: "🍂", issues: [
+    ["습도 하락", "최소습도 30% 미만 4.3 → 16.1일", "건조 시작 · 당김", ["보습"]],
+    ["일교차", "일교차 평균 10.9℃", "환절기 예민함", ["진정", "민감·장벽"]],
+    ["여름 뒤 자외선 누적", "자외선지수 가을 평균 4.2", "칙칙함", ["미백(톤)"]] ] },
+  "겨울": { eng: "Winter", icon: "❄️", issues: [
+    ["저온·한파", "평균기온 0.5℃ · 한파 6.4일", "푸석함 · 탄력 저하", ["보습", "영양", "탄력"]],
+    ["건조", "최소습도 30% 미만 31.2일", "극건조 · 각질", ["보습", "민감·장벽"]],
+    ["초미세먼지", "PM2.5 나쁨 이상 11.0일", "외부 자극으로 예민함", ["진정", "민감·장벽"]] ] }
+};
+/* K3 원료 후보 12종 + LJH 원료별 경쟁제품. 점수는 [점수(1~5 또는 null), 근거] */
+const HERBS = [
+  { herb: "쑥", hanja: "艾葉", purposes: ["진정", "쿨링"], words: "진정에 도움, 쿨링감, 산뜻함", seasons: ["봄"], color: "#9DB08A",
+    scent: [1, "향 강 · 특유한 방향"], gb: [1, "경북 상위권 아님 (전남 89.8%)"], preempt: [1, "선점 강함 · 한율, 아임프롬"],
+    hanbang: [1, "한율이 쑥 크림·세럼·토너·미스트 보유"], rival: [2, "아임프롬 에센스 ml당 240원이 우리 세럼(380원)보다 낮음"], origin: [2, "아임프롬이 '강화' 산지를 내세움"] },
+  { herb: "어성초", hanja: "魚腥草", purposes: ["진정", "쿨링", "모공·피지"], words: "진정에 도움, 쿨링감, 피지 관리, 보송함", seasons: ["여름"], color: "#8FB9A8",
+    scent: [1, "향 강 · 비비면 비린내"], gb: [4, "경북 48.1% (1위)"], preempt: [1, "선점 강함 · 아누아, 아비브"],
+    hanbang: [5, "한방 브랜드 제품 없음"], rival: [5, "아누아 토너 ml당 100원 > 우리 토너 75원"], origin: [5, "경쟁 제품이 산지를 내세우지 않음"] },
+  { herb: "인삼", hanja: "人蔘", purposes: ["보습", "영양", "탄력"], words: "촉촉함, 영양, 윤기, 탄력 있어 보이는", seasons: ["겨울"], color: "#E3C9A0",
+    scent: [3, "향 중 · 특유한 냄새"], gb: [null, "생산 통계가 따로 있어 확인 필요"], preempt: [1, "선점 강함 · 조선미녀, 설화수, 플렌티플랜트"],
+    hanbang: [1, "설화수·조선미녀 제품 있음"], rival: [5, "조선미녀 ml당 567원 > 우리 세럼 380원"], origin: [5, "경쟁 제품이 산지를 내세우지 않음"] },
+  { herb: "홍삼", hanja: "紅蔘", purposes: ["영양", "탄력"], words: "영양, 윤기, 탄력 있어 보이는", seasons: ["겨울"], color: "#B5655A",
+    scent: [3, "향 중 · 특유한 냄새"], gb: [null, "생산 통계 없음"], preempt: [5, "스킨케어로는 약함 · 랩1899"],
+    hanbang: [1, "다나한(한방) 홍삼 제품 있음"], rival: [5, "랩1899 ml당 960원 > 우리 세럼 380원"], origin: [null, "경쟁 제품 산지 강조 확인 필요"] },
+  { herb: "당귀", hanja: "當歸", purposes: ["영양"], words: "영양, 윤기, 매끄러움", seasons: ["가을", "겨울"], color: "#A88C7D",
+    scent: [5, "향 약 · 약간 특유한 냄새"], gb: [4, "경북 30.8% (2위)"], preempt: [5, "선점 약함 · 경쟁 제품 찾지 못함"],
+    hanbang: [5, "한방 브랜드 제품 없음"], rival: [5, "경쟁 제품 없음"], origin: [5, "경쟁 제품 없음"] },
+  { herb: "감초", hanja: "甘草", purposes: ["진정", "민감·장벽", "미백(톤)"], words: "진정에 도움, 장벽 보습, 맑아 보이는 피부톤", seasons: ["봄", "여름", "가을", "겨울"], color: "#A9BFA3",
+    scent: [5, "향 약 · 약간 특유한 냄새"], gb: [3, "경북 13.3% (2위)"], preempt: [3, "선점 보통 · 잇츠스킨, 루트리, 아크웰 (기능성 보고 16건, 2026년 8월 6건)"],
+    hanbang: [5, "한방 브랜드 제품 없음"], rival: [5, "잇츠스킨 ml당 513원 > 우리 세럼 380원"], origin: [5, "경쟁 제품이 산지를 내세우지 않음"],
+    func: "유용성감초추출물이 미백 고시 성분이라 보고로 가능 (원료 규격 확인 필요)" },
+  { herb: "병풀", hanja: "", purposes: ["진정", "민감·장벽"], words: "진정에 도움, 장벽 보습", seasons: ["봄", "여름"], color: "#7FA88A",
+    scent: [null, "향 미확인 (공정서에 약재 항목 없음)"], gb: [null, "생산 통계 없음"], preempt: [1, "선점 강함 · 스킨1004, 브링그린"],
+    hanbang: [5, "한방 브랜드 제품 없음"], rival: [2, "브링그린 토너 ml당 60원이 우리 토너(75원)보다 낮음"], origin: [2, "스킨1004가 '마다가스카르' 산지를 내세움"],
+    hanbangGate: ["UNKNOWN", "공정서 약재가 아니라 '한방 원료'로 소개할 근거 확인 필요"] },
+  { herb: "황기", hanja: "黃芪", purposes: ["영양"], words: "영양, 윤기, 매끄러움", seasons: ["가을", "겨울"], color: "#E2CB7E",
+    scent: [5, "향 약 · 특유한 냄새 약간"], gb: [3, "경북 20.1% (3위)"], preempt: [5, "선점 약함 · 경쟁 제품 찾지 못함"],
+    hanbang: [5, "한방 브랜드 제품 없음"], rival: [5, "경쟁 제품 없음"], origin: [5, "경쟁 제품 없음"] },
+  { herb: "작약", hanja: "芍藥", purposes: ["미백(톤)"], words: "맑아 보이는 피부톤, 생기", seasons: ["봄", "가을"], color: "#E8B9C0",
+    scent: [3, "향 중 · 특유한 냄새"], gb: [5, "경북 58.0% (1위)"], preempt: [5, "선점 약함 · 구달 앰플 1개"],
+    hanbang: [5, "한방 브랜드 제품 없음"], rival: [5, "구달 ml당 760원 > 우리 세럼 380원"], origin: [5, "경쟁 제품이 산지를 내세우지 않음"],
+    func: "작약은 고시 성분이 아니라 고시 성분(예: 나이아신아마이드)을 따로 배합해 보고" },
+  { herb: "오미자", hanja: "五味子", purposes: ["보습"], words: "촉촉함, 수분 공급", seasons: ["여름", "가을"], color: "#D9B8AE",
+    scent: [5, "향 약 · 냄새 약간"], gb: [4, "경북 40.7% (1위)"], preempt: [5, "스킨케어로는 약함 · 파넬 워시오프 세럼 1개"],
+    hanbang: [5, "한방 브랜드 제품 없음"], rival: [5, "파넬 ml당 1,367원 > 우리 세럼 380원"], origin: [5, "경쟁 제품이 산지를 내세우지 않음"] },
+  { herb: "오가피", hanja: "五加皮", purposes: ["민감·장벽", "탄력"], words: "장벽 보습, 탄력 있어 보이는", seasons: ["봄", "겨울"], color: "#8C7A9B",
+    scent: [3, "향 중 · 특유한 냄새"], gb: [1, "경북 상위권 아님 (충남 30.8%)"], preempt: [null, "경쟁 제품 조사 대상 밖"],
+    hanbang: [null, "확인 필요"], rival: [null, "확인 필요"], origin: [null, "확인 필요"] },
+  { herb: "길경", hanja: "桔梗", purposes: ["모공·피지"], words: "피부·모공 노폐물 세정, 피지 관리", seasons: ["여름"], color: "#C9B7D6",
+    scent: [5, "향 약 · 특유한 냄새 약간"], gb: [3, "경북 19.6% (2위)"], preempt: [null, "경쟁 제품 조사 대상 밖"],
+    hanbang: [null, "확인 필요"], rival: [null, "확인 필요"], origin: [null, "확인 필요"],
+    typeGate: ["FAIL", "K3에서 클렌저용 원료로 분류 · 토너·세럼·크림 기초라인에는 맞지 않음"] }
+];
+/* ════════ K8 디자인 규칙 초안 ════════
+   원료별 대표 색: 추출물에 쓰는 부위(열매·잎·뿌리·꽃)의 색에서 가져옴
+   main = 패키지 팔레트, cap = 라벨 포인트, liquid = 밝은 보조색, motif = 라벨 그림. 원료 고유색이 아닌 패키지 디자인 제안 */
+const DESIGN = {
+  "쑥": {
+    "main": "#F0F9E9",
+    "cap": "#83B966",
+    "liquid": "#F3F6F0",
+    "motif": "leaf",
+    "from": "맑은 라이트 그린"
+  },
+  "어성초": {
+    "main": "#E4FAF0",
+    "cap": "#268C65",
+    "liquid": "#F0F8F6",
+    "motif": "leaf",
+    "from": "라이트 민트 · 선명한 그린"
+  },
+  "인삼": {
+    "main": "#FFF7E5",
+    "cap": "#D4AE61",
+    "liquid": "#FAF8F1",
+    "motif": "root",
+    "from": "밝은 아이보리 · 허니 포인트"
+  },
+  "홍삼": {
+    "main": "#FFF0F1",
+    "cap": "#E47888",
+    "liquid": "#F8F0F1",
+    "motif": "root",
+    "from": "라이트 핑크 · 코랄 포인트"
+  },
+  "당귀": {
+    "main": "#FFF6E2",
+    "cap": "#C7AC78",
+    "liquid": "#F8F5EF",
+    "motif": "root",
+    "from": "밝은 크림 아이보리 · 샌드 베이지"
+  },
+  "감초": {
+    "main": "#FFF8E8",
+    "cap": "#C8AD73",
+    "liquid": "#FFF9ED",
+    "motif": "root",
+    "from": "크림 아이보리 · 옅은 허니 베이지"
+  },
+  "병풀": {
+    "main": "#ECFBF0",
+    "cap": "#57B983",
+    "liquid": "#F1F7F3",
+    "motif": "leaf",
+    "from": "맑은 화이트 · 시카 그린"
+  },
+  "황기": {
+    "main": "#FFFBE6",
+    "cap": "#DEC05B",
+    "liquid": "#FAF9EF",
+    "motif": "root",
+    "from": "밝은 화이트 · 버터 옐로"
+  },
+  "작약": {
+    "main": "#FFFBFD",
+    "cap": "#F0AECF",
+    "liquid": "#FBF5F8",
+    "motif": "flower",
+    "from": "클린 화이트 · 맑은 페일 핑크"
+  },
+  "오미자": {
+    "main": "#FFE9F3",
+    "cap": "#EB80AF",
+    "liquid": "#F8EDF2",
+    "motif": "berry",
+    "from": "라이트 핑크 · 프레시 로즈"
+  },
+  "오가피": {
+    "main": "#F4EEFF",
+    "cap": "#B297DC",
+    "liquid": "#F6F3F9",
+    "motif": "root",
+    "from": "맑은 라벤더"
+  },
+  "길경": {
+    "main": "#E9F5FF",
+    "cap": "#6BADE0",
+    "liquid": "#F2F5FA",
+    "motif": "flower",
+    "from": "클리어 스카이 블루"
+  }
+};
+/* 재질은 수정1 원본을 그대로 사용하며 피부 목적에 따라 바꾸지 않아요. */
+const FINISH = Object.fromEntries(["진정", "쿨링", "모공·피지", "보습", "민감·장벽", "미백(톤)", "영양", "탄력"].map(p => [p, { mat: "수정1의 제품별 재질·투명도·광택 유지" }]));
+const PURPOSE_LABEL = { "보습": "수분 보습", "민감·장벽": "장벽 보습", "진정": "진정", "미백(톤)": "톤", "쿨링": "쿨링", "모공·피지": "모공 피지", "영양": "영양", "탄력": "탄력" };
+const SOOTHE = ["진정", "쿨링", "모공·피지"];
+/* K5 중저가 ml당 정가 범위 · 라인 구성은 예시값 */
+const PRICE_RANGE = { toner: [36, 90], serum: [148, 430], cream: [280, 410] };
+const lineupFor = p => SOOTHE.includes(p)
+  ? [["toner", "토너", 200, 15000], ["serum", "세럼", 50, 19000], ["cream", "젤 크림", 50, 19000]]
+  : ["영양", "탄력"].includes(p)
+    ? [["toner", "토너", 200, 15000], ["serum", "세럼", 50, 19000], ["cream", "크림", 50, 20000]]
+    : [["toner", "토너", 200, 15000], ["serum", "세럼", 50, 19000], ["cream", "크림", 50, 19000]];
+
+/* ════════ 후보 풀 만들기: 원료의 목적 ∩ 계절 목적 ════════ */
+function candidates(season) {
+  const iss = SEASONS[season].issues;
+  return HERBS.map(h => {
+    const hits = h.purposes.map(p => ({ p, issues: iss.filter(i => i[3].includes(p)) })).filter(x => x.issues.length);
+    if (!hits.length) return null;
+    hits.sort((a, b) => b.issues.length - a.issues.length);
+    const { p, issues } = hits[0];
+    return { ...h, color: DESIGN[h.herb].main, design: DESIGN[h.herb], finish: FINISH[p], purpose: p, issues, name: `${h.herb} ${PURPOSE_LABEL[p]} 라인`, functional: p === "미백(톤)",
+      concern: issues.map(i => i[2]).join(" / "), lineup: lineupFor(p) };
+  }).filter(Boolean);
+}
+
+/* ════════ 필수 통과 조건 (PASS / FAIL / UNKNOWN / NA) ════════ */
+const perMl = l => l.lineup.map(([t, k, ml, p]) => ({ t, k, per: Math.round(p / ml), r: PRICE_RANGE[t] }));
+const GATES = [
+  { nm: "기초라인 적합", get: l => l.typeGate || ["PASS", "토너·세럼·크림 구성 가능"] },
+  { nm: "한방 원료 근거", get: l => l.hanbangGate || ["PASS", "공정서 약재 (K3)"] },
+  { nm: "쓸 수 있는 원료", get: () => ["PASS", "안전기준 별표1·2와 이름 일치 없음 (콘셉트 단계 기준, 성분 단위는 샘플 단계에 성적서로 확인)"] },
+  { nm: "광고 표현", get: l => ["PASS", `K3 '쓸 수 있는 말'만 사용: ${l.words}`] },
+  { nm: "기능성 절차", get: l => l.functional ? ["PASS", l.func || "고시 성분을 배합해 보고"] : ["NA", "일반 화장품이라 해당 없음"] },
+  { nm: "중저가 가격", get: l => {
+      const bad = perMl(l).filter(x => x.per < x.r[0] || x.per > x.r[1]);
+      return bad.length ? ["FAIL", bad.map(x => `${x.k} ${x.per}원/ml 범위 밖`).join(", ")] : ["PASS", perMl(l).map(x => `${x.k} ${x.per}원/ml`).join(" · ")];
+    } },
+  { nm: "계절 고민 연결", get: l => ["PASS", l.issues.map(i => i[0]).join(" · ")] }
+];
+
+/* ════════ 매력 기준 버튼 (세부 기준은 버튼 비중을 나눠 씀) ════════ */
+let TREND = null;
+const trendDataUrl = typeof location !== "undefined" && location.hostname === "htmlpreview.github.io" ? "https://raw.githubusercontent.com/k-1026/AxO/research/idea/trend/trend.json" : "../idea/trend/trend.json";
+fetch(trendDataUrl).then(r => r.ok ? r.json() : null).then(j => { if (j) { TREND = j; render(); } }).catch(() => {});
+const trendLabel = () => TREND ? `기준일 ${TREND.collectedAt}` : "트렌드 파일 수집 전";
+function trendScore(l) {
+  if (!TREND) return [null, "트렌드 파일 없음 · idea/trend/datalab_collect.js 실행 필요"];
+  if ((Date.now() - new Date(TREND.collectedAt)) / 864e5 > 30) return [null, `오래된 자료 (${TREND.collectedAt})`];
+  const h = TREND.herbs && TREND.herbs[l.herb];
+  return h && h.score != null ? [h.score, `${h.signal} · 최근÷이전 ${h.change ?? "–"} (${TREND.collectedAt}, 네이버 데이터랩)`] : [null, `${l.herb} 검색 흐름 자료 없음`];
+}
+const CRIT = [
+  { k: "demand", nm: "🛒 계절 고민 크기", area: "고객 문제와 수요 · K4", subs: [
+      { nm: "이 목적과 이어지는 기후 이슈 수", get: l => { const n = l.issues.length; return [n >= 3 ? 5 : n === 2 ? 4 : 3, `${n}개 · ${l.issues.map(i => i[0]).join(", ")}`]; } } ] },
+  { k: "edge", nm: "🎯 빈자리", area: "경쟁 차별성 · LJH 경쟁제품", subs: [
+      { nm: "약재 선점", get: l => l.preempt }, { nm: "한방 브랜드 선점", get: l => l.hanbang } ] },
+  { k: "feel", nm: "🌿 순한 향", area: "사용감 · K3 향 세기", subs: [ { nm: "향 세기", get: l => l.scent } ] },
+  { k: "price", nm: "🏷️ 가격 경쟁력", area: "지불 가격 · K5 · 경쟁제품", subs: [
+      { nm: "같은 약재 제품보다 낮은 ml당 가격", get: l => l.rival } ] },
+  { k: "ready", nm: "⚡ 빠른 출시", area: "출시 준비도 · 기능성 고시 대조", subs: [
+      { nm: "기능성 보고 필요 여부", get: l => l.functional ? [2, "미백 기능성 보고가 필요해 준비가 길어요"] : [5, "일반 화장품이라 바로 출시 가능"] } ] },
+  { k: "fresh", nm: "🌸 제철 원료", area: "처방·원료 적합성 · K3 예상 계절", subs: [
+      { nm: "출시 계절과 원료 계절", get: l => l.seasons.includes(season) ? [5, `K3 예상 계절에 ${season} 포함`] : [2, `K3 예상 계절: ${l.seasons.join("·")}`] } ] },
+  { k: "brand", nm: "🏮 우리 지역 이야기", area: "브랜드 적합성 · K3 산지", subs: [
+      { nm: "경북 생산 비중", get: l => l.gb }, { nm: "산지 이야기 빈자리", get: l => l.origin } ] },
+  { k: "trend", nm: "📈 뜨는 원료", area: "트렌드 에이전트 · 주간 검색 흐름", subs: [ { nm: "최근 4주 검색 흐름", get: l => trendScore(l) } ] },
+  { k: "profit", nm: "💰 수익성", area: "원가 자료 없음", off: true },
+  { k: "effect", nm: "✨ 핵심 효능", area: "완제품 시험 전", off: true },
+  { k: "channel", nm: "📣 채널·고객 확보", area: "채널 자료 없음", off: true }
+];
+const PRESETS = [
+  { nm: "📋 체크리스트 기본", w: { demand: 2, edge: 2, feel: 2, price: 2, ready: 1, brand: 1 } },
+  { nm: "⚡ 이번 시즌 바로", w: { ready: 2, fresh: 2, edge: 1 } },
+  { nm: "🏮 우리다움 먼저", w: { brand: 2, fresh: 1 } },
+  { nm: "🎯 빈자리 공략", w: { edge: 2, price: 1 } },
+  { nm: "🛒 고민 해결 먼저", w: { demand: 2, feel: 1 } }
+];
+let season = "봄", W = { ...PRESETS[0].w }, presetOn = 0, designMode = "tint";
+const prevRank = {};
+
+function evaluate(l) {
+  const gates = GATES.map(g => ({ g, r: g.get(l) }));
+  const blocked = gates.filter(x => x.r[0] === "FAIL" || x.r[0] === "UNKNOWN");
+  const chosen = CRIT.filter(c => !c.off && W[c.k]);
+  const sumW = chosen.reduce((a, c) => a + W[c.k], 0);
+  let known = 0, unk = 0, got = 0;
+  const parts = chosen.map(c => {
+    const subs = c.subs.map(s => ({ s, r: s.get(l) }));
+    const sw = W[c.k] / subs.length;
+    subs.forEach(x => { if (x.r[0] == null) unk += sw; else { known += sw * x.r[0] / 5; got += sw; } });
+    const ks = subs.filter(x => x.r[0] != null);
+    return { c, subs, avg: ks.length ? ks.reduce((a, x) => a + x.r[0], 0) / ks.length : null };
+  });
+  const lo = sumW ? Math.round(known / sumW * 100) : 0, hi = sumW ? Math.round((known + unk) / sumW * 100) : 0;
+  return { l, gates, blocked, parts, lo, hi, mid: (lo + hi) / 2, evid: sumW ? Math.round(got / sumW * 100) : 0 };
+}
+const stars = n => "★".repeat(n);
+const won = n => n.toLocaleString("ko-KR") + "원";
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const scoreText = r => (r.lo === r.hi ? `${r.lo}` : `${r.lo}~${r.hi}`) + "점";
+
+/* ════════ 용기 샘플 (IMAGE/수정1) ════════ */
+const SAMPLE = { toner: "CHAHAR_토너_200ml.png", serum: "CHAHAR_세럼.png", cream: "CHAHAR_크림.png" };
+function hsl(hex) {
+  const n = parseInt(hex.slice(1), 16), r = (n >> 16) / 255, g = ((n >> 8) & 255) / 255, b = (n & 255) / 255;
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn, l = (mx + mn) / 2;
+  if (!d) return [0, 0, l];
+  const h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  return [(h * 60 + 360) % 360, d / (1 - Math.abs(2 * l - 1)), l];
+}
+/* 원본 사진의 픽셀 배치·알파는 유지하고 RGB 색상만 변환해요.
+   뚜껑·로고 영역은 동일한 원본 이미지를 겹쳐 별도 포인트색을 적용해요. */
+const packageIndex = herb => Object.keys(DESIGN).indexOf(herb);
+const channelValues = (hex, point) => [1, 3, 5].map(i => {
+  const c = parseInt(hex.slice(i, i + 2), 16) / 255;
+  return [0, c * (point ? .65 : .68), c * (point ? .96 : .94), c, 1].map(v => v.toFixed(4)).join(" ");
+});
+function renderPackageFilters() {
+  document.getElementById("package-filters").innerHTML = Object.values(DESIGN).map((d, i) => ["body", "point"].map(part => {
+    const point = part === "point", vals = channelValues(point ? d.cap : d.main, point);
+    const input = point ? '<feColorMatrix type="matrix" values="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 1 0"/>' : '<feColorMatrix type="saturate" values="0"/>';
+    return `<filter id="pkg-${part}-${i}" color-interpolation-filters="sRGB">${input}<feComponentTransfer><feFuncR type="table" tableValues="${vals[0]}"/><feFuncG type="table" tableValues="${vals[1]}"/><feFuncB type="table" tableValues="${vals[2]}"/><feFuncA type="identity"/></feComponentTransfer></filter>`;
+  }).join("") + ["dark", "light"].map(kind => {
+    const mask = kind === "dark" ? "0 -3 0 0 1.15" : "0 4 0 0 -2.8";
+    return `<filter id="pkg-ink-${kind}-${i}" color-interpolation-filters="sRGB"><feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ${mask}" result="ink"/><feFlood flood-color="${d.cap}" result="tone"/><feComposite in="tone" in2="ink" operator="in"/></filter>`;
+  }).join("")).join("");
+}
+const tintCss = l => `filter:url(#pkg-body-${packageIndex(l.herb)});`;
+const tileHtml = (l, t, k, mode) => {
+  const original = `../IMAGE/수정1/${SAMPLE[t]}`, recolor = mode === "tint";
+  return `<span class="tile" ${recolor ? `data-palette="color-only" style="--package-accent:${l.design.cap}"` : ""}><span class="product-cutout" ><img src="${original}" alt="${esc(k)} · 수정1 원본 형태와 재질" loading="lazy" style="${recolor ? tintCss(l) : ""}">${recolor ? `<img class="palette-point" src="${original}" alt="" aria-hidden="true" loading="lazy" style="filter:url(#pkg-point-${packageIndex(l.herb)});clip-path:url(#pkg-clip-${t});"><img class="palette-logo" src="${original}" alt="" aria-hidden="true" loading="lazy" style="filter:url(#pkg-ink-${t === "cream" ? "light" : "dark"}-${packageIndex(l.herb)});clip-path:url(#pkg-logo-${t});">` : ""}</span><span class="tl">${esc(k)}</span></span>`;
+};
+const tiles = (l, mode = designMode) => l.lineup.map(([t, k]) => tileHtml(l, t, k, mode)).join("");
+const tileBg = l => `background:#FAF8F3`;
+
+/* ════════ 화면 ════════ */
+function renderSeasons() {
+  const el = document.getElementById("seasons");
+  el.innerHTML = Object.keys(SEASONS).map(s => `<button class="season" role="tab" type="button" aria-selected="${s === season}" data-s="${s}">${SEASONS[s].icon} ${s}</button>`).join("");
+  el.querySelectorAll(".season").forEach(b => b.onclick = () => { season = b.dataset.s; render(); });
+  document.body.dataset.season = season;
+  document.getElementById("eng").textContent = `${SEASONS[season].eng} Collection Planning`;
+  document.getElementById("title").textContent = `${season}, 어떤 라인을 먼저 낼까요?`;
+  document.getElementById("issues").innerHTML = SEASONS[season].issues.map(([t, n, c, p]) =>
+    `<div class="issue"><div class="t">${esc(t)}</div><div class="n">${esc(n)}</div><div class="c">${esc(c)} → ${p.map(esc).join(", ")}</div></div>`).join("");
+}
+
+/* 데이터가 없을 때는 시장 사실이 아닌, 기후를 바탕으로 한 기획 가설만 제안해요. */
+const SEASON_TREND_NOTES = {
+  "봄": { line: "환절기에는 ‘순한 진정·장벽 보습’을 소비자 관심 가설로 살펴볼 만해요.", tip: "감초 등 진정·보습 후보의 순한 사용감과 보습 메시지를 비교해 보세요." },
+  "여름": { line: "폭염·고습에는 ‘속은 촉촉하게, 겉은 산뜻하게’를 소비자 관심 가설로 볼 수 있어요.", tip: "쿨링감·피지 케어·가벼운 젤 제형을 우선 비교해 보세요." },
+  "가을": { line: "건조함이 시작되면 ‘수분 레이어링·부담 없는 보습’을 소비자 관심 가설로 살펴볼 만해요.", tip: "토너·세럼의 겹쳐 바르기와 크림의 마무리감을 함께 비교해 보세요." },
+  "겨울": { line: "한파·난방 환경에서는 ‘오래가는 보습·편안한 장벽 케어’를 소비자 관심 가설로 볼 수 있어요.", tip: "보습 지속감과 끈적임의 균형을 크림 기획의 비교 기준으로 잡아보세요." }
+};
+function trendComment(s, data, now = Date.now()) {
+  const note = SEASON_TREND_NOTES[s];
+  const age = data && (now - Date.parse(data.collectedAt)) / 864e5;
+  const fresh = data && Number.isFinite(age) && age >= 0 && age <= 30;
+  const available = new Set(candidates(s).map(l => l.herb));
+  const rows = fresh && data.herbs ? Object.entries(data.herbs).filter(([herb, r]) =>
+    available.has(herb) && r && Number.isFinite(r.change) && r.change >= 0).map(([herb,r]) => ({herb,...r})) : [];
+  const up = rows.filter(r => r.signal === "상승" && r.change >= 1.2).sort((a,b) => b.change-a.change).slice(0,2);
+  if (up.length) return {
+    status: "수집 데이터 기반 · 검색 관심",
+    line: `이번 ${s} 후보 중 ${up.map(r => r.herb + ' 화장품').join('·')}의 검색 관심이 이전 기간보다 높아졌어요. 관련 라인의 기획 우선순위를 검토해 보세요.`,
+    tip: note.tip,
+    source: `네이버 데이터랩 · ${data.collectedAt} 수집 · 최근 4주 / 이전 12주 비교: ${up.map(r => r.herb + ' ' + r.change.toFixed(2) + '배').join(', ')} · 판매량·구매 선호와는 달라요.`
+  };
+  if (rows.length) return {
+    status: "수집 데이터 기반 · 상승 신호 없음",
+    line: `수집된 ${s} 후보에서는 뚜렷한 검색 관심 상승이 아직 확인되지 않았어요. 계절 고민과 제형 적합성을 함께 살펴보세요.`,
+    tip: note.tip,
+    source: `네이버 데이터랩 · ${data.collectedAt} 수집 · 최근 4주 / 이전 12주 · 비교 기준 1.2배 이상 상승`
+  };
+  return { status: "예시 인사이트 · 수집 전", line: note.line, tip: note.tip,
+    source: "기후 정보를 바탕으로 한 기획 가설이에요. 최신 검색·판매 트렌드가 확인된 내용은 아니에요." };
+}
+let BEAUTY_TRENDS = {
+  "version": 1,
+  "updatedAt": "2026-11-13T01:44:27Z",
+  "intervalMinutes": 60,
+  "lookbackDays": 90,
+  "sourceChecks": [
+    {
+      "source": "올리브영 공식 뉴스룸",
+      "status": "checked",
+      "url": "https://corp.oliveyoung.com/ko/newsroom/press",
+      "checkedAt": "2026-11-13T01:44:27Z"
+    },
+    {
+      "source": "장업신문",
+      "status": "checked",
+      "url": "https://www.jangup.com/",
+      "checkedAt": "2026-11-13T01:44:27Z"
+    },
+    {
+      "source": "올리브영 판매랭킹",
+      "status": "unavailable",
+      "url": "https://www.oliveyoung.co.kr/store/main/getBestList.do?dispCatNo=900000100100001&fltDispCatNo=10000010001",
+      "checkedAt": "2026-11-13T01:44:27Z",
+      "note": "직접 페이지 확인에 실패하여 순위·판매 흐름 판단에서 제외"
+    }
+  ],
+  "items": [
+    {
+      "id": "oy-editorial-311",
+      "source": "올리브영",
+      "kind": "공식 브랜드 콘텐츠",
+      "title": "DEEP DIVE NEWS 앵커로 변신한 코르티스",
+      "url": "https://corp.oliveyoung.com/ko/newsroom/editorial/311",
+      "publishedAt": "2026-10-26",
+      "checkedAt": "2026-11-13T01:44:27Z",
+      "eventPeriod": "2026-08-14~2026-08-25 팝업 사례",
+      "summary": "수분·진정 제품을 피부 고민별로 탐색하는 체험 사례와 산뜻한 사용감·속보습을 강조한 세럼을 소개했다. 현재 판매 증가나 시장 전체의 선호를 입증하는 자료는 아니다.",
+      "tags": [
+        "수분",
+        "진정",
+        "산뜻한 사용감",
+        "속보습"
+      ]
+    },
+    {
+      "id": "jangup-100295",
+      "source": "장업신문",
+      "kind": "업계 기사",
+      "title": "‘건조주의보 발령’… 가을철 환절기, 스킨케어 핵심 ‘보습’",
+      "url": "https://www.jangup.com/news/articleView.html?idxno=100295",
+      "publishedAt": "2026-10-28",
+      "checkedAt": "2026-11-13T01:44:27Z",
+      "summary": "가을 환절기 보습 루틴과 보습 지속감을 강조하는 제품 사례를 다뤘다. 소비자 전체의 구매 선호를 측정한 조사로 해석하지 않는다.",
+      "tags": [
+        "환절기",
+        "보습",
+        "지속감"
+      ]
+    },
+    {
+      "id": "jangup-100226",
+      "source": "장업신문",
+      "kind": "업계 기사",
+      "title": "가을 야외활동 증가 다양한 기능성 ‘선케어’ 주목",
+      "url": "https://www.jangup.com/news/articleView.html?idxno=100226",
+      "publishedAt": "2026-10-21",
+      "checkedAt": "2026-11-13T01:44:27Z",
+      "summary": "야외 활동·데일리 용도에 따른 선케어 세분화와 유분 관리·보송한 사용감 등의 제품 사례를 소개했다. 선케어 자료를 기초 제품의 자외선 차단 효능 근거로 사용하지 않는다.",
+      "tags": [
+        "자외선",
+        "유분",
+        "보송한 사용감"
+      ]
+    }
+  ],
+  "insights": {
+    "봄": {
+      "line": "봄 기초라인은 ‘순한 진정과 장벽 보습’을 중심으로 잡아보세요. 가벼운 보습 제형과 편안한 사용감을 먼저 비교하면 좋아요.",
+      "tip": "토너·세럼·크림의 역할을 나누고, 환절기에도 부담 없이 쓰기 좋은 사용감을 차별점으로 검토해 보세요.",
+      "evidenceIds": [
+        "oy-editorial-311",
+        "jangup-100295"
+      ]
+    },
+    "여름": {
+      "line": "여름 기초라인은 ‘수분은 채우고, 마무리는 산뜻하게’를 방향으로 잡아보세요. 가벼운 토너·세럼과 젤 크림 조합부터 검토하면 좋아요.",
+      "tip": "샘플을 비교할 때 흡수감·끈적임·덧바른 뒤 밀림을 우선 확인하고, 산뜻한 수분·진정을 핵심 메시지로 잡아보세요.",
+      "evidenceIds": [
+        "oy-editorial-311",
+        "jangup-100226"
+      ]
+    },
+    "가을": {
+      "line": "가을 기초라인은 ‘겹쳐 바르는 수분 보습과 편안한 마무리’를 제안해 보세요. 토너·세럼·크림이 단계별로 다른 역할을 갖도록 구성하면 좋아요.",
+      "tip": "토너·세럼의 레이어링 사용감과 크림의 마무리감을 함께 비교해, 건조함이 시작되는 계절에 맞는 루틴을 설계해 보세요.",
+      "evidenceIds": [
+        "jangup-100295",
+        "jangup-100226"
+      ]
+    },
+    "겨울": {
+      "line": "겨울 기초라인은 ‘오래가는 보습과 편안한 사용감’을 중심으로 잡아보세요. 크림을 중심 제품으로 두고 토너·세럼이 보완하는 구성을 검토하면 좋아요.",
+      "tip": "보습 지속감과 끈적임의 균형을 먼저 비교하고, 낮에도 쓰기 좋은 조합과 밤에 충분히 바르는 조합을 나눠 제안해 보세요.",
+      "evidenceIds": [
+        "jangup-100295",
+        "oy-editorial-311"
+      ]
+    }
+  }
+};
+let beautyFetchNote = "";
+const beautyDataUrl = typeof location !== "undefined" && location.hostname === "htmlpreview.github.io" ? "https://raw.githubusercontent.com/k-1026/AxO/research/idea/trend/beauty_trends.json" : "../idea/trend/beauty_trends.json";
+async function refreshBeautyTrends() {
+  const button = document.getElementById("beauty-refresh");
+  button.disabled = true; button.textContent = "확인 중…";
+  try {
+    const response = await fetch(beautyDataUrl + "?v=" + Date.now(), { cache: "no-store" });
+    if (!response.ok) throw new Error("snapshot unavailable");
+    const next = await response.json();
+    if (!next || next.version !== 1 || !Array.isArray(next.items) || !next.insights || !Number.isFinite(Date.parse(next.updatedAt))) throw new Error("invalid snapshot");
+    BEAUTY_TRENDS = next; beautyFetchNote = "";
+  } catch (_) { beautyFetchNote = "최신 수집본 조회 실패 · 저장된 근거 표시"; }
+  button.disabled = false; button.textContent = "최신 수집본 확인";
+  renderTrendComment();
+}
+
+function beautyComment(s, data, now = Date.now()) {
+  const insight = data && data.insights && data.insights[s];
+  const checked = data && Date.parse(data.updatedAt);
+  if (!insight || typeof insight.line !== "string" || typeof insight.tip !== "string" || !Number.isFinite(checked) || checked > now + 300000 || !Array.isArray(insight.evidenceIds) || !insight.evidenceIds.length) return null;
+  const hosts = ["corp.oliveyoung.com","www.oliveyoung.co.kr","m.oliveyoung.co.kr","www.jangup.com","m.jangup.com","jangup.com","trends.google.com","support.google.com","www.spate.nyc","spate.nyc","www.mintel.com","mintel.com","store.mintel.com","www.gnpd.com","gnpd.com","nielseniq.com","www.nielseniq.com","investors.nielseniq.com","shop.nielseniq.com","www.mckinsey.com","mckinsey.com","www.cosmeticsbusiness.com","cosmeticsbusiness.com","lp.cosmoprof.com","www.cosmoprof.com","cosmoprof.com","cosmoprofnorthamerica.com","www.cosmoprofnorthamerica.com","www.beautystreams.com","beautystreams.com","business.pinterest.com","newsroom.pinterest.com","trends.pinterest.com","s.cosme.net","www.cosme.net","cosme.net"];
+  const valid = (data.items || []).filter(item => {
+    const age = (now - Date.parse(item.publishedAt)) / 864e5;
+    try { const url = new URL(item.url); return url.protocol === "https:" && hosts.includes(url.hostname) && age >= 0 && age <= (item.evidenceRole === "background" ? 400 : 90) && typeof item.title === "string" && typeof item.source === "string"; } catch (_) { return false; }
+  });
+  const evidence = insight.evidenceIds.map(id => valid.find(item => item.id === id));
+  if (evidence.some(item => !item)) return null;
+  const stale = now - checked > 150 * 60000;
+  const checkedAt = new Date(checked).toLocaleString("ko-KR", { timeZone: "Asia/Seoul", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false });
+  return { status: stale ? "갱신 확인 필요 · 저장된 근거" : "공식 콘텐츠·기사 기반", line: insight.line, tip: insight.tip,
+    source: "매시간 확인 · 마지막 확인 " + checkedAt + " (한국시간) · " + (evidence.some(item => item.evidenceRole === "background") ? "시장 전망·기획 배경 포함" : "최근 90일 자료의 기획 해석") + (beautyFetchNote ? " · " + beautyFetchNote : ""), evidence };
+}
+function renderTrendComment() {
+  const comment = beautyComment(season, BEAUTY_TRENDS) || trendComment(season, TREND);
+  document.getElementById("trend-status").textContent = comment.status;
+  document.getElementById("trend-line").textContent = comment.line.replace(/올리브영의\s*|장업신문의\s*/g, "").replace(/올리브영은\s*/g, "관련 콘텐츠에서는 ").replace(/장업신문은\s*/g, "관련 기사에서는 ");
+  document.getElementById("trend-plan").innerHTML = "<b>기획 포인트</b> · " + esc(comment.tip);
+  document.getElementById("trend-source").textContent = comment.source;
+  document.getElementById("trend-evidence").innerHTML = (comment.evidence || []).map(item => `<a href="${esc(item.url)}" target="_blank" rel="noopener noreferrer" title="${esc(item.title)}">${esc(item.source)} · ${esc(item.publishedAt)} · ${esc(item.kind || "자료")} ↗</a>`).join("");
+}
+
+function renderStudio() {
+  const pr = document.getElementById("presets");
+  pr.innerHTML = PRESETS.map((p, i) => `<button class="preset${i === presetOn ? " on" : ""}" type="button" data-i="${i}">${esc(p.nm)}</button>`).join("")
+    + `<button class="preset${presetOn === -1 ? " on" : ""}" type="button" data-i="-1">직접 고르기</button>`;
+  pr.querySelectorAll(".preset").forEach(b => b.onclick = () => { presetOn = +b.dataset.i; W = presetOn >= 0 ? { ...PRESETS[presetOn].w } : {}; render(); });
+  const on = CRIT.filter(c => !c.off), off = CRIT.filter(c => c.off);
+  document.getElementById("cbtns").innerHTML = on.map(c =>
+    `<button class="cbtn" type="button" data-k="${c.k}" data-w="${W[c.k] || 0}" aria-pressed="${!!W[c.k]}"><span class="nm">${esc(c.nm)}</span><span class="st">${stars(W[c.k] || 0)}</span><span class="ar">${esc(c.area)}${c.k === "trend" ? " · " + esc(trendLabel()) : ""}</span></button>`).join("")
+    + `<div class="prep">자료 준비 중</div>` + off.map(c => `<button class="cbtn" type="button" disabled><span class="nm">${esc(c.nm)}</span><span class="st">준비 중</span><span class="ar">${esc(c.area)}</span></button>`).join("");
+  document.querySelectorAll(".cbtn[data-k]").forEach(b => b.onclick = () => { const k = b.dataset.k; W[k] = ((W[k] || 0) + 1) % 3; if (!W[k]) delete W[k]; presetOn = -2; render(); });
+  document.getElementById("gates").innerHTML = GATES.map(g => `<span class="gate"><i>✓</i>${esc(g.nm)}</span>`).join("");
+  document.getElementById("design").innerHTML = [["tint", "색상 변경"]].map(([k, t]) =>
+    `<button class="preset${designMode === k ? " on" : ""}" type="button" data-m="${k}">${t}</button>`).join("");
+  document.querySelectorAll("#design .preset").forEach(b => b.onclick = () => { designMode = b.dataset.m; render(); });
+}
+let RES = [];
+function renderResults() {
+  const pool = candidates(season);
+  const all = pool.map(evaluate);
+  const ok = all.filter(r => !r.blocked.length).sort((a, b) => b.mid - a.mid || b.evid - a.evid);
+  const out = all.filter(r => r.blocked.length);
+  ok.forEach((r, i) => { r.rank = i + 1; r.unsure = (ok[i + 1] && r.lo <= ok[i + 1].hi) || (ok[i - 1] && ok[i - 1].lo <= r.hi); });
+  const key = season + "|";
+  ok.forEach(r => { const p = prevRank[key + r.l.herb]; r.move = p == null ? null : p - r.rank; });
+  RES = [...ok, ...out];
+  document.getElementById("col-title").textContent = `${season} 컬렉션 후보`;
+  document.getElementById("col-sub").textContent = `원료 12종 중 ${pool.length}개 라인이 ${season} 피부 목적과 맞아요 · 순위 ${ok.length}개 · 추가 검증 ${out.length}개`;
+  const el = document.getElementById("results");
+  if (!Object.keys(W).length) { el.innerHTML = `<div class="empty">왼쪽에서 매력 기준을 하나 이상 골라 주세요.</div>`; return; }
+  const mv = r => r.move == null ? "" : r.move > 0 ? `<span class="move up">▲ ${r.move}</span>` : r.move < 0 ? `<span class="move down">▼ ${-r.move}</span>` : "";
+  const whyChips = r => {
+    const subs = r.parts.flatMap(p => p.subs.map(x => ({ p, x })));
+    const strong = subs.filter(o => o.x.r[0] >= 4).sort((a, b) => W[b.p.c.k] - W[a.p.c.k]).slice(0, 3);
+    const weak = subs.filter(o => o.x.r[0] != null && o.x.r[0] <= 2).slice(0, 2);
+    const unk = subs.filter(o => o.x.r[0] == null).length;
+    return strong.map(o => `<span>${esc(o.p.c.nm)} ${stars(W[o.p.c.k])}</span>`).join("")
+      + weak.map(o => `<span class="weak">약함 · ${esc(o.x.s.nm)}</span>`).join("") + (unk ? `<span class="unk">확인 필요 ${unk}</span>` : "");
+  };
+  const top = ok.slice(0, 3), rest = [...ok.slice(3), ...out];
+  el.innerHTML = `<div class="top3">${top.map(r => `
+    <button class="card" type="button" data-h="${esc(r.l.herb)}">
+      <div class="card-rank"><span class="ribbon">No.${r.rank}</span>${mv(r)}</div>
+      <div class="visual" style="${tileBg(r.l)}">${tiles(r.l)}</div>
+      <div class="body">
+        <div class="herb">${esc(r.l.herb)}${r.l.hanja ? `(${r.l.hanja})` : ""} · ${esc(r.l.purpose)} · ${r.l.functional ? "기능성 보고 필요" : "일반 화장품"}</div>
+        <h3>${esc(r.l.name)}</h3>
+        <div class="price">${r.l.lineup.map(([, k, ml, p]) => `${esc(k)} ${ml}ml ${won(p)}`).join(" · ")}</div>
+        <div class="meter"><span class="bar"><i style="left:${r.lo}%;width:${r.hi - r.lo}%"></i><b style="width:${r.lo}%"></b></span><strong>${r.lo === r.hi ? r.lo : r.lo + "~" + r.hi}</strong>점</div>
+        <div class="why">${whyChips(r)}</div>
+        ${r.unsure ? `<div class="flag">점수 범위가 겹쳐 확인 필요 칸에 따라 순위가 바뀔 수 있어요</div>` : ""}
+      </div>
+    </button>`).join("")}</div>
+    <div class="others"><h3>다른 후보</h3>${rest.map(r => `
+      <button class="row${r.rank ? "" : " blocked"}" type="button" data-h="${esc(r.l.herb)}">
+        <span class="rk">${r.rank ? "No." + r.rank : "—"}</span><span class="dot" style="background:${r.l.color}"></span>
+        <span class="nm"><b>${esc(r.l.name)}</b><small>${r.rank ? esc(r.l.purpose) : "추가 검증 · " + r.blocked.map(x => esc(x.g.nm)).join(", ")}</small></span>
+        <span class="sc">${r.rank ? scoreText(r) : "순위 제외"}</span>
+        <span class="mv">${r.move > 0 ? `<span style="color:var(--ok)">▲ ${r.move}</span>` : r.move < 0 ? `<span style="color:var(--warn)">▼ ${-r.move}</span>` : ""}</span>
+      </button>`).join("")}</div>`;
+  el.querySelectorAll("[data-h]").forEach(b => b.onclick = () => openDetail(RES.find(r => r.l.herb === b.dataset.h)));
+  ok.forEach(r => { prevRank[key + r.l.herb] = r.rank; });
+}
+function openDetail(r) {
+  hideSampleZoom();
+  const l = r.l;
+  const v = document.getElementById("d-visual"); v.innerHTML = tiles(l); v.style.cssText = tileBg(l) + ";border-radius:14px;padding:14px";
+  document.getElementById("d-steps").innerHTML = [["sample", "샘플 그대로"], ["tint", "색상 변경"]].map(([m, t]) =>
+    `<div>${tileHtml(l, "serum", "세럼", m)}<p>${t}</p></div>`).join("");
+  const dz = l.design;
+  document.getElementById("d-palette").innerHTML = `
+    <div><i style="background:${dz.main}"></i>베이스 <code>${dz.main}</code> · ${esc(dz.from)}</div><div><i style="background:${dz.cap}"></i>라벨 포인트 <code>${dz.cap}</code></div>`;
+  document.getElementById("d-vnote").textContent = "IMAGE/수정1 원본 사진을 사용해 용기 형태·재질·투명도·광택 표현을 유지하고, 몸체와 뚜껑·글씨의 색상만 구분해 적용한 시안이에요.";
+  document.getElementById("d-rank").textContent = r.rank ? `${season} No.${r.rank} · ${scoreText(r)}` : `${season} · 추가 검증 (필수 조건 미통과)`;
+  document.getElementById("d-name").textContent = l.name;
+  document.getElementById("d-facts").innerHTML = `
+    <dt>추천 계절</dt><dd>${esc(season)}</dd>
+    <dt>피부 고민</dt><dd>${esc(l.concern)}</dd>
+    <dt>피부 목적</dt><dd>${esc(l.purpose)} · ${l.functional ? "기능성 보고 필요" : "일반 화장품"}</dd>
+    <dt>대표 약재</dt><dd>${esc(l.herb)}${l.hanja ? `(${l.hanja})` : ""} · ${esc(l.scent[1])}</dd>
+    <dt>쓸 수 있는 말</dt><dd>${esc(l.words)}</dd>`;
+  document.getElementById("d-lineup").innerHTML = l.lineup.map(([, k, ml, p]) => `<tr><td>${esc(k)}</td><td>${ml}ml</td><td>${won(p)}</td><td>${won(Math.round(p / ml))}</td></tr>`).join("");
+  const lab = { PASS: "PASS", FAIL: "FAIL", UNKNOWN: "UNKNOWN", NA: "해당 없음" };
+  document.getElementById("d-gates").innerHTML = r.gates.map(x => `<div><span class="s ${x.r[0]}">${lab[x.r[0]]}</span><span>${esc(x.g.nm)}</span><span class="note">${esc(x.r[1])}</span></div>`).join("");
+  document.getElementById("d-crit").innerHTML = r.parts.map(p => `<div><div class="h"><span>${esc(p.c.nm)} ${stars(W[p.c.k])}</span><span>${p.avg == null ? "확인 필요" : (Math.round(p.avg * 10) / 10) + " / 5"}</span></div>
+    <div class="sb">${p.subs.map(x => `${esc(x.s.nm)}: ${x.r[0] == null ? "확인 필요" : x.r[0] + "점"} — ${esc(x.r[1])}`).join("<br>")}</div></div>`).join("")
+    + `<p class="note">점수 ${scoreText(r)} · 확인 안 된 칸을 0점으로 보면 하한, 5점으로 보면 상한이에요.</p>`;
+  const d = document.getElementById("detail"); d.showModal ? d.showModal() : d.setAttribute("open", "");
+}
+document.getElementById("d-close").onclick = () => { hideSampleZoom(); document.getElementById("detail").close(); };
+document.getElementById("detail").addEventListener("click", e => { if (e.target.id === "detail") e.target.close(); });
+
+const SAMPLE_ZOOM = 2.6, SAMPLE_LENS_SIZE = 230;
+let sampleZoom = { tile: null, lens: null, content: null };
+function sampleLensPosition(rect, x, y, viewportWidth, viewportHeight) {
+  const half = SAMPLE_LENS_SIZE / 2;
+  return { left: Math.max(8, Math.min(viewportWidth - SAMPLE_LENS_SIZE - 12, x - half)),
+    top: Math.max(8, Math.min(viewportHeight - SAMPLE_LENS_SIZE - 12, y - half)),
+    tx: half - (x - rect.left) * SAMPLE_ZOOM, ty: half - (y - rect.top) * SAMPLE_ZOOM };
+}
+function hideSampleZoom() {
+  if (sampleZoom.lens) sampleZoom.lens.hidden = true;
+  sampleZoom.tile = null;
+}
+function moveSampleZoom(event) {
+  if (event.pointerType === "touch") { hideSampleZoom(); return; }
+  const tile = event.target && event.target.closest ? event.target.closest(".tile") : null;
+  const photo = tile && tile.closest("#detail") && tile.querySelector(".product-cutout");
+  if (!photo) { hideSampleZoom(); return; }
+  if (!sampleZoom.lens) {
+    const lens = document.createElement("div"), content = document.createElement("div");
+    lens.className = "sample-lens"; lens.setAttribute("aria-hidden", "true");
+    content.className = "sample-lens-content"; lens.appendChild(content);
+    sampleZoom.lens = lens; sampleZoom.content = content;
+  }
+  const parent = tile.closest("dialog") || document.body;
+  if (sampleZoom.lens.parentNode !== parent) parent.appendChild(sampleZoom.lens);
+  const rect = tile.getBoundingClientRect();
+  if (!rect.width || !rect.height) { hideSampleZoom(); return; }
+  if (sampleZoom.tile !== tile) {
+    sampleZoom.content.replaceChildren(photo.cloneNode(true));
+    sampleZoom.tile = tile;
+  }
+  sampleZoom.content.style.width = rect.width + "px";
+  sampleZoom.content.style.height = rect.height + "px";
+  sampleZoom.lens.style.background = getComputedStyle(tile).backgroundColor;
+  const position = sampleLensPosition(rect, event.clientX, event.clientY, window.innerWidth, window.innerHeight);
+  sampleZoom.lens.style.left = position.left + "px";
+  sampleZoom.lens.style.top = position.top + "px";
+  sampleZoom.content.style.transform = `translate(${position.tx}px,${position.ty}px) scale(${SAMPLE_ZOOM})`;
+  sampleZoom.lens.hidden = false;
+}
+if (typeof document.addEventListener === "function" && typeof window !== "undefined") {
+  document.addEventListener("pointermove", moveSampleZoom, { passive: true });
+  document.addEventListener("pointerleave", hideSampleZoom);
+  window.addEventListener("scroll", hideSampleZoom, true);
+  window.addEventListener("resize", hideSampleZoom);
+  window.addEventListener("blur", hideSampleZoom);
+  document.getElementById("detail").addEventListener("close", hideSampleZoom);
+}
+
+function render() { hideSampleZoom(); renderPackageFilters(); renderSeasons(); renderTrendComment(); renderStudio(); renderResults(); }
+render();
+</script>
+</body>
+</html>

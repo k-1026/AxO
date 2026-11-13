@@ -1,0 +1,165 @@
+{
+  "version": 1,
+  "updatedAt": "2026-11-13",
+  "signalLookbackDays": 90,
+  "backgroundLookbackDays": 400,
+  "sources": [
+    {
+      "id": "oliveyoung",
+      "name": "올리브영",
+      "url": "https://corp.oliveyoung.com/ko/newsroom/press",
+      "allowedHosts": [
+        "corp.oliveyoung.com",
+        "www.oliveyoung.co.kr",
+        "m.oliveyoung.co.kr"
+      ],
+      "type": "공식 콘텐츠·판매랭킹",
+      "use": "공식 제품·큐레이션 사례. 판매랭킹은 직접 확인된 경우에만 사용",
+      "checkIntervalMinutes": 60,
+      "access": "공개·접근 가능한 자료만 사용. 로그인·유료·차단은 상태를 기록하고 우회하지 않음"
+    },
+    {
+      "id": "jangup",
+      "name": "장업신문",
+      "url": "https://www.jangup.com/",
+      "allowedHosts": [
+        "www.jangup.com",
+        "m.jangup.com",
+        "jangup.com"
+      ],
+      "type": "업계 기사",
+      "use": "신제품·원료·제형·계절 케어 사례",
+      "checkIntervalMinutes": 60,
+      "access": "공개·접근 가능한 자료만 사용. 로그인·유료·차단은 상태를 기록하고 우회하지 않음"
+    },
+    {
+      "id": "google-trends",
+      "name": "Google Trends",
+      "url": "https://trends.google.com/trends/explore",
+      "allowedHosts": [
+        "trends.google.com",
+        "support.google.com"
+      ],
+      "type": "검색 관심",
+      "use": "국가·기간별 제형·피부 고민 키워드의 상대 검색 관심. 검색량·판매량으로 해석하지 않음",
+      "checkIntervalMinutes": 60,
+      "access": "공개·접근 가능한 자료만 사용. 로그인·유료·차단은 상태를 기록하고 우회하지 않음"
+    },
+    {
+      "id": "spate",
+      "name": "Spate",
+      "url": "https://www.spate.nyc/resources/reports",
+      "allowedHosts": [
+        "www.spate.nyc",
+        "spate.nyc"
+      ],
+      "type": "검색·소셜 분석",
+      "use": "성분·고민·제형의 관심 신호. 각 보고서의 국가·플랫폼·조사기간을 확인",
+      "checkIntervalMinutes": 60,
+      "access": "공개·접근 가능한 자료만 사용. 로그인·유료·차단은 상태를 기록하고 우회하지 않음"
+    },
+    {
+      "id": "mintel",
+      "name": "Mintel · GNPD",
+      "url": "https://www.mintel.com/insights/beauty-and-personal-care/",
+      "allowedHosts": [
+        "www.mintel.com",
+        "mintel.com",
+        "store.mintel.com",
+        "www.gnpd.com",
+        "gnpd.com"
+      ],
+      "type": "시장 전망·신제품 데이터",
+      "use": "소비자 변화·신제품·성분·제품 표현. 공개 요약과 접근 가능한 자료만 사용",
+      "checkIntervalMinutes": 60,
+      "access": "공개·접근 가능한 자료만 사용. 로그인·유료·차단은 상태를 기록하고 우회하지 않음"
+    },
+    {
+      "id": "niq",
+      "name": "NielsenIQ",
+      "url": "https://nielseniq.com/global/en/insights/report/2026/niq-state-of-global-beauty-2026/",
+      "allowedHosts": [
+        "nielseniq.com",
+        "www.nielseniq.com",
+        "investors.nielseniq.com",
+        "shop.nielseniq.com"
+      ],
+      "type": "구매·시장 데이터",
+      "use": "조사 대상 국가·채널·카테고리·기간이 확인된 구매 흐름",
+      "checkIntervalMinutes": 60,
+      "access": "공개·접근 가능한 자료만 사용. 로그인·유료·차단은 상태를 기록하고 우회하지 않음"
+    },
+    {
+      "id": "mckinsey",
+      "name": "McKinsey — State of Beauty",
+      "url": "https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/state-of-beauty",
+      "allowedHosts": [
+        "www.mckinsey.com",
+        "mckinsey.com"
+      ],
+      "type": "시장·채널 전망",
+      "use": "타깃 국가·가격대·채널을 정하는 배경 근거",
+      "checkIntervalMinutes": 60,
+      "access": "공개·접근 가능한 자료만 사용. 로그인·유료·차단은 상태를 기록하고 우회하지 않음"
+    },
+    {
+      "id": "cosmetics-business",
+      "name": "Cosmetics Business",
+      "url": "https://www.cosmeticsbusiness.com/cosmetics-business-reveals-the-top-5-skin-care-2",
+      "allowedHosts": [
+        "www.cosmeticsbusiness.com",
+        "cosmeticsbusiness.com"
+      ],
+      "type": "업계 기사·제품 사례",
+      "use": "스킨케어 트렌드·신제품·브랜드 움직임. 기업 홍보와 시장 조사를 구분",
+      "checkIntervalMinutes": 60,
+      "access": "공개·접근 가능한 자료만 사용. 로그인·유료·차단은 상태를 기록하고 우회하지 않음"
+    },
+    {
+      "id": "cosmotrends",
+      "name": "Cosmoprof × BEAUTYSTREAMS — CosmoTrends",
+      "url": "https://lp.cosmoprof.com/hubfs/BEAUTYSTREAMS_CosmoProfWorldwideBologna_CosmoTrends_2026_compressed.pdf",
+      "allowedHosts": [
+        "lp.cosmoprof.com",
+        "www.cosmoprof.com",
+        "cosmoprof.com",
+        "cosmoprofnorthamerica.com",
+        "www.cosmoprofnorthamerica.com",
+        "www.beautystreams.com",
+        "beautystreams.com"
+      ],
+      "type": "전시·제품 혁신",
+      "use": "제형·패키지·콘셉트 발굴. 전시 선정은 판매 성공의 증거가 아님",
+      "checkIntervalMinutes": 60,
+      "access": "공개·접근 가능한 자료만 사용. 로그인·유료·차단은 상태를 기록하고 우회하지 않음"
+    },
+    {
+      "id": "pinterest",
+      "name": "Pinterest Predicts",
+      "url": "https://business.pinterest.com/en-gb/pinterest-predicts/",
+      "allowedHosts": [
+        "business.pinterest.com",
+        "newsroom.pinterest.com",
+        "trends.pinterest.com"
+      ],
+      "type": "시각 트렌드·검색 전망",
+      "use": "색감·패키지·비주얼 방향. 플랫폼의 지역·언어·분석기간을 확인",
+      "checkIntervalMinutes": 60,
+      "access": "공개·접근 가능한 자료만 사용. 로그인·유료·차단은 상태를 기록하고 우회하지 않음"
+    },
+    {
+      "id": "cosme",
+      "name": "@cosme 랭킹",
+      "url": "https://s.cosme.net/ranking",
+      "allowedHosts": [
+        "s.cosme.net",
+        "www.cosme.net",
+        "cosme.net"
+      ],
+      "type": "일본 제품 리뷰·랭킹",
+      "use": "일본 시장의 제품 평가 참고. 리뷰·인기·판매 순위의 산정 기준을 확인",
+      "checkIntervalMinutes": 60,
+      "access": "공개·접근 가능한 자료만 사용. 로그인·유료·차단은 상태를 기록하고 우회하지 않음"
+    }
+  ]
+}
