@@ -10,18 +10,18 @@
 <style>
 /* 화장품 브랜드 사이트 느낌의 상품기획 화면: 상단 브랜드 바 → 계절 히어로 → 왼쪽 기획 스튜디오(버튼) · 오른쪽 컬렉션(순위) */
 :root {
-  --bg: #FBF7F3; --surface: #FFFFFF; --ink: #2B2422; --muted: #7A6E69; --line: #EADFD8;
-  --accent: #B4475A; --accent-soft: #F6E3E1; --hero1: #F9E6E4; --hero2: #FBF2EC;
-  --gold: #B08A4A; --ok: #3D7A57; --warn: #A5662B;
+  --bg: #F8FCFF; --surface: #FFFFFF; --ink: #222C3A; --muted: #627286; --line: #E1EAF2;
+  --accent: #C72D75; --accent-soft: #FFF0F7; --hero1: #FFE6F1; --hero2: #F5FCFF;
+  --gold: #B87F16; --ok: #187D55; --warn: #A45C18;
   /* 글씨체 통일: 모든 글자를 Noto Sans KR 하나로 (굵기로만 위계) */
   --sans: "Noto Sans KR", "Malgun Gothic", sans-serif;
   --serif: var(--sans);
   --latin: var(--sans);
 }
-body[data-season="여름"] { --accent: #2F8C86; --accent-soft: #E1F1EE; --hero1: #DDF0EC; --hero2: #F2F8F6; }
-body[data-season="가을"] { --accent: #B0703A; --accent-soft: #F4E6D6; --hero1: #F3E2CF; --hero2: #FAF3EA; }
-body[data-season="겨울"] { --accent: #4A5B85; --accent-soft: #E6EAF3; --hero1: #E3E8F2; --hero2: #F4F6FA; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #FBF7F3; } }
+body[data-season="여름"] { --accent: #007E8C; --accent-soft: #E5FAFC; --hero1: #DDF8FA; --hero2: #F6FEFF; }
+body[data-season="가을"] { --accent: #AE6514; --accent-soft: #FFF5E4; --hero1: #FFF1DB; --hero2: #FFFDFC; }
+body[data-season="겨울"] { --accent: #356BC6; --accent-soft: #EDF5FF; --hero1: #E5F0FF; --hero2: #F8FCFF; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #F8FCFF; } }
 * { box-sizing: border-box; }
 html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.6; }
 h1, h2, h3, p { margin: 0; }
@@ -29,7 +29,7 @@ button { font-family: inherit; }
 button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* 브랜드 바 */
-.topbar { position: sticky; top: 0; z-index: 5; background: rgba(251,247,243,.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.topbar { position: sticky; top: 0; z-index: 5; background: rgba(255,255,255,.96); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
 .topbar .in { max-width: 1280px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; gap: 28px; }
 .logo { font-family: var(--latin); font-size: 1.7rem; font-weight: 600; letter-spacing: .32em; color: var(--ink); }
 .logo small { display: block; font-family: var(--sans); font-size: .62rem; letter-spacing: .08em; color: var(--muted); font-weight: 400; margin-top: -4px; }
@@ -45,7 +45,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .hero p.lead { color: var(--muted); margin-top: 6px; font-size: .95rem; }
 .seasons { display: flex; gap: 8px; flex-wrap: wrap; }
 .season { border: 1px solid var(--line); background: rgba(255,255,255,.7); border-radius: 999px; padding: 8px 18px; cursor: pointer; font-size: .92rem; color: var(--ink); display: flex; gap: 6px; align-items: center; }
-.season[aria-selected="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+.season[aria-selected="true"] { background: var(--accent); color: #fff; border-color: var(--accent); }
 .issues { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
 .issue { background: rgba(255,255,255,.75); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
 .issue .t { font-weight: 700; font-size: .92rem; }
@@ -71,7 +71,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .gate { font-size: .76rem; border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px; background: var(--bg); }
 .gate i { font-style: normal; color: var(--ok); font-weight: 700; margin-right: 3px; }
 .preset { font-size: .8rem; border: 1px solid var(--ink); color: var(--ink); background: transparent; border-radius: 999px; padding: 4px 11px; cursor: pointer; }
-.preset.on { background: var(--ink); color: #fff; }
+.preset.on { background: var(--accent); border-color: var(--accent); color: #fff; }
 .cbtns { display: flex; flex-direction: column; gap: 7px; }
 .cbtn { text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: 0 8px; align-items: center; color: var(--ink); transition: background .15s, border-color .15s; }
 .cbtn .nm { font-weight: 700; font-size: .9rem; }
@@ -91,7 +91,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .top3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; cursor: pointer; text-align: left; color: inherit; padding: 0; display: flex; flex-direction: column;
   animation: rise .45s ease both; transition: transform .2s, box-shadow .2s; }
-.card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(60, 40, 30, .1); }
+.card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(40, 80, 120, .08); }
 .card:nth-child(2) { animation-delay: .06s; } .card:nth-child(3) { animation-delay: .12s; }
 @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 .visual { position: relative; padding: 16px 12px 12px; display: flex; gap: 6px; justify-content: center; align-items: flex-end; }
@@ -99,7 +99,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .tile img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 22.4% 50%; }
 .tile[data-palette]::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 0; height: 3px; background: var(--package-accent); opacity: .65; }
 .tile img.palette-point, .tile img.palette-logo { position: absolute; inset: 0; pointer-events: none; }
-.tile .tl { position: absolute; left: 5px; bottom: 5px; font-size: .64rem; background: rgba(255,255,255,.9); border-radius: 5px; padding: 0 6px; color: #2B2422; }
+.tile .tl { position: absolute; left: 5px; bottom: 5px; font-size: .64rem; background: rgba(255,255,255,.9); border-radius: 5px; padding: 0 6px; color: #222C3A; }
 .ribbon { position: absolute; left: 14px; top: 12px; font-family: var(--latin); font-size: 1.05rem; font-weight: 600; letter-spacing: .08em; background: var(--ink); color: #fff; border-radius: 999px; padding: 1px 12px; z-index: 1; }
 .card:first-child .ribbon { background: var(--accent); }
 .move { position: absolute; right: 14px; top: 13px; font-size: .72rem; font-weight: 700; border-radius: 999px; padding: 1px 8px; background: #fff; z-index: 1; }
@@ -135,7 +135,7 @@ footer { max-width: 1280px; margin: 0 auto; padding: 0 24px 40px; font-size: .76
 
 /* 상세 */
 dialog { border: none; padding: 0; border-radius: 20px; background: var(--surface); color: var(--ink); width: min(980px, calc(100vw - 32px)); max-height: calc(100vh - 32px); }
-dialog::backdrop { background: rgba(43, 36, 34, .45); }
+dialog::backdrop { background: rgba(28, 43, 64, .4); }
 .detail { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
 .dv { padding: 26px 18px; display: flex; flex-direction: column; gap: 12px; }
 .dv .visual { padding: 0; }
@@ -175,12 +175,12 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
 <body data-season="봄">
 <svg width="0" height="0" aria-hidden="true" style="position:absolute;overflow:hidden" xmlns="http://www.w3.org/2000/svg"><defs id="package-filters"></defs>
 <defs>
-  <clipPath id="pkg-clip-toner" clipPathUnits="objectBoundingBox"><rect x=".31" y=".104" width=".212" height=".122" rx=".035"/></clipPath>
-  <clipPath id="pkg-clip-serum" clipPathUnits="objectBoundingBox"><ellipse cx=".455" cy=".33" rx=".288" ry=".069"/><ellipse cx=".433" cy=".235" rx=".15" ry=".04"/></clipPath>
-  <clipPath id="pkg-clip-cream" clipPathUnits="objectBoundingBox"><ellipse cx=".493" cy=".387" rx=".425" ry=".102"/></clipPath>
-<clipPath id="pkg-logo-toner" clipPathUnits="objectBoundingBox"><ellipse cx=".452" cy=".49" rx=".145" ry=".09"/></clipPath>
-<clipPath id="pkg-logo-serum" clipPathUnits="objectBoundingBox"><ellipse cx=".458" cy=".615" rx=".15" ry=".088"/></clipPath>
-<clipPath id="pkg-logo-cream" clipPathUnits="objectBoundingBox"><ellipse cx=".508" cy=".626" rx=".211" ry=".12"/></clipPath></defs></svg>
+  <clipPath id="pkg-clip-toner" clipPathUnits="objectBoundingBox"><rect x=".22" y=".089" width=".36" height=".141" rx=".065"/></clipPath>
+  <clipPath id="pkg-clip-serum" clipPathUnits="objectBoundingBox"><rect x=".315" y=".053" width=".218" height=".165" rx=".105"/><ellipse cx=".429" cy=".28" rx=".248" ry=".081"/></clipPath>
+  <clipPath id="pkg-clip-cream" clipPathUnits="objectBoundingBox"><path d="M .06 .477 L .066 .379 C .085 .305 .24 .283 .435 .282 C .68 .28 .88 .31 .92 .38 L .929 .477 Q .49 .506 .06 .477 Z"/></clipPath>
+<clipPath id="pkg-logo-toner" clipPathUnits="objectBoundingBox"><ellipse cx=".438" cy=".49" rx=".151" ry=".09"/></clipPath>
+<clipPath id="pkg-logo-serum" clipPathUnits="objectBoundingBox"><ellipse cx=".438" cy=".586" rx=".145" ry=".084"/></clipPath>
+<clipPath id="pkg-logo-cream" clipPathUnits="objectBoundingBox"><ellipse cx=".517" cy=".614" rx=".155" ry=".092"/></clipPath></defs></svg>
 
 <div class="topbar"><div class="in">
   <div class="logo">CHAHAR<small>가칭 · 브랜드명 미정</small></div>
@@ -226,7 +226,7 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
 <footer>
   <span>기준 구조는 화장품 출시 체크리스트(필수 통과 조건 → 가중 평가 → 근거 확보 비중 → 불확실성)를 따랐어요. 점수 = Σ(비중 × 점수 ÷ 5)이고 성공 확률이 아니에요. 확인 안 된 칸은 비워 두고 점수 범위(0점~5점으로 볼 때)와 근거 확보 비중으로 보여 줘요.</span>
   <span>후보 풀: 원료 12종(K3 원료 후보표)의 맞는 목적이 그 계절 피부 목적(K4 계절 기후 표)과 겹치면 라인 후보가 돼요. 세부 점수는 K3 · LJH 원료별 경쟁제품 · LJH 기능성 고시 성분 대조 · K5 가격 기준표의 값을 옮겼고, 점수 구간과 ★ 비중은 팀이 정할 값이에요.</span>
-  <span>제품 사진은 팀 용기 샘플 IMAGE/초안1 (CHAHAR, ⚠️ AI 생성 디자인 검토용 시안)이에요. 초안의 용기 형태·재질·투명도·광택 표현을 유지하고 몸체와 뚜껑·글씨의 색상만 바꾼 시안이에요. 정가는 라인 구성 예시값이에요.</span>
+  <span>제품 사진은 팀 용기 샘플 IMAGE/수정1 (CHAHAR, ⚠️ AI 생성 디자인 검토용 시안)이에요. 수정1 샘플의 용기 형태·재질·투명도·광택 표현을 유지하고 몸체와 뚜껑·글씨의 색상만 바꾼 시안이에요. 정가는 라인 구성 예시값이에요.</span>
 </footer>
 
 <dialog id="detail" aria-labelledby="d-name">
@@ -316,92 +316,92 @@ const HERBS = [
    main = 패키지 팔레트, cap = 라벨 포인트, liquid = 밝은 보조색, motif = 라벨 그림. 원료 고유색이 아닌 패키지 디자인 제안 */
 const DESIGN = {
   "쑥": {
-    "main": "#E4EBDF",
-    "cap": "#647A5B",
+    "main": "#F0F9E9",
+    "cap": "#83B966",
     "liquid": "#F3F6F0",
     "motif": "leaf",
-    "from": "화이트 · 소프트 세이지"
+    "from": "맑은 라이트 그린"
   },
   "어성초": {
-    "main": "#E3F1E9",
-    "cap": "#315F50",
+    "main": "#E4FAF0",
+    "cap": "#268C65",
     "liquid": "#F0F8F6",
     "motif": "leaf",
-    "from": "옅은 민트 색상 · 딥 그린 포인트"
+    "from": "라이트 민트 · 선명한 그린"
   },
   "인삼": {
-    "main": "#F0EBDD",
-    "cap": "#9C9275",
+    "main": "#FFF7E5",
+    "cap": "#D4AE61",
     "liquid": "#FAF8F1",
     "motif": "root",
-    "from": "아이보리 · 샌드 포인트"
+    "from": "밝은 아이보리 · 허니 포인트"
   },
   "홍삼": {
-    "main": "#EEDFE0",
-    "cap": "#9A7279",
+    "main": "#FFF0F1",
+    "cap": "#E47888",
     "liquid": "#F8F0F1",
     "motif": "root",
-    "from": "화이트 · 더스티 로즈 포인트"
+    "from": "라이트 핑크 · 코랄 포인트"
   },
   "당귀": {
-    "main": "#F2EBDD",
-    "cap": "#A99C88",
+    "main": "#FFF6E2",
+    "cap": "#C7AC78",
     "liquid": "#F8F5EF",
     "motif": "root",
-    "from": "크림 아이보리 색상 · 토프 베이지 포인트"
+    "from": "밝은 크림 아이보리 · 샌드 베이지"
   },
   "감초": {
-    "main": "#F5F5F0",
-    "cap": "#A8B9A0",
+    "main": "#FFFFFF",
+    "cap": "#8CC782",
     "liquid": "#F5F8F2",
     "motif": "root",
-    "from": "밀키 화이트 색상 · 세이지 포인트"
+    "from": "클린 화이트 · 프레시 세이지"
   },
   "병풀": {
-    "main": "#DEEBE3",
-    "cap": "#628573",
+    "main": "#ECFBF0",
+    "cap": "#57B983",
     "liquid": "#F1F7F3",
     "motif": "leaf",
-    "from": "화이트 · 시카 그린"
+    "from": "맑은 화이트 · 시카 그린"
   },
   "황기": {
-    "main": "#F1EEDC",
-    "cap": "#A29870",
+    "main": "#FFFBE6",
+    "cap": "#DEC05B",
     "liquid": "#FAF9EF",
     "motif": "root",
-    "from": "화이트 · 버터 크림 포인트"
+    "from": "밝은 화이트 · 버터 옐로"
   },
   "작약": {
-    "main": "#FAF8F8",
-    "cap": "#E5C4D0",
+    "main": "#FFFBFD",
+    "cap": "#F0AECF",
     "liquid": "#FBF5F8",
     "motif": "flower",
-    "from": "화이트 색상 · 페일 핑크 포인트"
+    "from": "클린 화이트 · 맑은 페일 핑크"
   },
   "오미자": {
-    "main": "#F8E8EF",
-    "cap": "#B58A9B",
+    "main": "#FFE9F3",
+    "cap": "#EB80AF",
     "liquid": "#F8EDF2",
     "motif": "berry",
-    "from": "옅은 핑크 색상 · 차분한 로즈 포인트"
+    "from": "라이트 핑크 · 프레시 로즈"
   },
   "오가피": {
-    "main": "#E7E3EC",
-    "cap": "#8B819B",
+    "main": "#F4EEFF",
+    "cap": "#B297DC",
     "liquid": "#F6F3F9",
     "motif": "root",
-    "from": "화이트 · 그레이 라벤더"
+    "from": "맑은 라벤더"
   },
   "길경": {
-    "main": "#E4E8F2",
-    "cap": "#7B8EAE",
+    "main": "#E9F5FF",
+    "cap": "#6BADE0",
     "liquid": "#F2F5FA",
     "motif": "flower",
-    "from": "화이트 · 미스트 블루"
+    "from": "클리어 스카이 블루"
   }
 };
-/* 재질은 초안1 원본을 그대로 사용하며 피부 목적에 따라 바꾸지 않아요. */
-const FINISH = Object.fromEntries(["진정", "쿨링", "모공·피지", "보습", "민감·장벽", "미백(톤)", "영양", "탄력"].map(p => [p, { mat: "초안1의 제품별 재질·투명도·광택 유지" }]));
+/* 재질은 수정1 원본을 그대로 사용하며 피부 목적에 따라 바꾸지 않아요. */
+const FINISH = Object.fromEntries(["진정", "쿨링", "모공·피지", "보습", "민감·장벽", "미백(톤)", "영양", "탄력"].map(p => [p, { mat: "수정1의 제품별 재질·투명도·광택 유지" }]));
 const PURPOSE_LABEL = { "보습": "수분 보습", "민감·장벽": "장벽 보습", "진정": "진정", "미백(톤)": "톤", "쿨링": "쿨링", "모공·피지": "모공 피지", "영양": "영양", "탄력": "탄력" };
 const SOOTHE = ["진정", "쿨링", "모공·피지"];
 /* K5 중저가 ml당 정가 범위 · 라인 구성은 예시값 */
@@ -500,8 +500,8 @@ const won = n => n.toLocaleString("ko-KR") + "원";
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const scoreText = r => (r.lo === r.hi ? `${r.lo}` : `${r.lo}~${r.hi}`) + `점 · 근거 ${r.evid}%`;
 
-/* ════════ 용기 샘플 (IMAGE/초안1) ════════ */
-const SAMPLE = { toner: "CHAHAR_토너.png", serum: "CHAHAR_세럼.png", cream: "CHAHAR_크림.png" };
+/* ════════ 용기 샘플 (IMAGE/수정1) ════════ */
+const SAMPLE = { toner: "CHAHAR_토너_200ml.png", serum: "CHAHAR_세럼.png", cream: "CHAHAR_크림.png" };
 function hsl(hex) {
   const n = parseInt(hex.slice(1), 16), r = (n >> 16) / 255, g = ((n >> 8) & 255) / 255, b = (n & 255) / 255;
   const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn, l = (mx + mn) / 2;
@@ -514,7 +514,7 @@ function hsl(hex) {
 const packageIndex = herb => Object.keys(DESIGN).indexOf(herb);
 const channelValues = (hex, point) => [1, 3, 5].map(i => {
   const c = parseInt(hex.slice(i, i + 2), 16) / 255;
-  return [0, c * (point ? .55 : .48), c * (point ? .92 : .82), c, 1].map(v => v.toFixed(4)).join(" ");
+  return [0, c * (point ? .65 : .68), c * (point ? .96 : .94), c, 1].map(v => v.toFixed(4)).join(" ");
 });
 function renderPackageFilters() {
   document.getElementById("package-filters").innerHTML = Object.values(DESIGN).map((d, i) => ["body", "point"].map(part => {
@@ -528,8 +528,8 @@ function renderPackageFilters() {
 }
 const tintCss = l => `filter:url(#pkg-body-${packageIndex(l.herb)});`;
 const tileHtml = (l, t, k, mode) => {
-  const original = `../IMAGE/초안1/${SAMPLE[t]}`, recolor = mode === "tint";
-  return `<span class="tile" ${recolor ? `data-palette="color-only" style="--package-accent:${l.design.cap}"` : ""}><img src="${original}" alt="${esc(k)} · 초안1 원본 형태와 재질" loading="lazy" style="${recolor ? tintCss(l) : ""}">${recolor ? `<img class="palette-point" src="${original}" alt="" aria-hidden="true" loading="lazy" style="filter:url(#pkg-point-${packageIndex(l.herb)});clip-path:url(#pkg-clip-${t});"><img class="palette-logo" src="${original}" alt="" aria-hidden="true" loading="lazy" style="filter:url(#pkg-ink-${t === "cream" ? "light" : "dark"}-${packageIndex(l.herb)});clip-path:url(#pkg-logo-${t});">` : ""}<span class="tl">${esc(k)}</span></span>`;
+  const original = `../IMAGE/수정1/${SAMPLE[t]}`, recolor = mode === "tint";
+  return `<span class="tile" ${recolor ? `data-palette="color-only" style="--package-accent:${l.design.cap}"` : ""}><img src="${original}" alt="${esc(k)} · 수정1 원본 형태와 재질" loading="lazy" style="${recolor ? tintCss(l) : ""}">${recolor ? `<img class="palette-point" src="${original}" alt="" aria-hidden="true" loading="lazy" style="filter:url(#pkg-point-${packageIndex(l.herb)});clip-path:url(#pkg-clip-${t});"><img class="palette-logo" src="${original}" alt="" aria-hidden="true" loading="lazy" style="filter:url(#pkg-ink-${t === "cream" ? "light" : "dark"}-${packageIndex(l.herb)});clip-path:url(#pkg-logo-${t});">` : ""}<span class="tl">${esc(k)}</span></span>`;
 };
 const tiles = (l, mode = designMode) => l.lineup.map(([t, k]) => tileHtml(l, t, k, mode)).join("");
 const tileBg = l => `background:linear-gradient(180deg, #F5F7F7, #FFFFFF)`;
@@ -614,7 +614,7 @@ function openDetail(r) {
   const dz = l.design;
   document.getElementById("d-palette").innerHTML = `
     <div><i style="background:${dz.main}"></i>베이스 <code>${dz.main}</code> · ${esc(dz.from)}</div><div><i style="background:${dz.cap}"></i>라벨 포인트 <code>${dz.cap}</code></div>`;
-  document.getElementById("d-vnote").textContent = "IMAGE/초안1 원본 사진을 사용해 용기 형태·재질·투명도·광택 표현을 유지하고, 몸체와 뚜껑·글씨의 색상만 구분해 적용한 시안이에요.";
+  document.getElementById("d-vnote").textContent = "IMAGE/수정1 원본 사진을 사용해 용기 형태·재질·투명도·광택 표현을 유지하고, 몸체와 뚜껑·글씨의 색상만 구분해 적용한 시안이에요.";
   document.getElementById("d-rank").textContent = r.rank ? `${season} No.${r.rank} · ${scoreText(r)}` : `${season} · 추가 검증 (필수 조건 미통과)`;
   document.getElementById("d-name").textContent = l.name;
   document.getElementById("d-facts").innerHTML = `
