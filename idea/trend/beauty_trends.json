@@ -250,6 +250,38 @@
         "유분",
         "보송한 사용감"
       ]
+    },
+    {
+      "id": "niq-global-beauty-2026",
+      "source": "NielsenIQ",
+      "kind": "글로벌 구매·소비자 분석",
+      "url": "https://nielseniq.com/global/en/insights/report/2026/beauty-in-2026-global-shifts-local-realities-real-growth/",
+      "title": "Beauty in 2026: Global shifts. Local realities. Real growth",
+      "publishedAt": "2026-04-06",
+      "checkedAt": "2026-11-13T02:20:16Z",
+      "evidenceRole": "background",
+      "summary": "20개 뷰티 시장을 다룬 공개 요약은 간소한 루틴, 성분의 신뢰성, 다기능 제형, 가격 대비 가치 등을 기획 검토점으로 제시한다. 국가별 차이를 강조하므로 특정 국가의 선호를 전세계에 일반화하지 않는다.",
+      "tags": [
+        "루틴 간소화",
+        "성분 신뢰",
+        "가격 대비 가치"
+      ]
+    },
+    {
+      "id": "mckinsey-state-beauty-2026",
+      "source": "McKinsey",
+      "kind": "글로벌 시장·채널 전망",
+      "url": "https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/state-of-beauty",
+      "title": "From aisle to algorithm: The beauty categories, channels, and concepts shaping 2030 growth",
+      "publishedAt": "2026-06-18",
+      "checkedAt": "2026-11-13T02:20:16Z",
+      "evidenceRole": "background",
+      "summary": "스킨케어에서 높은 가격만으로 성능을 설명하기 어려워지고 가격 대비 가치와 신뢰할 근거가 중요해진다는 분석을 제공한다. 중장기 시장·채널 기획의 배경이며 실시간 판매랭킹 자료는 아니다.",
+      "tags": [
+        "가치 소비",
+        "가격대",
+        "기획 근거"
+      ]
     }
   ],
   "insights": {
@@ -258,7 +290,9 @@
       "tip": "토너·세럼·크림의 역할을 나누고, 환절기에도 부담 없이 쓰기 좋은 사용감을 차별점으로 검토해 보세요.",
       "evidenceIds": [
         "oy-editorial-311",
-        "jangup-100295"
+        "jangup-100295",
+        "niq-global-beauty-2026",
+        "mckinsey-state-beauty-2026"
       ]
     },
     "여름": {
@@ -266,7 +300,9 @@
       "tip": "샘플을 비교할 때 흡수감·끈적임·덧바른 뒤 밀림을 우선 확인하고, 산뜻한 수분·진정을 핵심 메시지로 잡아보세요.",
       "evidenceIds": [
         "oy-editorial-311",
-        "jangup-100226"
+        "jangup-100226",
+        "niq-global-beauty-2026",
+        "mckinsey-state-beauty-2026"
       ]
     },
     "가을": {
@@ -274,7 +310,9 @@
       "tip": "토너·세럼의 레이어링 사용감과 크림의 마무리감을 함께 비교해, 건조함이 시작되는 계절에 맞는 루틴을 설계해 보세요.",
       "evidenceIds": [
         "jangup-100295",
-        "jangup-100226"
+        "jangup-100226",
+        "niq-global-beauty-2026",
+        "mckinsey-state-beauty-2026"
       ]
     },
     "겨울": {
@@ -282,7 +320,9 @@
       "tip": "보습 지속감과 끈적임의 균형을 먼저 비교하고, 낮에도 쓰기 좋은 조합과 밤에 충분히 바르는 조합을 나눠 제안해 보세요.",
       "evidenceIds": [
         "jangup-100295",
-        "oy-editorial-311"
+        "oy-editorial-311",
+        "niq-global-beauty-2026",
+        "mckinsey-state-beauty-2026"
       ]
     }
   }

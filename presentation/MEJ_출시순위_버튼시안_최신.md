@@ -82,3 +82,9 @@
 | [오픈서베이 뷰티 트렌드 리포트](https://blog.opensurvey.co.kr/trendreport/beauty-2026/) | 국내 소비자의 구매 기준·루틴 변화. 표본·조사기간을 함께 적음 | ✅ 열림 |
 
 - 메인 화면에서는 샘플 그대로 버튼을 제거했습니다. 원본 샘플은 제품 상세 화면의 비교 영역에서 확인합니다.
+
+### 공개 화면 정리와 실제 글로벌 근거
+
+- 청중에게 보이는 내부 자료 코드·기여자 이니셜·저장 경로를 삭제했습니다.
+- [NielsenIQ 공개 보고서](https://nielseniq.com/global/en/insights/report/2026/beauty-in-2026-global-shifts-local-realities-real-growth/) (2026-04-06)와 [McKinsey 공개 분석](https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/state-of-beauty) (2026-06-18)을 실제로 확인해 루틴 구성·가격 대비 가치 기획의 배경 근거에 추가했습니다. 확인일 2026-11-13, 등급 🟡.
+- 근거 보기는 실제 사용 자료와 추가 확인 대상을 나눕니다. Mintel·Spate는 공개 본문을 확인했지만 게시일을 확인하지 못해 핵심 근거에는 포함하지 않았습니다.
