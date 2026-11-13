@@ -342,4 +342,4 @@
 | 외부 데이터 | `idea/MEJ_트렌드수집에이전트_설계.md`, `idea/trend/keywords.json` |
 | 이미지 | `IMAGE/수정1/CHAHAR_이미지생성_통합지시문.txt` |
 | 지식 파일 | 4장 표 참고 |
-| 명세 | `spec/시나리오.md`, `spec/decision_log.md` |
+| 명세 | `brand/spec/시나리오.md`, `brand/spec/decision_log.md` |

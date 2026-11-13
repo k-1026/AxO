@@ -26,7 +26,7 @@
 <rect x="0" y="0" width="960" height="1300" fill="#FFFFFF"/>
 
 <text x="40" y="44" font-size="20" font-weight="700" fill="#2C2C2A">User flow · 계절 제품 개발 아이디어 에이전트</text>
-<text x="40" y="66" class="su" fill="#5F5E5A">BM이 계절 하나를 고르고, 회의에 올릴 라인 후보를 고르기까지 (spec/시나리오.md 12장 장면 1~9)</text>
+<text x="40" y="66" class="su" fill="#5F5E5A">BM이 계절 하나를 고르고, 회의에 올릴 라인 후보를 고르기까지 (brand/spec/시나리오.md 12장 장면 1~9)</text>
 
 <text x="480" y="98" text-anchor="middle" class="lb">메인 흐름</text>
 <text x="810" y="98" text-anchor="middle" class="lb">예외 처리</text>
