@@ -263,7 +263,7 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
       <p class="hint">한 번 누르면 ★ 중요 · 두 번 ★★ 아주 중요 · 세 번 끄기</p>
     </div>
     <div><div class="lab">추천 조합</div><div class="chips" id="presets"></div></div>
-    <div><div class="lab">매력 기준</div><div class="cbtns" id="cbtns"></div></div>
+    <div><div class="lab">후보 순위 근거</div><div class="cbtns" id="cbtns"></div></div>
     <div><div class="lab">필수 통과 조건 · 항상 확인</div><div class="chips" id="gates"></div>
       <p class="hint" style="margin-top:6px">PASS가 아니면 순위에 올리지 않고 '추가 검증'으로 보여 줘요.</p></div>
   </aside>
@@ -497,7 +497,7 @@ const GATES = [
   { nm: "계절 고민 연결", get: l => ["PASS", l.issues.map(i => i[0]).join(" · ")] }
 ];
 
-/* ════════ 매력 기준 버튼 (세부 기준은 버튼 비중을 나눠 씀) ════════ */
+/* ════════ 후보 순위 근거 버튼 (세부 기준은 버튼 비중을 나눠 씀) ════════ */
 let TREND = null;
 const trendDataUrl = typeof location !== "undefined" && location.hostname === "htmlpreview.github.io" ? "https://raw.githubusercontent.com/k-1026/AxO/research/idea/trend/trend.json" : "trend/trend.json";
 fetch(trendDataUrl).then(r => r.ok ? r.json() : null).then(j => { if (j) { TREND = j; render(); } }).catch(() => {});
@@ -1007,7 +1007,7 @@ function renderResults() {
   document.getElementById("col-title").textContent = `${season} 컬렉션 후보`;
   document.getElementById("col-sub").textContent = `원료 12종 중 ${pool.length}개 라인이 ${season} 피부 목적과 맞아요 · 순위 ${ok.length}개 · 추가 검증 ${out.length}개`;
   const el = document.getElementById("results");
-  if (!Object.keys(W).length) { el.innerHTML = `<div class="empty">왼쪽에서 매력 기준을 하나 이상 골라 주세요.</div>`; return; }
+  if (!Object.keys(W).length) { el.innerHTML = `<div class="empty">왼쪽에서 후보 순위 근거를 하나 이상 골라 주세요.</div>`; return; }
   const mv = r => r.move == null ? "" : r.move > 0 ? `<span class="move up">▲ ${r.move}</span>` : r.move < 0 ? `<span class="move down">▼ ${-r.move}</span>` : "";
   const whyChips = r => {
     const subs = r.parts.flatMap(p => p.subs.map(x => ({ p, x })));
