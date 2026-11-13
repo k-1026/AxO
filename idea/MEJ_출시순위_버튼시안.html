@@ -193,6 +193,18 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
 .card-rank .ribbon, .card-rank .move { position: static; }
 .card-rank .ribbon { font-size: .9rem; }
 .trend-details { margin-top:6px; font-size:.72rem; color:var(--muted); } .trend-details summary { cursor:pointer; }
+
+/* 원본 사진과 색상 레이어를 함께 확대하는 커서 추적 돋보기 */
+#detail .tile { cursor: zoom-in; }
+.sample-lens { position: fixed; width: 150px; height: 150px; box-sizing: content-box; border: 2px solid #fff; border-radius: 50%; overflow: hidden; z-index: 10000; pointer-events: none; box-shadow: 0 5px 24px rgba(24,36,52,.25), 0 0 0 1px rgba(24,36,52,.12); }
+.sample-lens[hidden] { display: none; }
+.sample-lens-content { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.sample-lens-content .product-cutout { width: 100%; height: 100%; }
+.sample-lens img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 22.4% 50%; }
+.sample-lens img.palette-point, .sample-lens img.palette-logo { position: absolute; inset: 0; }
+.sample-lens::after { content: ""; position: absolute; left: calc(50% - 5px); top: calc(50% - 5px); width: 10px; height: 10px; background: linear-gradient(#56616c66,#56616c66) center / 1px 10px no-repeat, linear-gradient(#56616c66,#56616c66) center / 10px 1px no-repeat; }
+.zoom-hint { margin: 5px 0 0; font-size: .72rem; color: var(--muted); text-align: right; }
+@media (hover: none) { .sample-lens { display: none !important; } .zoom-hint { display: none; } }
 </style>
 </head>
 <body data-season="봄">
@@ -268,7 +280,7 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
 
 <dialog id="detail" aria-labelledby="d-name">
   <div class="detail">
-    <div class="dv"><div class="visual" id="d-visual"></div>
+    <div class="dv"><div class="visual" id="d-visual"></div><p class="zoom-hint">사진 위에 마우스를 올리면 확대됩니다.</p>
       <div><div class="sec">샘플 → 색상 변경 (세럼)</div><div class="steps" id="d-steps"></div></div>
       <div><div class="sec">패키지 팔레트 (디자인 제안)</div><div class="palette" id="d-palette"></div></div>
       <div class="note" id="d-vnote"></div></div>
@@ -828,6 +840,7 @@ function renderResults() {
   ok.forEach(r => { prevRank[key + r.l.herb] = r.rank; });
 }
 function openDetail(r) {
+  hideSampleZoom();
   const l = r.l;
   const v = document.getElementById("d-visual"); v.innerHTML = tiles(l); v.style.cssText = tileBg(l) + ";border-radius:14px;padding:14px";
   document.getElementById("d-steps").innerHTML = [["sample", "샘플 그대로"], ["tint", "색상 변경"]].map(([m, t]) =>
@@ -853,9 +866,59 @@ function openDetail(r) {
     + `<p class="note">점수 ${scoreText(r)} · 확인 안 된 칸을 0점으로 보면 하한, 5점으로 보면 상한이에요.</p>`;
   const d = document.getElementById("detail"); d.showModal ? d.showModal() : d.setAttribute("open", "");
 }
-document.getElementById("d-close").onclick = () => document.getElementById("detail").close();
+document.getElementById("d-close").onclick = () => { hideSampleZoom(); document.getElementById("detail").close(); };
 document.getElementById("detail").addEventListener("click", e => { if (e.target.id === "detail") e.target.close(); });
-function render() { renderPackageFilters(); renderSeasons(); renderTrendComment(); renderStudio(); renderResults(); }
+
+const SAMPLE_ZOOM = 2.6, SAMPLE_LENS_SIZE = 150;
+let sampleZoom = { tile: null, lens: null, content: null };
+function sampleLensPosition(rect, x, y, viewportWidth, viewportHeight) {
+  const half = SAMPLE_LENS_SIZE / 2;
+  return { left: Math.max(8, Math.min(viewportWidth - SAMPLE_LENS_SIZE - 12, x - half)),
+    top: Math.max(8, Math.min(viewportHeight - SAMPLE_LENS_SIZE - 12, y - half)),
+    tx: half - (x - rect.left) * SAMPLE_ZOOM, ty: half - (y - rect.top) * SAMPLE_ZOOM };
+}
+function hideSampleZoom() {
+  if (sampleZoom.lens) sampleZoom.lens.hidden = true;
+  sampleZoom.tile = null;
+}
+function moveSampleZoom(event) {
+  if (event.pointerType === "touch") { hideSampleZoom(); return; }
+  const tile = event.target && event.target.closest ? event.target.closest(".tile") : null;
+  const photo = tile && tile.closest("#detail") && tile.querySelector(".product-cutout");
+  if (!photo) { hideSampleZoom(); return; }
+  if (!sampleZoom.lens) {
+    const lens = document.createElement("div"), content = document.createElement("div");
+    lens.className = "sample-lens"; lens.setAttribute("aria-hidden", "true");
+    content.className = "sample-lens-content"; lens.appendChild(content);
+    sampleZoom.lens = lens; sampleZoom.content = content;
+  }
+  const parent = tile.closest("dialog") || document.body;
+  if (sampleZoom.lens.parentNode !== parent) parent.appendChild(sampleZoom.lens);
+  const rect = tile.getBoundingClientRect();
+  if (!rect.width || !rect.height) { hideSampleZoom(); return; }
+  if (sampleZoom.tile !== tile) {
+    sampleZoom.content.replaceChildren(photo.cloneNode(true));
+    sampleZoom.tile = tile;
+  }
+  sampleZoom.content.style.width = rect.width + "px";
+  sampleZoom.content.style.height = rect.height + "px";
+  sampleZoom.lens.style.background = getComputedStyle(tile).backgroundColor;
+  const position = sampleLensPosition(rect, event.clientX, event.clientY, window.innerWidth, window.innerHeight);
+  sampleZoom.lens.style.left = position.left + "px";
+  sampleZoom.lens.style.top = position.top + "px";
+  sampleZoom.content.style.transform = `translate(${position.tx}px,${position.ty}px) scale(${SAMPLE_ZOOM})`;
+  sampleZoom.lens.hidden = false;
+}
+if (typeof document.addEventListener === "function" && typeof window !== "undefined") {
+  document.addEventListener("pointermove", moveSampleZoom, { passive: true });
+  document.addEventListener("pointerleave", hideSampleZoom);
+  window.addEventListener("scroll", hideSampleZoom, true);
+  window.addEventListener("resize", hideSampleZoom);
+  window.addEventListener("blur", hideSampleZoom);
+  document.getElementById("detail").addEventListener("close", hideSampleZoom);
+}
+
+function render() { hideSampleZoom(); renderPackageFilters(); renderSeasons(); renderTrendComment(); renderStudio(); renderResults(); }
 render();
 </script>
 </body>
