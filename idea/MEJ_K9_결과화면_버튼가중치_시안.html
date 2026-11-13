@@ -97,11 +97,6 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .visual { position: relative; padding: 16px 12px 12px; display: flex; gap: 6px; justify-content: center; align-items: flex-end; }
 .tile { flex: 1 1 0; min-width: 0; max-width: 33%; aspect-ratio: 600 / 1024; border-radius: 10px; overflow: hidden; position: relative; background: #fbe3ee; box-shadow: 0 4px 14px rgba(60,40,30,.08); }
 .tile img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 22.4% 50%; }
-.tile .mascot { position: absolute; right: 2px; bottom: 16px; width: 42%; filter: drop-shadow(0 2px 3px rgba(60,40,30,.25)); animation: bob 2.4s ease-in-out infinite; }
-@keyframes bob { 50% { transform: translateY(-3px) rotate(-3deg); } }
-.preset.collab { border-color: #FF8FA8; color: #D14D72; }
-.preset.collab.on { background: #FF8FA8; color: #fff; border-color: #FF8FA8; }
-.collab-name { font-size: .72rem; color: #D14D72; font-weight: 700; }
 .tile .tl { position: absolute; left: 5px; bottom: 5px; font-size: .64rem; background: rgba(255,255,255,.9); border-radius: 5px; padding: 0 6px; color: #2B2422; }
 .ribbon { position: absolute; left: 14px; top: 12px; font-family: var(--latin); font-size: 1.05rem; font-weight: 600; letter-spacing: .08em; background: var(--ink); color: #fff; border-radius: 999px; padding: 1px 12px; z-index: 1; }
 .card:first-child .ribbon { background: var(--accent); }
@@ -212,7 +207,7 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
         <h2 id="col-title">봄 컬렉션 후보</h2>
         <div class="sub" id="col-sub"></div>
       </div>
-      <div class="toggle"><span>용기 디자인</span><span class="chips" id="design"></span><button type="button" id="collab"></button></div>
+      <div class="toggle"><span>용기 디자인</span><span class="chips" id="design"></span></div>
     </div>
     <div id="results"></div>
   </section>
@@ -448,28 +443,8 @@ const tintCss = l => {
   const sat = Math.min(1.1, s / .6 + .1), bri = Math.max(.75, Math.min(1.15, .55 + li * .6));
   return `filter:hue-rotate(${Math.round(h - 345)}deg) saturate(${sat.toFixed(2)}) brightness(${bri.toFixed(2)});`;
 };
-/* 콜라보 에디션: 실제 캐릭터 IP(산리오 등)는 라이선스가 필요해 쓰지 않고, 원료를 닮은 우리 오리지널 캐릭터 스티커를 얹어요 */
-let collab = false;
-const HAT = {
-  berry:  c => `<circle cx="-7" cy="-17" r="5" fill="${c}"/><circle cx="2" cy="-19" r="5" fill="${c}"/><circle cx="10" cy="-15" r="4.5" fill="${c}"/><circle cx="-8.5" cy="-18.5" r="1.4" fill="#fff" opacity=".7"/><path d="M2,-24 q3,-6 9,-6" stroke="#4E6B45" stroke-width="2" fill="none" stroke-linecap="round"/>`,
-  leaf:   c => `<path d="M0,-14 C-3,-24 -12,-26 -16,-22 C-12,-16 -6,-14 0,-14 Z" fill="#7FB069"/><path d="M0,-14 C3,-25 12,-27 16,-23 C12,-16 6,-14 0,-14 Z" fill="#9BCB7E"/>`,
-  root:   c => `<path d="M-3,-14 q-4,-8 -1,-14 M3,-14 q5,-7 2,-14 M0,-14 q0,-9 0,-15" stroke="#7FB069" stroke-width="2.6" fill="none" stroke-linecap="round"/>`,
-  flower: c => [0, 72, 144, 216, 288].map(a => `<ellipse cx="0" cy="-6" rx="4" ry="6" fill="${c}" transform="translate(0,-19) rotate(${a})"/>`).join("") + `<circle cx="0" cy="-19" r="3" fill="#FFD66B"/>`
-};
-function mascot(l) {
-  const d = l.design, face = d.liquid;
-  return `<svg class="mascot" viewBox="-24 -34 48 54" aria-hidden="true">
-    ${HAT[d.motif](d.main)}
-    <circle r="15" fill="${face}" stroke="#fff" stroke-width="2.4"/>
-    <ellipse cx="-5.5" cy="-1" rx="1.9" ry="2.5" fill="#3A2A26"/><ellipse cx="5.5" cy="-1" rx="1.9" ry="2.5" fill="#3A2A26"/>
-    <circle cx="-5" cy="-1.8" r=".7" fill="#fff"/><circle cx="6" cy="-1.8" r=".7" fill="#fff"/>
-    <ellipse cx="-9" cy="4.5" rx="3" ry="1.8" fill="#FF9AAE" opacity=".8"/><ellipse cx="9" cy="4.5" rx="3" ry="1.8" fill="#FF9AAE" opacity=".8"/>
-    <path d="M-2.2,4 q2.2,2.4 4.4,0" stroke="#3A2A26" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-  </svg>`;
-}
-const MASCOT_NAME = { "오미자": "오밍이", "작약": "작작이", "감초": "초초", "황기": "황황이", "당귀": "귀요미", "인삼": "삼삼이", "홍삼": "홍홍이", "쑥": "쑥쑥이", "어성초": "성초링", "병풀": "풀풀이", "오가피": "가피", "길경": "경경이" };
 const tileHtml = (l, t, k, mode) =>
-  `<span class="tile"><img src="../IMAGE/초안1/${SAMPLE[t]}" alt="${esc(k)} 용기 샘플" loading="lazy" style="${mode === "tint" ? tintCss(l) : ""}">${collab ? mascot(l) : ""}<span class="tl">${esc(k)}</span></span>`;
+  `<span class="tile"><img src="../IMAGE/초안1/${SAMPLE[t]}" alt="${esc(k)} 용기 샘플" loading="lazy" style="${mode === "tint" ? tintCss(l) : ""}"><span class="tl">${esc(k)}</span></span>`;
 const tiles = (l, mode = designMode) => l.lineup.map(([t, k]) => tileHtml(l, t, k, mode)).join("");
 const tileBg = l => `background:linear-gradient(180deg, ${l.color}33, ${l.color}0d)`;
 
@@ -498,10 +473,6 @@ function renderStudio() {
   document.getElementById("design").innerHTML = [["sample", "샘플 그대로"], ["tint", "원료 색 입히기"]].map(([k, t]) =>
     `<button class="preset${designMode === k ? " on" : ""}" type="button" data-m="${k}">${t}</button>`).join("");
   document.querySelectorAll("#design .preset").forEach(b => b.onclick = () => { designMode = b.dataset.m; render(); });
-  const cb = document.getElementById("collab");
-  cb.className = "preset collab" + (collab ? " on" : "");
-  cb.textContent = collab ? "♡ 캐릭터 콜라보 켜짐" : "♡ 캐릭터 콜라보";
-  cb.onclick = () => { collab = !collab; render(); };
 }
 let RES = [];
 function renderResults() {
@@ -532,7 +503,6 @@ function renderResults() {
       <div class="visual" style="${tileBg(r.l)}"><span class="ribbon">No.${r.rank}</span>${mv(r)}${tiles(r.l)}</div>
       <div class="body">
         <div class="herb">${esc(r.l.herb)}${r.l.hanja ? `(${r.l.hanja})` : ""} · ${esc(r.l.purpose)} · ${r.l.functional ? "기능성 보고 필요" : "일반 화장품"}</div>
-        ${collab ? `<div class="collab-name">♡ ${esc(MASCOT_NAME[r.l.herb] || r.l.herb)} 에디션</div>` : ""}
         <h3>${esc(r.l.name)}</h3>
         <div class="price">${r.l.lineup.map(([, k, ml, p]) => `${esc(k)} ${ml}ml ${won(p)}`).join(" · ")}</div>
         <div class="meter"><span class="bar"><i style="left:${r.lo}%;width:${r.hi - r.lo}%"></i><b style="width:${r.lo}%"></b></span><strong>${r.lo === r.hi ? r.lo : r.lo + "~" + r.hi}</strong>점 · 근거 ${r.evid}%</div>
