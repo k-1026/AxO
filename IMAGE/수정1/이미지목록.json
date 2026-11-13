@@ -1,0 +1,71 @@
+{
+  "created": "2026-11-13",
+  "instructionFile": "CHAHAR_이미지생성_통합지시문.txt",
+  "productCount": 6,
+  "imageCount": 7,
+  "items": [
+    {
+      "file": "CHAHAR_토너_200ml.png",
+      "source": "IMAGE/초안5/CHAHAR_토너_200ml.png",
+      "targetCapacityML": 200,
+      "generationStatus": "200mL를 디자인 목표로 생성. 실측 수용량 검증 아님.",
+      "sourceSHA256": "17DEE34460BCD7C0B4B94EB4660D2A82369BE6F275FF0472970005B1B9F77500",
+      "sha256": "17DEE34460BCD7C0B4B94EB4660D2A82369BE6F275FF0472970005B1B9F77500",
+      "usage": "⚠️ AI 생성 디자인 검토용 시안"
+    },
+    {
+      "file": "CHAHAR_세럼.png",
+      "source": "IMAGE/초안4/CHAHAR_세럼.png",
+      "targetCapacityML": 50,
+      "generationStatus": "초안4 선택본. 목표 용량 재생성 미완료.",
+      "sourceSHA256": "CE413BDDC360C396E4245D52869E10AD5A275F4365443F5320196C229D6EB2C1",
+      "sha256": "CE413BDDC360C396E4245D52869E10AD5A275F4365443F5320196C229D6EB2C1",
+      "usage": "⚠️ AI 생성 디자인 검토용 시안"
+    },
+    {
+      "file": "CHAHAR_크림.png",
+      "source": "IMAGE/초안4/CHAHAR_크림.png",
+      "targetCapacityML": 50,
+      "generationStatus": "초안4 선택본. 목표 용량 재생성 미완료.",
+      "sourceSHA256": "9FC707FDF8FDE841F07992AEFFCB227FC3D9C763774452351A59838BCD02FA45",
+      "sha256": "9FC707FDF8FDE841F07992AEFFCB227FC3D9C763774452351A59838BCD02FA45",
+      "usage": "⚠️ AI 생성 디자인 검토용 시안"
+    },
+    {
+      "file": "CHAHAR_미스트_둥근캡_닫힘.png",
+      "source": "IMAGE/초안4/CHAHAR_미스트_둥근캡_닫힘.png",
+      "targetCapacityML": 250,
+      "generationStatus": "초안4 선택본. 목표 용량 재생성 미완료.",
+      "sourceSHA256": "CE12733061E02FC3557E14D83A493E9EB8EE7DF74253D61111BD6C8908600676",
+      "sha256": "CE12733061E02FC3557E14D83A493E9EB8EE7DF74253D61111BD6C8908600676",
+      "usage": "⚠️ AI 생성 디자인 검토용 시안"
+    },
+    {
+      "file": "CHAHAR_미스트_네모캡_닫힘.png",
+      "source": "IMAGE/초안4/CHAHAR_미스트_네모캡_닫힘.png",
+      "targetCapacityML": 250,
+      "generationStatus": "초안4 선택본. 목표 용량 재생성 미완료.",
+      "sourceSHA256": "9D8655F1FC2CC3EE8D91112F92277AA04378622FE9D57216869BC7F9DF37143E",
+      "sha256": "9D8655F1FC2CC3EE8D91112F92277AA04378622FE9D57216869BC7F9DF37143E",
+      "usage": "⚠️ AI 생성 디자인 검토용 시안"
+    },
+    {
+      "file": "CHAHAR_로션_펌프형.png",
+      "source": "IMAGE/초안4/CHAHAR_로션_펌프형.png",
+      "targetCapacityML": 80,
+      "generationStatus": "초안4 선택본. 목표 용량 재생성 미완료.",
+      "sourceSHA256": "044A9BBCBD3CB953DF0333921A3443703852F9DECC5EC251B1C68FF68FCEA91B",
+      "sha256": "044A9BBCBD3CB953DF0333921A3443703852F9DECC5EC251B1C68FF68FCEA91B",
+      "usage": "⚠️ AI 생성 디자인 검토용 시안"
+    },
+    {
+      "file": "CHAHAR_로션_튜브형.png",
+      "source": "IMAGE/초안4/CHAHAR_로션_튜브형.png",
+      "targetCapacityML": 120,
+      "generationStatus": "초안4 선택본. 목표 용량 재생성 미완료.",
+      "sourceSHA256": "095C1AC82DD6A4F30DE06F71EC494BCBD74A569749AC2238C48407D9ED05B56B",
+      "sha256": "095C1AC82DD6A4F30DE06F71EC494BCBD74A569749AC2238C48407D9ED05B56B",
+      "usage": "⚠️ AI 생성 디자인 검토용 시안"
+    }
+  ]
+}
