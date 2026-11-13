@@ -192,6 +192,14 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
 .card-rank { min-height: 40px; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; gap: 8px; background: #fff; border-bottom: 1px solid var(--line); }
 .card-rank .ribbon, .card-rank .move { position: static; }
 .card-rank .ribbon { font-size: .9rem; }
+.trend-evidence .ev-h { width: 100%; font-weight: 700; color: var(--ink); margin-top: 6px; }
+.trend-evidence .ev-links { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.tier { width: 100%; margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--line); }
+.tier-h { color: var(--ink); } .tier-h span { display: block; color: var(--muted); }
+.src-list { list-style: none; margin: 2px 0 0; padding: 0; width: 100%; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 4px 16px; }
+.src-list li { display: flex; gap: 6px; align-items: baseline; flex-wrap: wrap; }
+.src-type { color: var(--muted); }
+.src-st { font-weight: 700; } .src-st.ok { color: var(--ok); } .src-st.no { color: var(--warn); } .src-st.wait { color: var(--muted); }
 .trend-details { margin-top:6px; font-size:.72rem; color:var(--muted); } .trend-details summary { cursor:pointer; }
 
 /* 원본 사진과 색상 레이어를 함께 확대하는 커서 추적 돋보기 */
@@ -255,7 +263,7 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
       <p class="hint">한 번 누르면 ★ 중요 · 두 번 ★★ 아주 중요 · 세 번 끄기</p>
     </div>
     <div><div class="lab">추천 조합</div><div class="chips" id="presets"></div></div>
-    <div><div class="lab">매력 기준</div><div class="cbtns" id="cbtns"></div></div>
+    <div><div class="lab">후보 순위 근거</div><div class="cbtns" id="cbtns"></div></div>
     <div><div class="lab">필수 통과 조건 · 항상 확인</div><div class="chips" id="gates"></div>
       <p class="hint" style="margin-top:6px">PASS가 아니면 순위에 올리지 않고 '추가 검증'으로 보여 줘요.</p></div>
   </aside>
@@ -274,7 +282,7 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
 
 <footer>
   <span>필수 조건을 통과한 후보를 선택한 기준으로 비교해요. 점수는 성공 확률이 아니며, 확인이 필요한 항목은 점수 범위로 보여 줘요.</span>
-  <span>후보 풀: 원료 12종(K3 원료 후보표)의 맞는 목적이 그 계절 피부 목적(K4 계절 기후 표)과 겹치면 라인 후보가 돼요. 세부 점수는 K3 · LJH 원료별 경쟁제품 · LJH 기능성 고시 성분 대조 · K5 가격 기준표의 값을 옮겼고, 점수 구간과 ★ 비중은 팀이 정할 값이에요.</span>
+  <span>후보 풀: 원료 12종(원료 후보표)의 맞는 목적이 그 계절 피부 목적(계절 기후 표)과 겹치면 라인 후보가 돼요. 세부 점수는 원료 후보표 · 원료별 경쟁제품 · 기능성 고시 성분 대조 · 가격 기준표의 값을 옮겼고, 점수 구간과 ★ 비중은 팀이 정할 값이에요.</span>
   <span>제품 사진은 팀 용기 샘플 IMAGE/수정1 (CHAHAR, ⚠️ AI 생성 디자인 검토용 시안)이에요. 수정1 샘플의 용기 형태·재질·투명도·광택 표현을 유지하고 몸체와 뚜껑·글씨의 색상만 바꾼 시안이에요. 정가는 라인 구성 예시값이에요.</span>
 </footer>
 
@@ -297,7 +305,7 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
 
 <script>
 /* ════════ 지식 데이터 (팀 자료에서 옮김) ════════ */
-/* K4 계절 기후 → 피부 고민 → 피부 목적 */
+/* 계절 기후 → 피부 고민 → 피부 목적 */
 const SEASONS = {
   "봄":  { eng: "Spring", icon: "🌸", issues: [
     ["건조한 공기", "최소습도 30% 미만 41.9일", "당김 · 속건조", ["보습", "민감·장벽"]],
@@ -317,7 +325,7 @@ const SEASONS = {
     ["건조", "최소습도 30% 미만 31.2일", "극건조 · 각질", ["보습", "민감·장벽"]],
     ["초미세먼지", "PM2.5 나쁨 이상 11.0일", "외부 자극으로 예민함", ["진정", "민감·장벽"]] ] }
 };
-/* K3 원료 후보 12종 + LJH 원료별 경쟁제품. 점수는 [점수(1~5 또는 null), 근거] */
+/* 원료 후보 12종 + 원료별 경쟁제품. 점수는 [점수(1~5 또는 null), 근거] */
 const HERBS = [
   { herb: "쑥", hanja: "艾葉", purposes: ["진정", "쿨링"], words: "진정에 도움, 쿨링감, 산뜻함", seasons: ["봄"], color: "#9DB08A",
     scent: [1, "향 강 · 특유한 방향"], gb: [1, "경북 상위권 아님 (전남 89.8%)"], preempt: [1, "선점 강함 · 한율, 아임프롬"],
@@ -358,9 +366,9 @@ const HERBS = [
   { herb: "길경", hanja: "桔梗", purposes: ["모공·피지"], words: "피부·모공 노폐물 세정, 피지 관리", seasons: ["여름"], color: "#C9B7D6",
     scent: [5, "향 약 · 특유한 냄새 약간"], gb: [3, "경북 19.6% (2위)"], preempt: [null, "경쟁 제품 조사 대상 밖"],
     hanbang: [null, "확인 필요"], rival: [null, "확인 필요"], origin: [null, "확인 필요"],
-    typeGate: ["FAIL", "K3에서 클렌저용 원료로 분류 · 토너·세럼·크림 기초라인에는 맞지 않음"] }
+    typeGate: ["FAIL", "원료 후보표에서 클렌저용 원료로 분류 · 토너·세럼·크림 기초라인에는 맞지 않음"] }
 ];
-/* ════════ K8 디자인 규칙 초안 ════════
+/* ════════ 디자인 규칙 초안 ════════
    원료별 대표 색: 추출물에 쓰는 부위(열매·잎·뿌리·꽃)의 색에서 가져옴
    main = 패키지 팔레트, cap = 라벨 포인트, liquid = 밝은 보조색, motif = 라벨 그림. 원료 고유색이 아닌 패키지 디자인 제안 */
 const DESIGN = {
@@ -453,7 +461,7 @@ const DESIGN = {
 const FINISH = Object.fromEntries(["진정", "쿨링", "모공·피지", "보습", "민감·장벽", "미백(톤)", "영양", "탄력"].map(p => [p, { mat: "수정1의 제품별 재질·투명도·광택 유지" }]));
 const PURPOSE_LABEL = { "보습": "수분 보습", "민감·장벽": "장벽 보습", "진정": "진정", "미백(톤)": "톤", "쿨링": "쿨링", "모공·피지": "모공 피지", "영양": "영양", "탄력": "탄력" };
 const SOOTHE = ["진정", "쿨링", "모공·피지"];
-/* K5 중저가 ml당 정가 범위 · 라인 구성은 예시값 */
+/* 중저가 ml당 정가 범위 · 라인 구성은 예시값 */
 const PRICE_RANGE = { toner: [36, 90], serum: [148, 430], cream: [280, 410] };
 const lineupFor = p => SOOTHE.includes(p)
   ? [["toner", "토너", 200, 15000], ["serum", "세럼", 50, 19000], ["cream", "젤 크림", 50, 19000]]
@@ -478,9 +486,9 @@ function candidates(season) {
 const perMl = l => l.lineup.map(([t, k, ml, p]) => ({ t, k, per: Math.round(p / ml), r: PRICE_RANGE[t] }));
 const GATES = [
   { nm: "기초라인 적합", get: l => l.typeGate || ["PASS", "토너·세럼·크림 구성 가능"] },
-  { nm: "한방 원료 근거", get: l => l.hanbangGate || ["PASS", "공정서 약재 (K3)"] },
+  { nm: "한방 원료 근거", get: l => l.hanbangGate || ["PASS", "공정서 약재 (ìë£ íë³´í)"] },
   { nm: "쓸 수 있는 원료", get: () => ["PASS", "안전기준 별표1·2와 이름 일치 없음 (콘셉트 단계 기준, 성분 단위는 샘플 단계에 성적서로 확인)"] },
-  { nm: "광고 표현", get: l => ["PASS", `K3 '쓸 수 있는 말'만 사용: ${l.words}`] },
+  { nm: "광고 표현", get: l => ["PASS", `원료 후보표의 '쓸 수 있는 말'만 사용: ${l.words}`] },
   { nm: "기능성 절차", get: l => l.functional ? ["PASS", l.func || "고시 성분을 배합해 보고"] : ["NA", "일반 화장품이라 해당 없음"] },
   { nm: "중저가 가격", get: l => {
       const bad = perMl(l).filter(x => x.per < x.r[0] || x.per > x.r[1]);
@@ -489,7 +497,7 @@ const GATES = [
   { nm: "계절 고민 연결", get: l => ["PASS", l.issues.map(i => i[0]).join(" · ")] }
 ];
 
-/* ════════ 매력 기준 버튼 (세부 기준은 버튼 비중을 나눠 씀) ════════ */
+/* ════════ 후보 순위 근거 버튼 (세부 기준은 버튼 비중을 나눠 씀) ════════ */
 let TREND = null;
 const trendDataUrl = typeof location !== "undefined" && location.hostname === "htmlpreview.github.io" ? "https://raw.githubusercontent.com/k-1026/AxO/research/idea/trend/trend.json" : "../idea/trend/trend.json";
 fetch(trendDataUrl).then(r => r.ok ? r.json() : null).then(j => { if (j) { TREND = j; render(); } }).catch(() => {});
@@ -501,19 +509,19 @@ function trendScore(l) {
   return h && h.score != null ? [h.score, `${h.signal} · 최근÷이전 ${h.change ?? "–"} (${TREND.collectedAt}, 네이버 데이터랩)`] : [null, `${l.herb} 검색 흐름 자료 없음`];
 }
 const CRIT = [
-  { k: "demand", nm: "🛒 계절 고민 크기", area: "고객 문제와 수요 · K4", subs: [
+  { k: "demand", nm: "🛒 계절 고민 크기", area: "고객 문제와 수요 · 계절 기후 표", subs: [
       { nm: "이 목적과 이어지는 기후 이슈 수", get: l => { const n = l.issues.length; return [n >= 3 ? 5 : n === 2 ? 4 : 3, `${n}개 · ${l.issues.map(i => i[0]).join(", ")}`]; } } ] },
-  { k: "edge", nm: "🎯 빈자리", area: "경쟁 차별성 · LJH 경쟁제품", subs: [
+  { k: "edge", nm: "🎯 빈자리 공략", area: "경쟁 차별성 · 경쟁제품", subs: [
       { nm: "약재 선점", get: l => l.preempt }, { nm: "한방 브랜드 선점", get: l => l.hanbang } ] },
-  { k: "feel", nm: "🌿 순한 향", area: "사용감 · K3 향 세기", subs: [ { nm: "향 세기", get: l => l.scent } ] },
-  { k: "price", nm: "🏷️ 가격 경쟁력", area: "지불 가격 · K5 · 경쟁제품", subs: [
+  { k: "feel", nm: "🌿 순한 향", area: "사용감 · 원료 향 세기", subs: [ { nm: "향 세기", get: l => l.scent } ] },
+  { k: "price", nm: "🏷️ 가격 경쟁력", area: "지불 가격 · 가격 기준표 · 경쟁제품", subs: [
       { nm: "같은 약재 제품보다 낮은 ml당 가격", get: l => l.rival } ] },
   { k: "ready", nm: "⚡ 빠른 출시", area: "출시 준비도 · 기능성 고시 대조", subs: [
       { nm: "기능성 보고 필요 여부", get: l => l.functional ? [2, "미백 기능성 보고가 필요해 준비가 길어요"] : [5, "일반 화장품이라 바로 출시 가능"] } ] },
-  { k: "fresh", nm: "🌸 제철 원료", area: "처방·원료 적합성 · K3 예상 계절", subs: [
-      { nm: "출시 계절과 원료 계절", get: l => l.seasons.includes(season) ? [5, `K3 예상 계절에 ${season} 포함`] : [2, `K3 예상 계절: ${l.seasons.join("·")}`] } ] },
-  { k: "brand", nm: "🏮 우리 지역 이야기", area: "브랜드 적합성 · K3 산지", subs: [
-      { nm: "경북 생산 비중", get: l => l.gb }, { nm: "산지 이야기 빈자리", get: l => l.origin } ] },
+  { k: "fresh", nm: "🌸 제철 원료", area: "처방·원료 적합성 · 원료 예상 계절", subs: [
+      { nm: "출시 계절과 원료 계절", get: l => l.seasons.includes(season) ? [5, `원료 예상 계절에 ${season} 포함`] : [2, `원료 예상 계절: ${l.seasons.join("·")}`] } ] },
+  { k: "brand", nm: "🏮 우리 지역 이야기", area: "브랜드 적합성 · 원료 산지", subs: [
+      { nm: "경북 생산 비중", get: l => l.gb }, { nm: "산지 이야기 차별성", get: l => l.origin } ] },
   { k: "trend", nm: "📈 뜨는 원료", area: "트렌드 에이전트 · 주간 검색 흐름", subs: [ { nm: "최근 4주 검색 흐름", get: l => trendScore(l) } ] },
   { k: "profit", nm: "💰 수익성", area: "원가 자료 없음", off: true },
   { k: "effect", nm: "✨ 핵심 효능", area: "완제품 시험 전", off: true },
@@ -633,23 +641,202 @@ let BEAUTY_TRENDS = {
   "lookbackDays": 90,
   "sourceChecks": [
     {
-      "source": "올리브영 공식 뉴스룸",
-      "status": "checked",
-      "url": "https://corp.oliveyoung.com/ko/newsroom/press",
-      "checkedAt": "2026-11-13T01:44:27Z"
-    },
-    {
-      "source": "장업신문",
-      "status": "checked",
-      "url": "https://www.jangup.com/",
-      "checkedAt": "2026-11-13T01:44:27Z"
-    },
-    {
-      "source": "올리브영 판매랭킹",
+      "id": "google-trends",
+      "source": "Google Trends",
+      "url": "https://trends.google.com/trends/explore",
+      "checkedAt": "2026-11-13T02:41:55Z",
       "status": "unavailable",
-      "url": "https://www.oliveyoung.co.kr/store/main/getBestList.do?dispCatNo=900000100100001&fltDispCatNo=10000010001",
-      "checkedAt": "2026-11-13T01:44:27Z",
-      "note": "직접 페이지 확인에 실패하여 순위·판매 흐름 판단에서 제외"
+      "http": 429,
+      "note": "자동 접근 차단 → 내용 판단에서 제외, 우회하지 않음"
+    },
+    {
+      "id": "spate",
+      "source": "Spate",
+      "url": "https://www.spate.nyc/resources/reports",
+      "checkedAt": "2026-11-13T02:41:56Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "cosme",
+      "source": "@cosme 랭킹",
+      "url": "https://s.cosme.net/ranking",
+      "checkedAt": "2026-11-13T02:41:56Z",
+      "status": "unavailable",
+      "http": 403,
+      "note": "자동 접근 차단 → 내용 판단에서 제외, 우회하지 않음"
+    },
+    {
+      "id": "naver-datalab",
+      "source": "네이버 데이터랩 (검색어 트렌드·쇼핑인사이트)",
+      "url": "https://datalab.naver.com/",
+      "checkedAt": "2026-11-13T02:41:56Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "nedrug",
+      "source": "의약품안전나라 (기능성화장품 보고)",
+      "url": "https://nedrug.mfds.go.kr/",
+      "checkedAt": "2026-11-13T02:41:56Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "hwahae",
+      "source": "화해 랭킹",
+      "url": "https://www.hwahae.co.kr/rankings",
+      "checkedAt": "2026-11-13T02:41:57Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "oliveyoung-ranking",
+      "source": "올리브영 판매 랭킹",
+      "url": "https://www.oliveyoung.co.kr/store/main/getBestList.do",
+      "checkedAt": "2026-11-13T02:41:57Z",
+      "status": "unavailable",
+      "http": 403,
+      "note": "자동 접근 차단 → 내용 판단에서 제외, 우회하지 않음"
+    },
+    {
+      "id": "kosis-online",
+      "source": "통계청 온라인쇼핑동향 (KOSIS)",
+      "url": "https://kosis.kr/",
+      "checkedAt": "2026-11-13T02:41:57Z",
+      "status": "checked",
+      "http": 302,
+      "note": "허용된 주소로 이동 (kosis.kr)"
+    },
+    {
+      "id": "customs-trade",
+      "source": "관세청 수출입 무역통계",
+      "url": "https://tradedata.go.kr/",
+      "checkedAt": "2026-11-13T02:41:57Z",
+      "status": "checked",
+      "http": 302,
+      "note": "허용된 주소로 이동 (tradedata.go.kr)"
+    },
+    {
+      "id": "oliveyoung",
+      "source": "올리브영",
+      "url": "https://corp.oliveyoung.com/ko/newsroom/press",
+      "checkedAt": "2026-11-13T02:41:57Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "jangup",
+      "source": "장업신문",
+      "url": "https://www.jangup.com/",
+      "checkedAt": "2026-11-13T02:41:57Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "cosmetics-business",
+      "source": "Cosmetics Business",
+      "url": "https://www.cosmeticsbusiness.com/cosmetics-business-reveals-the-top-5-skin-care-2",
+      "checkedAt": "2026-11-13T02:41:57Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "cosmorning",
+      "source": "코스모닝",
+      "url": "https://www.cosmorning.com/",
+      "checkedAt": "2026-11-13T02:41:58Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "thebk",
+      "source": "뷰티경제",
+      "url": "https://www.thebk.co.kr/",
+      "checkedAt": "2026-11-13T02:41:59Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "mintel",
+      "source": "Mintel · GNPD",
+      "url": "https://www.mintel.com/insights/beauty-and-personal-care/",
+      "checkedAt": "2026-11-13T02:42:00Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "niq",
+      "source": "NielsenIQ",
+      "url": "https://nielseniq.com/global/en/insights/report/2026/niq-state-of-global-beauty-2026/",
+      "checkedAt": "2026-11-13T02:42:00Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "mckinsey",
+      "source": "McKinsey — State of Beauty",
+      "url": "https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/state-of-beauty",
+      "checkedAt": "2026-11-13T02:42:01Z",
+      "status": "unavailable",
+      "http": 403,
+      "note": "자동 접근 차단 → 내용 판단에서 제외, 우회하지 않음"
+    },
+    {
+      "id": "cosmotrends",
+      "source": "Cosmoprof × BEAUTYSTREAMS — CosmoTrends",
+      "url": "https://lp.cosmoprof.com/hubfs/BEAUTYSTREAMS_CosmoProfWorldwideBologna_CosmoTrends_2026_compressed.pdf",
+      "checkedAt": "2026-11-13T02:42:01Z",
+      "status": "checked",
+      "http": 200,
+      "note": "PDF 보고서 열림"
+    },
+    {
+      "id": "pinterest",
+      "source": "Pinterest Predicts",
+      "url": "https://business.pinterest.com/en-gb/pinterest-predicts/",
+      "checkedAt": "2026-11-13T02:42:01Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "kcii",
+      "source": "대한화장품산업연구원",
+      "url": "https://www.kcii.re.kr/",
+      "checkedAt": "2026-11-13T02:42:03Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "kotra",
+      "source": "KOTRA 해외시장뉴스",
+      "url": "https://dream.kotra.or.kr/",
+      "checkedAt": "2026-11-13T02:42:03Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "opensurvey",
+      "source": "오픈서베이 뷰티 트렌드 리포트",
+      "url": "https://blog.opensurvey.co.kr/trendreport/beauty-2026/",
+      "checkedAt": "2026-11-13T02:42:04Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
     }
   ],
   "items": [
@@ -736,6 +923,9 @@ let BEAUTY_TRENDS = {
     }
   }
 };
+/* 트렌드 수집 에이전트가 확인하는 출처 (idea/trend/sources.json) */
+const TREND_SOURCES = [{"id":"google-trends","name":"Google Trends","url":"https://trends.google.com/trends/explore","type":"검색 관심","tier":"signal"},{"id":"spate","name":"Spate","url":"https://www.spate.nyc/resources/reports","type":"검색·소셜 분석","tier":"signal"},{"id":"cosme","name":"@cosme 랭킹","url":"https://s.cosme.net/ranking","type":"일본 제품 리뷰·랭킹","tier":"signal"},{"id":"naver-datalab","name":"네이버 데이터랩 (검색어 트렌드·쇼핑인사이트)","url":"https://datalab.naver.com/","type":"국내 검색·쇼핑 관심","tier":"signal"},{"id":"nedrug","name":"의약품안전나라 (기능성화장품 보고)","url":"https://nedrug.mfds.go.kr/","type":"기능성 제품 보고 현황","tier":"signal"},{"id":"hwahae","name":"화해 랭킹","url":"https://www.hwahae.co.kr/rankings","type":"리뷰 기반 랭킹","tier":"signal"},{"id":"oliveyoung-ranking","name":"올리브영 판매 랭킹","url":"https://www.oliveyoung.co.kr/store/main/getBestList.do","type":"판매 랭킹","tier":"signal"},{"id":"kosis-online","name":"통계청 온라인쇼핑동향 (KOSIS)","url":"https://kosis.kr/","type":"화장품 온라인 거래액 (매월)","tier":"signal"},{"id":"customs-trade","name":"관세청 수출입 무역통계","url":"https://tradedata.go.kr/","type":"화장품 수출 (매월)","tier":"signal"},{"id":"oliveyoung","name":"올리브영","url":"https://corp.oliveyoung.com/ko/newsroom/press","type":"공식 콘텐츠·판매랭킹","tier":"case"},{"id":"jangup","name":"장업신문","url":"https://www.jangup.com/","type":"업계 기사","tier":"case"},{"id":"cosmetics-business","name":"Cosmetics Business","url":"https://www.cosmeticsbusiness.com/cosmetics-business-reveals-the-top-5-skin-care-2","type":"업계 기사·제품 사례","tier":"case"},{"id":"cosmorning","name":"코스모닝","url":"https://www.cosmorning.com/","type":"국내 업계 기사","tier":"case"},{"id":"thebk","name":"뷰티경제","url":"https://www.thebk.co.kr/","type":"국내 업계 기사","tier":"case"},{"id":"mintel","name":"Mintel · GNPD","url":"https://www.mintel.com/insights/beauty-and-personal-care/","type":"시장 전망·신제품 데이터","tier":"background"},{"id":"niq","name":"NielsenIQ","url":"https://nielseniq.com/global/en/insights/report/2026/niq-state-of-global-beauty-2026/","type":"구매·시장 데이터","tier":"background"},{"id":"mckinsey","name":"McKinsey — State of Beauty","url":"https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/state-of-beauty","type":"시장·채널 전망","tier":"background"},{"id":"cosmotrends","name":"Cosmoprof × BEAUTYSTREAMS — CosmoTrends","url":"https://lp.cosmoprof.com/hubfs/BEAUTYSTREAMS_CosmoProfWorldwideBologna_CosmoTrends_2026_compressed.pdf","type":"전시·제품 혁신","tier":"background"},{"id":"pinterest","name":"Pinterest Predicts","url":"https://business.pinterest.com/en-gb/pinterest-predicts/","type":"시각 트렌드·검색 전망","tier":"background"},{"id":"kcii","name":"대한화장품산업연구원","url":"https://www.kcii.re.kr/","type":"국내 산업 보고서","tier":"background"},{"id":"kotra","name":"KOTRA 해외시장뉴스","url":"https://dream.kotra.or.kr/","type":"국가별 시장 동향","tier":"background"},{"id":"opensurvey","name":"오픈서베이 뷰티 트렌드 리포트","url":"https://blog.opensurvey.co.kr/trendreport/beauty-2026/","type":"국내 소비자 조사","tier":"background"}];
+const TREND_TIERS = {"signal":{"name":"실시간 신호","cadence":"매주","rule":"숫자로 나오는 최근 흐름. 트렌드 한마디의 주 근거"},"case":{"name":"업계 사례","cadence":"매일~매주","rule":"실제로 나온 제품·움직임. '이런 사례가 있다'로만 사용"},"background":{"name":"배경 자료","cadence":"연 1~2회","rule":"큰 방향 설명용. '지금 뜬다'·'판매 증가'로 바꿔 말하지 않음"}};
 let beautyFetchNote = "";
 const beautyDataUrl = typeof location !== "undefined" && location.hostname === "htmlpreview.github.io" ? "https://raw.githubusercontent.com/k-1026/AxO/research/idea/trend/beauty_trends.json" : "../idea/trend/beauty_trends.json";
 async function refreshBeautyTrends() {
@@ -774,7 +964,19 @@ function renderTrendComment() {
   document.getElementById("trend-line").textContent = comment.line.replace(/올리브영의\s*|장업신문의\s*/g, "").replace(/올리브영은\s*/g, "관련 콘텐츠에서는 ").replace(/장업신문은\s*/g, "관련 기사에서는 ");
   document.getElementById("trend-plan").innerHTML = "<b>기획 포인트</b> · " + esc(comment.tip);
   document.getElementById("trend-source").textContent = comment.source;
-  document.getElementById("trend-evidence").innerHTML = (comment.evidence || []).map(item => `<a href="${esc(item.url)}" target="_blank" rel="noopener noreferrer" title="${esc(item.title)}">${esc(item.source)} · ${esc(item.publishedAt)} · ${esc(item.kind || "자료")} ↗</a>`).join("");
+  const evHtml = (comment.evidence || []).map(item => `<a href="${esc(item.url)}" target="_blank" rel="noopener noreferrer" title="${esc(item.title)}">${esc(item.source)} · ${esc(item.publishedAt)} · ${esc(item.kind || "자료")} ↗</a>`).join("");
+  const checksNow = (BEAUTY_TRENDS && BEAUTY_TRENDS.sourceChecks) || [];
+  const srcItem = s => {
+    const c = checksNow.find(x => x.id === s.id || x.url === s.url);
+    const st = !c ? ["wait", "확인 전"] : c.status === "checked" ? ["ok", "확인됨"] : ["no", c.http === 403 || c.http === 429 ? "자동 접근 차단 · 직접 확인" : "확인 못 함"];
+    return `<li><a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.name)} ↗</a><span class="src-type">${esc(s.type)}</span><span class="src-st ${st[0]}">${st[1]}</span></li>`;
+  };
+  const tierHtml = Object.keys(TREND_TIERS).map(k => {
+    const t = TREND_TIERS[k], rows = TREND_SOURCES.filter(s => s.tier === k);
+    return `<div class="tier"><div class="tier-h"><b>${esc(t.name)}</b> · ${esc(t.cadence)} · ${rows.length}곳<span>${esc(t.rule)}</span></div><ul class="src-list">${rows.map(srcItem).join("")}</ul></div>`;
+  }).join("");
+  document.getElementById("trend-evidence").innerHTML = (evHtml ? `<div class="ev-h">이번 한마디의 근거</div><div class="ev-links">${evHtml}</div>` : "")
+    + `<div class="ev-h">트렌드 에이전트가 확인하는 출처 ${TREND_SOURCES.length}곳</div>${tierHtml}`;
 }
 
 function renderStudio() {
@@ -805,7 +1007,7 @@ function renderResults() {
   document.getElementById("col-title").textContent = `${season} 컬렉션 후보`;
   document.getElementById("col-sub").textContent = `원료 12종 중 ${pool.length}개 라인이 ${season} 피부 목적과 맞아요 · 순위 ${ok.length}개 · 추가 검증 ${out.length}개`;
   const el = document.getElementById("results");
-  if (!Object.keys(W).length) { el.innerHTML = `<div class="empty">왼쪽에서 매력 기준을 하나 이상 골라 주세요.</div>`; return; }
+  if (!Object.keys(W).length) { el.innerHTML = `<div class="empty">왼쪽에서 후보 순위 근거를 하나 이상 골라 주세요.</div>`; return; }
   const mv = r => r.move == null ? "" : r.move > 0 ? `<span class="move up">▲ ${r.move}</span>` : r.move < 0 ? `<span class="move down">▼ ${-r.move}</span>` : "";
   const whyChips = r => {
     const subs = r.parts.flatMap(p => p.subs.map(x => ({ p, x })));

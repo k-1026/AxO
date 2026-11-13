@@ -1,27 +1,206 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-13T01:44:27Z",
+  "updatedAt": "2026-11-13T02:42:04Z",
   "intervalMinutes": 60,
   "lookbackDays": 90,
   "sourceChecks": [
     {
-      "source": "올리브영 공식 뉴스룸",
-      "status": "checked",
-      "url": "https://corp.oliveyoung.com/ko/newsroom/press",
-      "checkedAt": "2026-11-13T01:44:27Z"
-    },
-    {
-      "source": "장업신문",
-      "status": "checked",
-      "url": "https://www.jangup.com/",
-      "checkedAt": "2026-11-13T01:44:27Z"
-    },
-    {
-      "source": "올리브영 판매랭킹",
+      "id": "google-trends",
+      "source": "Google Trends",
+      "url": "https://trends.google.com/trends/explore",
+      "checkedAt": "2026-11-13T02:41:55Z",
       "status": "unavailable",
-      "url": "https://www.oliveyoung.co.kr/store/main/getBestList.do?dispCatNo=900000100100001&fltDispCatNo=10000010001",
-      "checkedAt": "2026-11-13T01:44:27Z",
-      "note": "직접 페이지 확인에 실패하여 순위·판매 흐름 판단에서 제외"
+      "http": 429,
+      "note": "자동 접근 차단 → 내용 판단에서 제외, 우회하지 않음"
+    },
+    {
+      "id": "spate",
+      "source": "Spate",
+      "url": "https://www.spate.nyc/resources/reports",
+      "checkedAt": "2026-11-13T02:41:56Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "cosme",
+      "source": "@cosme 랭킹",
+      "url": "https://s.cosme.net/ranking",
+      "checkedAt": "2026-11-13T02:41:56Z",
+      "status": "unavailable",
+      "http": 403,
+      "note": "자동 접근 차단 → 내용 판단에서 제외, 우회하지 않음"
+    },
+    {
+      "id": "naver-datalab",
+      "source": "네이버 데이터랩 (검색어 트렌드·쇼핑인사이트)",
+      "url": "https://datalab.naver.com/",
+      "checkedAt": "2026-11-13T02:41:56Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "nedrug",
+      "source": "의약품안전나라 (기능성화장품 보고)",
+      "url": "https://nedrug.mfds.go.kr/",
+      "checkedAt": "2026-11-13T02:41:56Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "hwahae",
+      "source": "화해 랭킹",
+      "url": "https://www.hwahae.co.kr/rankings",
+      "checkedAt": "2026-11-13T02:41:57Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "oliveyoung-ranking",
+      "source": "올리브영 판매 랭킹",
+      "url": "https://www.oliveyoung.co.kr/store/main/getBestList.do",
+      "checkedAt": "2026-11-13T02:41:57Z",
+      "status": "unavailable",
+      "http": 403,
+      "note": "자동 접근 차단 → 내용 판단에서 제외, 우회하지 않음"
+    },
+    {
+      "id": "kosis-online",
+      "source": "통계청 온라인쇼핑동향 (KOSIS)",
+      "url": "https://kosis.kr/",
+      "checkedAt": "2026-11-13T02:41:57Z",
+      "status": "checked",
+      "http": 302,
+      "note": "허용된 주소로 이동 (kosis.kr)"
+    },
+    {
+      "id": "customs-trade",
+      "source": "관세청 수출입 무역통계",
+      "url": "https://tradedata.go.kr/",
+      "checkedAt": "2026-11-13T02:41:57Z",
+      "status": "checked",
+      "http": 302,
+      "note": "허용된 주소로 이동 (tradedata.go.kr)"
+    },
+    {
+      "id": "oliveyoung",
+      "source": "올리브영",
+      "url": "https://corp.oliveyoung.com/ko/newsroom/press",
+      "checkedAt": "2026-11-13T02:41:57Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "jangup",
+      "source": "장업신문",
+      "url": "https://www.jangup.com/",
+      "checkedAt": "2026-11-13T02:41:57Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "cosmetics-business",
+      "source": "Cosmetics Business",
+      "url": "https://www.cosmeticsbusiness.com/cosmetics-business-reveals-the-top-5-skin-care-2",
+      "checkedAt": "2026-11-13T02:41:57Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "cosmorning",
+      "source": "코스모닝",
+      "url": "https://www.cosmorning.com/",
+      "checkedAt": "2026-11-13T02:41:58Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "thebk",
+      "source": "뷰티경제",
+      "url": "https://www.thebk.co.kr/",
+      "checkedAt": "2026-11-13T02:41:59Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "mintel",
+      "source": "Mintel · GNPD",
+      "url": "https://www.mintel.com/insights/beauty-and-personal-care/",
+      "checkedAt": "2026-11-13T02:42:00Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "niq",
+      "source": "NielsenIQ",
+      "url": "https://nielseniq.com/global/en/insights/report/2026/niq-state-of-global-beauty-2026/",
+      "checkedAt": "2026-11-13T02:42:00Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "mckinsey",
+      "source": "McKinsey — State of Beauty",
+      "url": "https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/state-of-beauty",
+      "checkedAt": "2026-11-13T02:42:01Z",
+      "status": "unavailable",
+      "http": 403,
+      "note": "자동 접근 차단 → 내용 판단에서 제외, 우회하지 않음"
+    },
+    {
+      "id": "cosmotrends",
+      "source": "Cosmoprof × BEAUTYSTREAMS — CosmoTrends",
+      "url": "https://lp.cosmoprof.com/hubfs/BEAUTYSTREAMS_CosmoProfWorldwideBologna_CosmoTrends_2026_compressed.pdf",
+      "checkedAt": "2026-11-13T02:42:01Z",
+      "status": "checked",
+      "http": 200,
+      "note": "PDF 보고서 열림"
+    },
+    {
+      "id": "pinterest",
+      "source": "Pinterest Predicts",
+      "url": "https://business.pinterest.com/en-gb/pinterest-predicts/",
+      "checkedAt": "2026-11-13T02:42:01Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "kcii",
+      "source": "대한화장품산업연구원",
+      "url": "https://www.kcii.re.kr/",
+      "checkedAt": "2026-11-13T02:42:03Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "kotra",
+      "source": "KOTRA 해외시장뉴스",
+      "url": "https://dream.kotra.or.kr/",
+      "checkedAt": "2026-11-13T02:42:03Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
+    },
+    {
+      "id": "opensurvey",
+      "source": "오픈서베이 뷰티 트렌드 리포트",
+      "url": "https://blog.opensurvey.co.kr/trendreport/beauty-2026/",
+      "checkedAt": "2026-11-13T02:42:04Z",
+      "status": "checked",
+      "http": 200,
+      "note": "공개 페이지 열림"
     }
   ],
   "items": [
