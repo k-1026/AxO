@@ -320,7 +320,6 @@ dl.kw dt { color: var(--muted); font-weight: 700; } dl.kw dd { margin: 0; displa
         <h2 id="col-title">봄 컬렉션 후보</h2>
         <div class="sub" id="col-sub"></div>
       </div>
-      <div class="toggle"><span>용기 디자인</span><span class="chips" id="design"></span></div>
     </div>
     <div id="results"></div>
   </section>
@@ -1175,7 +1174,7 @@ function renderStudio() {
     + `<div class="prep">자료 준비 중</div>` + off.map(c => `<button class="cbtn" type="button" disabled><span class="nm">${esc(c.nm)}</span><span class="st">준비 중</span><span class="ar">${esc(c.area)}</span></button>`).join("");
   document.querySelectorAll(".cbtn[data-k]").forEach(b => b.onclick = () => { const k = b.dataset.k; W[k] = ((W[k] || 0) + 1) % 3; if (!W[k]) delete W[k]; presetOn = -2; render(); });
   document.getElementById("gates").innerHTML = GATES.map(g => `<span class="gate"><i>✓</i>${esc(g.nm)}</span>`).join("");
-  document.getElementById("design").innerHTML = [["tint", "색상 변경"]].map(([k, t]) =>
+  if (document.getElementById("design")) document.getElementById("design").innerHTML = [["tint", "색상 변경"]].map(([k, t]) =>
     `<button class="preset${designMode === k ? " on" : ""}" type="button" data-m="${k}">${t}</button>`).join("");
   document.querySelectorAll("#design .preset").forEach(b => b.onclick = () => { designMode = b.dataset.m; render(); });
 }
