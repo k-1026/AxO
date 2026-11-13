@@ -98,7 +98,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .tile { flex: 1 1 0; min-width: 0; max-width: 33%; aspect-ratio: 600 / 1024; border-radius: 10px; overflow: hidden; position: relative; background: #FAFBFA; box-shadow: none; }
 .tile img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 22.4% 50%; }
 .tile[data-palette]::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 0; height: 3px; background: var(--package-accent); opacity: .65; }
-.tile img.palette-point { position: absolute; inset: 0; pointer-events: none; }
+.tile img.palette-point, .tile img.palette-logo { position: absolute; inset: 0; pointer-events: none; }
 .tile .tl { position: absolute; left: 5px; bottom: 5px; font-size: .64rem; background: rgba(255,255,255,.9); border-radius: 5px; padding: 0 6px; color: #2B2422; }
 .ribbon { position: absolute; left: 14px; top: 12px; font-family: var(--latin); font-size: 1.05rem; font-weight: 600; letter-spacing: .08em; background: var(--ink); color: #fff; border-radius: 999px; padding: 1px 12px; z-index: 1; }
 .card:first-child .ribbon { background: var(--accent); }
@@ -175,10 +175,12 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
 <body data-season="봄">
 <svg width="0" height="0" aria-hidden="true" style="position:absolute;overflow:hidden" xmlns="http://www.w3.org/2000/svg"><defs id="package-filters"></defs>
 <defs>
-  <clipPath id="pkg-clip-toner" clipPathUnits="objectBoundingBox"><rect x=".31" y=".104" width=".212" height=".122" rx=".035"/><ellipse cx=".452" cy=".49" rx=".145" ry=".09"/></clipPath>
-  <clipPath id="pkg-clip-serum" clipPathUnits="objectBoundingBox"><ellipse cx=".455" cy=".33" rx=".288" ry=".069"/><ellipse cx=".433" cy=".235" rx=".15" ry=".04"/><ellipse cx=".458" cy=".615" rx=".15" ry=".088"/></clipPath>
-  <clipPath id="pkg-clip-cream" clipPathUnits="objectBoundingBox"><ellipse cx=".493" cy=".387" rx=".425" ry=".102"/><ellipse cx=".508" cy=".626" rx=".211" ry=".12"/></clipPath>
-</defs></svg>
+  <clipPath id="pkg-clip-toner" clipPathUnits="objectBoundingBox"><rect x=".31" y=".104" width=".212" height=".122" rx=".035"/></clipPath>
+  <clipPath id="pkg-clip-serum" clipPathUnits="objectBoundingBox"><ellipse cx=".455" cy=".33" rx=".288" ry=".069"/><ellipse cx=".433" cy=".235" rx=".15" ry=".04"/></clipPath>
+  <clipPath id="pkg-clip-cream" clipPathUnits="objectBoundingBox"><ellipse cx=".493" cy=".387" rx=".425" ry=".102"/></clipPath>
+<clipPath id="pkg-logo-toner" clipPathUnits="objectBoundingBox"><ellipse cx=".452" cy=".49" rx=".145" ry=".09"/></clipPath>
+<clipPath id="pkg-logo-serum" clipPathUnits="objectBoundingBox"><ellipse cx=".458" cy=".615" rx=".15" ry=".088"/></clipPath>
+<clipPath id="pkg-logo-cream" clipPathUnits="objectBoundingBox"><ellipse cx=".508" cy=".626" rx=".211" ry=".12"/></clipPath></defs></svg>
 
 <div class="topbar"><div class="in">
   <div class="logo">CHAHAR<small>가칭 · 브랜드명 미정</small></div>
@@ -519,12 +521,15 @@ function renderPackageFilters() {
     const point = part === "point", vals = channelValues(point ? d.cap : d.main, point);
     const input = point ? '<feColorMatrix type="matrix" values="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 1 0"/>' : '<feColorMatrix type="saturate" values="0"/>';
     return `<filter id="pkg-${part}-${i}" color-interpolation-filters="sRGB">${input}<feComponentTransfer><feFuncR type="table" tableValues="${vals[0]}"/><feFuncG type="table" tableValues="${vals[1]}"/><feFuncB type="table" tableValues="${vals[2]}"/><feFuncA type="identity"/></feComponentTransfer></filter>`;
+  }).join("") + ["dark", "light"].map(kind => {
+    const mask = kind === "dark" ? "0 -3 0 0 1.15" : "0 4 0 0 -2.8";
+    return `<filter id="pkg-ink-${kind}-${i}" color-interpolation-filters="sRGB"><feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ${mask}" result="ink"/><feFlood flood-color="${d.cap}" result="tone"/><feComposite in="tone" in2="ink" operator="in"/></filter>`;
   }).join("")).join("");
 }
 const tintCss = l => `filter:url(#pkg-body-${packageIndex(l.herb)});`;
 const tileHtml = (l, t, k, mode) => {
   const original = `../IMAGE/초안1/${SAMPLE[t]}`, recolor = mode === "tint";
-  return `<span class="tile" ${recolor ? `data-palette="color-only" style="--package-accent:${l.design.cap}"` : ""}><img src="${original}" alt="${esc(k)} · 초안1 원본 형태와 재질" loading="lazy" style="${recolor ? tintCss(l) : ""}">${recolor ? `<img class="palette-point" src="${original}" alt="" aria-hidden="true" loading="lazy" style="filter:url(#pkg-point-${packageIndex(l.herb)});clip-path:url(#pkg-clip-${t});">` : ""}<span class="tl">${esc(k)}</span></span>`;
+  return `<span class="tile" ${recolor ? `data-palette="color-only" style="--package-accent:${l.design.cap}"` : ""}><img src="${original}" alt="${esc(k)} · 초안1 원본 형태와 재질" loading="lazy" style="${recolor ? tintCss(l) : ""}">${recolor ? `<img class="palette-point" src="${original}" alt="" aria-hidden="true" loading="lazy" style="filter:url(#pkg-point-${packageIndex(l.herb)});clip-path:url(#pkg-clip-${t});"><img class="palette-logo" src="${original}" alt="" aria-hidden="true" loading="lazy" style="filter:url(#pkg-ink-${t === "cream" ? "light" : "dark"}-${packageIndex(l.herb)});clip-path:url(#pkg-logo-${t});">` : ""}<span class="tl">${esc(k)}</span></span>`;
 };
 const tiles = (l, mode = designMode) => l.lineup.map(([t, k]) => tileHtml(l, t, k, mode)).join("");
 const tileBg = l => `background:linear-gradient(180deg, #F5F7F7, #FFFFFF)`;
