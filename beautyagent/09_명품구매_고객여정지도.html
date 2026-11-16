@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>명품 구매 고객여정지도</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* 파스텔 톤 */
+    --paper: #fbf8f4;
+    --card: #ffffff;
+    --ink: #3b3a4a;
+    --muted: #8a8698;
+    --line: #ece5ef;
+    --green: #5a9478;
+    --green-soft: #dff1e6;
+    --ochre: #c98e55;
+    --ochre-soft: #fcebd9;
+    --red: #d07474;
+    --red-soft: #fbe3e3;
+    --violet: #8676c2;
+    --violet-soft: #ece7fa;
+    --stage: #e8e3ee;
+    /* 단계 화살표 파스텔 */
+    --p1: #cfe9da; --p2: #d5e6f6; --p3: #e2dcf6; --p4: #fde3c9; --p5: #f9d7e2; --p6: #f4e6ba; --pm: #f7caca;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--stage); }
+  body {
+    font-family: "Noto Sans KR", system-ui, sans-serif;
+    color: var(--ink);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+
+  /* 1280×720 고정 캔버스를 화면에 맞춰 축소 */
+  #deck { position: fixed; inset: 0; display: grid; place-items: center; }
+  .slide {
+    position: absolute;
+    width: 1280px; height: 720px;
+    background: var(--paper);
+    padding: 26px 40px 0;
+    display: none;
+    flex-direction: column;
+    transform-origin: center center;
+    overflow: hidden;
+  }
+  .slide.active { display: flex; }
+
+  .head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px; gap: 24px; }
+  .kicker { font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--ochre); margin-bottom: 4px; }
+  h1 {
+    font-family: "Noto Serif KR", serif;
+    font-size: 27px; font-weight: 900; line-height: 1.25; letter-spacing: -0.01em;
+  }
+  h1 em { font-style: normal; color: var(--green); }
+  .sub { font-size: 12.5px; color: var(--muted); margin-top: 4px; }
+  .legend { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px 10px; font-size: 11px; color: var(--muted); max-width: 420px; }
+
+  .footer {
+    position: absolute; left: 40px; right: 40px; bottom: 12px;
+    display: flex; justify-content: space-between; gap: 20px;
+    font-size: 10.5px; color: var(--muted);
+  }
+
+  /* 태그 */
+  .t { display: inline-block; font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 999px; white-space: nowrap; vertical-align: 1px; }
+  .t.f { background: var(--green-soft); color: var(--green); }
+  .t.i { background: var(--ochre-soft); color: var(--ochre); }
+  .t.a { background: var(--violet-soft); color: var(--violet); }
+  .t.u { background: #e9e4da; color: #5b574f; }
+  sup.c { font-size: 9.5px; font-weight: 700; color: var(--green); margin-left: 1px; }
+  .h { color: var(--ochre); font-weight: 700; font-size: 10px; }
+
+  /* ── 여정지도 그리드 ── */
+  .map { display: grid; column-gap: 6px; row-gap: 5px; flex: 1; min-height: 0; margin-bottom: 34px; align-content: start; }
+  .map.c5 { grid-template-columns: 88px repeat(5, 1fr); }
+  .map.c6 { grid-template-columns: 88px repeat(6, 1fr); }
+  .rl {
+    font-size: 11.5px; font-weight: 900; color: var(--muted); letter-spacing: .02em;
+    display: flex; flex-direction: column; justify-content: center; gap: 3px; line-height: 1.2;
+    border-right: 2px solid var(--line); padding-right: 6px;
+  }
+  .rl .t { align-self: flex-start; }
+
+  /* 단계 화살표 */
+  .chev {
+    position: relative; height: 46px; display: flex; align-items: center; gap: 8px;
+    padding: 0 18px 0 22px; color: var(--ink); background: var(--p1);
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%, 14px 50%);
+  }
+  .chev.first { clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%); padding-left: 12px; }
+  .chev .n { font-family: "Noto Serif KR", serif; font-weight: 900; font-size: 18px; color: rgba(59,58,74,.55); }
+  .chev b { font-size: 14px; font-weight: 900; line-height: 1.15; }
+  .chev small { display: block; font-size: 10px; font-weight: 500; opacity: .7; }
+  .chev.s2 { background: var(--p2); } .chev.s3 { background: var(--p3); }
+  .chev.s4 { background: var(--p4); } .chev.s5 { background: var(--p5); } .chev.s6 { background: var(--p6); }
+  .chev.money { background: var(--pm); }
+
+  .cell {
+    background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+    padding: 6px 8px; font-size: 11.5px; line-height: 1.42; color: #4a4859;
+  }
+  .cell ul { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+  .cell li { padding-left: 9px; position: relative; }
+  .cell li::before { content: "·"; position: absolute; left: 1px; font-weight: 900; color: var(--muted); }
+  .cell b { font-weight: 700; color: var(--ink); }
+  .cell.ch { display: flex; flex-wrap: wrap; gap: 3px; align-content: flex-start; padding: 5px 6px; }
+  .cell.ch span { font-size: 10.5px; padding: 1px 6px; border-radius: 5px; background: var(--green-soft); color: var(--green); font-weight: 500; }
+  .cell.ch span.off { background: var(--ochre-soft); color: #a26c38; }
+  .cell.q { font-size: 11.5px; font-style: normal; color: var(--ink); font-weight: 500; background: transparent; border: 1px dashed var(--line); }
+  .cell.pain { background: #fdf3f3; border-color: #f4d9d9; }
+  .cell.opp { background: #f0f8f3; border-color: #d4ebdd; }
+  .cell.hot { box-shadow: inset 0 0 0 2px var(--red); }
+
+  /* 감정 곡선 */
+  .emo { position: relative; height: 150px; background: linear-gradient(to bottom, #e8f5ee 0%, #ffffff 50%, #fcebee 100%); border: 1px solid var(--line); border-radius: 8px; }
+  .emo svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .emo .mid { position: absolute; left: 0; right: 0; top: 50%; border-top: 1px dashed #ddd3e6; }
+  .dot { position: absolute; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; border: 2.5px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
+  .dl { position: absolute; transform: translateX(-50%); font-size: 10.5px; font-weight: 700; white-space: nowrap; padding: 0 4px; border-radius: 4px; background: rgba(255,255,255,.85); }
+  .emo-axis { display: flex; flex-direction: column; justify-content: space-between; font-size: 10px; color: var(--muted); font-weight: 700; padding: 6px 0; }
+
+  /* ── 비교 ── */
+  .cmp { display: grid; grid-template-columns: 1fr 392px; gap: 14px; flex: 1; min-height: 0; margin-bottom: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th, td { text-align: left; padding: 9.5px 10px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.42; }
+  th { font-size: 11px; color: var(--muted); font-weight: 900; }
+  td:first-child { font-weight: 900; color: var(--muted); width: 92px; font-size: 11px; }
+  td b { color: var(--ink); }
+  .tw { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 4px 10px; }
+  .cmp .tw table { height: 100%; }
+  th.u, td.u { background: rgba(208,116,116,.06); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+  .card h3 { font-size: 13.5px; font-weight: 900; }
+  .card p { font-size: 11.5px; line-height: 1.45; color: #4e4c5e; }
+  .cmp-emo { position: relative; height: 250px; background: linear-gradient(to bottom, #e8f5ee 0%, #ffffff 50%, #fcebee 100%); border: 1px solid var(--line); border-radius: 8px; margin: 0 4px 0 22px; }
+  .cmp-emo svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .cmp-emo .mid { position: absolute; left: 0; right: 0; top: 50%; border-top: 1px dashed #ddd3e6; }
+  .yl { position: absolute; left: -20px; font-size: 10px; color: var(--muted); font-weight: 700; }
+  .key { display: flex; gap: 12px; font-size: 11px; font-weight: 700; }
+  .key i { display: inline-block; width: 18px; height: 3px; border-radius: 2px; vertical-align: 3px; margin-right: 4px; }
+  .ins { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .ins .card { padding: 8px 11px; gap: 4px; }
+  .ins .card p { font-size: 11px; }
+
+  /* 표지 */
+  .cover { background: linear-gradient(135deg, #e4ddf6 0%, #f9e1ea 55%, #fdeedb 100%); color: var(--ink); justify-content: center; padding: 0 80px; }
+  .cover .kicker { color: var(--violet); font-size: 15px; margin-bottom: 12px; }
+  .cover h1 { font-size: 52px; margin-bottom: 26px; }
+  .cover h1 em { color: var(--violet); }
+  .cover .q { font-size: 19px; line-height: 1.6; max-width: 860px; border-left: 4px solid #c9bdf0; padding-left: 22px; color: #5d5a6e; }
+  .cover .meta { position: absolute; left: 80px; bottom: 50px; font-size: 13px; color: var(--muted); }
+  .cover .route { position: absolute; right: 80px; top: 70px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #5d5a6e; text-align: right; }
+  .cover .route b { color: var(--violet); }
+  .cover .seal {
+    position: absolute; right: 80px; bottom: 50px;
+    width: 120px; height: 120px; border-radius: 50%;
+    border: 3px solid #c9bdf0; color: var(--violet); background: rgba(255,255,255,.45);
+    display: grid; place-items: center; text-align: center;
+    font-family: "Noto Serif KR", serif; font-size: 19px; font-weight: 900; line-height: 1.3;
+    transform: rotate(-8deg);
+  }
+
+  /* 출처 */
+  .src td:first-child { width: 34px; color: var(--green); }
+  .src td { font-size: 11px; padding: 5px 8px; }
+  .src th { padding: 5px 8px; }
+  .src td.g { white-space: nowrap; }
+  .todo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  .todo ul { padding-left: 1.1em; display: flex; flex-direction: column; gap: 3px; font-size: 11.5px; line-height: 1.45; }
+
+  /* 진행 표시와 조작 */
+  #progress { position: fixed; left: 0; bottom: 0; height: 4px; background: #c9bdf0; transition: width .25s; z-index: 5; }
+  #nav { position: fixed; right: 16px; bottom: 14px; z-index: 6; display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--muted); }
+  #nav button { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--line); background: #fff; color: var(--ink); font-size: 18px; cursor: pointer; }
+  #nav button:hover { background: var(--violet-soft); }
+
+  @media print {
+    @page { size: 1280px 720px; margin: 0; }
+    html, body { background: none; overflow: visible; height: auto; }
+    #deck { position: static; display: block; }
+    .slide { display: flex !important; position: relative; transform: none !important; page-break-after: always; break-after: page; }
+    #nav, #progress { display: none; }
+  }
+</style>
+</head>
+<body>
+<div id="deck">
+
+<!-- 1. 표지 -->
+<section class="slide cover">
+  <div class="route">
+    <span><b>A</b> 내가 정의한 흐름 · 5단계</span>
+    <span><b>B</b> 일반 명품 소비자 여정 · 6단계</span>
+    <span><b>C</b> 두 여정 비교 · 시사점</span>
+  </div>
+  <div class="kicker">실습 · 고객여정지도 (Customer Journey Map)</div>
+  <h1>명품 한 개를 사기까지,<br>나와 일반 소비자는 어디서 갈라지는가</h1>
+  <p class="q">서치 → 브랜드 후보 → 가격 비교 → 통장 잔고 → 오프라인 구매.<br>
+  내 구매 흐름을 지도로 그리고, 공개 자료로 본 일반 명품 소비자 여정과 비교해 봐요.</p>
+  <div class="meta">2026.11.09 · MEJ · 근거 자료 확인일 2026-11-09</div>
+  <div class="seal">旅程<br>지도</div>
+</section>
+
+<!-- 2. 사용자 정의 여정 -->
+<section class="slide">
+  <div class="head">
+    <div>
+      <div class="kicker">A · 내가 정의한 명품 구매 흐름</div>
+      <h1>검색에서 시작해 <em>통장을 거쳐</em> 매장에서 끝나는 5단계</h1>
+      <p class="sub">돈을 확인하는 단계가 두 번(가격 비교·잔고 확인) 들어가는 '계획형' 구매 · 구매 후 단계는 없음</p>
+    </div>
+    <div class="legend">
+      <span><span class="t u">사용자 정의</span> 내가 정한 흐름</span>
+      <span><span class="t i">해석</span> 자료 없이 추정</span>
+      <span><span class="t a">아이디어</span> 제안</span>
+    </div>
+  </div>
+
+  <div class="map c5">
+    <div class="rl">단계</div>
+    <div class="chev first"><span class="n">1</span><b>상품 서치<small>무엇을 살까</small></b></div>
+    <div class="chev s2"><span class="n">2</span><b>브랜드 후보군 선정<small>어디 걸 살까</small></b></div>
+    <div class="chev s3"><span class="n">3</span><b>가격 비교<small>어디서 살까</small></b></div>
+    <div class="chev money"><span class="n">4</span><b>통장 잔고 확인<small>살 수 있나</small></b></div>
+    <div class="chev s5"><span class="n">5</span><b>오프라인 매장 구매<small>직접 보고 산다</small></b></div>
+
+    <div class="rl">고객 행동<span class="t u">사용자 정의</span></div>
+    <div class="cell"><ul><li>사고 싶은 품목(가방·지갑 등) 키워드 검색</li><li>사진·착용 후기 저장</li></ul></div>
+    <div class="cell"><ul><li>3~4개 브랜드로 좁힘</li><li>디자인·소재·브랜드 이미지 비교</li></ul></div>
+    <div class="cell"><ul><li>공식몰·백화점·면세·해외 가격 비교</li><li>중고 시세까지 확인</li></ul></div>
+    <div class="cell hot"><ul><li>잔고·카드 한도·할부 계산</li><li>이번 달 지출과 맞춰 봄</li></ul></div>
+    <div class="cell"><ul><li>매장 방문, 실물 확인·착용</li><li>결제, 포장 받아 귀가</li></ul></div>
+
+    <div class="rl">접점(채널)<span class="t u">사용자 정의</span></div>
+    <div class="cell ch"><span>포털 검색</span><span>인스타그램</span><span>유튜브 리뷰</span></div>
+    <div class="cell ch"><span>브랜드 공식몰</span><span>커뮤니티 후기</span><span class="off">지인</span></div>
+    <div class="cell ch"><span>공식몰 가격</span><span>면세점</span><span>가격비교</span><span>중고 앱</span></div>
+    <div class="cell ch"><span>은행 앱</span><span>카드 앱</span><span>가계부</span></div>
+    <div class="cell ch"><span class="off">백화점·부티크</span><span class="off">판매 직원</span><span class="off">쇼핑백·포장</span></div>
+
+    <div class="rl">감정 곡선<span class="t i">해석</span></div>
+    <div class="emo" style="grid-column: 2 / -1" data-n="5"
+         data-pts='[[0,4,"설렘"],[1,3.4,"기대 + 고민"],[2,2.4,"계산 · 피로"],[3,1.4,"불안 · 죄책감"],[4,4.8,"만족 피크"]]'></div>
+
+    <div class="rl">생각<span class="t i">해석</span></div>
+    <div class="cell q">"이런 거 하나 갖고 싶다"</div>
+    <div class="cell q">"어느 브랜드가 나한테 맞을까?"</div>
+    <div class="cell q">"어디서 사야 덜 손해일까?"</div>
+    <div class="cell q">"이번 달 써도 괜찮을까…"</div>
+    <div class="cell q">"직접 보니 사길 잘했다"</div>
+
+    <div class="rl">페인포인트<span class="t i">해석</span></div>
+    <div class="cell pain"><ul><li>정보가 너무 많음</li><li>광고·협찬 구분이 어려움</li></ul></div>
+    <div class="cell pain"><ul><li>브랜드 비교 기준이 모호</li><li>후기마다 평가가 다름</li></ul></div>
+    <div class="cell pain"><ul><li>채널마다 가격이 다름</li><li>가격 인상 시점·정품 여부 불안</li></ul></div>
+    <div class="cell pain"><ul><li><b>큰 지출 부담</b>이 구매 의지를 꺾음</li><li>스스로 합리화가 필요</li></ul></div>
+    <div class="cell pain"><ul><li>헛걸음(재고 없음)</li><li>매장 대기</li></ul></div>
+
+    <div class="rl">기회<span class="t a">아이디어</span></div>
+    <div class="cell opp"><ul><li>용도·스타일 기준 큐레이션</li></ul></div>
+    <div class="cell opp"><ul><li>브랜드 비교표 (디자인·소재·가치 유지)</li></ul></div>
+    <div class="cell opp"><ul><li>채널별 실구매가 + 인상 이력 한눈에</li></ul></div>
+    <div class="cell opp"><ul><li>예산 안 대안 제시 (사이즈·라인)</li><li>목표 저축 플랜</li></ul></div>
+    <div class="cell opp"><ul><li>방문 전 재고 확인·방문 예약</li></ul></div>
+  </div>
+
+  <div class="footer"><span>행동·접점은 사용자가 정의한 흐름을 풀어 쓴 것 · 감정·생각·페인포인트는 자료 근거 없는 [해석], 기회는 [아이디어]</span><span>2</span></div>
+</section>
+
+<!-- 3. 일반 소비자 여정 -->
+<section class="slide">
+  <div class="head">
+    <div>
+      <div class="kicker">B · 일반적인 명품 구매 소비자의 여정 (공개 자료 기반)</div>
+      <h1>SNS 자극에서 시작해 <em>공유·재판매로 다시 도는</em> 6단계</h1>
+      <p class="sub">한국에서 첫 명품은 20대 사회초년생(45.6%)·대학생(35.8%) 때가 많다는 응답<sup class="c">[5]</sup> · 감정 곡선은 구매 단계 안에서 '대기 저점 → 구매 피크'로 출렁임</p>
+    </div>
+    <div class="legend">
+      <span><sup class="c">[n]</sup> 번호 달린 문장 = <span class="t f">사실</span></span>
+      <span><span class="h">◇</span> = <span class="t i">해석</span></span>
+      <span><span class="t a">아이디어</span> 제안</span>
+    </div>
+  </div>
+
+  <div class="map c6">
+    <div class="rl">단계</div>
+    <div class="chev first"><span class="n">1</span><b>인지·자극<small>보고 반한다</small></b></div>
+    <div class="chev s2"><span class="n">2</span><b>탐색<small>온라인에서 찾는다</small></b></div>
+    <div class="chev s3"><span class="n">3</span><b>비교·고민<small>가치를 따진다</small></b></div>
+    <div class="chev s4"><span class="n">4</span><b>구매<small>매장·대기·오픈런</small></b></div>
+    <div class="chev s5"><span class="n">5</span><b>사용·공유<small>보여준다</small></b></div>
+    <div class="chev s6"><span class="n">6</span><b>재판매·재구매<small>다시 돈다</small></b></div>
+
+    <div class="rl">고객 행동<span class="t f">사실</span></div>
+    <div class="cell"><ul><li>SNS·인플루언서가 가장 큰 영향 경로<sup class="c">[1]</sup></li><li>80% 이상이 SNS로 브랜드·또래와 교류<sup class="c">[1]</sup></li></ul></div>
+    <div class="cell"><ul><li>구매 4건 중 3건이 온라인에서 본 것의 영향<sup class="c">[2]</sup></li><li>온라인 조사→매장 구매 등 옴니채널 약 50%<sup class="c">[1]</sup></li></ul></div>
+    <div class="cell"><ul><li>젊은 층 절반 이상이 리셀 가치를 고려<sup class="c">[1]</sup></li><li>되팔 가능성까지 따져 보고 구매<sup class="c">[3]</sup></li></ul></div>
+    <div class="cell"><ul><li>마지막 구매의 약 80%가 매장<sup class="c">[1]</sup></li><li>인기 제품은 오픈런·줄서기<sup class="c">[3][4]</sup></li></ul></div>
+    <div class="cell"><ul><li>3분의 2가 매달 사진·리뷰 등 SNS 콘텐츠 생산<sup class="c">[2]</sup></li></ul></div>
+    <div class="cell"><ul><li>45%가 중고 시장 참여<sup class="c">[1]</sup></li><li>판매 이유 21%는 새 명품 구매 자금<sup class="c">[1]</sup></li></ul></div>
+
+    <div class="rl">접점(채널)<span class="t f">사실</span></div>
+    <div class="cell ch"><span>인스타그램</span><span>인플루언서</span><span>셀럽 앰배서더<sup class="c">[6]</sup></span><span class="off">잡지(유럽·미국)<sup class="c">[1]</sup></span></div>
+    <div class="cell ch"><span>공식몰·멀티브랜드몰<sup class="c">[1]</sup></span><span>SNS·영상<sup class="c">[2]</sup></span></div>
+    <div class="cell ch"><span>중고·리셀 시세<sup class="c">[3]</sup></span><span>가격 인상 소식<sup class="c">[3]</sup></span></div>
+    <div class="cell ch"><span class="off">단일 브랜드 매장(판매 30%)<sup class="c">[1]</sup></span><span class="off">백화점<sup class="c">[4]</sup></span></div>
+    <div class="cell ch"><span>SNS 게시<sup class="c">[2]</sup></span><span>해시태그<sup class="c">[2]</sup></span></div>
+    <div class="cell ch"><span>중고 플랫폼<sup class="c">[1]</sup></span><span class="off">매장 재방문(신상·한정판)<sup class="c">[1]</sup></span></div>
+
+    <div class="rl">감정 곡선<span class="t i">해석</span></div>
+    <div class="emo" style="grid-column: 2 / -1" data-n="6"
+         data-pts='[[0,3.6,"동경"],[1,4,"기대"],[2,2.5,"고민 · 조급"],[2.8,1.6,"대기 · 오픈런"],[3.25,5,"구매 순간 피크"],[4,4.4,"자부심"],[5,3.3,"다음 구매 고민"]]'></div>
+
+    <div class="rl">생각<span class="t i">해석</span></div>
+    <div class="cell q">"저거 예쁘다, 나도…"</div>
+    <div class="cell q">"실물은 어떨까?"</div>
+    <div class="cell q">"오르기 전에 사야 하나?"</div>
+    <div class="cell q">"드디어 내 것!"</div>
+    <div class="cell q">"잘 샀다고 인정받고 싶다"</div>
+    <div class="cell q">"팔고 다음 걸 살까?"</div>
+
+    <div class="rl">페인포인트</div>
+    <div class="cell pain"><ul><li><span class="h">◇</span> 내 취향인지 남의 시선인지 헷갈림</li></ul></div>
+    <div class="cell pain"><ul><li><span class="h">◇</span> 온라인 정보와 실물 차이, 재고 모름</li></ul></div>
+    <div class="cell pain"><ul><li>잦은 가격 인상·수량 제한<sup class="c">[3]</sup></li></ul></div>
+    <div class="cell pain hot"><ul><li>새벽 줄서기, 줄의 상당수가 리셀러라는 증언<sup class="c">[4]</sup></li><li>일부 제품은 구매 이력 조건<sup class="c">[3]</sup></li></ul></div>
+    <div class="cell pain"><ul><li><span class="h">◇</span> 관리·보관 부담</li></ul></div>
+    <div class="cell pain"><ul><li>인기 없는 제품은 리셀가가 정가 아래<sup class="c">[3][4]</sup></li></ul></div>
+
+    <div class="rl">기회<span class="t a">아이디어</span></div>
+    <div class="cell opp"><ul><li>동경을 '내 이야기'로 바꾸는 콘텐츠</li></ul></div>
+    <div class="cell opp"><ul><li>온라인→매장 재고·예약 연결</li></ul></div>
+    <div class="cell opp"><ul><li>가치 유지·희소성 근거를 투명하게</li></ul></div>
+    <div class="cell opp"><ul><li>줄 대신 예약·멤버십 경험</li></ul></div>
+    <div class="cell opp"><ul><li>언박싱·관리 서비스로 공유 유도</li></ul></div>
+    <div class="cell opp"><ul><li>보상 판매·재구매 혜택으로 순환 고정</li></ul></div>
+  </div>
+
+  <div class="footer"><span>[1] BCG·Altagamma 2019 pp.4–6 · [2] McKinsey 2015 · [3] 한국경제 2025.06 · [4] 머니투데이 2023.02 · [5] 세계일보 2023.11 · [6] SBS Biz 2023.01 · 상세는 5쪽</span><span>3</span></div>
+</section>
+
+<!-- 4. 비교 -->
+<section class="slide">
+  <div class="head">
+    <div>
+      <div class="kicker">C · 두 여정 비교</div>
+      <h1>나는 <em>'얼마인가'</em>로 고르고, 일반 소비자는 <em>'무엇을 갖는가'</em>로 고른다</h1>
+      <p class="sub">같은 '온라인에서 보고 매장에서 산다' 구조지만, 결정 요인과 감정이 가장 낮은 곳이 달라요</p>
+    </div>
+    <div class="legend">
+      <span><span class="t u">A 나</span> 사용자 정의</span>
+      <span><span class="t f">B 일반</span> 공개 자료 [n]</span>
+      <span><span class="t i">해석</span> 비교 판단</span>
+    </div>
+  </div>
+
+  <div class="cmp">
+    <div class="tw">
+      <table>
+        <thead><tr><th>비교 항목</th><th class="u">A · 내가 정의한 흐름</th><th>B · 일반 명품 소비자</th></tr></thead>
+        <tbody>
+          <tr><td>단계 수·순서</td><td class="u"><b>5단계, 일직선.</b> 매장 결제에서 끝남</td><td><b>6단계, 순환.</b> 구매 뒤 공유·재판매가 다음 구매로 이어짐<sup class="c">[1]</sup></td></tr>
+          <tr><td>출발점</td><td class="u">필요한 물건을 <b>내가 검색</b> (능동)</td><td>SNS·인플루언서 노출로 <b>자극</b>받음<sup class="c">[1]</sup></td></tr>
+          <tr><td>결정 요인</td><td class="u"><b>가격·예산.</b> 5단계 중 2단계(가격 비교·잔고)가 돈 확인</td><td><b>브랜드 경험·희소성·리셀 가치.</b> 신상·한정판·매장 경험이 매장 구매 이유<sup class="c">[1]</sup>, 되팔 가치 고려<sup class="c">[1][3]</sup></td></tr>
+          <tr><td>채널</td><td class="u">온라인 조사 → 오프라인 구매 (+ 은행·카드 앱)</td><td>온라인 조사 → 매장 구매가 기본<sup class="c">[1][2]</sup> + 중고 플랫폼·SNS 게시<sup class="c">[1][2]</sup></td></tr>
+          <tr><td>감정 저점</td><td class="u"><b>통장 잔고 확인</b> · 지출 부담 <span class="t i">해석</span></td><td><b>비교·대기</b> · 가격 인상, 오픈런 <span class="t i">해석</span></td></tr>
+          <tr><td>감정 피크</td><td class="u">매장 구매 순간 하나 <span class="t i">해석</span></td><td>구매 순간 → 공유로 <b>피크가 길게 유지</b> <span class="t i">해석</span></td></tr>
+          <tr><td>빠진 것</td><td class="u">구매 후 사용·공유·재판매 단계</td><td>예산·잔고 확인 단계 (자료에서 독립 단계로 안 보임) <span class="t i">해석</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:8px; min-height:0">
+      <div class="card" style="flex:1">
+        <h3>감정 곡선 겹쳐 보기 <span class="t i">해석</span></h3>
+        <div class="key"><span><i style="background:var(--red)"></i>A 나 (5단계)</span><span><i style="background:var(--green)"></i>B 일반 (6단계)</span></div>
+        <div class="cmp-emo" id="cmpEmo"><span class="yl" style="top:2px">😊</span><span class="yl" style="bottom:2px">😟</span></div>
+        <p style="font-size:10.5px; color:var(--muted)">가로축 = 여정 진행(시작→끝)으로 맞춘 비교. A는 4단계 '잔고'에서, B는 4단계 '대기'에서 가장 낮아요.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ins" style="margin-bottom:40px;">
+    <div class="card"><h3><span class="t i">해석</span> 나는 '합리적 계획형'</h3><p>돈 확인이 두 번 들어가고 저점도 잔고라서, <b>예산 안에서 확신을 주는 정보</b>가 결정을 앞당겨요.</p></div>
+    <div class="card"><h3><span class="t i">해석</span> 구매는 끝이 아니다</h3><p>일반 여정은 공유·재판매가 다음 구매의 자금·동기가 돼요<sup class="c">[1][2]</sup>. 내 지도에도 <b>구매 후 단계</b>를 붙여 볼 만해요.</p></div>
+    <div class="card"><h3><span class="t a">아이디어</span> 우리 한방 뷰티 브랜드라면</h3><p>가격을 투명하게(A의 저점 완화) + 약전골목 매장 방문을 피크로 + 구매 후 공유·재방문 장치(B의 순환).</p></div>
+  </div>
+
+  <div class="footer"><span>A는 사용자 정의 흐름, B는 공개 자료 [1]~[6] 기반 · 감정 곡선·비교 판단은 [해석]</span><span>4</span></div>
+</section>
+
+<!-- 5. 출처 -->
+<section class="slide">
+  <div class="head">
+    <div>
+      <div class="kicker">출처 · 확인 필요</div>
+      <h1>근거 자료 <em>6건</em> · 모두 🟡 등급</h1>
+      <p class="sub">확인일 2026-11-09 · 정부·학술(🟢) 자료로 일반 여정을 뒷받침하는 국내 정량 조사는 아직 못 찾았어요</p>
+    </div>
+  </div>
+
+  <div class="tw src">
+    <table>
+      <thead><tr><th>#</th><th>자료</th><th>쓴 내용 (쪽)</th><th>등급</th></tr></thead>
+      <tbody>
+        <tr><td>[1]</td><td>BCG·Altagamma, <i>True-Luxury Global Consumer Insight – Summary of the BCG-Altagamma 2019 Study</i>, 2019.04 (응답자 1만 명 이상, 한국 포함)<br><a href="https://altagamma.it/media/source/Summary%20True-Luxury%20Global%20Consumer%20Insight%202019_vFinal_Sent.pdf">altagamma.it/…/Summary True-Luxury Global Consumer Insight 2019_vFinal_Sent.pdf</a></td><td>중고 참여 45%·판매 이유 21%·리셀 가치 고려(p.4) · SNS·인플루언서 최대 영향, 80%+ SNS 교류, 매장 ~80%·온라인 ~20%, 옴니채널 ~50%(p.5) · 단일 브랜드 매장 30%, 매장 구매 이유(p.6)</td><td class="g">🟡 기업 보고서</td></tr>
+        <tr><td>[2]</td><td>McKinsey (N. Remy 외), "Digital inside: Get wired for the ultimate luxury experience", 2015.08.01 (약 7,000명, 8개 지역)<br><a href="https://www.mckinsey.com/capabilities/growth-marketing-and-sales/our-insights/digital-inside-get-wired-for-the-ultimate-luxury-experience">mckinsey.com/…/digital-inside-get-wired-for-the-ultimate-luxury-experience</a></td><td>구매 4건 중 3건이 온라인 영향 · 3분의 2가 매달 SNS 콘텐츠 생산 · 브랜드 게시물 1개당 소비자 해시태그 게시물 평균 1만 개 (웹 기사, 쪽수 없음)</td><td class="g">🟡 기업 보고서</td></tr>
+        <tr><td>[3]</td><td>한국경제 안혜원, "'제니 백' 웃돈 얼마길래…샤넬 매장 '오픈런' 재등장", 2025.06.12<br><a href="https://v.daum.net/v/YKGg4ksdtc">v.daum.net/v/YKGg4ksdtc</a> (다음 재게재본)</td><td>오픈런은 일부 프리미엄 제품에 한정 · 가격 인상·수량 제한·구매 이력 조건 · 되팔 가능성까지 따져 구매 · 일부 제품 리셀가 정가 이하</td><td class="g">🟡 언론</td></tr>
+        <tr><td>[4]</td><td>머니투데이 양윤우·김미루, "'오픈런 텐트' 사라진 백화점…'명품 안사요' 리셀러들 울상[르포]", 2023.02.15<br><a href="https://www.mt.co.kr/society/2023/02/15/2023021513582780858">mt.co.kr/society/2023/02/15/2023021513582780858</a></td><td>백화점 오픈런·새벽 대기 증언, 줄의 상당수가 리셀러라는 증언, 인기 없는 제품은 리셀 부진</td><td class="g">🟡 언론</td></tr>
+        <tr><td>[5]</td><td>세계일보 김지호, "명품업계 '큰손' 대한민국, 명품 처음 접하는 연령층은 1020세대가 가장 많았다", 2023.11.16 (엠브레인 트렌드모니터, 19~59세 1,000명)<br><a href="https://www.segye.com/newsView/20231115523173">segye.com/newsView/20231115523173</a></td><td>첫 명품 접하는 시기: 20대 사회초년생 45.6%·대학생 35.8%(중복응답) · 명품 착용자를 쉽게 알아봄 71.6%</td><td class="g">🟡 언론(조사 인용)</td></tr>
+        <tr><td>[6]</td><td>SBS Biz 임선우, "명품계 '큰손'은 한국인?…'지난해 명품소비 세계 1위'", 2023.01.16 (CNBC·모건스탠리 인용)<br><a href="https://biz.sbs.co.kr/amp/article/20000098556">biz.sbs.co.kr/amp/article/20000098556</a></td><td>2022년 한국 1인당 명품 소비 325달러 세계 1위 · 셀럽 앰배서더 사례 · 지위 과시 욕구 분석</td><td class="g">🟡 언론</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="todo">
+    <div class="card">
+      <h3><span class="t i">확인 필요</span> 아직 모르는 것</h3>
+      <ul>
+        <li>❗충돌 2022년 중국 1인당 명품 소비: 50달러(SBS Biz [6]) vs 55달러(다른 보도) → 모건스탠리 원문 미확인</li>
+        <li>한국 소비자의 명품 구매 채널별 비중(매장·공식몰·중고·직구) 정량 조사 못 찾음</li>
+        <li>[1][2]는 2015·2019년 글로벌 자료 → 최신 한국 자료로 교체 필요</li>
+        <li>예산·잔고 확인이 일반 여정의 독립 단계인지 뒷받침할 자료 없음</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="t f">교차확인</span> 2곳 이상에서 확인한 것</h3>
+      <ul>
+        <li>온라인 조사 → 매장 구매 구조: [1] 옴니채널 ~50%·매장 ~80% + [2] 온라인 영향 75%</li>
+        <li>오픈런·대기: [3](2025) + [4](2023) — 2023년엔 줄이 절반 이하로 줄었다는 증언, 2025년엔 일부 제품만 재등장</li>
+        <li>리셀 가치 고려: [1] 젊은 층 절반 이상 + [3] 소비자 인터뷰</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer"><span>등급 기준: CLAUDE.md · prompts/source-grading-prompt.md · 🔴 자료(블로그·위키·AI 답변)는 쓰지 않음</span><span>5</span></div>
+</section>
+
+</div>
+
+<div id="progress"></div>
+<div id="nav"><button id="prev" aria-label="이전">‹</button><span id="count"></span><button id="next" aria-label="다음">›</button></div>
+
+<script>
+  /* 감정 곡선: 값 1(낮음)~5(높음) → 부드러운 곡선 + 점 + 라벨 */
+  const COLORS = v => v >= 4 ? '#5a9478' : v >= 3 ? '#8aa95e' : v >= 2 ? '#c98e55' : '#d07474';
+  const PAD = 0.16; // 위아래 여백 비율
+  const yOf = v => (PAD + (1 - (v - 1) / 4) * (1 - 2 * PAD)) * 100;
+
+  function pathFor(pts) { // pts: [[x%, y%]] → catmull-rom 곡선 (viewBox 0 0 100 100)
+    let d = `M ${pts[0][0]} ${pts[0][1]}`;
+    for (let k = 0; k < pts.length - 1; k++) {
+      const p0 = pts[k - 1] || pts[k], p1 = pts[k], p2 = pts[k + 1], p3 = pts[k + 2] || p2;
+      const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+      const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+      d += ` C ${c1[0]} ${c1[1]}, ${c2[0]} ${c2[1]}, ${p2[0]} ${p2[1]}`;
+    }
+    return d;
+  }
+  function draw(box, series, opts = {}) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 100 100');
+    svg.setAttribute('preserveAspectRatio', 'none');
+    box.insertAdjacentHTML('afterbegin', '<div class="mid"></div>');
+    box.appendChild(svg);
+    series.forEach(s => {
+      const xy = s.pts.map(([i, v]) => [(i + 0.5) / s.n * 100, yOf(v)]);
+      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      p.setAttribute('d', pathFor(xy));
+      p.setAttribute('fill', 'none');
+      p.setAttribute('stroke', s.color || '#2a2f2b');
+      p.setAttribute('stroke-width', s.width || 3);
+      p.setAttribute('stroke-linecap', 'round');
+      p.setAttribute('vector-effect', 'non-scaling-stroke');
+      if (s.dash) p.setAttribute('stroke-dasharray', s.dash);
+      svg.appendChild(p);
+      s.pts.forEach(([i, v, label], k) => {
+        const x = xy[k][0], y = xy[k][1];
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        dot.style.left = x + '%'; dot.style.top = y + '%';
+        dot.style.background = s.dotColor || COLORS(v);
+        box.appendChild(dot);
+        if (label && !s.noLabel) {
+          const l = document.createElement('div');
+          l.className = 'dl';
+          l.textContent = label;
+          l.style.left = x + '%';
+          l.style.color = COLORS(v);
+          if (v >= 3) l.style.top = `calc(${y}% + 8px)`; else l.style.bottom = `calc(${100 - y}% + 8px)`;
+          box.appendChild(l);
+        }
+      });
+    });
+  }
+  document.querySelectorAll('.emo[data-pts]').forEach(box => {
+    draw(box, [{ n: +box.dataset.n, pts: JSON.parse(box.dataset.pts), color: '#a99fd6' }]);
+  });
+  draw(document.getElementById('cmpEmo'), [
+    { n: 6, color: '#5a9478', dotColor: '#5a9478', noLabel: true,
+      pts: [[0,3.6],[1,4],[2,2.5],[2.8,1.6],[3.25,5],[4,4.4],[5,3.3]] },
+    { n: 5, color: '#d07474', dotColor: '#d07474', noLabel: true,
+      pts: [[0,4],[1,3.4],[2,2.4],[3,1.4],[4,4.8]] },
+  ]);
+  // 비교 곡선 주석
+  (() => {
+    const box = document.getElementById('cmpEmo');
+    const note = (x, v, txt, color, above) => {
+      const l = document.createElement('div');
+      l.className = 'dl'; l.textContent = txt; l.style.left = x + '%'; l.style.color = color;
+      const y = yOf(v);
+      if (above) l.style.bottom = `calc(${100 - y}% + 8px)`; else l.style.top = `calc(${y}% + 8px)`;
+      box.appendChild(l);
+    };
+    note(70, 1.4, 'A 잔고', '#d07474', false);
+    note(3.8 / 6 * 100 - 5, 1.6, 'B 대기', '#5a9478', true);
+    note(90, 4.8, 'A 매장 구매', '#d07474', true);
+    note(3.75 / 6 * 100, 5, 'B 구매', '#5a9478', true);
+    note(4.5 / 6 * 100 + 2, 4.4, 'B 공유', '#5a9478', false);
+  })();
+
+  /* 슬라이드 조작 */
+  const slides = [...document.querySelectorAll('.slide')];
+  let i = 0;
+  try { i = Math.min(slides.length - 1, Math.max(0, parseInt(location.hash.slice(1), 10) - 1 || 0)); } catch (e) {}
+  function fit() {
+    const s = Math.min(innerWidth / 1280, innerHeight / 720);
+    slides.forEach(el => el.style.transform = `scale(${s})`);
+  }
+  function show(n) {
+    i = (n + slides.length) % slides.length;
+    slides.forEach((el, k) => el.classList.toggle('active', k === i));
+    document.getElementById('count').textContent = `${i + 1} / ${slides.length}`;
+    document.getElementById('progress').style.width = `${(i + 1) / slides.length * 100}%`;
+    try { history.replaceState(null, '', `#${i + 1}`); } catch (e) {}
+  }
+  addEventListener('resize', fit);
+  addEventListener('keydown', e => {
+    if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); show(i + 1); }
+    if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); show(i - 1); }
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(slides.length - 1);
+  });
+  document.getElementById('prev').onclick = () => show(i - 1);
+  document.getElementById('next').onclick = () => show(i + 1);
+  document.getElementById('deck').addEventListener('click', e => {
+    if (e.target.closest('a')) return;
+    show(e.clientX > innerWidth / 2 ? i + 1 : i - 1);
+  });
+  fit(); show(i);
+</script>
+</body>
+</html>
