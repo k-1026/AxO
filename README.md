@@ -12,8 +12,11 @@
 | `README.md` | 팀 규칙 설명서 (지금 이 파일) | 처음에 한 번 읽기 |
 | `research/_template.md` | 조사 저장 양식 | **복사해서** 내 파일로 쓰기 (원본 수정 ❌) |
 | `prompts/source-grading-prompt.md` | 출처 등급(🟢🟡🔴) 매기는 AI 프롬프트 | AI에 붙여 넣고 자료와 함께 실행 |
+| `playbook.md` | 사업 타당성 분석 기획절차서 (13단계) | 기획·계획서 작업은 이 절차대로 (Claude Code도 자동으로 따름) |
+| `cosmetics-launch-checklist.md` | 화장품 출시 검토 항목과 가중치 예시 | playbook 1단계(판정 기준)·12단계(우선순위)의 입력 |
 | `CLAUDE.md` | Claude Code용 자동 지시 | 신경 안 써도 됨 (Claude Code가 알아서 읽음) |
 | `AGENTS.md` | 다른 AI 코딩 도구용 자동 지시 (`CLAUDE.md`와 같은 내용) | 신경 안 써도 됨 (규칙이 바뀌면 `CLAUDE.md`와 함께 수정) |
+| `.claude/agents/` | Claude Code 서브에이전트 4종 (researcher · competitor-analyzer · model-simulator · reviewer) | playbook 단계별로 나눠 맡음 |
 | `research/glossary.md` | 팀 단어장 | 새 용어를 쓰면 추가 |
 | `idea/` | 에이전트 기획안, 워크플로우·역할분담 (팀이 정한 방향) | 기획이 바뀌면 여기 문서를 고치기 |
 | `presentation/` | 발표 자료 (중간보고, 슬라이드, PDF) | 발표 준비물은 여기에 저장 |
@@ -24,7 +27,10 @@
 ├── README.md
 ├── CLAUDE.md
 ├── AGENTS.md
+├── playbook.md              # 기획절차서 (모든 기획 작업의 기준)
+├── cosmetics-launch-checklist.md
 ├── CHANGELOG.md
+├── .claude/agents/          # 서브에이전트 4종
 ├── prompts/
 │   └── source-grading-prompt.md
 ├── idea/                    # 에이전트 기획안 · 워크플로우·역할분담
@@ -48,7 +54,7 @@
 | 사진, 캡처, AI 생성 이미지 | `research/assets/` (출처 표에 적기) |
 | 에이전트 기획안, 워크플로우, 역할분담, 팀 결정 | `idea/` (파일 이름은 `내이름_주제.md`) |
 | 발표 자료, 중간보고, 슬라이드 | `presentation/` |
-| 저장소 맨 위 | `README.md`, `CLAUDE.md`, `AGENTS.md`, `CHANGELOG.md`만 두기 |
+| 저장소 맨 위 | `README.md`, `CLAUDE.md`, `AGENTS.md`, `playbook.md`, `cosmetics-launch-checklist.md`, `CHANGELOG.md`만 두기 |
  
 ---
  
