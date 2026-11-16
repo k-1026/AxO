@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>중간보고 종합</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f6f1e7;
+    --card: #fffdf8;
+    --ink: #1f2a24;
+    --muted: #6b6f68;
+    --line: #ddd4c3;
+    --green: #2f5d46;
+    --green-soft: #e3ece4;
+    --ochre: #b5762a;
+    --ochre-soft: #f4e6d0;
+    --red: #a6432f;
+    --red-soft: #f5e0da;
+    --stage: #2a2f2b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--stage); }
+  body {
+    font-family: "Noto Sans KR", system-ui, sans-serif;
+    color: var(--ink);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+
+  /* 1920×1080 고정 캔버스를 화면에 맞춰 축소 */
+  #deck { position: fixed; inset: 0; display: grid; place-items: center; }
+  .slide {
+    position: absolute;
+    width: 1920px; height: 1080px;
+    background: var(--paper);
+    padding: 88px 120px 88px;
+    display: none;
+    flex-direction: column;
+    transform-origin: center center;
+  }
+  .slide.active { display: flex; }
+
+  .kicker { font-size: 26px; font-weight: 700; letter-spacing: .08em; color: var(--ochre); margin-bottom: 16px; }
+  h1 {
+    font-family: "Noto Serif KR", serif;
+    font-size: 60px; font-weight: 900; line-height: 1.25;
+    letter-spacing: -0.01em; margin-bottom: 40px;
+  }
+  h1 em { font-style: normal; color: var(--green); }
+  .new { display: inline-block; font-size: 18px; font-weight: 700; padding: 3px 10px; border-radius: 6px; background: var(--ochre); color: #fff; vertical-align: middle; margin-left: 8px; letter-spacing: .04em; }
+
+  .footer {
+    position: absolute; left: 120px; right: 120px; bottom: 36px;
+    display: flex; justify-content: space-between;
+    font-size: 20px; color: var(--muted);
+  }
+
+  .grid { display: grid; gap: 28px; flex: 1; min-height: 0; }
+  .g2 { grid-template-columns: 1fr 1fr; }
+  .g3 { grid-template-columns: repeat(3, 1fr); }
+  .g4 { grid-template-columns: repeat(4, 1fr); }
+
+  .card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 20px; padding: 32px 38px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .card h3 { font-size: 31px; font-weight: 700; line-height: 1.35; }
+  .card p, .card li { font-size: 24px; line-height: 1.6; color: #3d443f; }
+  .card ul { padding-left: 1.1em; display: flex; flex-direction: column; gap: 8px; }
+  .card .src { margin-top: auto; font-size: 19px; color: var(--muted); }
+  .card .src a { text-decoration-color: var(--line); }
+
+  .tag {
+    display: inline-block; align-self: flex-start;
+    font-size: 20px; font-weight: 700;
+    padding: 6px 14px; border-radius: 999px;
+    background: var(--green-soft); color: var(--green);
+  }
+  .tag.ochre { background: var(--ochre-soft); color: var(--ochre); }
+  .tag.red { background: var(--red-soft); color: var(--red); }
+
+  .insight {
+    margin-top: 28px;
+    background: var(--green); color: #f6f1e7;
+    border-radius: 20px; padding: 28px 44px;
+    font-size: 29px; line-height: 1.5; font-weight: 500;
+    display: flex; gap: 24px; align-items: baseline;
+  }
+  .insight b { color: #f3d9a8; font-weight: 700; white-space: nowrap; }
+  .insight.warn { background: var(--red-soft); color: var(--red); }
+  .insight.warn b { color: var(--red); }
+  .insight.note { background: var(--ochre-soft); color: #6d4614; }
+  .insight.note b { color: var(--ochre); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 24px; }
+  th, td { text-align: left; padding: 16px 20px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.5; }
+  tr:last-child td { border-bottom: 0; }
+  th { font-size: 20px; color: var(--muted); font-weight: 700; letter-spacing: .02em; }
+  td.num { font-family: "Noto Serif KR", serif; font-weight: 900; color: var(--green); white-space: nowrap; }
+  .tablewrap { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 10px 24px; }
+  .dense table { font-size: 22px; }
+  .dense th, .dense td { padding: 12px 18px; }
+
+  /* 표지 */
+  .cover { background: var(--green); color: var(--paper); justify-content: center; }
+  .cover .kicker { color: #f3d9a8; }
+  .cover h1 { font-size: 92px; margin-bottom: 40px; }
+  .cover .q { font-size: 40px; line-height: 1.55; max-width: 1400px; border-left: 6px solid #f3d9a8; padding-left: 36px; color: #e8e2d4; }
+  .cover .meta { position: absolute; left: 120px; bottom: 80px; font-size: 24px; color: #c5d3c8; }
+  .cover .seal {
+    position: absolute; right: 120px; top: 120px;
+    width: 220px; height: 220px; border-radius: 50%;
+    border: 4px solid #f3d9a8; color: #f3d9a8;
+    display: grid; place-items: center; text-align: center;
+    font-family: "Noto Serif KR", serif; font-size: 34px; font-weight: 900; line-height: 1.3;
+    transform: rotate(-8deg);
+  }
+
+  /* 요약 행 */
+  .sum { display: grid; grid-template-columns: 280px 1fr; gap: 0; background: var(--card); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; }
+  .sum div { padding: 22px 32px; border-bottom: 1px solid var(--line); font-size: 26px; line-height: 1.5; }
+  .sum div:nth-last-child(-n+2) { border-bottom: 0; }
+  .sum .k { background: var(--green-soft); color: var(--green); font-weight: 700; }
+  .sum .hl { background: #fbf3e4; }
+
+  .bar { height: 14px; background: var(--line); border-radius: 7px; overflow: hidden; }
+  .bar span { display: block; height: 100%; background: var(--green); border-radius: 7px; }
+
+  .flow { display: flex; align-items: stretch; }
+  .flow .card { flex: 1; }
+  .arrow { display: grid; place-items: center; width: 56px; font-size: 38px; color: var(--ochre); }
+
+  .q-card { gap: 12px; padding: 26px 30px; }
+  .q-card .num { font-family: "Noto Serif KR", serif; font-size: 24px; color: var(--ochre); font-weight: 900; }
+  .q-card .from { font-size: 20px; color: var(--muted); line-height: 1.45; }
+  .q-card .ask { font-size: 26px; font-weight: 700; line-height: 1.4; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; }
+  .chips span { font-size: 19px; padding: 5px 12px; border-radius: 10px; background: var(--green-soft); color: var(--green); font-weight: 500; }
+
+  .likes { font-family: "Noto Serif KR", serif; font-weight: 900; color: var(--red); white-space: nowrap; }
+
+  #progress { position: fixed; left: 0; bottom: 0; height: 4px; background: var(--ochre); transition: width .25s; z-index: 5; }
+  #nav { position: fixed; right: 16px; bottom: 14px; z-index: 6; display: flex; gap: 8px; align-items: center; font-size: 14px; color: #c9c4b8; }
+  #nav button { width: 36px; height: 36px; border-radius: 8px; border: 1px solid #4a514c; background: #343a36; color: #e8e2d4; font-size: 18px; cursor: pointer; }
+  #nav button:hover { background: #3f4641; }
+
+  @media print {
+    @page { size: 1920px 1080px; margin: 0; }
+    html, body { background: none; overflow: visible; height: auto; }
+    #deck { position: static; display: block; }
+    .slide { display: flex !important; position: relative; transform: none !important; page-break-after: always; break-after: page; }
+    #nav, #progress { display: none; }
+  }
+</style>
+<style>
+  .stat { font-family: "Noto Serif KR", serif; font-size: 76px; font-weight: 900; line-height: 1.05; color: var(--green); letter-spacing: -0.02em; }
+  .stat small { font-size: 34px; font-weight: 900; }
+  .stat.down { color: var(--red); }
+  .stat.ochre { color: var(--ochre); }
+  .card .lbl { font-size: 22px; font-weight: 700; color: var(--muted); }
+  .hbar { display: grid; grid-template-columns: 110px 1fr 120px; align-items: center; gap: 18px; font-size: 24px; }
+  .hbar .bar { height: 26px; border-radius: 13px; }
+  .hbar .bar span { border-radius: 13px; }
+  .hbar b { font-family: "Noto Serif KR", serif; font-weight: 900; color: var(--green); }
+  .bigq { font-family: "Noto Serif KR", serif; font-size: 40px; font-weight: 900; line-height: 1.45; color: var(--ink); }
+  .bigq .likes { font-size: 34px; }
+  .step { font-family: "Noto Serif KR", serif; font-size: 26px; font-weight: 900; color: var(--ochre); }
+  .no { text-decoration: line-through; text-decoration-color: var(--red); color: var(--red); font-weight: 700; }
+  .yes { color: var(--green); font-weight: 700; }
+</style>
+</head>
+<body>
+<div id="deck">
+
+<!-- 01 표지 -->
+<section class="slide cover">
+  <div class="seal">令<br>바람</div>
+  <div class="kicker">대구 약전골목 × 한방 뷰티 · 팀 중간보고</div>
+  <h1>원료와 이야기는 있다,<br>대표 제품이 없다</h1>
+  <p class="q">대구 약전골목의 원료와 이야기로<br>고객이 고르고 싶은 한방 뷰티를 만들 수 있을까?</p>
+  <div class="meta">2026.10.30 중간보고 · 산업·시장 · 시장 규모 · 역사·공간 · 사람·원료 · 고객 인사이트</div>
+</section>
+
+<!-- 02 한 장 요약 -->
+<section class="slide">
+  <div class="kicker">한 장 요약</div>
+  <h1>오늘 보고드릴 다섯 가지</h1>
+  <div class="sum">
+    <div class="k">시장</div><div>화장품은 사상 최대인데, <b>비싼 한방은 줄고 중저가 '젊은 한방'은 크고 있다</b></div>
+    <div class="k">왜 대구</div><div>원료는 <b>전국 1위</b>, 역사는 <b>368년</b>. 그런데 둘을 묶은 <b>대표 제품도 로컬 브랜드도 없다</b></div>
+    <div class="k">고객</div><div>'한방이라서 샀다'는 후기는 없다. <b>향의 세기와 사용감</b>이 구매를 정한다</div>
+    <div class="k">지켜야 할 선</div><div>처분의 76%가 광고 표현 위반. '처방·약효·체질 개선'은 쓸 수 없다</div>
+    <div class="k hl">팀이 정할 것</div><div class="hl"><b>브랜드 방향 · 첫 타깃 · 대표 원료</b></div>
+  </div>
+  <div class="footer"><span>대구 약전골목 × 한방 뷰티 · 중간보고</span><span>02</span></div>
+</section>
+
+<!-- 03 시장 -->
+<section class="slide">
+  <div class="kicker">1 · 시장</div>
+  <h1>화장품은 크는데, <em>한방은 모델이 바뀌는 중</em></h1>
+  <div class="grid g4">
+    <div class="card">
+      <span class="lbl">국내 화장품 생산 (2025)</span>
+      <div class="stat">17.9<small>조 원</small></div>
+      <p>사상 최대. 수출 114억 달러, 세계 2위</p>
+      <span class="src">🏛 식약처</span>
+    </div>
+    <div class="card">
+      <span class="lbl">생산 상위 10개 품목 중 한방 비중</span>
+      <div class="stat down">5.2<small>%</small></div>
+      <p>2021년 15.0%에서 2025년 5.2%로. 더후·설화수 같은 <b>고가·중국 의존</b> 한방이 줄었다</p>
+      <span class="src">🏛 식약처 자료로 팀 자체 산출</span>
+    </div>
+    <div class="card">
+      <span class="lbl">조선미녀 매출 (2023 → 2024)</span>
+      <div class="stat ochre">약 2<small>배</small></div>
+      <p>1,400억 → 약 3,000억 원. 해외 90%. <b>중저가 '젊은 한방'</b></p>
+      <span class="src">🏢 언론 보도</span>
+    </div>
+    <div class="card">
+      <span class="lbl">20대가 한방을 쓴다면 목적은</span>
+      <div class="stat">32.8<small>%</small></div>
+      <p>피부미용·다이어트. 전체(14.6%)의 2배 이상</p>
+      <span class="src">🏛 2024 한방의료이용 실태조사</span>
+    </div>
+  </div>
+  <div class="insight"><b>→</b><span>줄어든 것은 '한방'이 아니라 <b>고가·중국 면세 모델</b>이다. 가격대와 채널을 처음부터 다르게 잡아야 한다.</span></div>
+  <div class="footer"><span>대구 약전골목 × 한방 뷰티 · 중간보고</span><span>03</span></div>
+</section>
+
+<!-- 04 왜 대구 -->
+<section class="slide">
+  <div class="kicker">2 · 왜 대구인가</div>
+  <h1>원료와 업체는 있는데, <em>묶는 주체가 없다</em></h1>
+  <div class="flow">
+    <div class="card">
+      <span class="tag">원료</span>
+      <div class="stat">32.8<small>%</small></div>
+      <h3>경북 약용작물 생산<br>5년 연속 전국 1위</h3>
+      <p>2024년 17,414톤. 오미자(문경)·오가피(포항) 주산지</p>
+      <span class="src">🏛 농림축산식품부</span>
+    </div>
+    <div class="arrow">+</div>
+    <div class="card">
+      <span class="tag">제조·인프라</span>
+      <div class="stat">6.4<small>%</small></div>
+      <h3>전국 화장품 제조업체 중<br>대구·경북 비중</h3>
+      <p>대구한의대·대구TP·한의약진흥원·경산 화장품특화단지</p>
+      <span class="src">🏛 식약처 · 01 문서</span>
+    </div>
+    <div class="arrow">≠</div>
+    <div class="card">
+      <span class="tag red">결과</span>
+      <div class="stat down">2.7<small>%</small></div>
+      <h3>전국 화장품 수출 중<br>대구·경북 비중</h3>
+      <p>5년 만에 약 3배로 늘었지만 여전히 작다. 원인은 <b>대형 OEM·ODM 부재</b></p>
+      <span class="src">🏛 무역협회 · 경북일보 인용</span>
+    </div>
+  </div>
+  <div class="insight"><b>→</b><span>"전국 1위 산지의 약재로, 대구에서 만든 한방화장품" — <b>다른 지역이 따라 할 수 없는 원산지 이야기</b></span></div>
+  <div class="footer"><span>대구 약전골목 × 한방 뷰티 · 중간보고</span><span>04</span></div>
+</section>
+
+<!-- 05 약령시 -->
+<section class="slide">
+  <div class="kicker">3 · 약령시의 자산과 현재</div>
+  <h1>368년 이어졌지만, <em>지금은 다시 증명해야 하는 때</em></h1>
+  <div class="grid g2">
+    <div class="card">
+      <span class="tag">이야기 자산</span>
+      <ul>
+        <li><b>1658년</b> 개설, 조선 약령시 중 <b>유일하게 지금까지 운영</b></li>
+        <li><b>심약(審藥)</b>: 왕실 약재를 심사하던 관원, 전국 16명</li>
+        <li><b>령바람</b>: "대구 令바람 안 쐬면 약효가 없다"</li>
+        <li>축제 24년 연속 문화관광축제 · 2024 주제 '힙전골목 1658'</li>
+        <li style="color:var(--red);font-weight:700">그런데 약령시를 대표하는 제품·캐릭터가 없다</li>
+      </ul>
+      <span class="src">02 역사·공간</span>
+    </div>
+    <div class="card">
+      <span class="tag red">현재</span>
+      <h3>약령시 영업 업소</h3>
+      <div class="hbar"><span>2005</span><div class="bar"><span style="width:100%"></span></div><b>290곳</b></div>
+      <div class="hbar"><span>2015</span><div class="bar"><span style="width:62%"></span></div><b>179곳</b></div>
+      <div class="hbar"><span>2026.10</span><div class="bar"><span style="width:55%;background:var(--red)"></span></div><b style="color:var(--red)">159곳</b></div>
+      <ul>
+        <li>중기부가 <b>한방특구 재지정</b> 권고 → <b>2027년 하반기</b> 신청 목표</li>
+        <li>상인 요구: "<b>젊은 층을 확보할 기획안</b>"</li>
+      </ul>
+      <span class="src">🏢 영남일보 2026.10 (같은 출처 안의 비교)</span>
+    </div>
+  </div>
+  <div class="footer"><span>대구 약전골목 × 한방 뷰티 · 중간보고</span><span>05</span></div>
+</section>
+
+<!-- 06 고객 ① -->
+<section class="slide">
+  <div class="kicker">4 · 고객 ① 무엇이 사게 하나</div>
+  <h1>'한방이라서 샀다'는 후기는 <em>찾지 못했다</em></h1>
+  <div class="grid g2">
+    <div class="card">
+      <span class="tag">칭찬받는 이유</span>
+      <h3>한방 브랜드도 후기는 사용감 이야기</h3>
+      <ul>
+        <li>설화수 윤조에센스 — <b>은은한 향</b>, 편안함</li>
+        <li>한율 어린쑥 토너 — <b>향이 은은함</b>, 활용도</li>
+        <li>조선미녀 선크림 — <b>백탁 없음, 화장이 안 뜸</b></li>
+      </ul>
+      <p style="margin-top:8px">'한방'은 "순하다"는 기대를 주지만, 0.001%만 넣어도 '한방화장품'이라 신뢰가 흔들린다</p>
+    </div>
+    <div class="card">
+      <span class="tag red">망설이는 이유</span>
+      <table>
+        <tr><td class="num">👃 향</td><td>"한방 냄새 싫으면 비추", "생각보다 셌다"</td></tr>
+        <tr><td class="num">💸 가격</td><td>만족한 사람도 '비싸다'를 먼저 말한다</td></tr>
+        <tr><td class="num">🇨🇳 원산지</td><td>"중국산 가짜 약재 조심", "성분·함량 설명이 없다"</td></tr>
+        <tr><td class="num">👵 이미지</td><td>'엄마 화장품'</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="insight"><b>→</b><span>향은 <b>재구매 이유이자 포기 이유</b>다. '은은하다'는 확신을 주는 장치가 필요하다.</span></div>
+  <div class="footer"><span>대구 약전골목 × 한방 뷰티 · 중간보고 · 💬 리뷰·댓글 표본이 작아 가설로 본다</span><span>06</span></div>
+</section>
+
+<!-- 07 고객 ② -->
+<section class="slide">
+  <div class="kicker">4 · 고객 ② 골목과 화장품은 이어지나</div>
+  <h1>'가고 싶은 이유'가 <em>'얼굴에 바를 이유'</em>가 되는가</h1>
+  <div class="grid g4" style="flex:0 0 auto">
+    <div class="card"><span class="tag ochre">조건부</span><h3>약재 향</h3><p>골목의 첫인상. 하지만 얼굴엔 은은해야 하고, <b>골목 향도 옅어지는 중</b></p></div>
+    <div class="card"><span class="tag ochre">약함</span><h3>역사 · 368년</h3><p>신뢰의 배경일 뿐, '역사 때문에 샀다'는 후기는 없다</p></div>
+    <div class="card"><span class="tag">가장 강함</span><h3>체험</h3><p>직접 맡고 만든 경험이 "<b>내 피부에 맞을까</b>" 불안을 줄인다</p></div>
+    <div class="card"><span class="tag">기회</span><h3>살 것이 없다</h3><p>방문객 후기의 아쉬움 = <b>대표 제품의 빈자리</b></p></div>
+  </div>
+  <div class="card" style="margin-top:28px;flex:1">
+    <span class="lbl">KBS뉴스 「130억 들였는데 '텅텅'…대구 약령시」 댓글 최다 공감</span>
+    <p class="bigq">"젊은 사람들은 한방에 관심이 없다" <span class="likes">👍 94</span></p>
+    <p>대구 사람에게도 약전골목은 '그냥 지나가는 곳'. 체질 분석기처럼 <b>재미있는 입구</b>와 부모님 선물 같은 <b>사야 할 이유</b>가 필요하다</p>
+  </div>
+  <div class="footer"><span>대구 약전골목 × 한방 뷰티 · 중간보고 · 💬 가설</span><span>07</span></div>
+</section>
+
+<!-- 08 규제 -->
+<section class="slide">
+  <div class="kicker">5 · 지켜야 할 선</div>
+  <h1>화장품 처분의 <em>76%</em>는 광고 표현 위반</h1>
+  <div class="tablewrap">
+    <table>
+      <tr><th>한방에서 쓰고 싶은 말</th><th>대신 이렇게</th><th>이유</th></tr>
+      <tr><td class="no">○○ 처방</td><td class="yes">레시피 · 조합</td><td>피부 고민과 결합하면 의약품 오인</td></tr>
+      <tr><td class="no">바르는 보약 · 약효 그대로</td><td class="yes">약령시 약재를 원료로</td><td>원료 출처 설명까지만 가능</td></tr>
+      <tr><td class="no">체질 진단 · 체질 개선</td><td class="yes">재미로 보는 체질 테스트 · 향 추천</td><td>진단·개선은 의료 표현</td></tr>
+      <tr><td class="no">항염 · 재생 · 기혈 순환</td><td class="yes">피부 진정 · 편안한 사용감</td><td>2025년 단속 최다 표현</td></tr>
+      <tr><td class="no">한의사가 만든 · 왕실 인증</td><td class="yes">(쓰지 않음)</td><td>전문가·인증 암시 금지</td></tr>
+    </table>
+  </div>
+  <div class="insight warn"><b>→</b><span>"약령시의 신뢰"는 <b>원료의 점포·산지 이력</b>으로 보여 주고, 제품 효능으로 연결하지 않는다.</span></div>
+  <div class="footer"><span>대구 약전골목 × 한방 뷰티 · 중간보고 · 식약처 「화장품 표시·광고 관리 지침」(2025.1)</span><span>08</span></div>
+</section>
+
+<!-- 09 기회 + 에이전트 -->
+<section class="slide">
+  <div class="kicker">6 · 지금까지 보이는 방향</div>
+  <h1>골목의 향을, <em>내 피부에 맞는 세기로</em></h1>
+  <div class="flow" style="flex:0 0 auto">
+    <div class="card">
+      <span class="step">STEP 1 · 묻는다</span>
+      <h3>지금 상황 · 실패 경험 · 향 취향</h3>
+      <p>고객은 피부 타입보다 "<b>겨울에 화장이 뜬다</b>"처럼 상황을 말한다</p>
+    </div>
+    <div class="arrow">→</div>
+    <div class="card">
+      <span class="step">STEP 2 · 설명한다</span>
+      <h3>"나와 비슷한 사람" + 사용법</h3>
+      <p>원료는 <b>어느 점포·어느 산지</b>인지 이력으로 보여 준다</p>
+    </div>
+    <div class="arrow">→</div>
+    <div class="card">
+      <span class="step">STEP 3 · 작게 시작</span>
+      <h3>샘플 · 소용량 · 현장 체험</h3>
+      <p>실패가 무서운 고객에게 <b>먼저 써 보는 길</b></p>
+    </div>
+  </div>
+  <div class="grid g4" style="margin-top:28px">
+    <div class="card q-card"><span class="num">Q</span><span class="ask">약재 향은 어느 정도가 좋으세요?</span><div class="chips"><span>거의 없게</span><span>은은하게</span><span>약재 향 그대로</span></div></div>
+    <div class="card q-card"><span class="num">Q</span><span class="ask">바르고 난 느낌은 어떤 쪽이 좋으세요?</span><div class="chips"><span>산뜻하게</span><span>촉촉하게</span><span>쫀쫀하게</span></div></div>
+    <div class="card q-card"><span class="num">Q</span><span class="ask">원료에서 가장 궁금한 건 무엇인가요?</span><div class="chips"><span>산지</span><span>사용한 점포</span><span>전성분</span></div></div>
+    <div class="card q-card"><span class="num">Q</span><span class="ask">처음엔 어떻게 써 보고 싶으세요?</span><div class="chips"><span>샘플 먼저</span><span>소용량</span><span>본품</span></div></div>
+  </div>
+  <div class="footer"><span>대구 약전골목 × 한방 뷰티 · 중간보고 · Agent 선택질문 초안 14개 중 4개</span><span>09</span></div>
+</section>
+
+<!-- 10 팀이 정할 것 -->
+<section class="slide">
+  <div class="kicker">7 · 팀이 정할 것과 다음 단계</div>
+  <h1>방향을 정해야 <em>다음 조사가 정해진다</em></h1>
+  <div class="grid g3" style="flex:0 0 auto">
+    <div class="card">
+      <span class="tag ochre">① 브랜드 방향</span>
+      <h3>한방 더마 vs 사용감·체험</h3>
+      <p><b>더마</b>: 시장 성장이 근거, 대신 기능성 심사·인체적용시험 필요<br><b>사용감·체험</b>: 실제 구매 이유와 맞음, 대신 효능 차별점이 약함</p>
+    </div>
+    <div class="card">
+      <span class="tag ochre">② 첫 타깃</span>
+      <h3>20대 · 선물 · 외국인</h3>
+      <p>20대는 미용 목적·SNS, 부모님 선물 수요(유튜브 댓글), 외국인 환자 62.9%가 피부과</p>
+    </div>
+    <div class="card">
+      <span class="tag ochre">③ 대표 원료</span>
+      <h3>오미자 · 오가피 · 감초 · 당귀</h3>
+      <p>경쟁사는 모두 원료 하나를 앞세운다. 효능은 아직 세포 실험 수준</p>
+    </div>
+  </div>
+  <div class="tablewrap dense" style="margin-top:28px">
+    <table>
+      <tr><th>다음 단계</th><th>담당</th></tr>
+      <tr><td><b>현장 방문</b> — 골목 향이 지금 얼마나 나는지, 골목 안 화장품·비누 판매, 약재 시향, 상인 인터뷰</td><td>전체</td></tr>
+      <tr><td>인스타그램·X 반응 수집 · 약령시 인물 5명 조사</td><td>고객 인사이트 · 사람·원료</td></tr>
+      <tr><td>약재 기능성 고시 여부 · 대구·경북 OEM·ODM 후보</td><td>산업·시장 · 시장 규모</td></tr>
+    </table>
+  </div>
+  <div class="footer"><span>대구 약전골목 × 한방 뷰티 · 중간보고</span><span>10</span></div>
+</section>
+
+</div>
+<div id="progress"></div>
+<div id="nav"><button id="prev" aria-label="이전">‹</button><span id="count"></span><button id="next" aria-label="다음">›</button></div>
+
+<script>
+  const slides = [...document.querySelectorAll('.slide')];
+  let i = 0;
+  try { i = Math.min(slides.length - 1, Math.max(0, parseInt(location.hash.slice(1), 10) - 1 || 0)); } catch (e) {}
+
+  function fit() {
+    const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+    slides.forEach(el => el.style.transform = `scale(${s})`);
+  }
+  function show(n) {
+    i = (n + slides.length) % slides.length;
+    slides.forEach((el, k) => el.classList.toggle('active', k === i));
+    document.getElementById('count').textContent = `${i + 1} / ${slides.length}`;
+    document.getElementById('progress').style.width = `${(i + 1) / slides.length * 100}%`;
+    try { history.replaceState(null, '', `#${i + 1}`); } catch (e) {}
+  }
+  addEventListener('resize', fit);
+  addEventListener('keydown', e => {
+    if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); show(i + 1); }
+    if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); show(i - 1); }
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(slides.length - 1);
+  });
+  document.getElementById('prev').onclick = () => show(i - 1);
+  document.getElementById('next').onclick = () => show(i + 1);
+  document.getElementById('deck').addEventListener('click', e => {
+    if (e.target.closest('a')) return;
+    show(e.clientX > innerWidth / 2 ? i + 1 : i - 1);
+  });
+  fit(); show(i);
+</script>
+</body>
+</html>
