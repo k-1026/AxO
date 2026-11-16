@@ -108,5 +108,5 @@
 
 | 파일 | 내용 | 사용 가능 |
 |---|---|---|
-| `brand/positioning_map_evidence.svg` | 맵 1 (산업 특화도 × 기획 근거) | ✅ 팀 자체 제작 |
-| `brand/positioning_map_execution.svg` | 맵 2 (산업 특화도 × 실행 연결도) | ✅ 팀 자체 제작 |
+| `beautyagent/positioning_map_evidence.svg` | 맵 1 (산업 특화도 × 기획 근거) | ✅ 팀 자체 제작 |
+| `beautyagent/positioning_map_execution.svg` | 맵 2 (산업 특화도 × 실행 연결도) | ✅ 팀 자체 제작 |
