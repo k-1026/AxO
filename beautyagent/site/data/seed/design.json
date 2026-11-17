@@ -1,0 +1,91 @@
+{
+  "kind": "design",
+  "note": "원료별 패키지 색 (main 몸체 · cap 라벨 포인트)",
+  "source": "site/public/index.html 하드코딩에서 이관 (2026-11-17)",
+  "data": {
+    "쑥": {
+      "main": "#F0F9E9",
+      "cap": "#83B966",
+      "liquid": "#F3F6F0",
+      "motif": "leaf",
+      "from": "맑은 라이트 그린"
+    },
+    "어성초": {
+      "main": "#E4FAF0",
+      "cap": "#268C65",
+      "liquid": "#F0F8F6",
+      "motif": "leaf",
+      "from": "라이트 민트 · 선명한 그린"
+    },
+    "인삼": {
+      "main": "#FFF7E5",
+      "cap": "#D4AE61",
+      "liquid": "#FAF8F1",
+      "motif": "root",
+      "from": "밝은 아이보리 · 허니 포인트"
+    },
+    "홍삼": {
+      "main": "#FFF0F1",
+      "cap": "#E47888",
+      "liquid": "#F8F0F1",
+      "motif": "root",
+      "from": "라이트 핑크 · 코랄 포인트"
+    },
+    "당귀": {
+      "main": "#FFF6E2",
+      "cap": "#C7AC78",
+      "liquid": "#F8F5EF",
+      "motif": "root",
+      "from": "밝은 크림 아이보리 · 샌드 베이지"
+    },
+    "감초": {
+      "main": "#FFF8E8",
+      "cap": "#C8AD73",
+      "liquid": "#FFF9ED",
+      "motif": "root",
+      "from": "크림 아이보리 · 옅은 허니 베이지"
+    },
+    "병풀": {
+      "main": "#ECFBF0",
+      "cap": "#57B983",
+      "liquid": "#F1F7F3",
+      "motif": "leaf",
+      "from": "맑은 화이트 · 시카 그린"
+    },
+    "황기": {
+      "main": "#FFFBE6",
+      "cap": "#DEC05B",
+      "liquid": "#FAF9EF",
+      "motif": "root",
+      "from": "밝은 화이트 · 버터 옐로"
+    },
+    "작약": {
+      "main": "#FFFBFD",
+      "cap": "#F0AECF",
+      "liquid": "#FBF5F8",
+      "motif": "flower",
+      "from": "클린 화이트 · 맑은 페일 핑크"
+    },
+    "오미자": {
+      "main": "#FFE9F3",
+      "cap": "#EB80AF",
+      "liquid": "#F8EDF2",
+      "motif": "berry",
+      "from": "라이트 핑크 · 프레시 로즈"
+    },
+    "오가피": {
+      "main": "#F4EEFF",
+      "cap": "#B297DC",
+      "liquid": "#F6F3F9",
+      "motif": "root",
+      "from": "맑은 라벤더"
+    },
+    "길경": {
+      "main": "#E9F5FF",
+      "cap": "#6BADE0",
+      "liquid": "#F2F5FA",
+      "motif": "flower",
+      "from": "클리어 스카이 블루"
+    }
+  }
+}

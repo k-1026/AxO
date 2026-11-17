@@ -127,6 +127,7 @@ table.kpi .neg { color: var(--negbar); }
 .st13.pass { border-color: rgba(63, 209, 139, .55); } .st13.pass .s { color: var(--ok); }
 .st13.fail { border-color: rgba(255, 107, 107, .55); } .st13.fail .s { color: var(--bad); }
 .st13.skip .s { color: var(--skip); }
+.st13.hold { border-color: rgba(255, 200, 87, .55); } .st13.hold .s { color: var(--warn); }
 .st13.live { border-color: var(--neon); animation: glow 1.1s ease-in-out infinite; } .st13.live .s { color: var(--neon); }
 .sens { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
 .sens li { display: grid; grid-template-columns: 1.6em minmax(0, 7.5em) minmax(0, 1fr) auto; gap: 8px; align-items: center; font-size: .8rem; }
@@ -146,7 +147,7 @@ table.kpi .neg { color: var(--negbar); }
   </div>
 </header>
 <main>
-  <div class="banner" id="banner">대시보드 서버에 연결되지 않았어요. 저장소 폴더에서 <code>node beautyagent/dashboard/server.js</code>를 실행한 뒤 <code>http://localhost:8787</code>로 열어 주세요.</div>
+  <div class="banner" id="banner">대시보드 서버에 연결되지 않았어요. 저장소 폴더에서 <code>node dashboard/server.js</code>를 실행한 뒤 <code>http://localhost:8787</code>로 열어 주세요.</div>
   <section class="runbar" aria-live="polite">
     <span class="pill" id="runpill"><span class="dot"></span><span id="runtext">대기</span></span>
     <span class="meta" id="runmeta"></span>
@@ -376,7 +377,7 @@ function renderSteps() {
   for (const e of logs) if (!e._invalid && e.step != null) (e.actor === "reviewer" ? review : latest)[+e.step] = e;
   $("steps13").innerHTML = STEP_NAMES.map((nm, i) => {
     const n = i + 1, e = latest[n], rv = review[n], s = e ? String(e.status || "") : "";
-    const cls = !e ? "" : /미통과|실패/.test(s) ? "fail" : /통과/.test(s) ? "pass" : /건너/.test(s) ? "skip" : "";
+    const cls = !e ? "" : /미통과|실패/.test(s) ? "fail" : /보류/.test(s) ? "hold" : /통과/.test(s) ? "pass" : /건너/.test(s) ? "skip" : "";
     return `<div class="st13 ${cls}" title="${e ? esc((e.actor || "") + " · " + fmtTime(e.timestamp)) : "기록 없음"}"><div><span class="n">${n}</span> <span class="nm">${nm}</span></div><div class="s">${e ? esc(s || "기록됨") : "기록 없음"}${e && e.actor ? " · " + esc(e.actor) : ""}</div>${rv ? `<div class="s" style="color:var(--warn)">검토: ${esc(verdictOf(rv)[0])}</div>` : ""}</div>`;
   }).join("");
 }
