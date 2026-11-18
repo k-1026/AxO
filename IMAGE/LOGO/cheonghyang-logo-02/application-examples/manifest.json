@@ -4,7 +4,7 @@
   "logoName": "청향 로고 2",
   "usage": "⚠️ AI 생성 디자인 검토용 시안",
   "targetProductCount": 6,
-  "completedCount": 4,
+  "completedCount": 5,
   "completed": [
     {
       "key": "serum",
@@ -49,17 +49,24 @@
       "generatedSourceFile": "exec-be387c4f-81e4-483f-90c5-a9641807a723.png",
       "sha256": "e9fb2eb26921d4f87a70ab2ceedbcd8d81e008b04800b614f7f3a9f92b1f6ba6",
       "bytes": 1490433
+    },
+    {
+      "key": "mist",
+      "name": "미스트",
+      "source": "사용자 제공 미스트 이미지",
+      "file": "mist.png",
+      "prompt": "첨부 미스트 사진의 CHAHAR 문자와 원형 테두리를 제거하고 청향 로고 2(청향 아래 작은 오미자)를 진한 라즈베리 레드로 적용. 투명 핑크 용기, 빨간 분사 펌프, 옆의 투명 둥근 캡, 우측 확대 삽입 사진과 원래 구도·재질·빛·그림자 유지.",
+      "usage": "⚠️ AI 생성 디자인 검토용 시안",
+      "generatedSourceFile": "exec-5c995079-a033-479a-8c52-f0330d086fc5.png",
+      "sha256": "32b6eea45574ed132ca0df7a1f70d68c679487e79a5e6713eb17b6385609b087",
+      "bytes": 1562439,
+      "updated": "2026-11-17"
     }
   ],
   "pending": [
     {
       "key": "lotion-tube",
       "product": "로션 튜브형",
-      "status": "이미지 생성 한도로 미생성"
-    },
-    {
-      "key": "mist",
-      "product": "미스트",
       "status": "이미지 생성 한도로 미생성"
     }
   ],
