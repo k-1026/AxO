@@ -1,28 +1,28 @@
 <svg viewBox="0 0 680 500" xmlns="http://www.w3.org/2000/svg" role="img" font-family="'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif">
-<title>포지셔닝 맵 1: 산업 특화도 × 기획 근거</title>
-<desc>가로축은 산업 특화도(범용에서 뷰티 특화), 세로축은 기획 근거(사용자 입력 의존에서 시장·원료·규제 근거 내장). 매니패스트는 범용·입력 의존, 범용 생성형 AI는 범용·중간, 우리 에이전트는 뷰티 특화·근거 내장 우상단.</desc>
+<title>포지셔닝 맵 1: 산업 특화도 × 규제 근거</title>
+<desc>가로축은 산업 특화도(범용에서 뷰티 특화), 세로축은 규제 근거(원료 규제·광고 표현 확인 없음에서 내장). 매니패스트는 범용·확인 없음, 라우드랩스는 뷰티 특화지만 공식 자료에 규제 확인 언급 없음, 우리 에이전트는 뷰티 특화·규제 근거 내장 우상단.</desc>
 <rect width="680" height="500" fill="#FFFFFF"/>
 <rect x="350" y="40" width="270" height="200" fill="#E1F5EE" rx="4"/>
 <text x="606" y="62" font-size="12" fill="#0F6E56" text-anchor="end">비어 있는 자리</text>
 <line x1="80" y1="240" x2="620" y2="240" stroke="#B4B2A9" stroke-width="1"/>
 <line x1="350" y1="40" x2="350" y2="440" stroke="#B4B2A9" stroke-width="1"/>
 <rect x="80" y="40" width="540" height="400" fill="none" stroke="#D3D1C7" stroke-width="1" rx="4"/>
-<text x="350" y="16" font-size="12" fill="#5F5E5A" text-anchor="middle">시장·원료·규제 데이터를 스스로 반영</text>
-<text x="350" y="32" font-size="14" font-weight="bold" fill="#2C2C2A" text-anchor="middle">근거 내장</text>
-<text x="350" y="462" font-size="14" font-weight="bold" fill="#2C2C2A" text-anchor="middle">입력 의존</text>
-<text x="350" y="478" font-size="12" fill="#5F5E5A" text-anchor="middle">사용자가 넣은 자료만 정리</text>
+<text x="350" y="16" font-size="12" fill="#5F5E5A" text-anchor="middle">원료 규제 · 광고 표현 확인을 스스로 반영</text>
+<text x="350" y="32" font-size="14" font-weight="bold" fill="#2C2C2A" text-anchor="middle">규제 근거 내장</text>
+<text x="350" y="462" font-size="14" font-weight="bold" fill="#2C2C2A" text-anchor="middle">규제 확인 없음</text>
+<text x="350" y="478" font-size="12" fill="#5F5E5A" text-anchor="middle">사용자가 직접 법규 확인</text>
 <text x="72" y="236" font-size="14" font-weight="bold" fill="#2C2C2A" text-anchor="end">범용</text>
 <text x="72" y="254" font-size="12" fill="#5F5E5A" text-anchor="end">모든 산업</text>
 <text x="628" y="236" font-size="14" font-weight="bold" fill="#2C2C2A">뷰티</text>
 <text x="628" y="254" font-size="12" fill="#5F5E5A">특화</text>
-<circle cx="200" cy="215" r="9" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1.5"/>
-<text x="214" y="212" font-size="14" fill="#2C2C2A">범용 생성형 AI</text>
-<text x="214" y="228" font-size="12" fill="#5F5E5A">ChatGPT·Claude 채팅</text>
-<circle cx="170" cy="320" r="11" fill="#FAECE7" stroke="#993C1D" stroke-width="1.5"/>
-<text x="186" y="317" font-size="14" fill="#2C2C2A">매니패스트</text>
-<text x="186" y="333" font-size="12" fill="#5F5E5A">SW 기획서·와이어프레임</text>
-<circle cx="540" cy="110" r="13" fill="#9FE1CB" stroke="#0F6E56" stroke-width="1.5"/>
-<text x="522" y="106" font-size="14" font-weight="bold" fill="#085041" text-anchor="end">우리 에이전트</text>
-<text x="522" y="122" font-size="12" fill="#0F6E56" text-anchor="end">뷰티 상품 기획서</text>
-<line x1="185" y1="308" x2="522" y2="122" stroke="#5DCAA5" stroke-width="1" stroke-dasharray="4 4"/>
+<circle cx="160" cy="370" r="11" fill="#FAECE7" stroke="#993C1D" stroke-width="1.5"/>
+<text x="176" y="367" font-size="14" fill="#2C2C2A">매니패스트</text>
+<text x="176" y="383" font-size="12" fill="#5F5E5A">SW 기획서 · 뷰티 규제 없음</text>
+<circle cx="505" cy="330" r="11" fill="#EEEDFE" stroke="#534AB7" stroke-width="1.5"/>
+<text x="489" y="327" font-size="14" fill="#2C2C2A" text-anchor="end">라우드랩스 (콜마)</text>
+<text x="489" y="343" font-size="12" fill="#5F5E5A" text-anchor="end">트렌드·제형 기획 · 규제 확인은</text>
+<text x="489" y="358" font-size="12" fill="#5F5E5A" text-anchor="end">공식 요금표·후기에 언급 없음</text>
+<circle cx="560" cy="105" r="13" fill="#9FE1CB" stroke="#0F6E56" stroke-width="1.5"/>
+<text x="542" y="101" font-size="14" font-weight="bold" fill="#085041" text-anchor="end">우리 에이전트</text>
+<text x="542" y="117" font-size="12" fill="#0F6E56" text-anchor="end">원료 후보표(K3) · 광고 표현 규칙(K6)</text>
 </svg>
