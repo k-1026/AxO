@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080"><rect width="1920" height="1080" fill="white"/><g font-family="Malgun Gothic, sans-serif">
-<text x='80' y='90' font-size='44' fill='#193B2D' font-weight='700' text-anchor='start'>출시 기획실 · 제품 후보 추천 유저플로우</text>
+<text x='80' y='90' font-size='44' fill='#193B2D' font-weight='700' text-anchor='start'>BM 유저플로우</text>
 <text x='82' y='137' font-size='25' fill='#5B6D64' font-weight='400' text-anchor='start'>직접 피드백하거나 “다른 후보 추천해 줘”라고 요청하면, AI가 개선 방향과 새 후보를 제안합니다.</text>
 <rect x='1490' y='65' width='150' height='40' rx='10' fill='#EFF8F4' stroke='#B7D9CA' stroke-width='1.5'/>
 <text x='1565' y='91' font-size='19' fill='#24644C' font-weight='400' text-anchor='middle'>기획자 화면</text>
