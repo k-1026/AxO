@@ -1,28 +1,32 @@
 <svg viewBox="0 0 680 500" xmlns="http://www.w3.org/2000/svg" role="img" font-family="'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif">
 <title>포지셔닝 맵 2: 산업 특화도 × 실행 연결도</title>
-<desc>가로축은 산업 특화도(범용에서 뷰티 특화), 세로축은 실행 연결도(문서에서 끝남에서 광고 표현 검수와 OEM 연결까지). 범용 생성형 AI는 범용·문서에서 끝남, 매니패스트는 범용이지만 AI 코딩 도구로 이어져 중간 높이, 우리 에이전트는 뷰티 특화·실행 연결 우상단.</desc>
+<desc>가로축은 산업 특화도(범용에서 뷰티 특화), 세로축은 실행 연결도(문서에서 끝남에서 광고 표현 검수와 제조사 연결까지). 매니패스트는 범용·개발 도구 연결로 중간 아래, 라우드랩스는 뷰티 특화·ODM 상담 연결로 위쪽, 우리 에이전트는 지금은 기획서에서 끝나고 목표는 표현 검수·OEM 문의까지.</desc>
 <rect width="680" height="500" fill="#FFFFFF"/>
-<rect x="350" y="40" width="270" height="200" fill="#E1F5EE" rx="4"/>
-<text x="606" y="62" font-size="12" fill="#0F6E56" text-anchor="end">비어 있는 자리</text>
-<line x1="80" y1="240" x2="620" y2="240" stroke="#B4B2A9" stroke-width="1"/>
-<line x1="350" y1="40" x2="350" y2="440" stroke="#B4B2A9" stroke-width="1"/>
-<rect x="80" y="40" width="540" height="400" fill="none" stroke="#D3D1C7" stroke-width="1" rx="4"/>
-<text x="350" y="16" font-size="12" fill="#5F5E5A" text-anchor="middle">광고 표현 검수 · OEM 연결까지</text>
-<text x="350" y="32" font-size="14" font-weight="bold" fill="#2C2C2A" text-anchor="middle">실행 연결</text>
-<text x="350" y="462" font-size="14" font-weight="bold" fill="#2C2C2A" text-anchor="middle">문서에서 끝남</text>
-<text x="350" y="478" font-size="12" fill="#5F5E5A" text-anchor="middle">기획서 작성으로 종료</text>
-<text x="72" y="236" font-size="14" font-weight="bold" fill="#2C2C2A" text-anchor="end">범용</text>
-<text x="72" y="254" font-size="12" fill="#5F5E5A" text-anchor="end">모든 산업</text>
-<text x="628" y="236" font-size="14" font-weight="bold" fill="#2C2C2A">뷰티</text>
-<text x="628" y="254" font-size="12" fill="#5F5E5A">특화</text>
-<circle cx="190" cy="380" r="9" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1.5"/>
-<text x="204" y="377" font-size="14" fill="#2C2C2A">범용 생성형 AI</text>
-<text x="204" y="393" font-size="12" fill="#5F5E5A">ChatGPT·Claude 채팅</text>
-<circle cx="160" cy="270" r="11" fill="#FAECE7" stroke="#993C1D" stroke-width="1.5"/>
-<text x="176" y="267" font-size="14" fill="#2C2C2A">매니패스트</text>
-<text x="176" y="283" font-size="12" fill="#5F5E5A">기획서 → AI 코딩 도구</text>
-<circle cx="540" cy="100" r="13" fill="#9FE1CB" stroke="#0F6E56" stroke-width="1.5"/>
-<text x="522" y="96" font-size="14" font-weight="bold" fill="#085041" text-anchor="end">우리 에이전트</text>
-<text x="522" y="112" font-size="12" fill="#0F6E56" text-anchor="end">기획서 → 표현 검수 → OEM</text>
-<line x1="175" y1="258" x2="522" y2="112" stroke="#5DCAA5" stroke-width="1" stroke-dasharray="4 4"/>
+<line x1="80" y1="240" x2="620" y2="240" stroke="#D9CEC4" stroke-width="1"/>
+<line x1="350" y1="40" x2="350" y2="440" stroke="#D9CEC4" stroke-width="1"/>
+<rect x="80" y="40" width="540" height="400" fill="none" stroke="#E8DED6" stroke-width="1" rx="4"/>
+<text x="350" y="16" font-size="12" fill="#5A4E48" text-anchor="middle">광고 표현 검수 · 제조사(ODM/OEM) 연결까지</text>
+<text x="350" y="32" font-size="14" font-weight="bold" fill="#2A2320" text-anchor="middle">실행 연결</text>
+<text x="350" y="462" font-size="14" font-weight="bold" fill="#2A2320" text-anchor="middle">문서에서 끝남</text>
+<text x="350" y="478" font-size="12" fill="#5A4E48" text-anchor="middle">기획서 작성으로 종료</text>
+<text x="72" y="236" font-size="14" font-weight="bold" fill="#2A2320" text-anchor="end">범용</text>
+<text x="72" y="254" font-size="12" fill="#5A4E48" text-anchor="end">모든 산업</text>
+<text x="628" y="236" font-size="14" font-weight="bold" fill="#2A2320">뷰티</text>
+<text x="628" y="254" font-size="12" fill="#5A4E48">특화</text>
+<circle cx="160" cy="300" r="11" fill="#F6EBD2" stroke="#B88A2E" stroke-width="1.5"/>
+<text x="176" y="297" font-size="14" fill="#2A2320">매니패스트</text>
+<text x="176" y="313" font-size="12" fill="#5A4E48">기획서 → 개발 도구 (제조 아님)</text>
+<circle cx="505" cy="150" r="11" fill="#E4F1EC" stroke="#2F6B5E" stroke-width="1.5"/>
+<text x="489" y="147" font-size="14" fill="#2A2320" text-anchor="end">라우드랩스 (콜마)</text>
+<text x="489" y="163" font-size="12" fill="#5A4E48" text-anchor="end">색조 메이크업 설계서 → ODM 상담 연결</text>
+<text x="489" y="178" font-size="12" fill="#5A4E48" text-anchor="end">광고 표현 검수는 언급 없음</text>
+<circle cx="560" cy="340" r="11" fill="#FFFFFF" stroke="#A3243B" stroke-width="1.5"/>
+<text x="542" y="337" font-size="14" font-weight="bold" fill="#7E1C2E" text-anchor="end">우리 (지금)</text>
+<text x="542" y="353" font-size="12" fill="#A3243B" text-anchor="end">라인 후보 · 기획서까지</text>
+<circle cx="560" cy="85" r="13" fill="#F3D6DA" stroke="#A3243B" stroke-width="1.5" stroke-dasharray="3 2"/>
+<text x="542" y="81" font-size="14" font-weight="bold" fill="#7E1C2E" text-anchor="end">우리 (목표)</text>
+<text x="542" y="97" font-size="12" fill="#A3243B" text-anchor="end">기획서 → 표현 검수 → OEM 문의</text>
+<line x1="560" y1="327" x2="560" y2="102" stroke="#A3243B" stroke-width="1.2" stroke-dasharray="5 4"/>
+<polygon points="555,108 560,98 565,108" fill="#A3243B"/>
+<text x="572" y="200" font-size="11" fill="#A3243B">아직</text><text x="572" y="214" font-size="11" fill="#A3243B">미구현</text>
 </svg>
