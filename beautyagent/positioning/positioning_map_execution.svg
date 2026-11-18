@@ -18,7 +18,7 @@
 <text x="176" y="313" font-size="12" fill="#5F5E5A">기획서 → 개발 도구 (제조 아님)</text>
 <circle cx="505" cy="150" r="11" fill="#EEEDFE" stroke="#534AB7" stroke-width="1.5"/>
 <text x="489" y="147" font-size="14" fill="#2C2C2A" text-anchor="end">라우드랩스 (콜마)</text>
-<text x="489" y="163" font-size="12" fill="#5F5E5A" text-anchor="end">설계서 → ODM 상담 연결</text>
+<text x="489" y="163" font-size="12" fill="#5F5E5A" text-anchor="end">메이크업 설계서 → ODM 상담 연결</text>
 <text x="489" y="178" font-size="12" fill="#5F5E5A" text-anchor="end">광고 표현 검수는 언급 없음</text>
 <circle cx="560" cy="340" r="11" fill="#FFFFFF" stroke="#0F6E56" stroke-width="1.5"/>
 <text x="542" y="337" font-size="14" font-weight="bold" fill="#085041" text-anchor="end">우리 (지금)</text>
