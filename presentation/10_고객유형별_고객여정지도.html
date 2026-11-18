@@ -1,0 +1,259 @@
+<title>한방 뷰티 고객여정지도</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* Layout: 한지 바탕 위에 유형별 '처방전' 카드 — 위는 요약표, 아래는 유형마다 6단계 여정 격자 */
+:root{
+  --bg:#f2f3ee; --card:#fbfbf8; --ink:#21241e; --muted:#676b5f; --line:#dcdfd3;
+  --ssuk:#4d6a39; --ssuk-soft:#e3ead9;      /* 쑥: 기회 */
+  --danggwi:#8d3b2f; --danggwi-soft:#f3e2dd; /* 당귀: 불편 */
+  --insam:#a37a24; --insam-soft:#f3ead3;     /* 인삼: 근거 */
+  --f-display:"Gowun Batang","Noto Serif KR",serif;
+  --f-body:"IBM Plex Sans KR","Malgun Gothic",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#181a16; --card:#20231e; --ink:#e7e9e1; --muted:#a2a697; --line:#353a30;
+  --ssuk:#9cc07f; --ssuk-soft:#2a3524; --danggwi:#e29a8b; --danggwi-soft:#3a2622;
+  --insam:#d9b45f; --insam-soft:#383020; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#181a16; --card:#20231e; --ink:#e7e9e1; --muted:#a2a697; --line:#353a30;
+  --ssuk:#9cc07f; --ssuk-soft:#2a3524; --danggwi:#e29a8b; --danggwi-soft:#3a2622;
+  --insam:#d9b45f; --insam-soft:#383020; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 64px}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:40px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.3}
+h1{font-size:clamp(28px,4vw,40px)}
+h2{font-size:clamp(22px,3vw,28px)}
+p{margin:0}
+a{color:var(--ssuk)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--ssuk);outline-offset:2px}
+.eyebrow{font-size:12px;letter-spacing:.12em;color:var(--muted);font-weight:700}
+.lede{max-width:70ch;color:var(--muted);margin-top:10px}
+.note{border-left:3px solid var(--insam);background:var(--insam-soft);padding:12px 16px;border-radius:0 8px 8px 0;max-width:80ch;font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips a{text-decoration:none;color:var(--ink);border:1px solid var(--line);background:var(--card);padding:6px 12px;border-radius:999px;font-size:14px}
+.chips a:hover{border-color:var(--ssuk)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;min-width:760px;background:var(--card);font-size:14px}
+th,td{border-bottom:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+th{font-size:12px;letter-spacing:.06em;color:var(--muted);font-weight:700}
+.ev{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.ev.s{background:var(--ssuk-soft);color:var(--ssuk)}
+.ev.m{background:var(--insam-soft);color:var(--insam)}
+.ev.h{background:transparent;color:var(--muted);border:1px dashed var(--muted)}
+section.type{display:flex;flex-direction:column;gap:18px;scroll-margin-top:16px}
+.persona{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:20px;align-items:start}
+.persona > *{min-width:0}
+.who{display:flex;flex-direction:column;gap:8px}
+.tag{font-family:var(--f-display);font-size:15px;color:var(--ssuk)}
+.quote{font-family:var(--f-display);font-size:18px;border-left:3px solid var(--line);padding-left:14px}
+dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+dt{color:var(--muted);font-weight:700}
+dd{margin:0}
+.map{display:grid;grid-template-columns:96px repeat(6,minmax(140px,1fr));min-width:1000px;border:1px solid var(--line);border-radius:10px;background:var(--card);overflow:hidden}
+.map > div{padding:10px 12px;border-top:1px solid var(--line);font-size:13.5px;line-height:1.55}
+.map .rl{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.04em;background:var(--bg)}
+.map .stage{border-top:0;font-weight:700;font-size:14px;background:var(--ssuk-soft);color:var(--ink)}
+.map .stage small{display:block;font-weight:500;color:var(--muted);font-size:12px}
+.map .corner{border-top:0;background:var(--ssuk-soft)}
+.map .pain{background:var(--danggwi-soft)}
+.map .opp{background:var(--ssuk-soft)}
+.map .think{font-family:var(--f-display);font-size:14px}
+.curve{grid-column:2 / span 6;position:relative;height:110px;padding:0!important}
+.curve svg{position:absolute;inset:14px 0;width:100%;height:calc(100% - 28px);overflow:visible}
+.curve .dot{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;background:var(--card);border:2px solid var(--ssuk);color:var(--ssuk)}
+.curve .dot.low{border-color:var(--danggwi);color:var(--danggwi)}
+.src{font-size:13px;color:var(--muted)}
+.src a{word-break:break-all}
+.cross{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.cross > div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:14px;display:flex;flex-direction:column;gap:6px}
+.cross b{font-family:var(--f-display);font-size:16px}
+hr{border:0;border-top:1px solid var(--line);margin:0}
+.dec{min-width:1080px}
+.dec td{font-size:13.5px}
+.dec td.motive{background:var(--bg);font-family:var(--f-display);font-size:15px;width:150px}
+.dec td.kind{font-weight:700;white-space:nowrap}
+.dec tr.first td{border-top:2px solid var(--line)}
+.st{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:6px;margin-bottom:4px}
+.st.y{background:var(--ssuk);color:var(--card)}
+.st.c{background:var(--insam-soft);color:var(--insam);border:1px solid var(--insam)}
+.st.n{background:transparent;color:var(--muted);border:1px solid var(--line)}
+.dec .pain{background:var(--danggwi-soft)}
+.dec .opp{background:var(--ssuk-soft)}
+.mk{display:inline-block;margin-top:4px;font-size:11px;font-weight:700;padding:1px 6px;border-radius:4px;letter-spacing:.02em}
+.mk.v{background:var(--insam);color:var(--card)}
+.mk.b{background:var(--danggwi);color:var(--card)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);align-items:center}
+@media (max-width:720px){.persona{grid-template-columns:1fr}}
+</style>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:14px">
+    <span class="eyebrow">고객 인사이트 · 2026-11-09 초안</span>
+    <h1>약전골목 한방 뷰티를 쓸 고객 5유형과 고객여정지도</h1>
+    <p class="lede">팀 조사(04·05 고객 인사이트, HSJ 시장근거, K1 브랜드 정보)에서 실제로 나온 말과 행동을 묶어 고객 유형을 나눴습니다. 유형마다 계기부터 재구매까지 6단계로 행동, 생각, 감정, 접점, 불편, 우리 서비스의 기회를 정리했습니다.</p>
+    <p class="note"><b>읽는 법.</b> 대상은 브랜드 제품을 사고 쓰는 최종 고객입니다(에이전트를 쓰는 상품기획 BM과는 다릅니다). 행동·생각 칸은 출처에서 나온 말을 요약했고, <b>기회</b> 칸은 팀 아이디어입니다. 표본이 작아 모든 유형은 가설이며, 근거 강도를 배지로 표시했습니다. 감정 점수(1~5)는 출처의 말투를 보고 팀이 매긴 해석입니다.</p>
+    <nav class="chips" id="nav" aria-label="고객 유형 바로가기"></nav>
+  </header>
+
+  <section style="display:flex;flex-direction:column;gap:12px">
+    <h2>유형 한눈에 보기</h2>
+    <div class="scroll"><table id="overview"><thead><tr><th>유형</th><th>누구인가</th><th>가장 큰 망설임</th><th>우리와 만나는 곳</th><th>근거</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:12px" id="decision">
+    <h2>동기별 방문결정과 구매결정</h2>
+    <p class="lede" style="margin-top:0">고객이 약전골목(또는 매장)에 <b>가기로 하는지</b>, 제품을 <b>사기로 하는지</b>를 동기별로 나눴습니다. 결정마다 언제 하는지, 무엇이 결정을 움직이는지, 그때의 터치포인트·페인포인트·기회포인트를 적었습니다.</p>
+    <div class="legend"><span><span class="st y">함</span> 출처에서 결정 행동이 보임</span><span><span class="st c">조건부</span> 조건이 맞을 때만 함</span><span><span class="st n">안 함</span> 이 동기로는 하지 않음</span><span>기회포인트는 모두 팀 아이디어</span></div>
+    <div class="scroll"><table class="dec" id="dectable"><thead><tr><th>동기</th><th>결정</th><th>하는가 · 시점</th><th>결정을 움직이는 것</th><th>터치포인트</th><th>페인포인트</th><th>기회포인트</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <div id="types" style="display:flex;flex-direction:column;gap:48px"></div>
+
+  <section style="display:flex;flex-direction:column;gap:12px">
+    <h2>모든 유형에 공통으로 나온 것</h2>
+    <div class="cross">
+      <div><b>향의 세기</b><span>같은 향이 재구매 이유이자 포기 이유입니다. 구매 전에 무향 · 은은하게 · 약재 향 그대로 중에서 고르게 합니다.</span></div>
+      <div><b>원료를 믿을 수 있나</b><span>중국산·가짜 약재 걱정이 댓글에 반복됩니다. 원료를 산 점포와 산지를 보여 주는 것이 약령시만의 답이 됩니다.</span></div>
+      <div><b>작게 먼저 써 보기</b><span>비싸면 실패가 무섭다는 말이 많습니다. 샘플, 소용량, 현장 시향을 첫 구매 문턱으로 둡니다.</span></div>
+      <div><b>나와 비슷한 사람의 말</b><span>추천은 피부 타입과 나이를 밝힌 사람의 경험일 때 믿습니다. 설명도 "당신과 비슷한 상황의 사람은" 형식으로 씁니다.</span></div>
+    </div>
+    <p class="src">광고 표현: 이 문서의 기회 칸은 질병명, 치료·개선·진단 표현을 쓰지 않았습니다. 체질 테스트는 재미로 보는 향·사용감 추천에만 씁니다.</p>
+  </section>
+</div>
+
+<script>
+const STAGES=["계기","탐색","비교·망설임","첫 구매·체험","사용","재구매·추천"];
+const EV={s:"근거 강함",m:"근거 중간",h:"가설"};
+const T=[
+{id:"t1",name:"환절기 루틴 실패형",tag:"핵심 타깃 · 20~30대 복합성",ev:"s",
+ who:"계절이 바뀌면 쓰던 루틴이 안 맞는 20대 중반 직장인·학생. T존은 번들거리고 볼은 건조합니다.",
+ hesit:"추천이 사람마다 달라 결정을 못 함",meet:"온라인 Q&A, 올리브영, 에이전트 질문",
+ quote:"겨울이 되니 수분크림이 유지가 안 되고 아침 화장이 떠요.",
+ facts:[["나이·피부","23세 복합성(수부지), 26세 복합성(T존 유분, U존 건조)"],["말하는 정보","피부 타입, 지금 상황, 실패 경험, 지금 루틴. 예산은 거의 말하지 않음"],["믿는 근거","나와 비슷한 사람의 경험, 제형·사용감, 루틴 제안"],["구매 기준","기능 30.2%, 가성비 29.4%, 브랜드 이미지 3.4% (MZ 351명 설문)"]],
+ emo:[2,3,1,3,4,4],
+ rows:{
+  act:["날이 추워지며 수분 유지가 안 되고 화장이 뜨는 걸 느낀다","글로우픽·언니의파우치에 피부 타입, 상황, 실패 경험을 적어 질문한다","답변 8개에 제품이 8개 넘게 나와 고르지 못한다","루틴을 한 번에 바꾸지 않고 하나만 추가해 본다","T존과 볼을 나눠 바르고, 향이 은은한지 본다","사계절 써 본 경험을 나이·피부 타입과 함께 후기로 남긴다"],
+  think:["작년 루틴이 왜 갑자기 안 맞지?","내 상황을 말하면 맞는 걸 알려 주겠지","다 좋다는데 나한테는 뭐가 맞지?","이번엔 실패하고 싶지 않다","끈적이지 않고 수분만 채워 주면 좋겠다","나 같은 피부면 이거 써 봐"],
+  touch:["거울, 아침 화장","리뷰 앱 Q&A","Q&A 답변, 랭킹","올리브영, 샘플","집, 아침·밤 루틴","리뷰 앱, 지인"],
+  pain:["원인을 모름","제품 목록은 많고 이유 설명은 없음","전성분·가격 정보는 답변에 거의 없음","수분 위주 제품은 트러블이 날까 걱정","리뉴얼 뒤 향·용기가 바뀌면 이탈","—"],
+  opp:["계절 시작 시점에 '환절기 루틴' 콘텐츠","에이전트 질문: 아침 화장 전인가요? 부위마다 느낌이 다른가요?","'당신과 비슷한 상황의 사람은'으로 추천 이유 설명","'하나만 추가' 선택지와 소용량","제형 산뜻하게·촉촉하게·쫀쫀하게 선택","나이·피부 타입을 밝히는 후기 양식"]},
+ src:[["글로우픽 Q&A 903","https://www.glowpick.com/qna/903"],["글로우픽 Q&A 2655","https://www.glowpick.com/qna/2655"],["다음뉴스(MZ 구매 기준 설문)","https://v.daum.net/v/WLl609Dxj6"],["05 고객인사이트 종합 3장",null]]},
+
+{id:"t2",name:"예민·실패 두려움형",tag:"핵심 타깃 · 민감하다고 느끼는 2030",ev:"s",
+ who:"새 제품을 바르면 따갑거나 붉어진 경험이 있어 무엇이든 조심스러운 사람. '한방은 순할 것'이라는 기대도 있습니다.",
+ hesit:"내 피부에서 또 실패할까 봐",meet:"전성분 공개, 샘플, 에이전트 질문",
+ quote:"아무거나 바르면 따갑고 빨개져요. 실패하긴 했지만 그나마 괜찮았던 걸 찾아요.",
+ facts:[["경험","아무 제품이나 바르면 따가움·붉어짐"],["기대","한방 = 순하다, 한국인에게 맞는다"],["걸림돌","천연 추출물·에센셜 오일도 접촉 알레르기 원인이 될 수 있음"],["습관","귀 뒤·팔 안쪽 24~48시간 패치 테스트를 먼저 권유받음"]],
+ emo:[1,2,2,3,4,3],
+ rows:{
+  act:["새로 산 제품에서 따가움을 겪고 쓰던 걸 멈춘다","성분 읽는 법 가이드를 찾아보지만 어렵다","'한방이라 순하겠지'와 '식물 추출물이 오히려 문제일까' 사이에서 고민한다","샘플로 패치 테스트를 먼저 한다","문제가 없으면 같은 제품만 계속 쓴다","오래 쓴 제품이 리뉴얼되면 다시 불안해진다"],
+  think:["또 돈만 버렸다","무슨 성분이 문제였는지 모르겠다","천연이면 정말 괜찮을까?","작은 걸로 먼저 확인하자","이건 안전한 내 제품","바뀐 건 또 시험해야 하나"],
+  touch:["피부 반응","성분 가이드, 화해","리뷰의 부정 후기","샘플, 소용량","집","더쿠 등 커뮤니티"],
+  pain:["실패 비용(돈, 피부)","성분 표를 읽을 줄 모름","'한방 0.001%'만 넣어도 한방화장품이라 신뢰가 흔들림","본품만 있으면 시도 자체를 포기","—","리뉴얼 때 향·용기 변경"],
+  opp:["실패 경험을 묻는 질문: 안 맞았던 점은 무거움·건조함·향·따가움?","대표 약재와 전성분을 쉬운 말로 설명","원료 하나하나의 출처와 함량 공개 (함량 표기는 규정 확인 필요)","샘플 먼저 · 소용량 · 본품 선택","같은 제품을 다시 사기 쉬운 정기 알림","리뉴얼 전 변경 내용 미리 안내"]},
+ src:[["언니의파우치 보습제 질문","https://unpa.me/community/moisturizer/119536836"],["허프포스트(천연 성분 주의)","https://www.huffingtonpost.kr/article/39490"],["한경 매거진(패치 테스트)","https://magazine.hankyung.com/job-joy/article/202103110888d"],["얼루어코리아(한방 0.001%)","https://www.allurekorea.com/2016/03/24/%ED%95%9C%EB%B0%A9-%ED%99%94%EC%9E%A5%ED%92%88%EC%9D%98-%EC%A7%84%EC%8B%A4/"],["더쿠(리뉴얼 불만)","https://theqoo.net/beauty/1414610668"]]},
+
+{id:"t3",name:"약전골목 나들이형",tag:"확장 타깃 · 대구 근대골목을 걷는 방문객",ev:"m",
+ who:"근대골목 투어(계산성당, 이상화 고택)와 묶어 약전골목을 걷는 국내 여행자·나들이객. 약재 향과 체험을 좋아합니다.",
+ hesit:"살 것이 한약재·건강식품뿐",meet:"골목 시향 바, 체험 코스, 기념품",
+ quote:"도착하자마자 한약 냄새에 힐링됐어요. 그런데 살 건 별로 없네요.",
+ facts:[["평점","트립어드바이저 3.9점(리뷰 53건). 향·분위기는 좋지만 '꼭 가야 할 곳' 평은 약함"],["기억하는 것","약재 향 > 골목 분위기·역사, 체험 > 상인 > 박물관"],["체험","족욕 5,000원(현금), 향주머니·비누 만들기, 체질 분석기"],["아쉬움","데이트·가족 나들이로 애매, 예전보다 향이 옅어졌다는 말"]],
+ emo:[3,4,4,2,3,3],
+ rows:{
+  act:["근대골목 코스를 짜다 약전골목을 함께 넣는다","약재 향을 맡고 족욕, 체질 분석기, 박물관을 들른다","기념품을 찾지만 한약재·건강식품뿐이라 망설인다","관광안내소 한방 방향제(8,000~10,000원) 정도를 산다","집에서 골목 향을 떠올린다","온라인에서 다시 찾을 이유가 없으면 끝난다"],
+  think:["대구에 이런 골목이 있었네","향 좋다, 체질 결과가 의외라 재밌다","얼굴에 바르기엔 향이 셀 것 같은데","작고 부담 없는 걸로 하나","그 냄새 좋았지","—"],
+  touch:["여행 가이드, 지도","골목, 체험관, 박물관","한약방, 상점","관광안내소","집","온라인몰"],
+  pain:["일부러 갈 이유가 약함","향이 예전보다 옅다는 반응","대표 화장품이 빈자리","살 수 있는 뷰티 소품이 거의 없음","—","골목 경험과 온라인 구매가 이어지지 않음"],
+  opp:["체질 테스트 + 상인 이야기를 묶은 짧은 체험 코스","현장 시향 바: 인삼·당귀·쑥 향 맡아 보기","향 세기를 고르게 해 '얼굴용은 은은하게'를 보여 주기","골목에서 맡은 향의 핸드크림·향주머니(얼굴 제품의 입구)","'약전골목에서 기억에 남은 향' 질문으로 온라인 연결","구매 영수증·QR로 얼굴 제품 샘플 받기"]},
+ src:[["트립어드바이저","https://www.tripadvisor.com/Attraction_Review-g297886-d3161599-Reviews-Daegu_Oriental_Medicine_Market-Daegu.html"],["대구TV 약령시 투어 댓글","https://www.youtube.com/watch?v=Er52uxMUbXo"],["KBS뉴스 약령시 댓글","https://www.youtube.com/watch?v=bfrRqZDBN9U"],["대구시 체험 예약","https://yeyak.daegu.go.kr/index.do?menu_id=00007887"],["대구관광(방향제)","https://tour.daegu.go.kr/index.do?menu_id=00004130"]]},
+
+{id:"t4",name:"효도 선물형",tag:"확장 타깃 · 부모님 선물을 고르는 2030",ev:"m",
+ who:"명절·생신에 부모님 선물을 고르는 자녀. 한약방에서 부모님 보약을 사던 문화에 익숙하지만 보약 값은 부담스럽습니다.",
+ hesit:"보약은 비싸고, 원료가 진짜인지 모름",meet:"선물 세트, 원료 이력, 골목 점포",
+ quote:"한약방 냄새를 아버지는 오히려 건강한 느낌이라며 좋아하셨어요.",
+ facts:[["반응","부모 세대는 한약 냄새를 '건강한 느낌'으로 받아들인 사례"],["가격 부담","보약 한 재 60만~120만 원이라는 댓글"],["불신","중국산 가짜 약재, 성분·함량 설명이 없다는 댓글"],["진품 걱정","가품, 방판에서 샘플 위주로 받았다는 후기"]],
+ emo:[3,2,2,4,5,4],
+ rows:{
+  act:["명절·생신을 앞두고 부모님 선물을 찾는다","한약·건강식품을 보지만 가격에 놀란다","원산지와 진품 여부를 확인할 길을 찾는다","부모님용과 나용을 함께 담은 세트를 산다","부모님이 향을 좋아하시는 걸 본다","다음 명절에 같은 세트를 다시 산다"],
+  think:["이번엔 뭘 드리지?","보약은 너무 비싸다","중국산 아닐까, 가짜 아닐까?","부모님도 나도 쓸 수 있으면 좋겠다","좋아하시니 다행","이건 고민 없이 또 사면 된다"],
+  touch:["달력, 가족 대화","한약방, 온라인몰","상세페이지, 댓글","선물 포장, 택배","부모님 집","재구매 알림"],
+  pain:["선택지가 보약 아니면 일반 화장품","비싼 가격","원료 정보가 없음","포장·선물감 부족하면 탈락","—","—"],
+  opp:["'누가 쓸 건가요? 나 · 부모님 · 친구' 질문","보약보다 부담 적은 가격대의 한방 세트","원료를 산 점포·산지 이력 카드 동봉","부모님용(약재 향 그대로) + 나용(은은하게) 세트","향 세기 차이를 세대 취향으로 설명","명절 전 재구매 알림"]},
+ src:[["멜릭서 사용 후기","https://kr.melixirskincare.com/article/%EC%83%81%ED%92%88-%EC%82%AC%EC%9A%A9%ED%9B%84%EA%B8%B0/4/13089/page/8/"],["KBS뉴스 약령시 댓글","https://www.youtube.com/watch?v=bfrRqZDBN9U"],["대구TV 약령시 투어 댓글","https://www.youtube.com/watch?v=Er52uxMUbXo"],["블로그(진품 걱정, 근거 약함)","https://tipmad.com/%EC%84%A4%ED%99%94%EC%88%98-%EC%9E%90%EC%9D%8C%EC%83%9D%ED%81%AC%EB%A6%BC/"]]},
+
+{id:"t5",name:"외국인 K뷰티 여행자",tag:"탐색 타깃 · 대구를 찾는 해외 방문객",ev:"h",
+ who:"K뷰티와 한국 피부 관리에 관심이 있어 한국을 찾는 외국인. 직접 근거가 적어 추가 조사가 필요한 유형입니다.",
+ hesit:"낯선 한약 향, 언어로 된 설명 부족",meet:"다국어 안내, 소용량 세트, 해외 판로",
+ quote:"(직접 인용 없음) 중국 소비자는 설화수 향을 '한약 냄새가 심하다'고 지적한 사례가 있습니다.",
+ facts:[["시장 신호","2025년 외국인 환자 약 201만 명, 그중 피부과 62.9%"],["골목 접점","약령시 박물관 4개 국어 애니메이션"],["향 반응","국내는 좋은 향, 중국 소비자는 한약 냄새가 심하다는 사례"],["판로","실리콘투가 K뷰티 제품을 175개국에 유통"]],
+ emo:[4,3,4,2,3,3],
+ rows:{
+  act:["K뷰티 여행을 계획하며 대구를 넣는다","영문 가이드에서 약령시를 찾는다","박물관과 골목에서 약재를 보고 맡는다","향이 낯설어 사지 않거나 작은 것만 산다","귀국 후 써 보고 반응을 본다","다시 사려면 해외 판로가 있어야 한다"],
+  think:["서울 말고 다른 K뷰티는 없을까","전통 약재 시장이라니 흥미롭다","한국만의 걸 경험하는 중","냄새가 너무 세면 어쩌지, 무슨 성분이지?","—","내 나라에서도 살 수 있을까?"],
+  touch:["여행 앱, SNS","영문 가이드","박물관, 골목","상점","집","역직구몰, 해외 리테일"],
+  pain:["대구가 K뷰티 목적지로 알려지지 않음","영문 정보가 적음","—","향 취향 차이, 설명 언어","—","재구매 경로 없음"],
+  opp:["(확인 필요) 외국인 방문객 수·동선 조사","다국어 향 세기 안내판","시향 바를 박물관 동선과 연결","무향·은은한 향 소용량 여행 세트","—","실리콘투형 플랫폼으로 해외 판매 검토"]},
+ src:[["HSJ 시장근거 4장(외국인 환자 통계, 원문 확인 필요)",null],["뷰티경제(중국 소비자 향 반응)","https://www.thebk.co.kr/news/articleView.html?idxno=202390"],["South Korea Guide(박물관)","https://www.thesouthkoreaguide.com/city/daegu/things-to-do/"],["company/candidates.md(실리콘투)",null]]}
+];
+
+// 동기별 결정: s = y(함) / c(조건부) / n(안 함), at = 여정 단계 번호(0부터), null이면 표시 안 함
+const DEC={
+ t1:{motive:"피부 고민 해결",note:"환절기 루틴 실패형",
+  v:{s:"n",at:null,when:"온라인에서 끝남",why:"골목에 갈 이유가 없음. 고민을 말하고 답을 받는 곳은 리뷰 앱",tp:"리뷰 앱 Q&A, 올리브영 온라인",pain:"오프라인 방문 동기가 없음",opp:"방문을 요구하지 않고 온라인 에이전트로 해결. 약전골목은 브랜드 이야기로 전달"},
+  b:{s:"y",at:3,when:"4단계 첫 구매 (하나만 추가)",why:"나와 비슷한 사람의 경험, 사용감, 하나만 추가할 수 있는지",tp:"Q&A 답변, 랭킹, 올리브영, 샘플",pain:"답변마다 제품이 다르고 이유 설명이 없음. 전성분·가격 정보는 답변에 거의 없음",opp:"에이전트 질문(아침 화장 전? 부위별 느낌?), '비슷한 상황의 사람은' 형식의 추천 이유, 소용량"}},
+ t2:{motive:"실패 피하기",note:"예민·실패 두려움형",
+  v:{s:"c",at:null,when:"근거 없음 (가설)",why:"직접 써 보고 확인할 수 있을 때만",tp:"(가설) 매장 샘플·시향 코너",pain:"온라인만으로는 내 피부 반응을 알 수 없음",opp:"골목 매장에 테스트·시향 코너를 두고 샘플을 가져가게 하기"},
+  b:{s:"y",at:4,when:"두 번에 나눠 결정: 4단계 샘플 → 5단계 본품",why:"패치 테스트 통과, 성분을 이해했는지, 원료 출처",tp:"샘플, 성분 가이드, 부정 후기",pain:"성분 표를 못 읽음. 한방 함량을 알 수 없어 불신. 본품만 있으면 시도를 포기",opp:"실패 경험 질문, 대표 약재·전성분 쉬운 설명, 샘플 → 본품으로 이어지는 경로"}},
+ t3:{motive:"나들이·체험",note:"약전골목 나들이형",
+  v:{s:"y",at:0,when:"1단계 여행 코스를 짤 때",why:"근대골목과 묶기 좋은 동선, 약재 향과 체험",tp:"여행 가이드, 지도, 체험 예약 페이지",pain:"일부러 갈 이유가 약함. 향이 예전보다 옅다는 반응. 데이트·가족 나들이로 애매",opp:"체질 테스트(재미) + 상인 이야기를 묶은 짧은 체험 코스, 현장 시향 바"},
+  b:{s:"c",at:3,when:"4단계 현장 (마음에 드는 게 있을 때만)",why:"부담 없는 가격, 골목에서 맡은 향의 기억",tp:"한약방, 상점, 관광안내소",pain:"살 것이 한약재·건강식품뿐. 얼굴에 바르기엔 향이 셀까 걱정",opp:"골목 향의 핸드크림·향주머니를 입구 상품으로, 향 세기 선택, QR로 얼굴 제품 샘플 받기"}},
+ t4:{motive:"효도·선물",note:"효도 선물형",
+  v:{s:"c",at:1,when:"2단계 (한약방에서 사던 습관이 있으면)",why:"부모님 보약을 한약방에서 사던 문화. 온라인으로 대체 가능",tp:"한약방, 온라인몰",pain:"보약 한 재 60만~120만 원으로 부담",opp:"골목 점포에서 선물 세트를 고르고 원료 이야기를 듣는 픽업 동선"},
+  b:{s:"y",at:3,when:"4단계 명절·생신 전",why:"원료를 믿을 수 있는지, 가격, 선물다운지",tp:"상세페이지, 댓글, 선물 포장, 택배",pain:"중국산·가짜 약재 걱정, 원료·함량 정보 없음",opp:"원료를 산 점포·산지 이력 카드, 부모님용 + 나용 세트, 명절 전 재구매 알림"}},
+ t5:{motive:"한국만의 경험",note:"외국인 K뷰티 여행자 (가설)",
+  v:{s:"y",at:1,when:"2단계 영문 가이드에서 발견 (가설)",why:"서울과 다른 한국 전통 경험",tp:"영문 가이드, SNS, 박물관",pain:"영문 정보가 적고 대구가 K뷰티 목적지로 알려지지 않음",opp:"다국어 향 세기 안내판, 박물관 동선과 시향 바 연결"},
+  b:{s:"c",at:3,when:"4단계 현장 (가설)",why:"낯선 향을 받아들일 수 있는지, 외국어 설명, 휴대하기 쉬운 크기",tp:"상점, 박물관",pain:"향 취향 차이, 귀국 후 재구매 경로 없음",opp:"무향·은은한 향 소용량 여행 세트, 실리콘투형 플랫폼으로 해외 판매 검토"}}
+};
+const STL={y:"함",c:"조건부",n:"안 함"};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+document.getElementById("nav").innerHTML=`<a href="#decision"><b>동기별 방문·구매결정</b></a>`+T.map((t,i)=>`<a href="#${t.id}">${i+1}. ${esc(t.name)}</a>`).join("");
+document.querySelector("#overview tbody").innerHTML=T.map(t=>`<tr><td><a href="#${t.id}"><b>${esc(t.name)}</b></a><br><span class="src">${esc(t.tag)}</span></td><td>${esc(t.who)}</td><td>${esc(t.hesit)}</td><td>${esc(t.meet)}</td><td><span class="ev ${t.ev}">${EV[t.ev]}</span></td></tr>`).join("");
+
+function curve(emo){
+  const xs=emo.map((_,i)=>(i+.5)/emo.length*100), ys=emo.map(v=>(5-v)/4*100);
+  const pts=xs.map((x,i)=>`${x},${ys[i]}`).join(" ");
+  const dots=emo.map((v,i)=>`<span class="dot${v<=2?" low":""}" style="left:${xs[i]}%;top:calc(14px + (100% - 28px) * ${ys[i]/100})" title="감정 ${v}/5">${v}</span>`).join("");
+  return `<div class="curve"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="0" x2="100" y1="50" y2="50" stroke="var(--line)" stroke-dasharray="2 2" vector-effect="non-scaling-stroke"/><polyline points="${pts}" fill="none" stroke="var(--ssuk)" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>${dots}</div>`;
+}
+document.querySelector("#dectable tbody").innerHTML=T.map(t=>{
+  const d=DEC[t.id];
+  return [["v","방문결정"],["b","구매결정"]].map(([k,label],r)=>{const x=d[k];
+    return `<tr${r===0?' class="first"':""}>${r===0?`<td class="motive" rowspan="2">${esc(d.motive)}<br><a class="src" href="#${t.id}">${esc(d.note)}</a></td>`:""}<td class="kind">${label}</td><td><span class="st ${x.s}">${STL[x.s]}</span><br>${esc(x.when)}</td><td>${esc(x.why)}</td><td>${esc(x.tp)}</td><td class="pain">${esc(x.pain)}</td><td class="opp">${esc(x.opp)}</td></tr>`;}).join("");
+}).join("");
+
+const ROWS=[["act","행동",""],["think","생각",""],["emo","감정",""],["touch","터치포인트",""],["pain","페인포인트","pain"],["opp","기회포인트 (아이디어)","opp"]];
+document.getElementById("types").innerHTML=T.map((t,i)=>{
+  const d=DEC[t.id];
+  const mk=j=>(d.v.at===j?`<br><span class="mk v">방문결정 · ${STL[d.v.s]}</span>`:"")+(d.b.at===j?`<br><span class="mk b">구매결정 · ${STL[d.b.s]}</span>`:"");
+  let grid=`<div class="corner"></div>`+STAGES.map((s,j)=>`<div class="stage"><small>${j+1}단계</small>${s}${mk(j)}</div>`).join("");
+  for(const [k,label,cls] of ROWS){
+    grid+=`<div class="rl">${label}</div>`;
+    if(k==="emo"){grid+=curve(t.emo);continue;}
+    grid+=t.rows[k].map(c=>`<div class="${cls}${k==="think"?" think":""}">${k==="think"&&c!=="—"?"“"+esc(c)+"”":esc(c)}</div>`).join("");
+  }
+  const src=t.src.map(([n,u])=>u?`<a href="${u}" target="_blank" rel="noopener">${esc(n)}</a>`:esc(n)).join(" · ");
+  return `<section class="type" id="${t.id}">
+    <hr>
+    <div class="persona">
+      <div class="who"><span class="eyebrow">유형 ${i+1} · <span class="ev ${t.ev}">${EV[t.ev]}</span></span><h2>${esc(t.name)}</h2><span class="tag">${esc(t.tag)}</span><p>${esc(t.who)}</p><span class="src">출처 속 고객 말 요약</span><p class="quote">${esc(t.quote)}</p></div>
+      <dl>${t.facts.map(([a,b])=>`<dt>${esc(a)}</dt><dd>${esc(b)}</dd>`).join("")}</dl>
+    </div>
+    <div class="scroll"><div class="map" role="table" aria-label="${esc(t.name)} 고객여정지도">${grid}</div></div>
+    <p class="src">출처: ${src}</p>
+  </section>`;
+}).join("");
+</script>

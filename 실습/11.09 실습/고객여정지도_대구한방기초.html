@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>대구 한방 기초 구매자의 여정</title>
+<style>
+  :root{
+    --ink:#1d2430; --sub:#5d6675; --line:#dfe4ea; --bg:#f4f6f8; --card:#ffffff;
+    --accent:#0f7f78; --accent-soft:#e6f3f2;
+    --pain:#c2410c; --pain-soft:#fdeee6; --pain-line:#e8895f;
+    --opp:#2b5fb3; --opp-soft:#e8effa;
+    --touch-soft:#f1f3f6; --neg:#c2410c;
+    --diff:#7a4a00; --diff-soft:#fdf3e1;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e8ecf2; --sub:#9aa4b2; --line:#2e3642; --bg:#14181f; --card:#1b2129;
+      --accent:#3fb8b0; --accent-soft:#1d3a39;
+      --pain:#f2a07f; --pain-soft:#3a2420; --pain-line:#c2623d;
+      --opp:#7ea8ea; --opp-soft:#1f2c42; --touch-soft:#242b35; --neg:#f2a07f;
+      --diff:#f5c26b; --diff-soft:#3a3018;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e8ecf2; --sub:#9aa4b2; --line:#2e3642; --bg:#14181f; --card:#1b2129;
+    --accent:#3fb8b0; --accent-soft:#1d3a39;
+    --pain:#f2a07f; --pain-soft:#3a2420; --pain-line:#c2623d;
+    --opp:#7ea8ea; --opp-soft:#1f2c42; --touch-soft:#242b35; --neg:#f2a07f;
+    --diff:#f5c26b; --diff-soft:#3a3018;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo",sans-serif;padding:24px 0}
+  .frame{width:100%;position:relative;overflow:hidden}
+  .slide{width:1600px;height:900px;background:var(--card);padding:26px 46px;position:absolute;top:0;left:0;transform-origin:top left;border-radius:14px;box-shadow:0 2px 14px rgba(0,0,0,.08);display:flex;flex-direction:column;gap:7px}
+  .tag{font-size:13px;letter-spacing:.12em;color:var(--accent);font-weight:700}
+  h1{font-size:25px;line-height:1.25}
+  h1 em{font-style:normal;color:var(--accent)}
+
+  .top{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+  .box{border-radius:10px;padding:7px 11px;font-size:12.5px;line-height:1.42}
+  .box h3{font-size:12.5px;color:var(--accent);margin-bottom:2px}
+  .box.who{background:var(--accent-soft)}
+  .box.scn{background:var(--opp-soft)}
+  .box.scn h3{color:var(--opp)}
+  .box.diff{background:var(--diff-soft)}
+  .box.diff h3{color:var(--diff)}
+  .num{display:inline-block;width:17px;height:17px;line-height:17px;text-align:center;border-radius:50%;background:var(--ink);color:var(--card);font-size:10.5px;margin-right:5px;vertical-align:1px}
+
+  .legend{display:flex;gap:13px;font-size:12px;color:var(--sub);align-items:center;flex-wrap:wrap}
+  .legend span::before{content:"";display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+  .lg-stage::before{background:var(--accent)}
+  .lg-touch::before{background:var(--touch-soft);border:1px solid var(--line)}
+  .lg-pain::before{background:var(--pain-soft);border:1px solid var(--pain-line)}
+  .lg-opp::before{background:var(--opp-soft)}
+  .lg-emo::before{background:var(--ink);border-radius:50%;width:8px;height:8px}
+
+  .map{display:grid;grid-template-columns:112px repeat(var(--n),1fr);gap:4px;flex:1;min-height:0;align-content:stretch}
+  .rowlab{font-size:12.5px;font-weight:700;color:var(--sub);display:flex;align-items:center;gap:4px;padding-left:4px}
+  .stage{background:var(--accent);color:#fff;padding:5px 20px 5px 13px;display:flex;flex-direction:column;justify-content:center;clip-path:polygon(0 0,calc(100% - 15px) 0,100% 50%,calc(100% - 15px) 100%,0 100%);border-radius:6px}
+  .stage .no{font-size:11px;opacity:.85;font-weight:700}
+  .stage .nm{font-size:14.5px;font-weight:700;line-height:1.2}
+  .stage .gen{font-size:10.5px;opacity:.9;margin-top:1px}
+  .cell{border:1px solid var(--line);border-radius:7px;padding:4px 8px;font-size:12px;line-height:1.33;display:flex;align-items:center;background:var(--card)}
+  .cell.think{font-style:italic}
+  .cell.touch{background:var(--touch-soft);font-weight:600}
+  .cell.pain{background:var(--pain-soft);border:1.5px solid var(--pain-line)}
+  .cell.opp{background:var(--opp-soft);border-color:transparent;flex-direction:column;align-items:flex-start;justify-content:center;gap:1px}
+  .cell.opp .shift{font-size:11.5px;font-weight:800;color:var(--opp)}
+  .tid{display:inline-block;font-size:10px;font-weight:800;border-radius:4px;padding:1px 4px;margin-right:4px;flex:none}
+  .tid.p{background:var(--pain);color:#fff} .tid.o{background:var(--opp);color:#fff} .tid.t{background:var(--ink);color:var(--card)}
+  .painlab{color:var(--pain)} .oplab{color:var(--opp)}
+
+  .curve{grid-column:2 / -1;position:relative;height:108px;background:var(--card);border:1px solid var(--line);border-radius:7px}
+  .curve svg{position:absolute;inset:0;width:100%;height:100%}
+  .curve polyline{fill:none;stroke:var(--accent);stroke-width:3;vector-effect:non-scaling-stroke}
+  .curve .dot{position:absolute;width:11px;height:11px;border-radius:50%;background:var(--accent);border:2px solid var(--card);transform:translate(-50%,-50%)}
+  .curve .dot.low{background:var(--neg)}
+  .curve .val{position:absolute;transform:translate(-50%,-150%);font-size:12px;font-weight:700;white-space:nowrap}
+  .curve .zero{position:absolute;left:0;right:0;top:50%;border-top:1px dashed var(--line)}
+  .curve .axis{position:absolute;left:8px;font-size:11px;color:var(--sub)}
+
+  .foot{font-size:11px;color:var(--sub);line-height:1.4}
+</style>
+</head>
+<body>
+<div class="frame">
+<section class="slide">
+  <div class="tag">고객 여정 지도 · 11.09 실습 · 대구 한방 기초 구매자</div>
+  <h1>대구 한방 기초 구매자의 여정 — <em>콜라보에 끌려 시작해, 대구 체험으로 다시 사는 이유</em></h1>
+
+  <div class="top">
+    <div class="box who">
+      <h3><span class="num">1</span>행위자</h3>
+      20대 여성 · 기초 라인을 새로 사려는 사람. 콜라보 제품을 좋아하는 경향(예: 더샘×치이카와 같은 캐릭터 콜라보). 한방 여부보다 귀엽고 재미있는 것에 먼저 끌려요.
+    </div>
+    <div class="box scn">
+      <h3><span class="num">2</span>시나리오 · 기대 (두 흐름을 함께 사용)</h3>
+      <b>고객 시나리오:</b> 콜라보 캐릭터 제품에 끌려 시작 → 피부에 맞는지 확인 → 대구 체험 → 구매.<br>
+      <b>일반 구매 흐름:</b> 영감 → 탐색 → 가치 판단 → 매장 체험 → 구매 → 사후 관리.<br>
+      <b>목표·기대:</b> 내 피부에 맞는 기초라인을 실패 없이 고르고, 예쁜 만큼 재미도 있기를 바람.
+    </div>
+    <div class="box diff">
+      <h3><span class="num">★</span>우리만의 차별점</h3>
+      콜라보는 <b>첫 끌림</b>이고, 약전골목의 <b>약재 이야기와 대구 체험</b>이 <b>다시 살 이유</b>예요. 콜라보가 끝나도 남는 것: 약재 캐릭터 시리즈, 계절 라인, 골목 체험.
+    </div>
+  </div>
+
+  <div class="legend"><span class="lg-stage">3 여정 단계 (고객의 순서)</span><span class="lg-touch">터치포인트 (화면·사람·장소·문서)</span><span class="lg-pain">페인포인트 (P)</span><span class="lg-opp">5 기회 · 곡선 변화 (O)</span><span class="lg-emo">4 감정 곡선 (+2 ~ −2)</span></div>
+
+  <div class="map" style="--n:6">
+    <div></div>
+    <div class="stage"><div class="no">01</div><div class="nm">콜라보에 끌림</div><div class="gen">일반: 영감·욕구</div></div>
+    <div class="stage"><div class="no">02</div><div class="nm">라인 비교</div><div class="gen">일반: 탐색·비교</div></div>
+    <div class="stage"><div class="no">03</div><div class="nm">후기·사용감 확인</div><div class="gen">일반: 가치 판단</div></div>
+    <div class="stage"><div class="no">04</div><div class="nm">대구 팝업 체험</div><div class="gen">일반: 매장 체험</div></div>
+    <div class="stage"><div class="no">05</div><div class="nm">첫 구매 (소용량)</div><div class="gen">일반: 구매</div></div>
+    <div class="stage"><div class="no">06</div><div class="nm">사용·공유·재구매</div><div class="gen">일반: 사후 관리</div></div>
+
+    <div class="rowlab">4 행동</div>
+    <div class="cell">캐릭터 콜라보 영상과 한정 패키지를 보고 관심이 생긴다</div>
+    <div class="cell">콜라보 제품과 일반 라인을 나란히 훑어본다</div>
+    <div class="cell">댓글에서 "따갑다·향이 세다" 말이 있는지 확인한다</div>
+    <div class="cell">약전골목 팝업에서 약재 캐릭터와 시향을 체험하고 사진을 찍는다</div>
+    <div class="cell">소용량 키트를 골라 첫 사용을 시작한다</div>
+    <div class="cell">인증샷을 올리고 다음 계절·다음 콜라보를 기다린다</div>
+
+    <div class="rowlab">4 생각</div>
+    <div class="cell think">"이 캐릭터 귀엽다, 근데 나한테 맞을까?"</div>
+    <div class="cell think">"콜라보 값인지 제품 값인지 모르겠다"</div>
+    <div class="cell think">"나만 따가운 거 아니지?"</div>
+    <div class="cell think">"약재 이야기가 재밌다, 여기서만 살 수 있네"</div>
+    <div class="cell think">"작은 거부터 써 보면 부담 없겠다"</div>
+    <div class="cell think">"다음 약재 캐릭터도 나올까?"</div>
+
+    <div class="rowlab">4 감정 곡선</div>
+    <div class="curve" data-scores="2,0,-1,2,1,2"></div>
+
+    <div class="rowlab">📍 터치포인트</div>
+    <div class="cell touch"><span class="tid t">화면</span>SNS 콜라보 영상 · <span class="tid t">문서</span>한정 패키지</div>
+    <div class="cell touch"><span class="tid t">화면</span>라인 비교 페이지 · <span class="tid t">문서</span>후기 댓글</div>
+    <div class="cell touch"><span class="tid t">문서</span>후기 댓글 · <span class="tid t">화면</span>영상 리뷰</div>
+    <div class="cell touch"><span class="tid t">장소</span>대구 약전골목 팝업 · <span class="tid t">사람</span>상담</div>
+    <div class="cell touch"><span class="tid t">장소</span>올리브영 · <span class="tid t">문서</span>소용량 키트 안내</div>
+    <div class="cell touch"><span class="tid t">화면</span>인증 공유 · <span class="tid t">화면</span>계절·콜라보 알림</div>
+
+    <div class="rowlab painlab">⚠ 페인포인트</div>
+    <div class="cell pain"><span class="tid p">P1</span>콜라보 패키지만 보고 피부에 맞는지 알 수 없음</div>
+    <div class="cell pain"><span class="tid p">P2</span>한정 판매라 놓치거나 품절될까 불안</div>
+    <div class="cell pain"><span class="tid p">P3</span>따가움·향 호불호가 댓글에서만 확인됨</div>
+    <div class="cell pain"><span class="tid p">P4</span>캐릭터 값과 제품 값이 섞여 가격이 비싸 보임</div>
+    <div class="cell pain"><span class="tid p">P5</span>콜라보가 끝나면 다시 살 이유가 약함</div>
+    <div class="cell pain"><span class="tid p">P6</span>계절이 바뀌어도 재구매 시점을 놓침</div>
+
+    <div class="rowlab oplab">5 기회 · 곡선</div>
+    <div class="cell opp"><span class="shift">0→+1</span><span><span class="tid o">O1</span>패키지에 피부 타입 한 줄 + 약재 설명 카드</span></div>
+    <div class="cell opp"><span class="shift">0→+1</span><span><span class="tid o">O2</span>한정 알림 + 품절 대기 예약</span></div>
+    <div class="cell opp"><span class="shift">−1→+1</span><span><span class="tid o">O3</span>사용감 체크 후기 + 샘플 먼저 써 보기</span></div>
+    <div class="cell opp"><span class="shift">+2 유지</span><span><span class="tid o">O4</span>약재 캐릭터 포토존 + 시향을 체험의 중심으로</span></div>
+    <div class="cell opp"><span class="shift">+1→+2</span><span><span class="tid o">O5</span>캐릭터 값과 제품 값을 나눠 표기 + 소용량 키트</span></div>
+    <div class="cell opp"><span class="shift">+2 유지</span><span><span class="tid o">O6</span>계절마다 약재 캐릭터 콜라보 알림 (재구매 이유)</span></div>
+  </div>
+  <div class="foot">※ 가설 초안. 더샘×치이카와는 "콜라보를 좋아하는 소비 성향"의 예시로만 언급했어요(우리 브랜드와 무관). 우리 콜라보는 가상이에요. 감정 점수와 곡선 변화는 추정치이고, 리뷰·댓글 근거로 확인해야 해요.</div>
+</section>
+</div>
+
+<script>
+  function fit(){
+    document.querySelectorAll('.frame').forEach(function(f){
+      var s = f.querySelector('.slide');
+      var scale = f.clientWidth / 1600;
+      s.style.transform = 'scale(' + scale + ')';
+      f.style.height = (900 * scale) + 'px';
+    });
+  }
+  window.addEventListener('resize', fit);
+  fit();
+
+  document.querySelectorAll('.curve').forEach(function(el){
+    var scores = el.dataset.scores.split(',').map(Number);
+    var n = scores.length, pts = [];
+    var svgNS = 'http://www.w3.org/2000/svg';
+    var zero = document.createElement('div'); zero.className='zero'; el.appendChild(zero);
+    var a1 = document.createElement('span'); a1.className='axis'; a1.style.top='3px'; a1.textContent='+2'; el.appendChild(a1);
+    var a2 = document.createElement('span'); a2.className='axis'; a2.style.bottom='3px'; a2.textContent='−2'; el.appendChild(a2);
+    scores.forEach(function(s,i){
+      var x = (i+0.5)/n*100, y = (2-s)/4*100;
+      pts.push(x+','+y);
+      var d = document.createElement('div'); d.className='dot'+(s<0?' low':'');
+      d.style.left=x+'%'; d.style.top=y+'%'; el.appendChild(d);
+      var v = document.createElement('div'); v.className='val';
+      v.style.left=x+'%'; v.style.top=y+'%'; v.style.color = s<0 ? 'var(--neg)' : 'var(--ink)';
+      v.textContent=(s>0?'+':'')+s; el.appendChild(v);
+    });
+    var svg = document.createElementNS(svgNS,'svg'); svg.setAttribute('viewBox','0 0 100 100'); svg.setAttribute('preserveAspectRatio','none');
+    var pl = document.createElementNS(svgNS,'polyline'); pl.setAttribute('points', pts.join(' '));
+    svg.appendChild(pl); el.insertBefore(svg, el.firstChild);
+  });
+</script>
+</body>
+</html>

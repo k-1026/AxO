@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>고객 페르소나 예시</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css">
+<style>
+:root{
+  --cloud:#EEF6F5; --paper:#FFFFFF; --ink:#173F48; --ink2:#3E5A61; --muted:#5F7A80; --teal:#007C80;
+  --mocha:#00898C; --mocha-deep:#00666A; --mocha-tint:#E1F6ED;
+  --ssuk:#2E8B6E; --ssuk-tint:#DDF3E8; --gold:#FFC9A3; --gold-tint:#FFF0DC;
+  --terra:#E9785A; --terra-tint:#FFE1CA; --line:#CFE3E1;
+  --sans:"Pretendard","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#DCEBEA;overflow:hidden}
+body{font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;word-break:keep-all}
+#stage{position:absolute;left:50%;top:50%;width:1600px;height:900px;transform-origin:center center;background:var(--cloud);padding:44px 64px 72px;display:flex;flex-direction:column}
+.top{display:flex;align-items:center;gap:14px;font-size:17px;font-weight:600;letter-spacing:.08em;color:var(--mocha-deep)}
+.top .ai{margin-left:auto;font-size:14px;font-weight:700;color:#B4472C;background:var(--terra-tint);padding:6px 14px;border-radius:999px;letter-spacing:.02em}
+.main{flex:1;display:grid;grid-template-columns:430px 1fr;gap:22px;margin-top:20px;min-height:0}
+
+/* left profile */
+.prof{background:var(--teal);color:var(--cloud);border-radius:26px;padding:30px 30px 26px;display:flex;flex-direction:column}
+.avatar{width:92px;height:92px;border-radius:50%;background:linear-gradient(140deg,#FFE1CA,#E1F6ED);display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:900;color:var(--ink)}
+.idrow{display:flex;gap:18px;align-items:center}
+.idrow .nm{font-size:36px;font-weight:900;line-height:1.1}
+.idrow .nm small{display:block;font-size:14px;font-weight:600;color:#CDEDEA;margin-top:6px;letter-spacing:.02em}
+.type{margin-top:16px;display:inline-block;align-self:flex-start;background:var(--gold);color:var(--ink);font-weight:800;font-size:15px;padding:5px 14px;border-radius:999px}
+.facts{margin-top:18px;display:flex;flex-direction:column}
+.facts div{display:grid;grid-template-columns:92px 1fr;gap:10px;padding:9px 0;border-top:1px solid rgba(255,255,255,.25);font-size:16.5px;line-height:1.4}
+.facts span{color:var(--gold);font-weight:700;font-size:14px;padding-top:2px}
+.facts b{font-weight:600}
+.facts em{font-style:normal;font-size:12px;color:#BFE3E0;margin-left:4px}
+.say{margin-top:auto;background:#0B6E72;border-radius:16px;padding:16px 18px;font-size:18px;line-height:1.55;font-weight:600}
+.say::before{content:"“";display:block;font-size:40px;line-height:.6;color:var(--gold);margin-bottom:6px}
+
+/* right */
+.right{display:grid;grid-template-rows:auto auto 1fr;gap:16px;min-height:0}
+h1{font-size:38px;font-weight:800;line-height:1.3;letter-spacing:-.01em}
+h1 em{font-style:normal;color:var(--mocha-deep)}
+.r1{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.card{background:var(--paper);border-radius:20px;padding:18px 20px}
+.lab{font-size:13px;font-weight:800;letter-spacing:.12em;color:var(--mocha);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.lab .g{margin-left:auto;font-weight:600;letter-spacing:0;color:var(--muted);font-size:12px}
+.card p,.card li{font-size:16px;line-height:1.5}
+.card ul{list-style:none}
+.card li{padding-left:14px;position:relative;margin-top:4px}
+.card li::before{content:"";position:absolute;left:0;top:10px;width:5px;height:5px;border-radius:50%;background:var(--mocha)}
+.routine{display:flex;gap:6px;flex-wrap:wrap}
+.routine span{background:var(--cloud);border-radius:10px;padding:6px 10px;font-size:14.5px;font-weight:600}
+.routine span.x{background:var(--terra-tint);color:#B4472C}
+
+.r2{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.pain{border-radius:18px;padding:16px 18px;background:var(--paper);border-top:5px solid var(--terra)}
+.pain h3{font-size:19px;font-weight:800}
+.pain .q{font-size:15px;line-height:1.45;margin-top:6px;color:var(--ink)}
+.pain .n{margin-top:10px;font-size:13px;color:var(--muted);line-height:1.4}
+.pain .n b{color:#B4472C;font-size:15px}
+.pain .o{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:14.5px;line-height:1.45;color:var(--ssuk);font-weight:600}
+.pain .o::before{content:"→ 기회  ";color:var(--ssuk);font-weight:800}
+
+.r3{display:grid;grid-template-columns:1.55fr 1fr;gap:14px;min-height:0}
+.journey{display:flex;align-items:stretch;gap:0;margin-top:2px}
+.step{flex:1;position:relative;padding:12px 12px 12px 14px;background:var(--cloud);border-radius:12px;margin-right:14px;font-size:14px;line-height:1.45}
+.step:last-child{margin-right:0;background:var(--teal);color:var(--cloud)}
+.step:not(:last-child)::after{content:"";position:absolute;right:-12px;top:50%;transform:translateY(-50%);border:6px solid transparent;border-left-color:var(--mocha)}
+.step b{display:block;font-size:12px;letter-spacing:.08em;color:var(--mocha);margin-bottom:4px}
+.step:last-child b{color:var(--gold)}
+.buy{background:var(--teal);color:var(--cloud)}
+.buy .lab{color:var(--gold)}
+.buy .price{font-size:30px;font-weight:900;color:var(--gold);line-height:1.1}
+.buy .price small{font-size:15px;color:#E4F6F4;font-weight:600;margin-left:6px}
+.buy p{font-size:15px;color:#E4F6F4;margin-top:6px}
+.buy .alt{margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.25);font-size:14.5px;color:#E4F6F4}
+
+.src{position:absolute;left:64px;right:64px;bottom:18px;font-size:12.5px;color:var(--muted);line-height:1.45}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="top">AxO · 고객 페르소나 예시 (원페이지)<span class="ai">가상 인물 · AI 초안 🔴 · 팀이 고쳐 쓰기</span></div>
+
+  <div class="main">
+    <!-- profile -->
+    <div class="prof">
+      <div class="idrow">
+        <div class="avatar">서</div>
+        <div class="nm">김서윤 <small>가상 인물 · PERSONA A</small></div>
+      </div>
+      <div class="type">맑은 피부 추구형 · 한방 미경험</div>
+      <div class="facts">
+        <div><span>나이·성별</span><b>27세 여성</b></div>
+        <div><span>직업</span><b>대구 동성로 근처 회사 3년 차 사무직</b></div>
+        <div><span>사는 곳</span><b>대구 수성구, 혼자 거주</b></div>
+        <div><span>피부</span><b>복합성 · 볼은 건조, T존은 번들</b></div>
+        <div><span>피부 고민</span><b>칙칙한 안색, 가끔 올라오는 뾰루지, 자극에 예민</b></div>
+        <div><span>스킨케어 지출</span><b>한 달 3~5만 원<em>가정</em></b></div>
+        <div><span>정보 얻는 곳</span><b>인스타그램·유튜브 리뷰, 올리브영 앱 랭킹</b></div>
+        <div><span>한방 경험</span><b>한의원에 가 본 적 없음 · 한방 화장품은 엄마 것만 써 봄</b></div>
+      </div>
+      <div class="say">한방이 피부에 좋다는 건 아는데, 냄새가 세고 무거워서 엄마 화장품 같아요. 뭐가 얼마나 들었는지도 잘 모르겠고요.</div>
+    </div>
+
+    <!-- right -->
+    <div class="right">
+      <h1>"좋은 건 알지만 <em>내 화장품은 아니야</em>" → 써 보게 만들기</h1>
+
+      <div class="r1">
+        <div class="card">
+          <div class="lab">원하는 피부</div>
+          <p><b>맑고 투명하고 건강해 보이는 피부.</b> 화장을 덜 해도 괜찮은 피부 상태를 원해요.</p>
+        </div>
+        <div class="card">
+          <div class="lab">지금 루틴 (아침·저녁)</div>
+          <div class="routine"><span>약산성 클렌저</span><span>대용량 토너</span><span>수분 세럼</span><span>젤 크림</span><span>선크림</span><span class="x">크림은 무거운 거 X</span></div>
+        </div>
+        <div class="card">
+          <div class="lab">고를 때 보는 것</div>
+          <ul><li>가격과 용량 (ml당 가격)</li><li>올리브영 랭킹·리뷰 수</li><li>향이 있는지, 바른 느낌이 가벼운지</li></ul>
+        </div>
+      </div>
+
+      <div class="r2">
+        <div class="pain"><h3>👃 향</h3><div class="q">"얼굴에 바르기엔 한약 냄새가 셀 것 같아요."</div><div class="n">20대 향 만족도 <b>3.02/5</b> · 전 연령 최저 [2]</div><div class="o">향 세기 고르기, 얼굴용은 거의 무향</div></div>
+        <div class="pain"><h3>🧴 무게감</h3><div class="q">"한방 크림은 무겁고 번들거릴 것 같아요."</div><div class="n">많이 팔린 한방 제품 = 영양크림 <b>22.6%</b> [2]</div><div class="o">크림 말고 가벼운 토너로 시작</div></div>
+        <div class="pain"><h3>👵 이미지</h3><div class="q">"엄마 화장대에 있던 거라 제 건 아닌 느낌."</div><div class="n">20대 계속 살 의향 <b>20.5%</b> · 50대+ 53.1% [2]</div><div class="o">약재 하나를 '헤리티지'로, 약전골목 반전 콘텐츠</div></div>
+        <div class="pain"><h3>❓ 불신</h3><div class="q">"뭐가 얼마나 들었는지, 진짜 약재인지 몰라요."</div><div class="n">20대 개선 1순위 '약재 안전성' <b>25.1%</b> [1]</div><div class="o">원산지·함량(%)을 앞면·QR로 공개</div></div>
+      </div>
+
+      <div class="r3">
+        <div class="card">
+          <div class="lab">이렇게 사게 될 것 같아요 <span class="g">[아이디어]</span></div>
+          <div class="journey">
+            <div class="step"><b>1 발견</b>인스타 릴스에서 '약전골목 약재로 만든 토너'를 봄</div>
+            <div class="step"><b>2 의심</b>"한방이면 냄새 세지 않아?" → 댓글·리뷰 확인</div>
+            <div class="step"><b>3 확인</b>올리브영에서 '무향' 옵션과 원산지·함량 표기를 봄</div>
+            <div class="step"><b>4 첫 구매</b>테스터로 가벼운 사용감을 확인하고 구매</div>
+          </div>
+        </div>
+        <div class="card buy">
+          <div class="lab">첫 구매 제품 · 예산</div>
+          <div class="price">토너 300ml<small>1만~2.7만 원</small></div>
+          <p>대용량 토너를 쓰던 습관 그대로, 한방에 처음 들어오는 제품</p>
+          <div class="alt">다음 구매 후보: 앰플 50ml · 0.7만~2.2만 원</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="src">이름·직업·거주지·지출·루틴·구매 과정은 예시로 만든 가상 정보예요. · 근거 숫자: [1] 한국한의약진흥원 「2024 한방의료이용 실태조사(일반국민)」 부록 통계표 🟢 · [2] 서인숙 외(2009) 대한피부미용학회지 7(4) 137–145쪽 (오래된 자료, 경향만) · 가격: HSJ_가격기준_K5 중저가 ml당 정가 · 광고 표현은 LJH_K6 기준으로 다시 확인</div>
+</div>
+<script>
+(function(){
+  var stage = document.getElementById('stage');
+  function fit(){
+    var s = Math.min(window.innerWidth / 1600, window.innerHeight / 900);
+    stage.style.transform = 'translate(-50%,-50%) scale(' + s + ')';
+  }
+  window.addEventListener('resize', fit);
+  fit();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,368 @@
+{
+  "version": 1,
+  "updatedAt": "2026-11-17T08:20:40Z",
+  "intervalMinutes": 60,
+  "lookbackDays": 90,
+  "sourceChecks": [
+    {
+      "id": "google-trends",
+      "source": "Google Trends",
+      "url": "https://trends.google.com/trends/explore",
+      "checkedAt": "2026-11-13T07:59:09Z",
+      "status": "unavailable",
+      "note": "공개 웹 확인 · 공개 조회 요청 429 제한으로 새 검색 관심 본문 미확인·우회하지 않음.",
+      "attemptedAt": "2026-11-17T08:20:40Z",
+      "http": 429
+    },
+    {
+      "id": "spate",
+      "source": "Spate",
+      "url": "https://www.spate.nyc/resources/reports",
+      "checkedAt": "2026-11-17T08:20:40Z",
+      "status": "checked",
+      "note": "공개 웹 확인 · 2026 Makeup Report·PDRN·H1 2026 등의 공개 목록 유지 확인. 게시일·국가·기간을 확인한 새 계절 스킨케어 신호는 없어 핵심 근거 미추가."
+    },
+    {
+      "id": "cosme",
+      "source": "@cosme 랭킹",
+      "url": "https://s.cosme.net/ranking",
+      "checkedAt": "2026-11-17T08:20:40Z",
+      "status": "checked",
+      "note": "공개 웹 확인 · 일본 리뷰·제품 랭킹 공개 목록 접근 확인. 본문에서 집계기간·세부 산정기준을 추가 확인하지 못해 현재 판매·전세계 선호·관심 상승의 근거로 사용하지 않음."
+    },
+    {
+      "id": "naver-datalab",
+      "source": "네이버 데이터랩 (검색어 트렌드·쇼핑인사이트)",
+      "url": "https://datalab.naver.com/",
+      "checkedAt": "2026-11-17T08:20:40Z",
+      "status": "checked",
+      "note": "공개 웹 확인 · 공개 홈의 패션 기본 검색어 목록 확인. 화장품 검색어 비교·API 수치는 미수집. 상대 검색 관심을 판매량으로 해석하지 않음."
+    },
+    {
+      "id": "nedrug",
+      "source": "의약품안전나라 (기능성화장품 보고)",
+      "url": "https://nedrug.mfds.go.kr/",
+      "checkedAt": "2026-11-13T07:59:26Z",
+      "status": "unavailable",
+      "note": "공개 웹 확인 · 읽을 수 있는 본문이 없어 기능성화장품 보고 현황의 신규·변경 확인 불가.",
+      "attemptedAt": "2026-11-17T08:20:40Z"
+    },
+    {
+      "id": "hwahae",
+      "source": "화해 랭킹",
+      "url": "https://www.hwahae.co.kr/rankings",
+      "checkedAt": "2026-11-17T08:20:40Z",
+      "status": "checked",
+      "note": "공개 웹 확인 · 공개 전체 카테고리 랭킹은 2026-11-16 갱신으로 표시됨. 확인일과 목록 기준일을 구분하며 당일 순위·판매량·대중 선호 상승으로 해석하지 않음."
+    },
+    {
+      "id": "oliveyoung-ranking",
+      "source": "올리브영 판매 랭킹",
+      "url": "https://www.oliveyoung.co.kr/store/main/getBestList.do?dispCatNo=900000100100001&fltDispCatNo=10000010001",
+      "checkedAt": "2026-11-17T08:20:40Z",
+      "status": "checked",
+      "note": "공개 웹 확인 · 공개 스킨케어 카테고리·제품 목록 확인. 집계기간·판매량·산정식 및 프로모션 영향을 확인하지 못해 현재 목록을 수요 증가·전세계 선호로 일반화하지 않음."
+    },
+    {
+      "id": "kosis-online",
+      "source": "통계청 온라인쇼핑동향 (KOSIS)",
+      "url": "https://kosis.kr/",
+      "checkedAt": "2026-11-17T07:16:10Z",
+      "status": "unavailable",
+      "note": "공개 웹 확인 · 등록 주소 요청이 Timeout fetching으로 실패하여 신규 통계 본문 확인 불가. 도구의 400 표시는 원서버 응답 상태로 단정하지 않으며 마지막 성공 확인일 유지.",
+      "attemptedAt": "2026-11-17T08:20:40Z"
+    },
+    {
+      "id": "customs-trade",
+      "source": "관세청 수출입 무역통계",
+      "url": "https://tradedata.go.kr/",
+      "checkedAt": "2026-11-17T08:20:40Z",
+      "status": "checked",
+      "note": "공개 웹 확인 · 공식 통계 포털 메뉴 접근 확인. 화장품 품목·국가별 새 수치는 확인하지 않아 전체 무역 지표를 화장품 증가로 해석하지 않음."
+    },
+    {
+      "id": "oliveyoung",
+      "source": "올리브영",
+      "url": "https://corp.oliveyoung.com/ko/newsroom/press",
+      "checkedAt": "2026-11-17T08:20:40Z",
+      "status": "checked",
+      "note": "공개 웹 확인 · 공식 최신 목록에 2026-11-17 색조 특화 매장 컬러 그라운드 홍대 안내 추가 확인. 11월 20일 개점 예정의 색조·매장 기획 자료로, 계절 기초제품 수요나 판매랭킹 근거에는 추가하지 않음."
+    },
+    {
+      "id": "jangup",
+      "source": "장업신문",
+      "url": "https://www.jangup.com/",
+      "checkedAt": "2026-11-17T08:20:40Z",
+      "status": "checked",
+      "note": "공개 웹 확인 · 트렌드 목록의 기존 보습·선케어와 신제품 목록의 원씽 밤 크림 유지 확인. 새 계절 스킨케어 원문은 추가 검증하지 않아 기존 item의 원문 확인일과 기획 제안 유지."
+    },
+    {
+      "id": "cosmetics-business",
+      "source": "Cosmetics Business",
+      "url": "https://www.cosmeticsbusiness.com/cosmetics-business-reveals-the-top-5-skin-care-2",
+      "checkedAt": "2026-11-17T08:20:40Z",
+      "status": "checked",
+      "note": "공개 웹 확인 · 2026-03-03 연간 스킨케어 기사와 Promoted Content 표기 재확인. 신규 계절 신호 미확인으로 현행 기획 근거 유지. 구독 본문은 접근하지 않음."
+    },
+    {
+      "id": "cosmorning",
+      "source": "코스모닝",
+      "url": "https://www.cosmorning.com/",
+      "checkedAt": "2026-11-17T08:20:40Z",
+      "status": "checked",
+      "note": "공개 웹 확인 · 등록된 공개 최신 목록 확인. 새 계절 스킨케어 수요를 입증할 원문·조사 범위는 추가 확인되지 않아 기존 유효 근거 유지. 예정 연구를 완제품 효능으로 사용하지 않음."
+    },
+    {
+      "id": "thebk",
+      "source": "뷰티경제",
+      "url": "https://www.thebk.co.kr/",
+      "checkedAt": "2026-11-17T08:20:40Z",
+      "status": "checked",
+      "note": "공개 웹 확인 · 공개 홈 2026-11-17 15:06 판 확인. 새 원문의 조사 범위·게시일은 추가 검증하지 않아 계절 수요 근거에 추가하지 않음."
+    },
+    {
+      "id": "mintel",
+      "source": "Mintel · GNPD",
+      "url": "https://www.mintel.com/insights/beauty-and-personal-care/",
+      "checkedAt": "2026-11-17T08:20:40Z",
+      "status": "checked",
+      "note": "공개 웹 확인 · 공개 분야 안내에 2027 Global Predictions 배너가 있으며 현재 필터의 기사 목록은 비어 있음. 새 판의 날짜·본문 미확인으로 신규 핵심 근거 미추가. 유료 GNPD 미접근."
+    },
+    {
+      "id": "niq",
+      "source": "NielsenIQ",
+      "url": "https://nielseniq.com/global/en/insights/report/2026/niq-state-of-global-beauty-2026/",
+      "checkedAt": "2026-11-17T08:20:40Z",
+      "status": "checked",
+      "note": "공개 웹 확인 · 등록된 State of Global Beauty 2026 공개 페이지 유지 확인. 기존 Global Beauty Views item과 다른 URL이며 해당 원문의 날짜·확인일은 유지. 새 연간 판이나 계절 수요 근거는 추가 검증하지 않음."
+    },
+    {
+      "id": "mckinsey",
+      "source": "McKinsey — State of Beauty",
+      "url": "https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/state-of-beauty",
+      "checkedAt": "2026-11-17T08:20:40Z",
+      "status": "checked",
+      "note": "공개 웹 확인 · 2026-06-18 From aisle to algorithm 공개 보고서의 제목·날짜·개요 재확인. 연간 시장·가격·채널 배경으로만 유지하며 실시간 인기·판매 증가 자료로 취급하지 않음."
+    },
+    {
+      "id": "cosmotrends",
+      "source": "Cosmoprof × BEAUTYSTREAMS — CosmoTrends",
+      "url": "https://lp.cosmoprof.com/hubfs/BEAUTYSTREAMS_CosmoProfWorldwideBologna_CosmoTrends_2026_compressed.pdf",
+      "checkedAt": "2026-11-17T08:20:40Z",
+      "status": "checked",
+      "note": "공개 웹 확인 · 48쪽 Bologna CosmoTrends 2026 공식 PDF의 개요·판 표기 확인. 정확한 발행일 미확인으로 신규 핵심 근거 미추가. 전시 출품·선정을 판매 성공으로 해석하지 않음."
+    },
+    {
+      "id": "pinterest",
+      "source": "Pinterest Predicts",
+      "url": "https://business.pinterest.com/en-gb/pinterest-predicts/",
+      "checkedAt": "2026-11-13T08:00:41Z",
+      "status": "unavailable",
+      "note": "공개 웹 확인 · Predicts 2026 제목 외 읽을 수 있는 본문이 없어 신규 판·시각 트렌드·분석기간 미확인.",
+      "attemptedAt": "2026-11-17T08:20:40Z"
+    },
+    {
+      "id": "kcii",
+      "source": "대한화장품산업연구원",
+      "url": "https://www.kcii.re.kr/",
+      "checkedAt": "2026-11-17T08:20:40Z",
+      "status": "checked",
+      "note": "공개 웹 확인 · 공식 홈 접근 확인. 11월 9일 규제 웨비나·11월 5일 피부특성 세미나 안내와 기존 보고서 목록 확인. 개별 보고서 본문·조사기간은 미검증으로 새 계절 수요 근거 미추가."
+    },
+    {
+      "id": "kotra",
+      "source": "KOTRA 해외시장뉴스",
+      "url": "https://dream.kotra.or.kr/",
+      "checkedAt": "2026-11-13T08:00:55Z",
+      "status": "unavailable",
+      "note": "공개 웹 확인 · 등록 주소에 Redirection Page만 표시되어 신규 시장뉴스 본문 확인 불가.",
+      "attemptedAt": "2026-11-17T08:20:40Z"
+    },
+    {
+      "id": "opensurvey",
+      "source": "오픈서베이 뷰티 트렌드 리포트",
+      "url": "https://blog.opensurvey.co.kr/trendreport/beauty-2026/",
+      "checkedAt": "2026-11-17T08:20:40Z",
+      "status": "checked",
+      "note": "공개 웹 확인 · 2026-01-12 한미 비교 뷰티 보고서 공개 요약·표본 안내 유지 확인. 새로운 계절 조사로 취급하지 않고 미국·한국의 조사 범위를 전세계로 일반화하지 않음."
+    }
+  ],
+  "items": [
+    {
+      "id": "oy-editorial-311",
+      "source": "올리브영",
+      "kind": "공식 브랜드 콘텐츠",
+      "title": "DEEP DIVE NEWS 앵커로 변신한 코르티스",
+      "url": "https://corp.oliveyoung.com/ko/newsroom/editorial/311",
+      "publishedAt": "2026-10-26",
+      "checkedAt": "2026-11-16T01:18:43Z",
+      "eventPeriod": "2026-08-14~2026-08-25 팝업 사례",
+      "summary": "수분·진정 제품을 피부 고민별로 탐색하는 체험 사례와 산뜻한 사용감·속보습을 강조한 세럼을 소개했다. 현재 판매 증가나 시장 전체의 선호를 입증하는 자료는 아니다.",
+      "tags": [
+        "수분",
+        "진정",
+        "산뜻한 사용감",
+        "속보습"
+      ]
+    },
+    {
+      "id": "jangup-100295",
+      "source": "장업신문",
+      "kind": "업계 기사",
+      "title": "‘건조주의보 발령’… 가을철 환절기, 스킨케어 핵심 ‘보습’",
+      "url": "https://www.jangup.com/news/articleView.html?idxno=100295",
+      "publishedAt": "2026-10-28",
+      "checkedAt": "2026-11-16T01:18:43Z",
+      "summary": "가을 환절기 보습 루틴과 보습 지속감을 강조하는 제품 사례를 다뤘다. 소비자 전체의 구매 선호를 측정한 조사로 해석하지 않는다.",
+      "tags": [
+        "환절기",
+        "보습",
+        "지속감"
+      ]
+    },
+    {
+      "id": "jangup-100226",
+      "source": "장업신문",
+      "kind": "업계 기사",
+      "title": "가을 야외활동 증가 다양한 기능성 ‘선케어’ 주목",
+      "url": "https://www.jangup.com/news/articleView.html?idxno=100226",
+      "publishedAt": "2026-10-21",
+      "checkedAt": "2026-11-16T01:18:43Z",
+      "summary": "야외 활동·데일리 용도에 따른 선케어 세분화와 유분 관리·보송한 사용감 등의 제품 사례를 소개했다. 선케어 자료를 기초 제품의 자외선 차단 효능 근거로 사용하지 않는다.",
+      "tags": [
+        "자외선",
+        "유분",
+        "보송한 사용감"
+      ]
+    },
+    {
+      "id": "niq-global-beauty-2026",
+      "source": "NielsenIQ",
+      "kind": "글로벌 구매·소비자 분석",
+      "url": "https://nielseniq.com/global/en/insights/report/2026/beauty-in-2026-global-shifts-local-realities-real-growth/",
+      "title": "Beauty in 2026: Global shifts. Local realities. Real growth",
+      "publishedAt": "2026-04-06",
+      "checkedAt": "2026-11-13T07:04:19Z",
+      "evidenceRole": "background",
+      "summary": "20개 뷰티 시장을 다룬 공개 요약은 간소한 루틴, 성분의 신뢰성, 다기능 제형, 가격 대비 가치 등을 기획 검토점으로 제시한다. 국가별 차이를 강조하므로 특정 국가의 선호를 전세계에 일반화하지 않는다.",
+      "tags": [
+        "루틴 간소화",
+        "성분 신뢰",
+        "가격 대비 가치"
+      ]
+    },
+    {
+      "id": "mckinsey-state-beauty-2026",
+      "source": "McKinsey",
+      "kind": "글로벌 시장·채널 전망",
+      "url": "https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/state-of-beauty",
+      "title": "From aisle to algorithm: The beauty categories, channels, and concepts shaping 2030 growth",
+      "publishedAt": "2026-06-18",
+      "checkedAt": "2026-11-17T08:20:40Z",
+      "evidenceRole": "background",
+      "summary": "스킨케어에서 높은 가격만으로 성능을 설명하기 어려워지고 가격 대비 가치와 신뢰할 근거가 중요해진다는 분석을 제공한다. 중장기 시장·채널 기획의 배경이며 실시간 판매랭킹 자료는 아니다.",
+      "tags": [
+        "가치 소비",
+        "가격대",
+        "기획 근거"
+      ]
+    },
+    {
+      "id": "jangup-100475",
+      "source": "장업신문",
+      "kind": "업계 기사·브랜드 체험 마케팅 사례",
+      "title": "피지오겔, 겨울철 민감 피부 위한 ‘손상 장벽 리페어 존’ 팝업 오픈",
+      "url": "https://www.jangup.com/news/articleView.html?idxno=100475",
+      "publishedAt": "2026-11-13",
+      "checkedAt": "2026-11-16T01:18:43Z",
+      "eventPeriod": "2026-11-12~2026-11-15, 서울 DDP 컬리뷰티페스타",
+      "summary": "11월 12~15일 겨울 건조·온도 변화와 민감 피부 고민을 주제로 크림·세럼·에센스를 체험한 브랜드 팝업을 소개한 기사다. 확인일 기준 종료된 행사이며 구매 증가나 대중 전체 선호를 입증하지 않는다. 기사 속 제품 효능 수치를 이 기획의 완제품에 적용하지 않는다.",
+      "tags": [
+        "겨울",
+        "건조",
+        "민감 피부",
+        "크림·세럼·에센스",
+        "체험 마케팅"
+      ]
+    },
+    {
+      "id": "jangup-100495",
+      "source": "장업신문",
+      "kind": "업계 기사·개별 브랜드 신제품 사례",
+      "title": "일리윤, 고기능 페이셜 라인 ‘멀티베리어 페이셜’",
+      "url": "https://www.jangup.com/news/articleView.html?idxno=100495",
+      "publishedAt": "2026-11-16",
+      "checkedAt": "2026-11-16T03:20:21Z",
+      "summary": "얼굴용 라인을 크림, 토너·에센스 역할을 합친 첫 단계 제품, 산뜻한 젤 크림으로 구성한 출시 사례다. 크림의 무게감과 단계 간 역할을 비교하는 기획 참고로 사용한다. 브랜드 소개 기사로 소비자 전체 선호·판매 증가를 입증하지 않으며, 원문의 성분 함량·전달·회복 효능을 이 기획의 완제품에 적용하지 않는다.",
+      "tags": [
+        "페이셜 라인 구성",
+        "첫 단계 겸용 에센스",
+        "크림·젤 크림",
+        "사용감 비교"
+      ]
+    },
+    {
+      "id": "jangup-100509",
+      "source": "장업신문",
+      "kind": "업계 기사·개별 브랜드 신제품 사례",
+      "title": "원씽, ‘병풀 수딩 인텐시브 밤 크림’",
+      "url": "https://www.jangup.com/news/articleView.html?idxno=100509",
+      "publishedAt": "2026-11-17",
+      "checkedAt": "2026-11-17T03:14:06Z",
+      "summary": "찬바람·난방 등 건조한 환경을 고려해, 펴 바르면 부드러워지는 밤 제형의 크림을 출시한 국내 브랜드 사례다. 겨울용 크림의 발림성과 잔여 유분감을 비교하는 참고로 사용한다. 기사 속 원료·인체적용시험 효능은 이 기획 제품에 적용하지 않으며, 대중 전체의 선호나 판매 증가를 입증하지 않는다.",
+      "tags": [
+        "겨울",
+        "건조한 환경",
+        "밤 크림",
+        "발림성·잔여감",
+        "개별 제품 사례"
+      ]
+    }
+  ],
+  "insights": {
+    "봄": {
+      "line": "봄 기초라인은 ‘순한 진정과 장벽 보습’을 중심으로 잡아보세요. 가벼운 보습 제형과 편안한 사용감을 먼저 비교하면 좋아요.",
+      "tip": "토너·세럼·크림의 역할을 나누고, 환절기에도 부담 없이 쓰기 좋은 사용감을 차별점으로 검토해 보세요.",
+      "evidenceIds": [
+        "oy-editorial-311",
+        "jangup-100295",
+        "niq-global-beauty-2026",
+        "mckinsey-state-beauty-2026"
+      ]
+    },
+    "여름": {
+      "line": "여름 기초라인은 ‘수분은 채우고, 마무리는 산뜻하게’를 방향으로 잡아보세요. 가벼운 토너·세럼과 젤 크림 조합부터 검토하면 좋아요.",
+      "tip": "첫 단계 토너·에센스 역할을 합친 안과 분리한 안을 비교해 보세요. 가벼운 젤 크림을 덧발랐을 때의 끈적임·밀림과 필요한 사용 단계를 함께 확인하면 좋아요.",
+      "evidenceIds": [
+        "oy-editorial-311",
+        "jangup-100226",
+        "niq-global-beauty-2026",
+        "mckinsey-state-beauty-2026",
+        "jangup-100495"
+      ]
+    },
+    "가을": {
+      "line": "가을 기초라인은 ‘겹쳐 바르는 수분 보습과 편안한 마무리’를 제안해 보세요. 토너·세럼·크림이 단계별로 다른 역할을 갖도록 구성하면 좋아요.",
+      "tip": "토너·세럼의 레이어링 사용감과 크림의 마무리감을 함께 비교해, 건조함이 시작되는 계절에 맞는 루틴을 설계해 보세요.",
+      "evidenceIds": [
+        "jangup-100295",
+        "jangup-100226",
+        "niq-global-beauty-2026",
+        "mckinsey-state-beauty-2026"
+      ]
+    },
+    "겨울": {
+      "line": "겨울 라인은 크림을 중심으로 보습감과 편안한 사용감을 비교해 보세요. 세럼·에센스가 크림과 어떤 역할을 나눌지 정해, 건조할 때 간단히 고를 수 있는 구성으로 제안하면 좋아요.",
+      "tip": "크림·젤 크림과 펴 바르면 부드러워지는 밤 제형을 비교해 보세요. 같은 양을 발랐을 때 발림성·겉도는 유분감·보습감을 확인하고, 첫 단계 겸용 에센스와의 조합도 검토하면 좋아요. 보습 지속시간과 민감 피부 표현은 완제품 검증 범위에 맞춰 정하세요.",
+      "evidenceIds": [
+        "jangup-100295",
+        "oy-editorial-311",
+        "niq-global-beauty-2026",
+        "mckinsey-state-beauty-2026",
+        "jangup-100475",
+        "jangup-100495",
+        "jangup-100509"
+      ]
+    }
+  }
+}

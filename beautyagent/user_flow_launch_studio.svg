@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" role="img" font-family="Pretendard, 'Noto Sans KR', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif">
+<title>출시 기획실 user flow</title>
+<desc>기획자가 계절을 고르고 실시간 트렌드와 순위 근거로 출시 후보를 정하기까지의 흐름, 트렌드 서브 에이전트, 출시가 결정 과정</desc>
+<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5F5E5A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="ap" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#534AB7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="at" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#0F6E56" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="ag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#A8A69D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="am" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#854F0B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<style>
+.ti{font-size:20px;font-weight:600}
+.su{font-size:15px}
+.lb{font-size:16px;font-weight:700;fill:#444441}
+.must rect{fill:#E1F5EE;stroke:#0F6E56}
+.must .ti{fill:#085041}.must .su{fill:#0F6E56}
+.agent rect{fill:#EEEDFE;stroke:#534AB7}
+.agent .ti{fill:#3C3489}.agent .su{fill:#534AB7}
+.side rect{fill:#FAEEDA;stroke:#854F0B}
+.side .ti{fill:#633806}.side .su{fill:#854F0B}
+.exc rect{fill:#FFFFFF;stroke:#888780;stroke-dasharray:6 4}
+.exc .ti{fill:#444441;font-size:16px;font-weight:600}.exc .su{fill:#5F5E5A}
+.neu rect{fill:#F1EFE8;stroke:#888780}
+.neu .ti{fill:#2C2C2A}.neu .su{fill:#5F5E5A}
+.chip rect{fill:#FFFFFF;stroke:#B4B2A9}
+.chip .ti{fill:#2C2C2A;font-size:16px}.chip .su{fill:#5F5E5A;font-size:14px}
+.tag{font-size:14px;font-weight:700}
+</style>
+<rect x="0" y="0" width="1920" height="1080" fill="#FFFFFF"/>
+<text x="60" y="72" font-size="32" font-weight="700" fill="#2C2C2A">User flow · 출시 기획실 (CHAHAR 가칭)</text>
+<text x="60" y="106" font-size="18" fill="#5F5E5A">기획자가 계절을 고르고 출시 후보를 정하기까지 · 근거: idea/MEJ_출시기획실_제작과정.md, MEJ_출시순위_버튼시안.md, MEJ_출시가_결정과정.md, trend/글로벌트렌드_에이전트_지시문.md</text>
+<text x="1860" y="72" text-anchor="end" font-size="18" font-style="italic" fill="#888780">“계절을 읽고, 피부를 돌보다.”</text>
+<rect x="40" y="138" width="1150.0" height="104" rx="14" fill="#F4F3FD"/>
+<text x="58" y="180" dominant-baseline="central" class="lb" fill="#3C3489">트렌드 서브</text>
+<text x="58" y="202" dominant-baseline="central" class="lb" fill="#3C3489">에이전트 (자동)</text>
+<text x="58" y="322" dominant-baseline="central" class="lb">기획자 화면</text>
+<text x="58" y="602" dominant-baseline="central" class="lb">기획자 화면</text>
+<g class="agent"><rect x="226.0" y="150.0" width="280" height="80" rx="12" stroke-width="1.2"/><text x="366.0" y="178.0" text-anchor="middle" dominant-baseline="central" class="ti">출처 22곳 등록</text><text x="366.0" y="202.0" text-anchor="middle" dominant-baseline="central" class="su">실시간 신호 · 업계 사례 · 배경 자료</text></g>
+<g class="agent"><rect x="558.0" y="150.0" width="280" height="80" rx="12" stroke-width="1.2"/><text x="698.0" y="178.0" text-anchor="middle" dominant-baseline="central" class="ti">출처 상태 확인</text><text x="698.0" y="202.0" text-anchor="middle" dominant-baseline="central" class="su">열림 / 막힘 (막힌 곳은 우회 안 함)</text></g>
+<g class="agent"><rect x="890.0" y="150.0" width="280" height="80" rx="12" stroke-width="1.2"/><text x="1030.0" y="178.0" text-anchor="middle" dominant-baseline="central" class="ti">공개 자료만 요약</text><text x="1030.0" y="202.0" text-anchor="middle" dominant-baseline="central" class="su">beauty_trends.json · 매시간 갱신</text></g>
+<line x1="506.0" y1="190" x2="555.0" y2="190" stroke="#534AB7" stroke-width="1.6" marker-end="url(#ap)"/>
+<line x1="838.0" y1="190" x2="887.0" y2="190" stroke="#534AB7" stroke-width="1.6" marker-end="url(#ap)"/>
+<g class="neu"><rect x="226.0" y="272.0" width="280" height="100" rx="12" stroke-width="1.2"/><text x="366.0" y="298.0" text-anchor="middle" dominant-baseline="central" class="ti">사이트 진입</text><text x="366.0" y="322.0" text-anchor="middle" dominant-baseline="central" class="su">메뉴: 기본 라인 · 지난 컬렉션</text><text x="366.0" y="346.0" text-anchor="middle" dominant-baseline="central" class="su">· 출시 기획실</text></g>
+<g class="must"><rect x="558.0" y="272.0" width="280" height="100" rx="12" stroke-width="1.2"/><text x="698.0" y="298.0" text-anchor="middle" dominant-baseline="central" class="ti">계절 선택</text><text x="698.0" y="322.0" text-anchor="middle" dominant-baseline="central" class="su">봄 · 여름 · 가을 · 겨울</text><text x="698.0" y="346.0" text-anchor="middle" dominant-baseline="central" class="su">배너 색 + 기후 이슈 카드</text></g>
+<g class="must"><rect x="890.0" y="272.0" width="280" height="100" rx="12" stroke-width="1.2"/><text x="1030.0" y="298.0" text-anchor="middle" dominant-baseline="central" class="ti">실시간 뷰티 트렌드</text><text x="1030.0" y="322.0" text-anchor="middle" dominant-baseline="central" class="su">기획 방향 → 비교할 제형·구성</text><text x="1030.0" y="346.0" text-anchor="middle" dominant-baseline="central" class="su">↻ 새로고침 · 근거 보기 (3칸)</text></g>
+<g class="must"><rect x="1222.0" y="272.0" width="280" height="100" rx="12" stroke-width="1.2"/><text x="1362.0" y="298.0" text-anchor="middle" dominant-baseline="central" class="ti">기준 고르기</text><text x="1362.0" y="322.0" text-anchor="middle" dominant-baseline="central" class="su">프리셋 5종 또는 직접 고르기</text><text x="1362.0" y="346.0" text-anchor="middle" dominant-baseline="central" class="su">후보 순위 근거 ★ / ★★</text></g>
+<polygon points="1694.0,257.0 1809.0,322 1694.0,387.0 1579.0,322" fill="#FFFFFF" stroke="#5F5E5A" stroke-width="1.4"/>
+<text x="1694.0" y="310" text-anchor="middle" dominant-baseline="central" class="ti" fill="#2C2C2A">필수 통과 조건</text>
+<text x="1694.0" y="336" text-anchor="middle" dominant-baseline="central" class="su" fill="#5F5E5A">7개 검사</text>
+<line x1="506.0" y1="322" x2="555.0" y2="322" stroke="#5F5E5A" stroke-width="1.6" marker-end="url(#a)"/>
+<line x1="838.0" y1="322" x2="887.0" y2="322" stroke="#5F5E5A" stroke-width="1.6" marker-end="url(#a)"/>
+<line x1="1170.0" y1="322" x2="1219.0" y2="322" stroke="#5F5E5A" stroke-width="1.6" marker-end="url(#a)"/>
+<line x1="1502.0" y1="322" x2="1576.0" y2="322" stroke="#5F5E5A" stroke-width="1.6" marker-end="url(#a)"/>
+<line x1="1030.0" y1="230" x2="1030.0" y2="269" stroke="#534AB7" stroke-width="1.6" marker-end="url(#ap)"/>
+<text x="1040.0" y="256.0" text-anchor="start" class="tag" fill="#534AB7">화면이 5분마다 읽음</text>
+<g class="exc"><rect x="1634.0" y="150.0" width="226.0" height="80" rx="12" stroke-width="1.2"/><text x="1747.0" y="178.0" text-anchor="middle" dominant-baseline="central" class="ti">순위에서 제외</text><text x="1747.0" y="202.0" text-anchor="middle" dominant-baseline="central" class="su">예: 길경 (클렌저용)</text></g>
+<line x1="1694.0" y1="257.0" x2="1694.0" y2="233" stroke="#A8A69D" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#ag)"/>
+<text x="1704.0" y="248.5" text-anchor="start" class="tag" fill="#888780">FAIL</text>
+<line x1="1694.0" y1="387.0" x2="1694.0" y2="544.0" stroke="#5F5E5A" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="1704.0" y="472.0" text-anchor="start" class="tag" fill="#0F6E56">PASS</text>
+<g class="must"><rect x="226.0" y="424.0" width="280" height="76" rx="12" stroke-width="1.2"/><text x="366.0" y="450.0" text-anchor="middle" dominant-baseline="central" class="ti">기본 라인 한눈에 보기</text><text x="366.0" y="474.0" text-anchor="middle" dominant-baseline="central" class="su">5개 제품군 · 용기 7종 같은 배율</text></g>
+<line x1="366.0" y1="372" x2="366.0" y2="421" stroke="#5F5E5A" stroke-width="1.6" marker-end="url(#a)"/>
+<g class="must"><rect x="1554.0" y="547.0" width="280" height="110" rx="12" stroke-width="1.2"/><text x="1694.0" y="578.0" text-anchor="middle" dominant-baseline="central" class="ti">결과 · Top 3 카드</text><text x="1694.0" y="602.0" text-anchor="middle" dominant-baseline="central" class="su">+ 다른 후보 표 · 추가 검증</text><text x="1694.0" y="626.0" text-anchor="middle" dominant-baseline="central" class="su">이유 칩 · 순위 변동 ▲▼</text></g>
+<g class="must"><rect x="1222.0" y="537.0" width="280" height="130" rx="12" stroke-width="1.2"/><text x="1362.0" y="567.5" text-anchor="middle" dominant-baseline="central" class="ti">상세 화면 (카드 클릭)</text><text x="1362.0" y="590.5" text-anchor="middle" dominant-baseline="central" class="su">사진 돋보기 · 패키지 팔레트</text><text x="1362.0" y="613.5" text-anchor="middle" dominant-baseline="central" class="su">추천 이유 키워드 · 잘 맞는 고객</text><text x="1362.0" y="636.5" text-anchor="middle" dominant-baseline="central" class="su">출시 구성 · 필수 조건 · 순위 근거</text></g>
+<polygon points="1030.0,537.0 1145.0,602 1030.0,667.0 915.0,602" fill="#FFFFFF" stroke="#5F5E5A" stroke-width="1.4"/>
+<text x="1030.0" y="602" text-anchor="middle" dominant-baseline="central" class="ti" fill="#2C2C2A">더 비교할까?</text>
+<g class="must"><rect x="568.0" y="567.0" width="260" height="70" rx="12" stroke-width="1.2"/><text x="698.0" y="602.0" text-anchor="middle" dominant-baseline="central" class="ti">출시 검토 후보 결정</text></g>
+<g class="neu"><rect x="246.0" y="572.0" width="240" height="60" rx="30" stroke-width="1.2"/><text x="366.0" y="602.0" text-anchor="middle" dominant-baseline="central" class="ti">회의에 제안</text></g>
+<line x1="1554.0" y1="602" x2="1505.0" y2="602" stroke="#5F5E5A" stroke-width="1.6" marker-end="url(#a)"/>
+<line x1="1222.0" y1="602" x2="1148.0" y2="602" stroke="#5F5E5A" stroke-width="1.6" marker-end="url(#a)"/>
+<line x1="915.0" y1="602" x2="831.0" y2="602" stroke="#5F5E5A" stroke-width="1.6" marker-end="url(#a)"/>
+<line x1="568.0" y1="602" x2="489.0" y2="602" stroke="#5F5E5A" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="871.5" y="590" text-anchor="middle" class="tag" fill="#5F5E5A">충분함</text>
+<g class="must"><rect x="905.0" y="702.0" width="250" height="80" rx="12" stroke-width="1.2"/><text x="1030.0" y="730.0" text-anchor="middle" dominant-baseline="central" class="ti">기준 바꾸기</text><text x="1030.0" y="754.0" text-anchor="middle" dominant-baseline="central" class="su">프리셋 · ★ 다시 고르기</text></g>
+<line x1="1030.0" y1="667.0" x2="1030.0" y2="699" stroke="#0F6E56" stroke-width="1.6" marker-end="url(#at)"/>
+<text x="1040.0" y="689.5" text-anchor="start" class="tag" fill="#0F6E56">기준 바꾸기</text>
+<path d="M1030.0 782 L1030.0 806 L1890 806 L1890 602 L1837.0 602" fill="none" stroke="#0F6E56" stroke-width="1.6" stroke-dasharray="7 5" marker-end="url(#at)"/>
+<text x="1884" y="681.0" text-anchor="end" class="tag" fill="#0F6E56">↻ 순위 다시 계산</text>
+<text x="58" y="854" class="lb">출시가가 정해지는 과정 (상세 화면 ‘출시 구성’)</text>
+<g class="chip"><rect x="58.0" y="870.0" width="231.71428571428572" height="64" rx="10" stroke-width="1.2"/><text x="173.85714285714286" y="891.0" text-anchor="middle" dominant-baseline="central" class="ti">① 피부 목적</text><text x="173.85714285714286" y="913.0" text-anchor="middle" dominant-baseline="central" class="su">계절 고민에서</text></g>
+<line x1="289.7142857142857" y1="902" x2="316.7142857142857" y2="902" stroke="#888780" stroke-width="1.4" marker-end="url(#a)"/>
+<g class="chip"><rect x="319.71428571428567" y="870.0" width="231.71428571428572" height="64" rx="10" stroke-width="1.2"/><text x="435.57142857142856" y="891.0" text-anchor="middle" dominant-baseline="central" class="ti">② 라인 구성</text><text x="435.57142857142856" y="913.0" text-anchor="middle" dominant-baseline="central" class="su">목적별 구성 틀</text></g>
+<line x1="551.4285714285714" y1="902" x2="578.4285714285714" y2="902" stroke="#888780" stroke-width="1.4" marker-end="url(#a)"/>
+<g class="chip"><rect x="581.4285714285714" y="870.0" width="231.71428571428572" height="64" rx="10" stroke-width="1.2"/><text x="697.2857142857143" y="891.0" text-anchor="middle" dominant-baseline="central" class="ti">③ 정가</text><text x="697.2857142857143" y="913.0" text-anchor="middle" dominant-baseline="central" class="su">K5 중저가 ml당 범위 안</text></g>
+<line x1="813.1428571428572" y1="902" x2="840.1428571428572" y2="902" stroke="#888780" stroke-width="1.4" marker-end="url(#a)"/>
+<g class="chip"><rect x="843.1428571428571" y="870.0" width="231.71428571428572" height="64" rx="10" stroke-width="1.2"/><text x="959.0" y="891.0" text-anchor="middle" dominant-baseline="central" class="ti">④ ml당 범위 확인</text><text x="959.0" y="913.0" text-anchor="middle" dominant-baseline="central" class="su">범위 밖이면 FAIL</text></g>
+<line x1="1074.857142857143" y1="902" x2="1101.857142857143" y2="902" stroke="#888780" stroke-width="1.4" marker-end="url(#a)"/>
+<g class="chip"><rect x="1104.857142857143" y="870.0" width="231.71428571428572" height="64" rx="10" stroke-width="1.2"/><text x="1220.7142857142858" y="891.0" text-anchor="middle" dominant-baseline="central" class="ti">⑤ 가격 경쟁력</text><text x="1220.7142857142858" y="913.0" text-anchor="middle" dominant-baseline="central" class="su">더 싸면 5 · 비싸면 2</text></g>
+<line x1="1336.5714285714287" y1="902" x2="1363.5714285714287" y2="902" stroke="#888780" stroke-width="1.4" marker-end="url(#a)"/>
+<g class="chip"><rect x="1366.5714285714287" y="870.0" width="231.71428571428572" height="64" rx="10" stroke-width="1.2"/><text x="1482.4285714285716" y="891.0" text-anchor="middle" dominant-baseline="central" class="ti">⑥ 목표 원가</text><text x="1482.4285714285716" y="913.0" text-anchor="middle" dominant-baseline="central" class="su">정가 × 25% (가정, 사이트 밖)</text></g>
+<line x1="1598.2857142857144" y1="902" x2="1625.2857142857144" y2="902" stroke="#888780" stroke-width="1.4" marker-end="url(#a)"/>
+<g class="chip"><rect x="1628.2857142857142" y="870.0" width="231.71428571428572" height="64" rx="10" stroke-width="1.2"/><text x="1744.142857142857" y="891.0" text-anchor="middle" dominant-baseline="central" class="ti">⑦ 할인 점검</text><text x="1744.142857142857" y="913.0" text-anchor="middle" dominant-baseline="central" class="su">할인 원가율 ≤ 40%</text></g>
+<rect x="60" y="1007" width="22" height="22" rx="5" fill="#E1F5EE" stroke="#0F6E56"/>
+<text x="92" y="1018" dominant-baseline="central" font-size="16" fill="#444441">기획자 화면</text>
+<rect x="228" y="1007" width="22" height="22" rx="5" fill="#EEEDFE" stroke="#534AB7"/>
+<text x="260" y="1018" dominant-baseline="central" font-size="16" fill="#444441">트렌드 서브 에이전트 (자동)</text>
+<rect x="546" y="1007" width="22" height="22" rx="5" fill="#FFFFFF" stroke="#888780" stroke-dasharray="5 4"/>
+<text x="578" y="1018" dominant-baseline="central" font-size="16" fill="#444441">순위에서 제외 (FAIL)</text>
+<rect x="834" y="1007" width="22" height="22" rx="5" fill="#FFFFFF" stroke="#B4B2A9"/>
+<text x="866" y="1018" dominant-baseline="central" font-size="16" fill="#444441">출시가 결정 단계</text>
+</svg>

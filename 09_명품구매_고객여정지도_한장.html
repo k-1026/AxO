@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>명품 구매 여정 한 장</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* 파스텔 톤 */
+    --paper: #fbf8f4;
+    --card: #ffffff;
+    --ink: #3b3a4a;
+    --muted: #8a8698;
+    --line: #ece5ef;
+    --green: #5a9478;
+    --green-soft: #dff1e6;
+    --ochre: #c98e55;
+    --ochre-soft: #fcebd9;
+    --red: #d07474;
+    --red-soft: #fbe3e3;
+    --violet: #8676c2;
+    --violet-soft: #ece7fa;
+    --stage: #e8e3ee;
+    --p1: #cfe9da; --p2: #d5e6f6; --p3: #e2dcf6; --p4: #fde3c9; --p5: #f9d7e2; --p6: #f4e6ba; --pm: #f7caca;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--stage); }
+  body { font-family: "Noto Sans KR", system-ui, sans-serif; color: var(--ink); overflow: hidden; -webkit-font-smoothing: antialiased; }
+
+  /* 1920×1080 한 장 캔버스를 화면에 맞춰 축소 */
+  #deck { position: fixed; inset: 0; display: grid; place-items: center; }
+  .slide {
+    position: absolute; width: 1920px; height: 1080px;
+    background: var(--paper); padding: 36px 48px 0;
+    display: flex; flex-direction: column; transform-origin: center center; overflow: hidden;
+  }
+
+  .head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; }
+  .kicker { font-size: 17px; font-weight: 700; letter-spacing: .08em; color: var(--violet); margin-bottom: 6px; }
+  h1 { font-family: "Noto Serif KR", serif; font-size: 44px; font-weight: 900; line-height: 1.2; }
+  h1 em { font-style: normal; color: var(--violet); }
+  .legend { display: flex; gap: 18px; font-size: 15px; color: var(--muted); padding-bottom: 6px; }
+  .legend i { display: inline-block; width: 11px; height: 11px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+
+  .footer { position: absolute; left: 48px; right: 48px; bottom: 14px; display: flex; justify-content: space-between; gap: 20px; font-size: 13px; color: var(--muted); }
+
+  .body { display: grid; grid-template-columns: 1fr 460px; gap: 24px; flex: 1; min-height: 0; margin-bottom: 44px; }
+  .left { display: flex; flex-direction: column; gap: 18px; min-height: 0; }
+
+  /* 여정 블록 */
+  .journey { background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 14px 18px 16px; flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .journey.a { border-top: 8px solid #f2b8b8; }
+  .journey.b { border-top: 8px solid #a9d4bc; }
+  .jt { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .badge { font-family: "Noto Serif KR", serif; font-weight: 900; font-size: 22px; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+  .a .badge { background: var(--red-soft); color: var(--red); }
+  .b .badge { background: var(--green-soft); color: var(--green); }
+  .jt h2 { font-size: 24px; font-weight: 900; }
+  .jt p { font-size: 16px; color: var(--muted); }
+
+  .map { display: grid; column-gap: 8px; row-gap: 8px; flex: 1; grid-template-rows: auto auto 1fr auto auto; }
+  .map.c5 { grid-template-columns: 92px repeat(5, 1fr); }
+  .map.c6 { grid-template-columns: 92px repeat(6, 1fr); }
+  .rl { font-size: 15px; font-weight: 900; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+  .rl i { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+  .dot-u { background: #b9b3c9; } .dot-f { background: var(--green); } .dot-i { background: var(--ochre); } .dot-a { background: var(--violet); }
+
+  .chev { height: 56px; display: flex; align-items: center; gap: 10px; padding: 0 20px 0 28px; background: var(--p1);
+    clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%, 18px 50%); }
+  .chev.first { clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%); padding-left: 16px; }
+  .chev .n { font-family: "Noto Serif KR", serif; font-weight: 900; font-size: 24px; color: rgba(59,58,74,.4); }
+  .chev b { font-size: 20px; font-weight: 900; line-height: 1.15; }
+  .chev.s2 { background: var(--p2); } .chev.s3 { background: var(--p3); }
+  .chev.s4 { background: var(--p4); } .chev.s5 { background: var(--p5); } .chev.s6 { background: var(--p6); }
+  .chev.money { background: var(--pm); }
+
+  .act { font-size: 17px; font-weight: 500; line-height: 1.35; padding: 2px 4px; text-align: center; display: flex; align-items: center; justify-content: center; }
+  .pill { font-size: 16px; line-height: 1.3; border-radius: 12px; padding: 8px 10px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .pain { background: #fdf0f0; color: #a85a5a; }
+  .opp { background: #edf7f1; color: #3f7a5e; }
+  .pain.hot { box-shadow: inset 0 0 0 2px var(--red); font-weight: 700; }
+  sup.c { font-size: 11px; font-weight: 700; color: var(--green); margin-left: 1px; }
+
+  .emo { position: relative; min-height: 110px; background: linear-gradient(to bottom, #eaf6ef 0%, #ffffff 50%, #fcedef 100%); border-radius: 14px; }
+  .emo svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .mid { position: absolute; left: 0; right: 0; top: 50%; border-top: 1px dashed #ddd3e6; }
+  .dot { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
+  .dl { position: absolute; transform: translateX(-50%); font-size: 16px; font-weight: 700; white-space: nowrap; padding: 0 6px; border-radius: 6px; background: rgba(255,255,255,.9); }
+
+  /* 오른쪽: 비교 */
+  .right { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
+  .card h3 { font-size: 24px; font-weight: 900; display: flex; align-items: center; gap: 10px; }
+  .card h3 i { width: 11px; height: 11px; border-radius: 50%; }
+  .vs-head { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 15px; font-weight: 900; text-align: center; }
+  .vs-head span:first-child { color: var(--red); } .vs-head span:last-child { color: var(--green); }
+  .vs { display: flex; flex-direction: column; gap: 4px; }
+  .vs .q { font-size: 14px; font-weight: 700; color: var(--muted); }
+  .vs .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .vs .row span { font-size: 17px; font-weight: 700; text-align: center; border-radius: 10px; padding: 8px 6px; line-height: 1.3; }
+  .vs .row span:first-child { background: var(--red-soft); color: #a85a5a; }
+  .vs .row span:last-child { background: var(--green-soft); color: #3f7a5e; }
+
+  .key { background: linear-gradient(135deg, #e4ddf6 0%, #f9e1ea 100%); border: none; flex: 1; justify-content: center; }
+  .key .big { font-family: "Noto Serif KR", serif; font-size: 26px; font-weight: 900; line-height: 1.4; }
+  .key .big em { font-style: normal; color: var(--violet); }
+  .key ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .key li { font-size: 17px; line-height: 1.4; display: flex; gap: 10px; }
+  .key li b { color: var(--violet); }
+
+  @media print {
+    @page { size: 1920px 1080px; margin: 0; }
+    html, body { background: none; overflow: visible; height: auto; }
+    #deck { position: static; display: block; }
+    .slide { position: relative; transform: none !important; }
+  }
+</style>
+</head>
+<body>
+<div id="deck">
+<section class="slide">
+  <div class="head">
+    <div>
+      <div class="kicker">명품 구매 고객여정지도 · 한 장 요약</div>
+      <h1>나는 <em>'얼마인가'</em>로, 일반 소비자는 <em>'무엇을 갖는가'</em>로 고른다</h1>
+    </div>
+    <div class="legend">
+      <span><i class="dot-u"></i>내가 정한 흐름</span>
+      <span><i class="dot-f"></i>사실 [출처]</span>
+      <span><i class="dot-i"></i>해석</span>
+      <span><i class="dot-a"></i>아이디어</span>
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="left">
+
+      <!-- A -->
+      <div class="journey a">
+        <div class="jt"><span class="badge">A</span><h2>내가 정의한 흐름</h2><p>5단계 · 일직선 · 돈을 두 번 확인</p></div>
+        <div class="map c5">
+          <div class="rl">단계</div>
+          <div class="chev first"><span class="n">1</span><b>상품 서치</b></div>
+          <div class="chev s2"><span class="n">2</span><b>브랜드 후보</b></div>
+          <div class="chev s3"><span class="n">3</span><b>가격 비교</b></div>
+          <div class="chev money"><span class="n">4</span><b>통장 잔고 확인</b></div>
+          <div class="chev s5"><span class="n">5</span><b>매장 구매</b></div>
+
+          <div class="rl"><i class="dot-u"></i>행동</div>
+          <div class="act">품목 검색 · 후기 저장</div>
+          <div class="act">3~4개 브랜드로 좁힘</div>
+          <div class="act">채널별 가격 · 중고가 비교</div>
+          <div class="act">잔고 · 할부 계산</div>
+          <div class="act">실물 보고 결제</div>
+
+          <div class="rl"><i class="dot-i"></i>감정</div>
+          <div class="emo" style="grid-column: 2 / -1" data-n="5"
+               data-pts='[[0,4,"😊 설렘"],[1,3.3,"🤔 고민"],[2,2.4,"😮‍💨 피로"],[3,1.3,"😟 불안"],[4,4.8,"😍 만족"]]'></div>
+
+          <div class="rl"><i class="dot-i"></i>불편</div>
+          <div class="pill pain">정보 과다</div>
+          <div class="pill pain">비교 기준 모호</div>
+          <div class="pill pain">채널마다 가격 다름</div>
+          <div class="pill pain hot">큰 지출 부담</div>
+          <div class="pill pain">재고 없음 · 대기</div>
+
+          <div class="rl"><i class="dot-a"></i>기회</div>
+          <div class="pill opp">스타일별 추천</div>
+          <div class="pill opp">브랜드 비교표</div>
+          <div class="pill opp">실구매가 한눈에</div>
+          <div class="pill opp">예산 안 대안</div>
+          <div class="pill opp">방문 전 재고 확인</div>
+        </div>
+      </div>
+
+      <!-- B -->
+      <div class="journey b">
+        <div class="jt"><span class="badge">B</span><h2>일반 명품 소비자</h2><p>6단계 · 순환 · 공개 자료 기반</p></div>
+        <div class="map c6">
+          <div class="rl">단계</div>
+          <div class="chev first"><span class="n">1</span><b>인지 · 자극</b></div>
+          <div class="chev s2"><span class="n">2</span><b>탐색</b></div>
+          <div class="chev s3"><span class="n">3</span><b>비교 · 고민</b></div>
+          <div class="chev s4"><span class="n">4</span><b>구매</b></div>
+          <div class="chev s5"><span class="n">5</span><b>사용 · 공유</b></div>
+          <div class="chev s6"><span class="n">6</span><b>재판매</b></div>
+
+          <div class="rl"><i class="dot-f"></i>행동</div>
+          <div class="act">SNS · 셀럽 보고 반함<sup class="c">[1][6]</sup></div>
+          <div class="act">구매 75%가 온라인 영향<sup class="c">[2]</sup></div>
+          <div class="act">리셀 가치까지 따짐<sup class="c">[1][3]</sup></div>
+          <div class="act">80%는 매장 · 오픈런<sup class="c">[1][4]</sup></div>
+          <div class="act">SNS에 인증<sup class="c">[2]</sup></div>
+          <div class="act">45% 중고 거래 참여<sup class="c">[1]</sup></div>
+
+          <div class="rl"><i class="dot-i"></i>감정</div>
+          <div class="emo" style="grid-column: 2 / -1" data-n="6"
+               data-pts='[[0,3.7,"😍 동경"],[1,4,"🙂 기대"],[2,2.5,"🤔 조급"],[2.8,1.5,"😫 대기"],[3.25,5,"🤩 구매"],[4,4.4,"😊 자부심"],[5,3.3,"🔁 다음 고민"]]'></div>
+
+          <div class="rl"><i class="dot-i"></i>불편</div>
+          <div class="pill pain">내 취향? 남 시선?</div>
+          <div class="pill pain">실물 · 재고 모름</div>
+          <div class="pill pain">잦은 가격 인상<sup class="c">[3]</sup></div>
+          <div class="pill pain hot">새벽 줄서기<sup class="c">[4]</sup></div>
+          <div class="pill pain">관리 부담</div>
+          <div class="pill pain">리셀가 하락<sup class="c">[3]</sup></div>
+
+          <div class="rl"><i class="dot-a"></i>기회</div>
+          <div class="pill opp">'내 이야기' 콘텐츠</div>
+          <div class="pill opp">온라인 → 매장 예약</div>
+          <div class="pill opp">가치 근거 공개</div>
+          <div class="pill opp">줄 대신 예약</div>
+          <div class="pill opp">언박싱 · 관리 서비스</div>
+          <div class="pill opp">보상 판매 혜택</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 오른쪽 -->
+    <div class="right">
+      <div class="card">
+        <h3>A vs B 한눈에 <i class="dot-i"></i></h3>
+        <div class="vs-head"><span>A · 나</span><span>B · 일반</span></div>
+        <div class="vs"><div class="q">어떻게 시작?</div><div class="row"><span>내가 검색</span><span>SNS 보고 자극</span></div></div>
+        <div class="vs"><div class="q">무엇으로 결정?</div><div class="row"><span>가격 · 예산</span><span>브랜드 · 희소성 · 리셀</span></div></div>
+        <div class="vs"><div class="q">가장 힘든 순간?</div><div class="row"><span>통장 잔고 확인</span><span>대기 · 오픈런</span></div></div>
+        <div class="vs"><div class="q">가장 좋은 순간?</div><div class="row"><span>매장 결제</span><span>구매 → 공유까지</span></div></div>
+        <div class="vs"><div class="q">어떻게 끝?</div><div class="row"><span>구매로 끝</span><span>재판매로 다시 시작</span></div></div>
+      </div>
+
+      <div class="card key">
+        <p class="big">공통점은 <em>온라인에서 보고<br>매장에서 산다</em>는 것<sup class="c">[1][2]</sup></p>
+        <ul>
+          <li>💡<span>내 여정의 열쇠는 <b>예산 안에서 확신</b>을 주는 정보</span></li>
+          <li>🔁<span>내 지도에 없는 <b>구매 후 단계</b>를 더해 볼 것</span></li>
+          <li>🌿<span>한방 뷰티라면: <b>가격 투명</b> + <b>약전골목 매장 경험</b> + <b>공유 장치</b></span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>출처 🟡 [1] BCG·Altagamma 2019 pp.4–6 · [2] McKinsey 2015 · [3] 한국경제 2025.06 · [4] 머니투데이 2023.02 · [6] SBS Biz 2023.01 · 확인일 2026-11-09 · 자세한 출처는 09_명품구매_고객여정지도.html 5쪽</span>
+    <span>AxO · MEJ</span>
+  </div>
+</section>
+</div>
+
+<script>
+  const COLORS = v => v >= 4 ? '#5a9478' : v >= 3 ? '#8aa95e' : v >= 2 ? '#c98e55' : '#d07474';
+  const PAD = 0.2;
+  const yOf = v => (PAD + (1 - (v - 1) / 4) * (1 - 2 * PAD)) * 100;
+  function pathFor(pts) {
+    let d = `M ${pts[0][0]} ${pts[0][1]}`;
+    for (let k = 0; k < pts.length - 1; k++) {
+      const p0 = pts[k - 1] || pts[k], p1 = pts[k], p2 = pts[k + 1], p3 = pts[k + 2] || p2;
+      const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+      const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+      d += ` C ${c1[0]} ${c1[1]}, ${c2[0]} ${c2[1]}, ${p2[0]} ${p2[1]}`;
+    }
+    return d;
+  }
+  document.querySelectorAll('.emo[data-pts]').forEach(box => {
+    const n = +box.dataset.n, pts = JSON.parse(box.dataset.pts);
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 100 100');
+    svg.setAttribute('preserveAspectRatio', 'none');
+    box.insertAdjacentHTML('afterbegin', '<div class="mid"></div>');
+    box.appendChild(svg);
+    const xy = pts.map(([i, v]) => [(i + 0.5) / n * 100, yOf(v)]);
+    const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    p.setAttribute('d', pathFor(xy));
+    p.setAttribute('fill', 'none');
+    p.setAttribute('stroke', '#a99fd6');
+    p.setAttribute('stroke-width', 4);
+    p.setAttribute('stroke-linecap', 'round');
+    p.setAttribute('vector-effect', 'non-scaling-stroke');
+    svg.appendChild(p);
+    pts.forEach(([i, v, label], k) => {
+      const [x, y] = xy[k];
+      const dot = document.createElement('div');
+      dot.className = 'dot'; dot.style.left = x + '%'; dot.style.top = y + '%'; dot.style.background = COLORS(v);
+      box.appendChild(dot);
+      const l = document.createElement('div');
+      l.className = 'dl'; l.textContent = label; l.style.left = x + '%'; l.style.color = COLORS(v);
+      if (v >= 3) l.style.top = `calc(${y}% + 9px)`; else l.style.bottom = `calc(${100 - y}% + 9px)`;
+      box.appendChild(l);
+    });
+  });
+
+  const slide = document.querySelector('.slide');
+  function fit() { slide.style.transform = `scale(${Math.min(innerWidth / 1920, innerHeight / 1080)})`; }
+  addEventListener('resize', fit);
+  fit();
+</script>
+</body>
+</html>
