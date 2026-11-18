@@ -1,6 +1,6 @@
 <svg viewBox="0 0 680 500" xmlns="http://www.w3.org/2000/svg" role="img" font-family="'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif">
-<title>포지셔닝 맵 1: 산업 특화도 × 규제 근거</title>
-<desc>가로축은 산업 특화도(범용에서 뷰티 특화), 세로축은 규제 근거(원료 규제·광고 표현 확인 없음에서 내장). 매니패스트는 범용·확인 없음, 라우드랩스는 뷰티 특화(메이크업 4종 카테고리)지만 공식 자료에 규제 확인 언급 없음, 우리 에이전트는 뷰티 특화·규제 근거 내장 우상단.</desc>
+<title>포지셔닝 맵 1: 이용 가능성 × 규제 근거</title>
+<desc>가로축은 이용 가능성(사내 전용에서 누구나 가입), 세로축은 규제 근거(원료 규제·광고 표현 확인 없음에서 내장). 아모레퍼시픽 LEMON은 사내 전용·규제 근거 높음, 매니패스트와 라우드랩스는 누구나 가입·규제 근거 낮음, 우리 에이전트는 누구나 가입·규제 근거 내장 우상단.</desc>
 <rect width="680" height="500" fill="#FFFFFF"/>
 <rect x="350" y="40" width="270" height="200" fill="#E1F5EE" rx="4"/>
 <text x="606" y="62" font-size="12" fill="#0F6E56" text-anchor="end">비어 있는 자리</text>
@@ -11,18 +11,21 @@
 <text x="350" y="32" font-size="14" font-weight="bold" fill="#2C2C2A" text-anchor="middle">규제 근거 내장</text>
 <text x="350" y="462" font-size="14" font-weight="bold" fill="#2C2C2A" text-anchor="middle">규제 확인 없음</text>
 <text x="350" y="478" font-size="12" fill="#5F5E5A" text-anchor="middle">사용자가 직접 법규 확인</text>
-<text x="72" y="236" font-size="14" font-weight="bold" fill="#2C2C2A" text-anchor="end">범용</text>
-<text x="72" y="254" font-size="12" fill="#5F5E5A" text-anchor="end">모든 산업</text>
-<text x="628" y="236" font-size="14" font-weight="bold" fill="#2C2C2A">뷰티</text>
-<text x="628" y="254" font-size="12" fill="#5F5E5A">특화</text>
-<circle cx="160" cy="370" r="11" fill="#FAECE7" stroke="#993C1D" stroke-width="1.5"/>
-<text x="176" y="367" font-size="14" fill="#2C2C2A">매니패스트</text>
-<text x="176" y="383" font-size="12" fill="#5F5E5A">SW 기획서 · 뷰티 규제 없음</text>
-<circle cx="505" cy="330" r="11" fill="#EEEDFE" stroke="#534AB7" stroke-width="1.5"/>
-<text x="489" y="327" font-size="14" fill="#2C2C2A" text-anchor="end">라우드랩스 (콜마)</text>
-<text x="489" y="343" font-size="12" fill="#5F5E5A" text-anchor="end">메이크업 4종 카테고리 (기초 케어 없음)</text>
-<text x="489" y="358" font-size="12" fill="#5F5E5A" text-anchor="end">규제 확인: 공식 자료에 언급 없음</text>
-<circle cx="560" cy="105" r="13" fill="#9FE1CB" stroke="#0F6E56" stroke-width="1.5"/>
-<text x="542" y="101" font-size="14" font-weight="bold" fill="#085041" text-anchor="end">우리 에이전트</text>
-<text x="542" y="117" font-size="12" fill="#0F6E56" text-anchor="end">원료 후보표(K3) · 광고 표현 규칙(K6)</text>
+<text x="72" y="236" font-size="14" font-weight="bold" fill="#2C2C2A" text-anchor="end">사내</text>
+<text x="72" y="254" font-size="12" fill="#5F5E5A" text-anchor="end">전용</text>
+<text x="628" y="236" font-size="14" font-weight="bold" fill="#2C2C2A">누구나</text>
+<text x="628" y="254" font-size="12" fill="#5F5E5A">가입</text>
+<circle cx="135" cy="85" r="11" fill="#FDF3E1" stroke="#9A6A12" stroke-width="1.5"/>
+<text x="151" y="82" font-size="14" fill="#2C2C2A">아모레퍼시픽 LEMON</text>
+<text x="151" y="98" font-size="12" fill="#5F5E5A">사내 연구원 전용 · 연구자료·규제 검토</text>
+<circle cx="565" cy="320" r="11" fill="#EEEDFE" stroke="#534AB7" stroke-width="1.5"/>
+<text x="549" y="317" font-size="14" fill="#2C2C2A" text-anchor="end">라우드랩스 (콜마)</text>
+<text x="549" y="333" font-size="12" fill="#5F5E5A" text-anchor="end">무료 가입 · 메이크업 4종 카테고리</text>
+<text x="549" y="348" font-size="12" fill="#5F5E5A" text-anchor="end">규제 확인: 공식 자료에 언급 없음</text>
+<circle cx="565" cy="400" r="11" fill="#FAECE7" stroke="#993C1D" stroke-width="1.5"/>
+<text x="549" y="397" font-size="14" fill="#2C2C2A" text-anchor="end">매니패스트</text>
+<text x="549" y="413" font-size="12" fill="#5F5E5A" text-anchor="end">누구나 가입 · 뷰티 규제 없음</text>
+<circle cx="565" cy="120" r="13" fill="#9FE1CB" stroke="#0F6E56" stroke-width="1.5"/>
+<text x="547" y="116" font-size="14" font-weight="bold" fill="#085041" text-anchor="end">우리 에이전트</text>
+<text x="547" y="132" font-size="12" fill="#0F6E56" text-anchor="end">외부 판매 · 원료 후보표(K3) · 광고 표현 규칙(K6)</text>
 </svg>
