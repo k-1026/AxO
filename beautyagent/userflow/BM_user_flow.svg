@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080"><rect width="1920" height="1080" fill="white"/><g font-family="Malgun Gothic, sans-serif">
+<text x='80' y='90' font-size='44' fill='#193B2D' font-weight='700' text-anchor='start'>출시 기획실 · 제품 후보 추천 유저플로우</text>
+<text x='82' y='137' font-size='25' fill='#5B6D64' font-weight='400' text-anchor='start'>직접 피드백하거나 “다른 후보 추천해 줘”라고 요청하면, AI가 개선 방향과 새 후보를 제안합니다.</text>
+<rect x='1490' y='65' width='150' height='40' rx='10' fill='#EFF8F4' stroke='#B7D9CA' stroke-width='1.5'/>
+<text x='1565' y='91' font-size='19' fill='#24644C' font-weight='400' text-anchor='middle'>기획자 화면</text>
+<rect x='1660' y='65' width='180' height='40' rx='10' fill='#F1EEFF' stroke='#CFC4F5' stroke-width='1.5'/>
+<text x='1750' y='91' font-size='19' fill='#6650AB' font-weight='400' text-anchor='middle'>AI 자동 처리</text>
+<text x='80' y='226' font-size='24' fill='#24644C' font-weight='700' text-anchor='start'>01  첫 후보 추천과 회의 검토</text>
+<rect x='80' y='255' width='300' height='150' rx='18' fill='#EFF8F4' stroke='#B7D9CA' stroke-width='1.5'/>
+<text x='102' y='289' font-size='17' fill='#24644C' font-weight='700' text-anchor='start'>기획자 화면</text>
+<text x='102' y='332' font-size='27' fill='#20312D' font-weight='700' text-anchor='start'>기획 시작</text>
+<text x='102' y='370' font-size='21' fill='#4E6159' font-weight='400' text-anchor='start'>계절 · 출시 방향 선택</text>
+<rect x='440' y='255' width='300' height='150' rx='18' fill='#EFF8F4' stroke='#B7D9CA' stroke-width='1.5'/>
+<text x='462' y='289' font-size='17' fill='#24644C' font-weight='700' text-anchor='start'>기획자 화면</text>
+<text x='462' y='332' font-size='27' fill='#20312D' font-weight='700' text-anchor='start'>트렌드 확인</text>
+<text x='462' y='370' font-size='21' fill='#4E6159' font-weight='400' text-anchor='start'>시장 흐름 · 기획 방향 확인</text>
+<rect x='800' y='255' width='300' height='150' rx='18' fill='#F1EEFF' stroke='#CFC4F5' stroke-width='1.5'/>
+<text x='822' y='289' font-size='17' fill='#6650AB' font-weight='700' text-anchor='start'>AI 자동 처리</text>
+<text x='822' y='332' font-size='27' fill='#20312D' font-weight='700' text-anchor='start'>후보 생성 · 평가</text>
+<text x='822' y='370' font-size='21' fill='#4E6159' font-weight='400' text-anchor='start'>제품 발굴 → 가격 · 디자인</text>
+<text x='822' y='393' font-size='18' fill='#4E6159' font-weight='400' text-anchor='start'>타당성 평가 + 내부 선호 반영</text>
+<rect x='1160' y='255' width='300' height='150' rx='18' fill='#F1EEFF' stroke='#CFC4F5' stroke-width='1.5'/>
+<text x='1182' y='289' font-size='17' fill='#6650AB' font-weight='700' text-anchor='start'>AI 자동 처리</text>
+<text x='1182' y='332' font-size='27' fill='#20312D' font-weight='700' text-anchor='start'>추천 후보 검토</text>
+<text x='1182' y='370' font-size='21' fill='#4E6159' font-weight='400' text-anchor='start'>후보 비교 · 적합성 검토</text>
+<text x='1182' y='393' font-size='18' fill='#4E6159' font-weight='400' text-anchor='start'>보완 필요 시 AI가 재추천 진행</text>
+<rect x='1520' y='255' width='300' height='150' rx='18' fill='#EFF8F4' stroke='#B7D9CA' stroke-width='1.5'/>
+<text x='1542' y='289' font-size='17' fill='#24644C' font-weight='700' text-anchor='start'>기획자 화면</text>
+<text x='1542' y='332' font-size='27' fill='#20312D' font-weight='700' text-anchor='start'>팀회의에 제안</text>
+<text x='1542' y='370' font-size='21' fill='#4E6159' font-weight='400' text-anchor='start'>출시 검토 후보 논의</text>
+<text x='1542' y='393' font-size='18' fill='#4E6159' font-weight='400' text-anchor='start'>승인 시 → 후속 출시 검토</text>
+<polyline points='380,330 440,330' fill='none' stroke='#71827B' stroke-width='2.5' />
+<polygon points='440,330 429.956,334.4854 429.956,325.5146' fill='#71827B'/>
+<polyline points='740,330 800,330' fill='none' stroke='#71827B' stroke-width='2.5' />
+<polygon points='800,330 789.956,334.4854 789.956,325.5146' fill='#71827B'/>
+<polyline points='1100,330 1160,330' fill='none' stroke='#71827B' stroke-width='2.5' />
+<polygon points='1160,330 1149.956,334.4854 1149.956,325.5146' fill='#71827B'/>
+<polyline points='1460,330 1520,330' fill='none' stroke='#71827B' stroke-width='2.5' />
+<polygon points='1520,330 1509.956,334.4854 1509.956,325.5146' fill='#71827B'/>
+<polyline points='1310,255 1310,182 1870,182 1870,645 1820,645' fill='none' stroke='#24644C' stroke-width='2.5' />
+<polygon points='1820,645 1830.044,640.5146 1830.044,649.4854' fill='#24644C'/>
+<rect x='1390' y='158' width='390' height='42' rx='8' fill='#FFFFFF' stroke='#FFFFFF' stroke-width='1.5'/>
+<text x='1585' y='187' font-size='21' fill='#24644C' font-weight='700' text-anchor='middle'>회의 전 · AI 검토에서 보완 필요 판단</text>
+<polyline points='1670,405 1670,570' fill='none' stroke='#24644C' stroke-width='2.5' />
+<polygon points='1670,570 1665.515,559.956 1674.485,559.956' fill='#24644C'/>
+<text x='1690' y='478' font-size='21' fill='#24644C' font-weight='700' text-anchor='start'>회의 후 보완</text>
+<text x='80' y='539' font-size='24' fill='#6650AB' font-weight='700' text-anchor='start'>02  피드백 반영과 재추천</text>
+<rect x='1520' y='570' width='300' height='150' rx='18' fill='#EFF8F4' stroke='#B7D9CA' stroke-width='1.5'/>
+<text x='1542' y='604' font-size='17' fill='#24644C' font-weight='700' text-anchor='start'>기획자 요청 / AI 검토 결과</text>
+<text x='1542' y='647' font-size='27' fill='#20312D' font-weight='700' text-anchor='start'>재추천 요청</text>
+<text x='1542' y='685' font-size='21' fill='#4E6159' font-weight='400' text-anchor='start'>직접 의견 또는 “다른 후보”</text>
+<text x='1542' y='708' font-size='18' fill='#4E6159' font-weight='400' text-anchor='start'>AI 자체 검토 시에도 자동 진입</text>
+<rect x='1160' y='522' width='300' height='108' rx='18' fill='#F1EEFF' stroke='#CFC4F5' stroke-width='1.5'/>
+<text x='1180' y='550' font-size='17' fill='#6650AB' font-weight='700' text-anchor='start'>구체적인 피드백이 있을 때</text>
+<text x='1180' y='584' font-size='24' fill='#20312D' font-weight='700' text-anchor='start'>해석 후 생성</text>
+<text x='1180' y='615' font-size='18' fill='#4E6159' font-weight='400' text-anchor='start'>입력 의도 해석 → 개선 방향 생성</text>
+<rect x='1160' y='662' width='300' height='108' rx='18' fill='#F1EEFF' stroke='#CFC4F5' stroke-width='1.5'/>
+<text x='1180' y='689' font-size='16' fill='#6650AB' font-weight='700' text-anchor='start'>다른 후보 요청 / AI 자체 검토</text>
+<text x='1180' y='724' font-size='24' fill='#20312D' font-weight='700' text-anchor='start'>판단 후 자체생성</text>
+<text x='1180' y='755' font-size='18' fill='#4E6159' font-weight='400' text-anchor='start'>차별성 · 보완점 스스로 탐색</text>
+<rect x='800' y='570' width='300' height='150' rx='18' fill='#F1EEFF' stroke='#CFC4F5' stroke-width='1.5'/>
+<text x='822' y='604' font-size='17' fill='#6650AB' font-weight='700' text-anchor='start'>AI 자동 처리</text>
+<text x='822' y='647' font-size='27' fill='#20312D' font-weight='700' text-anchor='start'>평가 기준 구성</text>
+<text x='822' y='685' font-size='21' fill='#4E6159' font-weight='400' text-anchor='start'>기존 활용 · 새 기준 생성</text>
+<text x='822' y='708' font-size='18' fill='#4E6159' font-weight='400' text-anchor='start'>이번 기획의 우선순위 조정</text>
+<rect x='440' y='570' width='300' height='150' rx='18' fill='#F1EEFF' stroke='#CFC4F5' stroke-width='1.5'/>
+<text x='462' y='604' font-size='17' fill='#6650AB' font-weight='700' text-anchor='start'>AI 자동 처리</text>
+<text x='462' y='647' font-size='27' fill='#20312D' font-weight='700' text-anchor='start'>후보 보완 · 생성</text>
+<text x='462' y='685' font-size='21' fill='#4E6159' font-weight='400' text-anchor='start'>적합한 후보는 수정</text>
+<text x='462' y='708' font-size='18' fill='#4E6159' font-weight='400' text-anchor='start'>부족하면 새 후보 생성</text>
+<rect x='80' y='570' width='300' height='150' rx='18' fill='#EFF8F4' stroke='#B7D9CA' stroke-width='1.5'/>
+<text x='102' y='604' font-size='17' fill='#24644C' font-weight='700' text-anchor='start'>기획자 화면</text>
+<text x='102' y='647' font-size='27' fill='#20312D' font-weight='700' text-anchor='start'>새 후보 · 수정안 제안</text>
+<text x='102' y='685' font-size='21' fill='#4E6159' font-weight='400' text-anchor='start'>반영 내용 · 이전 안과 차이</text>
+<text x='102' y='708' font-size='18' fill='#4E6159' font-weight='400' text-anchor='start'>AI 제안 방향 · 미확인 사항 안내</text>
+<polyline points='1520,645 1490,645 1490,576 1460,576' fill='none' stroke='#6650AB' stroke-width='2.5' />
+<polygon points='1460,576 1470.044,571.5146 1470.044,580.4854' fill='#6650AB'/>
+<polyline points='1490,645 1490,716 1460,716' fill='none' stroke='#6650AB' stroke-width='2.5' />
+<polygon points='1460,716 1470.044,711.5146 1470.044,720.4854' fill='#6650AB'/>
+<polyline points='1160,576 1130,576 1130,645 1100,645' fill='none' stroke='#6650AB' stroke-width='2.5' />
+<polygon points='1100,645 1110.044,640.5146 1110.044,649.4854' fill='#6650AB'/>
+<polyline points='1160,716 1130,716 1130,645' fill='none' stroke='#6650AB' stroke-width='2.5' />
+<polyline points='800,645 740,645' fill='none' stroke='#6650AB' stroke-width='2.5' />
+<polygon points='740,645 750.044,640.5146 750.044,649.4854' fill='#6650AB'/>
+<polyline points='440,645 380,645' fill='none' stroke='#6650AB' stroke-width='2.5' />
+<polygon points='380,645 390.044,640.5146 390.044,649.4854' fill='#6650AB'/>
+<polyline points='230,570 230,463 1310,463 1310,405' fill='none' stroke='#24644C' stroke-width='2.5' />
+<polygon points='1310,405 1314.485,415.044 1305.515,415.044' fill='#24644C'/>
+<rect x='630' y='443' width='290' height='40' rx='8' fill='#FFFFFF' stroke='#FFFFFF' stroke-width='1.5'/>
+<text x='775' y='470' font-size='21' fill='#24644C' font-weight='700' text-anchor='middle'>수정안 다시 비교 · 재제안</text>
+<rect x='80' y='800' width='550' height='177' rx='18' fill='#F7FAF8' stroke='#E0E9E4' stroke-width='1.5'/>
+<text x='106' y='845' font-size='25' fill='#24644C' font-weight='700' text-anchor='start'>기획자가 보는 것</text>
+<text x='106' y='888' font-size='22' fill='#3E5448' font-weight='400' text-anchor='start'>추천 제품 · 추천 이유 · 반영 / 탐색 방향</text>
+<text x='106' y='929' font-size='21' fill='#627268' font-weight='400' text-anchor='start'>가중치와 점수 계산 과정은 화면에 미노출</text>
+<rect x='680' y='800' width='550' height='177' rx='18' fill='#F8F6FF' stroke='#E4DFF3' stroke-width='1.5'/>
+<text x='706' y='845' font-size='25' fill='#6650AB' font-weight='700' text-anchor='start'>AI가 자율적으로 처리하는 것</text>
+<text x='706' y='887' font-size='21' fill='#3E5448' font-weight='400' text-anchor='start'>후보 검토 · 피드백 생성 · 기준 구성 · 재평가</text>
+<text x='706' y='928' font-size='20' fill='#627268' font-weight='400' text-anchor='start'>AI 생성 방향은 제안으로 표시 · 필수 조건 유지</text>
+<rect x='1280' y='800' width='560' height='177' rx='18' fill='#F7FAF8' stroke='#E0E9E4' stroke-width='1.5'/>
+<text x='1306' y='845' font-size='25' fill='#24644C' font-weight='700' text-anchor='start'>Supabase는 기준과 이력을 저장</text>
+<text x='1306' y='887' font-size='21' fill='#3E5448' font-weight='400' text-anchor='start'>공통 기본 기준 + 기획별 추가 기준 · 피드백</text>
+<text x='1306' y='928' font-size='20' fill='#627268' font-weight='400' text-anchor='start'>공통 기준 등록 대기 없이 기획별 기준 즉시 적용</text>
+<text x='80' y='1039' font-size='23' fill='#193B2D' font-weight='700' text-anchor='start'>직접 피드백 · 간단한 재추천 요청 · AI 자체 검토, 세 경로로 후보를 개선합니다.</text>
+<text x='1838' y='1040' font-size='18' fill='#7C8981' font-weight='400' text-anchor='middle'>16:9 · 설계안</text>
+</g></svg>
