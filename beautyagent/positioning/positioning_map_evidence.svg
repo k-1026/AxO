@@ -1,6 +1,6 @@
 <svg viewBox="0 0 680 500" xmlns="http://www.w3.org/2000/svg" role="img" font-family="'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif">
 <title>포지셔닝 맵 1: 이용 가능성 × 규제 근거</title>
-<desc>가로축은 이용 가능성(사내 전용에서 누구나 가입), 세로축은 규제 근거(원료 규제·광고 표현 확인 없음에서 내장). 아모레퍼시픽 LEMON은 사내 전용·규제 근거 높음, 매니패스트와 라우드랩스는 누구나 가입·규제 근거 낮음, 우리 에이전트는 누구나 가입·규제 근거 내장 우상단.</desc>
+<desc>가로축은 이용 가능성(사내 전용에서 누구나 가입), 세로축은 규제 근거(원료 규제·광고 표현 확인 없음에서 내장). 아모레퍼시픽 LEMON은 사내 전용·규제 근거 높음, 매니패스트와 라우드랩스(색조 메이크업 상품 기획)는 누구나 가입·규제 근거 낮음, 우리 에이전트는 누구나 가입·규제 근거 내장 우상단.</desc>
 <rect width="680" height="500" fill="#FFFFFF"/>
 <rect x="350" y="40" width="270" height="200" fill="#E1F5EE" rx="4"/>
 <text x="606" y="62" font-size="12" fill="#0F6E56" text-anchor="end">비어 있는 자리</text>
@@ -20,7 +20,7 @@
 <text x="151" y="98" font-size="12" fill="#5F5E5A">사내 연구원 전용 · 연구자료·규제 검토</text>
 <circle cx="565" cy="320" r="11" fill="#EEEDFE" stroke="#534AB7" stroke-width="1.5"/>
 <text x="549" y="317" font-size="14" fill="#2C2C2A" text-anchor="end">라우드랩스 (콜마)</text>
-<text x="549" y="333" font-size="12" fill="#5F5E5A" text-anchor="end">무료 가입 · 메이크업 4종 카테고리</text>
+<text x="549" y="333" font-size="12" fill="#5F5E5A" text-anchor="end">무료 가입 · 색조 메이크업 상품 기획</text>
 <text x="549" y="348" font-size="12" fill="#5F5E5A" text-anchor="end">규제 확인: 공식 자료에 언급 없음</text>
 <circle cx="565" cy="400" r="11" fill="#FAECE7" stroke="#993C1D" stroke-width="1.5"/>
 <text x="549" y="397" font-size="14" fill="#2C2C2A" text-anchor="end">매니패스트</text>

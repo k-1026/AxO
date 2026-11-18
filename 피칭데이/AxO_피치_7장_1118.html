@@ -34,6 +34,19 @@ td.num{font-weight:900;color:var(--teal-d);white-space:nowrap}
 .r{text-align:right}
 .voc{border-left:4px solid var(--teal);background:var(--teal-l);border-radius:0 10px 10px 0;padding:8px 14px;font-size:16px;font-weight:700;line-height:1.4}
 .voc span{display:block;font-size:13px;font-weight:400;color:var(--sub);margin-top:3px}
+.chartgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;align-items:stretch}
+.chart{border:1px solid var(--line);border-radius:16px;padding:24px 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.chart h3{font-size:19px;font-weight:700;text-align:center;line-height:1.35}
+.chart p{font-size:15.5px;color:var(--sub);line-height:1.5;text-align:center}
+.hbar{width:100%;display:flex;flex-direction:column;gap:14px;margin-top:18px}
+.hbar .row{display:flex;flex-direction:column;gap:6px;font-size:15px}
+.hbar .track{height:30px;background:#E3F4F2;border-radius:8px;overflow:hidden}
+.hbar .fill{height:100%;background:#0E8A80;border-radius:8px;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;color:#fff;font-weight:900;font-size:17px}
+table.big{font-size:21px}
+table.big th{font-size:19px;padding:14px 18px}
+table.big td{padding:16px 18px;line-height:1.5}
+.vocbig{border-left:6px solid var(--teal);background:var(--teal-l);border-radius:0 14px 14px 0;padding:18px 26px;font-size:25px;font-weight:700;line-height:1.45}
+.vocbig span{display:block;font-size:16px;font-weight:400;color:var(--sub);margin-top:6px}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
 .stat{border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px}
 .stat b{display:block;font-size:40px;font-weight:900;color:var(--teal);line-height:1.1}
@@ -87,108 +100,126 @@ a{color:var(--teal-d)}
   <h1>출시 기획실</h1>
   <p class="lead">신생 한방뷰티 브랜드 기획자가 근거 있는 시즌 라인을 고르게</p>
   <div class="flow"><span>계절 선택</span><span>→ 기후 이슈 · 피부 고민</span><span>→ 쓸 수 있는 약재</span><span>→ 라인 후보와 순위</span></div>
-  <p class="meta">팀 AxO · HSJ · LJH · MEJ &nbsp;|&nbsp; 2026-11-18 &nbsp;|&nbsp; 에이전트 이름은 새로 정할 예정</p>
+  <p class="meta">팀 AxO · HSJ · MEJ &nbsp;|&nbsp; 2026-11-18 &nbsp;|&nbsp; 에이전트 이름은 새로 정할 예정</p>
 </section>
 
-<!-- 1 문제 -->
+<!-- 1 문제 · 수치 -->
 <section class="slide">
   <div class="bar"></div><div class="chip">1 · 문제</div>
-  <h1>신생 한방뷰티 브랜드 기획자가<br>조사·원료·원가·법규를 <em>혼자</em> 맡는다</h1>
+  <h1>기획자 혼자 맡는 <em>조사·원료·원가·규제</em></h1>
   <p class="q">"정말 있는 문제인가?" — 누가, 어떤 장면에서, 얼마나 불편한가</p>
-  <div class="body" style="flex-direction:column;gap:18px">
-    <div class="stats">
-      <div class="stat"><b>88%</b><span>화장품 생산 업체 13,976곳 중 12,266곳이 종사자 10명 미만 (2024, 식약처·장업신문 교차확인)</span></div>
-      <div class="stat"><b>14 / 41건</b><span>안전기준 위반 41건 중 사용금지·제한 원료 (2021~2025.6) — 원료를 잘못 고르면 판매가 멈춤</span></div>
-      <div class="stat"><b>64%</b><span>온라인 점검 적발 83건 중 53건이 의약품 오인 광고 (2025, 식약처 · 점검 209건)</span></div>
-      <div class="stat"><b>12일</b><span>대기업 연구원도 연구자료·규제 검토에 약 12일, 원료 검토에 약 6일 (AI 도입 전, 아모레퍼시픽 발표)</span></div>
-    </div>
-    <div style="display:flex;gap:24px;flex:1;min-height:0">
-      <div class="col" style="flex:1.5">
-        <table>
-          <tr><th style="width:22%">기획자 업무 단계</th><th>막히는 장면 (밸류체인 병목)</th><th style="width:15%">판정</th></tr>
-          <tr><td>원료·제형</td><td>쓰면 안 되는 원료를 넣으면 판매가 멈춤. 작은 회사는 연구·규제 담당이 없음</td><td><span class="tag k">핵심</span></td></tr>
-          <tr><td>광고 표현</td><td>적발의 3분의 2가 의약품 오인. 기획자가 직접 법규를 확인</td><td><span class="tag k">핵심</span></td></tr>
-          <tr><td>조사·기획</td><td>계절 근거·트렌드 자료 찾기에 시간이 듦. 기획안 1개에 1~3개월</td><td><span class="tag">보조</span></td></tr>
-        </table>
-      </div>
-      <div class="col" style="flex:1.15;gap:10px">
-        <div style="font-weight:700;color:var(--teal-d);font-size:16px">현장의 목소리 (공개 자료 VOC)</div>
-        <div class="voc">"특정 성분의 이미 알려진 효능에 대해 광고할 수 있나요?"<span>화장품 판매업자 대상 정부 Q&amp;A의 질문 · 대한민국 정책브리핑 (2021-09-28) 🟢</span></div>
-        <div class="voc">"근거자료가 있더라도 원하는 광고 표현을 곧바로 사용할 수 있는 것은 아니다"<span>업계 단체 광고자문위원회 임원 · 뷰티누리 (2026-07-24) 🟡</span></div>
-        <div class="voc">"빚내서 누구를 위해 사업해야 하는지"<span>중소 화장품 기업 대표 (광고 실증 비용 부담, SNS 글 기사 인용) · CNC News (2026-01-13) 🟡</span></div>
-        <div class="note" style="font-size:14px">한방 적발 사례: 한방 샴푸가 의약품 오인 광고로 <b>광고업무 3개월 정지</b> (코스인코리아 2023-11-01) 🟡</div>
-        <div class="todo" style="padding:8px 14px;font-size:14px"><span class="t">보완 필요</span>공개 자료로 대신한 VOC예요. 우리 고객(신생 한방뷰티 브랜드 기획자) 본인의 말이 아니고, 인용마다 출처가 1곳이에요.</div>
-      </div>
+  <div class="body" style="flex-direction:column;justify-content:center">
+    <div class="chartgrid" style="height:470px">
+      <div class="chart"><svg viewBox="0 0 180 180" width="190" height="190"><circle cx="90" cy="90" r="70" fill="none" stroke="#E3F4F2" stroke-width="26"/><circle cx="90" cy="90" r="70" fill="none" stroke="#0E8A80" stroke-width="26" stroke-dasharray="386.2 439.8" transform="rotate(-90 90 90)"/><text x="90" y="100" text-anchor="middle" font-size="30" font-weight="900" fill="#0B6B63" font-family="Noto Sans KR,Malgun Gothic,sans-serif">88%</text></svg><h3>종사자 10명 미만</h3><p>화장품 생산 업체 13,976곳 중 12,266곳 (2024, 식약처·장업신문 교차확인)</p></div>
+      <div class="chart"><svg viewBox="0 0 180 180" width="190" height="190"><circle cx="90" cy="90" r="70" fill="none" stroke="#E3F4F2" stroke-width="26"/><circle cx="90" cy="90" r="70" fill="none" stroke="#0E8A80" stroke-width="26" stroke-dasharray="150.0 439.8" transform="rotate(-90 90 90)"/><text x="90" y="100" text-anchor="middle" font-size="30" font-weight="900" fill="#0B6B63" font-family="Noto Sans KR,Malgun Gothic,sans-serif">34%</text></svg><h3>안전기준 위반 41건 중 14건</h3><p>사용금지·제한 원료 (2021~2025.6) — 원료를 잘못 고르면 판매가 멈춤</p></div>
+      <div class="chart"><svg viewBox="0 0 180 180" width="190" height="190"><circle cx="90" cy="90" r="70" fill="none" stroke="#E3F4F2" stroke-width="26"/><circle cx="90" cy="90" r="70" fill="none" stroke="#0E8A80" stroke-width="26" stroke-dasharray="281.0 439.8" transform="rotate(-90 90 90)"/><text x="90" y="100" text-anchor="middle" font-size="30" font-weight="900" fill="#0B6B63" font-family="Noto Sans KR,Malgun Gothic,sans-serif">64%</text></svg><h3>적발 83건 중 53건</h3><p>의약품 오인 광고 (2025, 식약처 온라인 점검 209건)</p></div>
+      <div class="chart"><h3 style="margin-top:8px">대기업 연구원도 걸리는 검토 시간</h3>
+        <div class="hbar">
+          <div class="row">연구자료·규제 검토<div class="track"><div class="fill" style="width:100%">약 12일</div></div></div>
+          <div class="row">원료 검토<div class="track"><div class="fill" style="width:50%">약 6일</div></div></div>
+        </div><p>AI 도입 전, 아모레퍼시픽 발표</p></div>
     </div>
   </div>
-  <div class="src">출처: idea/MEJ_기획자페르소나_근거.md 2장 · research/MEJ_공개VOC_기획자불편.md (VOC 17개 중 3개) · brand/spec/spec.md 1-1</div>
+  <div class="src">출처: idea/MEJ_기획자페르소나_근거.md 2장 · brand/spec/spec.md 1-1</div>
+  <div class="pg">1</div>
+</section>
+
+<!-- 1 문제 · 업무 단계 -->
+<section class="slide">
+  <div class="bar"></div><div class="chip">1 · 문제</div>
+  <h1>기획자 업무 단계별 <em>막히는 장면</em></h1>
+  <p class="q">밸류체인에서 기획자가 혼자 막히는 곳</p>
+  <div class="body" style="flex-direction:column;justify-content:center">
+    <table class="big">
+      <tr><th style="width:20%">기획자 업무 단계</th><th>막히는 장면 (밸류체인 병목)</th><th style="width:12%">판정</th></tr>
+      <tr><td><b>원료·제형</b></td><td>쓰면 안 되는 원료를 넣으면 판매가 멈춤. 작은 회사는 연구·규제 담당이 없음</td><td><span class="tag k" style="font-size:17px">핵심</span></td></tr>
+      <tr><td><b>광고 표현</b></td><td>적발의 3분의 2가 의약품 오인. 기획자가 직접 규제를 확인</td><td><span class="tag k" style="font-size:17px">핵심</span></td></tr>
+      <tr><td><b>조사·기획</b></td><td>계절 근거·트렌드 자료 찾기에 시간이 듦. 기획안 1개에 1~3개월</td><td><span class="tag" style="font-size:17px">보조</span></td></tr>
+    </table>
+  </div>
+  <div class="src">출처: idea/MEJ_기획자페르소나_근거.md 2장</div>
+  <div class="pg">1</div>
+</section>
+
+<!-- 1 문제 · VOC -->
+<section class="slide">
+  <div class="bar"></div><div class="chip">1 · 문제</div>
+  <h1>현장의 목소리 — <em>공개 자료 VOC</em></h1>
+  <p class="q">광고 표현과 규제 판단을 혼자 해야 하는 어려움</p>
+  <div class="body" style="flex-direction:column;gap:18px;justify-content:center">
+    <div class="vocbig">"특정 성분의 이미 알려진 효능에 대해 광고할 수 있나요?"<span>화장품 판매업자 대상 정부 Q&amp;A의 질문 · 대한민국 정책브리핑 (2021-09-28)</span></div>
+    <div class="vocbig">"근거자료가 있더라도 원하는 광고 표현을 곧바로 사용할 수 있는 것은 아니다"<span>업계 단체 광고자문위원회 임원 · 뷰티누리 (2026-07-24)</span></div>
+    <div class="vocbig">"빚내서 누구를 위해 사업해야 하는지"<span>중소 화장품 기업 대표 (광고 실증 비용 부담, SNS 글 기사 인용) · CNC News (2026-01-13)</span></div>
+    <div class="note" style="font-size:18px">한방 적발 사례: 한방 샴푸가 의약품 오인 광고로 <b>광고업무 3개월 정지</b> (코스인코리아 2023-11-01)</div>
+  </div>
+  <div class="src">출처: research/MEJ_공개VOC_기획자불편.md (VOC 17개 중 3개)</div>
   <div class="pg">1</div>
 </section>
 
 <!-- 2 해결 -->
+<style>.solt td{padding:13px 16px}</style>
 <section class="slide">
   <div class="bar"></div><div class="chip">2 · 해결</div>
-  <h1>계절만 고르면, <em>쓸 수 있는 약재</em>로 만든 라인 후보가 나온다</h1>
+  <h1>계절 하나로 <em>쓸 수 있는 약재</em> 라인 후보까지</h1>
   <p class="q">"왜 이 방법인가?" — AI로 무엇이 어떻게 달라지는가</p>
-  <div class="body">
-    <div class="col" style="flex:1.65">
-      <table>
-        <tr><th style="width:15%">단계</th><th style="width:36%">As-Is · 혼자 직접</th><th>To-Be · 출시 기획실</th></tr>
-        <tr><td>계절 근거</td><td>기후·피부 고민 자료를 매번 찾음</td><td>기상 평년값(K4) → 피부 고민 → 피부 목적이 표로 바로 나옴</td></tr>
-        <tr><td>후보 만들기</td><td>규제·선점·향을 따로 확인</td><td>원료 후보표(K3)·트렌드를 통합해 후보 생성 → 목표 원가·출시가 계산 → 디자인 시안 → 가중치 순위</td></tr>
-        <tr><td>근거 확인</td><td>빠진 근거를 나중에 발견</td><td><b>근거가 부족한 후보는 점수가 높아도 추천하지 않고</b> '후보 다시 평가'로 보냄</td></tr>
-        <tr><td>광고 표현</td><td>문구를 만든 뒤 법규 확인</td><td>추천 이유 키워드를 광고에 쓸 수 있는 범위 안에서만 보여 줌 (K6 식약처 지침 기준)</td></tr>
-        <tr><td>트렌드</td><td>주 1회 수동 확인</td><td>뉴스를 수집해 DB에 쌓고 기획 포인트로 추천 (v1.1)</td></tr>
-      </table>
-      <div class="note">명세: brand/spec/spec.md — 입력은 계절 1개 · 후보 풀 → 순위 → 결과 카드 → 상세 화면</div>
-    </div>
-    <div class="col" style="flex:1">
-      <div class="band" style="font-size:19px"><b>AX 기회</b><br>콜마 AI는 30초에 기획안을 주지만, 원료 규제·광고 표현 확인은 기사에 나오지 않아요.<br>→ 우리는 <b>속도가 아니라 '걸리지 않는 근거'</b>로 차별해요.</div>
-      <div class="todo"><span class="t">추후 보충</span><b>효과 측정</b>
-        <ul><li>목표 지표 3개(기획 소요 시간 · 근거 충족률 · 기획서 보완 횟수)의 기준값이 모두 '확인 필요'</li>
-        <li>As-Is 시간은 대기업 수치 — 신생 한방뷰티 브랜드 기획자 실측 전</li></ul></div>
-    </div>
+  <div class="body" style="flex-direction:column;gap:20px">
+    <div class="band" style="font-size:23px"><b>AX 기회</b> — 콜마 AI는 30초에 기획안을 주지만, 원료 규제·광고 표현 확인은 기사에 나오지 않아요. → 우리는 <b>속도가 아니라 '걸리지 않는 근거'</b>로 차별해요.</div>
+    <table class="solt" style="font-size:21px">
+      <tr><th style="width:14%;font-size:18px;padding:12px 16px">단계</th><th style="width:30%;font-size:18px;padding:12px 16px">As-Is · 혼자 직접</th><th style="font-size:18px;padding:12px 16px">To-Be · 출시 기획실</th></tr>
+      <tr><td><b>계절 근거</b></td><td>기후·피부 고민 자료를 매번 찾음</td><td>기상 평년값 → 피부 고민 → 피부 목적이 표로 바로 나옴</td></tr>
+      <tr><td><b>후보 만들기</b></td><td>규제·선점·향을 따로 확인</td><td>원료 후보표·트렌드를 통합해 후보 생성 → 목표 원가·출시가 계산 → 디자인 시안 → 가중치 순위</td></tr>
+      <tr><td><b>근거 확인</b></td><td>빠진 근거를 나중에 발견</td><td><b>근거가 부족한 후보는 점수가 높아도 추천하지 않고</b> '후보 다시 평가'로 보냄</td></tr>
+      <tr><td><b>광고 표현</b></td><td>문구를 만든 뒤 규제 확인</td><td>추천 이유 키워드를 광고에 쓸 수 있는 범위 안에서만 보여 줌 (식약처 지침 기준)</td></tr>
+      <tr><td><b>트렌드</b></td><td>주 1회 수동 확인</td><td>뉴스를 수집해 DB에 쌓고 기획 포인트로 추천 (v1.1)</td></tr>
+    </table>
+    <div class="note" style="font-size:16px">입력은 계절 1개 · 후보 풀 → 순위 → 결과 카드 → 상세 화면</div>
   </div>
   <div class="src">출처: brand/spec/spec.md · idea/HSJ_BM-에이전트-기회포인트.md · beautyagent/userflow/유저 플로우.md 2-1 (v1 규칙) · AxO_피치_7장_1118.md 2장</div>
   <div class="pg">2</div>
 </section>
 
-<!-- 3 시장 -->
+<!-- 3 시장 · 숫자 -->
 <section class="slide">
   <div class="bar"></div><div class="chip">3 · 시장</div>
-  <h1>신생 브랜드가 쓸 수 있고 <em>규제까지 확인하는</em> 대안은 없다</h1>
-  <p class="q">"충분히 큰가?" — 누가 이미 하고, 우리가 얻을 몫은</p>
-  <div class="body">
-    <div class="col" style="flex:1;gap:12px">
-      <table style="font-size:15.5px">
-        <tr><th>시장 숫자</th><th class="r">값</th></tr>
-        <tr><td>국내 화장품 생산액 (2025, 사상 최대)</td><td class="num r">17조 9,382억 원</td></tr>
-        <tr><td>화장품 책임판매업체 (2025, KOSIS)</td><td class="num r">28,412곳</td></tr>
-        <tr><td>책임판매업체 중 허가 5년 이내 (공공 API, 2026-11)</td><td class="num r">17,312곳 (60.5%)</td></tr>
-      </table>
-      <table style="font-size:15.5px">
-        <tr><th>신생 한방뷰티 브랜드 (대상 고객)</th><th class="r">보수</th><th class="r">기준</th><th class="r">낙관</th></tr>
-        <tr><td>허가 5년 이내 기준</td><td class="num r">76곳</td><td class="num r">약 352곳</td><td class="num r">약 868곳</td></tr>
-      </table>
-      <div class="note" style="font-size:13.5px">보수 = 한방 원료 기능성 품목을 낸 신생 업체(하한) · 기준 = 17,312곳 × 2.03% · 낙관 = × 5.01% (기능성 보고 업체 비율을 전체에 적용한 <b>가정</b>, 제조업 기반 1.82%와 점검 일치) · 엑셀 <code>자료!B46:D46</code></div>
-      <div class="todo" style="padding:10px 16px"><span class="t">추후 보충</span><b>SOM (매출)</b> — 대상 수 × 도달 비율 × 전환율 × 가격은 엑셀 에이전트 시트에서 계산 예정 · SOM: <i>(비어 있음)</i></div>
-    </div>
-    <div class="col" style="flex:1.45">
-      <table style="font-size:14.5px">
-        <tr><th>대안 (층)</th><th>가격</th><th>원료 규제 · 광고 표현 확인</th></tr>
-        <tr><td>라우드랩스(LoudLabs) · 콜마 <span class="tag">직접</span></td><td>Basic 월 ₩0 (설계서 월 30회) · Pro 월 ₩300,000</td><td>공식 요금표·후기에 언급 없음 · <b>카테고리: 메이크업 4종 (기초 케어 없음)</b></td></tr>
+  <h1>시장 규모와 <em>대상 고객 수</em></h1>
+  <p class="q">"충분히 큰가?" — 우리가 얻을 몫</p>
+  <div class="body" style="flex-direction:column;gap:22px">
+    <table style="font-size:23px">
+      <tr><th style="font-size:19px">시장 숫자</th><th class="r" style="font-size:18px">값</th></tr>
+      <tr><td>국내 화장품 생산액 (2025, 사상 최대)</td><td class="num r">17조 9,382억 원</td></tr>
+      <tr><td>화장품 책임판매업체 (2025, KOSIS)</td><td class="num r">28,412곳</td></tr>
+      <tr><td>책임판매업체 중 허가 5년 이내 (공공 API, 2026-11)</td><td class="num r">17,312곳 (60.5%)</td></tr>
+    </table>
+    <table style="font-size:23px">
+      <tr><th style="font-size:19px">신생 한방뷰티 브랜드 (대상 고객)</th><th class="r" style="font-size:18px">보수</th><th class="r" style="font-size:18px">기준</th><th class="r" style="font-size:18px">낙관</th></tr>
+      <tr><td>허가 5년 이내 기준</td><td class="num r">76곳</td><td class="num r">약 352곳</td><td class="num r">약 868곳</td></tr>
+    </table>
+    <div class="note" style="font-size:16px">보수 = 한방 원료 기능성 품목을 낸 신생 업체(하한) · 기준 = 17,312곳 × 2.03% · 낙관 = × 5.01% (기능성 보고 업체 비율을 전체에 적용한 <b>가정</b>, 제조업 기반 1.82%와 점검 일치)</div>
+  </div>
+  <div class="src">출처: research/HSJ_대상수_경쟁비교_갱신안.md (식약처 공공 API · KOSIS)</div>
+  <div class="pg">3</div>
+</section>
+
+<!-- 3 시장 · 대안 -->
+<section class="slide">
+  <div class="bar"></div><div class="chip">3 · 시장</div>
+  <h1>신생 브랜드가 쓸 <em>규제 확인 대안</em>, 아직 없음</h1>
+  <p class="q">"누가 이미 하고 있나?" — 대안 비교</p>
+  <div class="body" style="flex-direction:column;gap:14px">
+    <table style="font-size:19px">
+      <tr><th>대안 (층)</th><th>가격</th><th>원료 규제 · 광고 표현 확인</th></tr>
+        <tr><td>라우드랩스(LoudLabs) · 콜마 <span class="tag">직접</span></td><td>Basic 월 ₩0 (설계서 월 30회) · Pro 월 ₩300,000</td><td>공식 요금표·후기에 언급 없음 · <b>색조 메이크업 상품 기획 (립·아이·베이스·페이스) · 기초 케어 없음</b></td></tr>
         <tr><td>매니패스트 <span class="tag">직접</span></td><td>Pro 월 $20</td><td>뷰티는 다루지 않음</td></tr>
         <tr><td>아모레퍼시픽 LEMON <span class="tag">간접</span></td><td>사내 전용 (외부 제공 ✕)</td><td>연구자료·규제 검토 ○</td></tr>
         <tr><td>크몽 기획 컨설팅 <span class="tag">간접</span></td><td>상담 ₩1.9만~30만 · 기획~론칭 ₩2,200만</td><td>서비스 설명에 검수 항목 없음</td></tr>
         <tr><td>ODM 기획 컨설팅 (코스맥스) <span class="tag">간접</span></td><td>짧게는 3개월</td><td>언급 없음</td></tr>
-        <tr><td>혼자 하기 <span class="tag">대체재</span></td><td>인건비 · 1~3개월</td><td>기획자가 직접 법규 확인</td></tr>
+        <tr><td>혼자 하기 <span class="tag">대체재</span></td><td>인건비 · 1~3개월</td><td>기획자가 직접 규제 확인</td></tr>
         <tr><td>현상 유지 <span class="tag">미루기</span></td><td>₩0</td><td><i>근거 없음 → 인터뷰로 확인</i></td></tr>
         <tr><td><b>출시 기획실</b></td><td><b>월 ₩29,000 (5건)</b></td><td><b>원료 후보표·광고 표현 규칙 내장</b></td></tr>
-      </table>
-      <div class="note" style="font-size:13.5px">※ '언급 없음'은 공식 자료·기사에 소개되지 않았다는 뜻이지 기능이 없다는 뜻은 아니에요 (라우드랩스 직접 사용 전). 숨고 가격은 미확인.</div>
-    </div>
+    </table>
+    <div class="note" style="font-size:15px">※ '언급 없음'은 공식 자료·기사에 소개되지 않았다는 뜻이지 기능이 없다는 뜻은 아니에요 (라우드랩스 직접 사용 전). 숨고 가격은 미확인.</div>
   </div>
-  <div class="src">출처: research/HSJ_대상수_경쟁비교_갱신안.md (식약처 공공 API · KOSIS · loudlabs.ai · 크몽 · 문화일보) · beautyagent/positioning/positioning_map.md</div>
+  <div class="src">출처: research/HSJ_대상수_경쟁비교_갱신안.md (loudlabs.ai · 크몽 · 문화일보) · beautyagent/positioning/positioning_map.md</div>
   <div class="pg">3</div>
 </section>
 
@@ -196,10 +227,10 @@ a{color:var(--teal-d)}
 <section class="slide">
   <div class="bar"></div><div class="chip">3 · 시장 · 포지셔닝</div>
   <h1>누구나 쓸 수 있는 <em>규제 근거 내장</em> — 비어 있는 자리</h1>
-  <p class="q">경쟁 상대: 매니패스트 · 라우드랩스(콜마, 메이크업 4종 카테고리) · 맵 1 비교: 아모레퍼시픽 LEMON(사내 전용) · 우리 위치는 팀 가설</p>
+  <p class="q">경쟁 상대: 매니패스트 · 라우드랩스(콜마, 색조 메이크업 상품 기획) · 맵 1 비교: 아모레퍼시픽 LEMON(사내 전용) · 우리 위치는 팀 가설</p>
   <div class="body">
-    <div class="col"><div class="img" style="flex:1"><img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNjgwIDUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiByb2xlPSJpbWciIGZvbnQtZmFtaWx5PSInTWFsZ3VuIEdvdGhpYycsJ0FwcGxlIFNEIEdvdGhpYyBOZW8nLCdOb3RvIFNhbnMgS1InLHNhbnMtc2VyaWYiPgo8dGl0bGU+7Y+s7KeA7IWU64udIOuntSAxOiDsnbTsmqkg6rCA64ql7ISxIMOXIOq3nOygnCDqt7zqsbA8L3RpdGxlPgo8ZGVzYz7qsIDroZzstpXsnYAg7J207JqpIOqwgOuKpeyEsSjsgqzrgrQg7KCE7Jqp7JeQ7IScIOuIhOq1rOuCmCDqsIDsnoUpLCDshLjroZzstpXsnYAg6rec7KCcIOq3vOqxsCjsm5Dro4wg6rec7KCcwrfqtJHqs6Ag7ZGc7ZiEIO2ZleyduCDsl4bsnYzsl5DshJwg64K07J6lKS4g7JWE66qo66CI7Y287Iuc7ZS9IExFTU9O7J2AIOyCrOuCtCDsoITsmqnCt+q3nOygnCDqt7zqsbAg64aS7J2MLCDrp6Tri4jtjKjsiqTtirjsmYAg65287Jqw65Oc656p7Iqk64qUIOuIhOq1rOuCmCDqsIDsnoXCt+q3nOygnCDqt7zqsbAg64Ku7J2MLCDsmrDrpqwg7JeQ7J207KCE7Yq464qUIOuIhOq1rOuCmCDqsIDsnoXCt+q3nOygnCDqt7zqsbAg64K07J6lIOyasOyDgeuLqC48L2Rlc2M+CjxyZWN0IHdpZHRoPSI2ODAiIGhlaWdodD0iNTAwIiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHg9IjM1MCIgeT0iNDAiIHdpZHRoPSIyNzAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRTFGNUVFIiByeD0iNCIvPgo8dGV4dCB4PSI2MDYiIHk9IjYyIiBmb250LXNpemU9IjEyIiBmaWxsPSIjMEY2RTU2IiB0ZXh0LWFuY2hvcj0iZW5kIj7ruYTslrQg7J6I64qUIOyekOumrDwvdGV4dD4KPGxpbmUgeDE9IjgwIiB5MT0iMjQwIiB4Mj0iNjIwIiB5Mj0iMjQwIiBzdHJva2U9IiNCNEIyQTkiIHN0cm9rZS13aWR0aD0iMSIvPgo8bGluZSB4MT0iMzUwIiB5MT0iNDAiIHgyPSIzNTAiIHkyPSI0NDAiIHN0cm9rZT0iI0I0QjJBOSIgc3Ryb2tlLXdpZHRoPSIxIi8+CjxyZWN0IHg9IjgwIiB5PSI0MCIgd2lkdGg9IjU0MCIgaGVpZ2h0PSI0MDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0QzRDFDNyIgc3Ryb2tlLXdpZHRoPSIxIiByeD0iNCIvPgo8dGV4dCB4PSIzNTAiIHk9IjE2IiBmb250LXNpemU9IjEyIiBmaWxsPSIjNUY1RTVBIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7sm5Dro4wg6rec7KCcIMK3IOq0keqzoCDtkZztmIQg7ZmV7J247J2EIOyKpOyKpOuhnCDrsJjsmIE8L3RleHQ+Cjx0ZXh0IHg9IjM1MCIgeT0iMzIiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMkMyQzJBIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7qt5zsoJwg6re86rGwIOuCtOyepTwvdGV4dD4KPHRleHQgeD0iMzUwIiB5PSI0NjIiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMkMyQzJBIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7qt5zsoJwg7ZmV7J24IOyXhuydjDwvdGV4dD4KPHRleHQgeD0iMzUwIiB5PSI0NzgiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM1RjVFNUEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuyCrOyaqeyekOqwgCDsp4HsoJEg67KV6recIO2ZleyduDwvdGV4dD4KPHRleHQgeD0iNzIiIHk9IjIzNiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMyQzJDMkEiIHRleHQtYW5jaG9yPSJlbmQiPuyCrOuCtDwvdGV4dD4KPHRleHQgeD0iNzIiIHk9IjI1NCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzVGNUU1QSIgdGV4dC1hbmNob3I9ImVuZCI+7KCE7JqpPC90ZXh0Pgo8dGV4dCB4PSI2MjgiIHk9IjIzNiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMyQzJDMkEiPuuIhOq1rOuCmDwvdGV4dD4KPHRleHQgeD0iNjI4IiB5PSIyNTQiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM1RjVFNUEiPuqwgOyehTwvdGV4dD4KPGNpcmNsZSBjeD0iMTM1IiBjeT0iODUiIHI9IjExIiBmaWxsPSIjRkRGM0UxIiBzdHJva2U9IiM5QTZBMTIiIHN0cm9rZS13aWR0aD0iMS41Ii8+Cjx0ZXh0IHg9IjE1MSIgeT0iODIiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiMyQzJDMkEiPuyVhOuqqOugiO2NvOyLnO2UvSBMRU1PTjwvdGV4dD4KPHRleHQgeD0iMTUxIiB5PSI5OCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzVGNUU1QSI+7IKs64K0IOyXsOq1rOybkCDsoITsmqkgwrcg7Jew6rWs7J6Q66OMwrfqt5zsoJwg6rKA7YagPC90ZXh0Pgo8Y2lyY2xlIGN4PSI1NjUiIGN5PSIzMjAiIHI9IjExIiBmaWxsPSIjRUVFREZFIiBzdHJva2U9IiM1MzRBQjciIHN0cm9rZS13aWR0aD0iMS41Ii8+Cjx0ZXh0IHg9IjU0OSIgeT0iMzE3IiBmb250LXNpemU9IjE0IiBmaWxsPSIjMkMyQzJBIiB0ZXh0LWFuY2hvcj0iZW5kIj7rnbzsmrDrk5zrnqnsiqQgKOy9nOuniCk8L3RleHQ+Cjx0ZXh0IHg9IjU0OSIgeT0iMzMzIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNUY1RTVBIiB0ZXh0LWFuY2hvcj0iZW5kIj7rrLTro4wg6rCA7J6FIMK3IOuplOydtO2BrOyXhSA07KKFIOy5tO2FjOqzoOumrDwvdGV4dD4KPHRleHQgeD0iNTQ5IiB5PSIzNDgiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM1RjVFNUEiIHRleHQtYW5jaG9yPSJlbmQiPuq3nOygnCDtmZXsnbg6IOqzteyLnSDsnpDro4zsl5Ag7Ja46riJIOyXhuydjDwvdGV4dD4KPGNpcmNsZSBjeD0iNTY1IiBjeT0iNDAwIiByPSIxMSIgZmlsbD0iI0ZBRUNFNyIgc3Ryb2tlPSIjOTkzQzFEIiBzdHJva2Utd2lkdGg9IjEuNSIvPgo8dGV4dCB4PSI1NDkiIHk9IjM5NyIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzJDMkMyQSIgdGV4dC1hbmNob3I9ImVuZCI+66ek64uI7Yyo7Iqk7Yq4PC90ZXh0Pgo8dGV4dCB4PSI1NDkiIHk9IjQxMyIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzVGNUU1QSIgdGV4dC1hbmNob3I9ImVuZCI+64iE6rWs64KYIOqwgOyehSDCtyDrt7Dti7Ag6rec7KCcIOyXhuydjDwvdGV4dD4KPGNpcmNsZSBjeD0iNTY1IiBjeT0iMTIwIiByPSIxMyIgZmlsbD0iIzlGRTFDQiIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuNSIvPgo8dGV4dCB4PSI1NDciIHk9IjExNiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMwODUwNDEiIHRleHQtYW5jaG9yPSJlbmQiPuyasOumrCDsl5DsnbTsoITtirg8L3RleHQ+Cjx0ZXh0IHg9IjU0NyIgeT0iMTMyIiBmb250LXNpemU9IjEyIiBmaWxsPSIjMEY2RTU2IiB0ZXh0LWFuY2hvcj0iZW5kIj7smbjrtoAg7YyQ66ekIMK3IOybkOujjCDtm4Trs7TtkZwoSzMpIMK3IOq0keqzoCDtkZztmIQg6rec7LmZKEs2KTwvdGV4dD4KPC9zdmc+Cg==" alt="포지셔닝 맵 1: 이용 가능성 × 규제 근거"></div><div class="cap">맵 1 · 이용 가능성 × 규제 근거 — 규제 근거는 사내 AI에만, 누구나 쓰는 도구에는 없음</div></div>
-    <div class="col"><div class="img" style="flex:1"><img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNjgwIDUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiByb2xlPSJpbWciIGZvbnQtZmFtaWx5PSInTWFsZ3VuIEdvdGhpYycsJ0FwcGxlIFNEIEdvdGhpYyBOZW8nLCdOb3RvIFNhbnMgS1InLHNhbnMtc2VyaWYiPg0KPHRpdGxlPu2PrOyngOyFlOuLnSDrp7UgMjog7IKw7JeFIO2Kue2ZlOuPhCDDlyDsi6Ttlokg7Jew6rKw64+EPC90aXRsZT4NCjxkZXNjPuqwgOuhnOy2leydgCDsgrDsl4Ug7Yq57ZmU64+EKOuylOyaqeyXkOyEnCDrt7Dti7Ag7Yq57ZmUKSwg7IS466Gc7LaV7J2AIOyLpO2WiSDsl7DqsrDrj4Qo66y47ISc7JeQ7IScIOuBneuCqOyXkOyEnCDqtJHqs6Ag7ZGc7ZiEIOqygOyImOyZgCDsoJzsobDsgqwg7Jew6rKw6rmM7KeAKS4g66ek64uI7Yyo7Iqk7Yq464qUIOuylOyaqcK36rCc67CcIOuPhOq1rCDsl7DqsrDroZwg7KSR6rCEIOyVhOuemCwg65287Jqw65Oc656p7Iqk64qUIOu3sO2LsCDtirntmZTCt09ETSDsg4Hri7Qg7Jew6rKw66GcIOychOyqvSwg7Jqw66asIOyXkOydtOyghO2KuOuKlCDsp4DquIjsnYAg6riw7ZqN7ISc7JeQ7IScIOuBneuCmOqzoCDrqqntkZzripQg7ZGc7ZiEIOqygOyImMK3T0VNIOusuOydmOq5jOyngC48L2Rlc2M+DQo8cmVjdCB3aWR0aD0iNjgwIiBoZWlnaHQ9IjUwMCIgZmlsbD0iI0ZGRkZGRiIvPg0KPGxpbmUgeDE9IjgwIiB5MT0iMjQwIiB4Mj0iNjIwIiB5Mj0iMjQwIiBzdHJva2U9IiNCNEIyQTkiIHN0cm9rZS13aWR0aD0iMSIvPg0KPGxpbmUgeDE9IjM1MCIgeTE9IjQwIiB4Mj0iMzUwIiB5Mj0iNDQwIiBzdHJva2U9IiNCNEIyQTkiIHN0cm9rZS13aWR0aD0iMSIvPg0KPHJlY3QgeD0iODAiIHk9IjQwIiB3aWR0aD0iNTQwIiBoZWlnaHQ9IjQwMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRDNEMUM3IiBzdHJva2Utd2lkdGg9IjEiIHJ4PSI0Ii8+DQo8dGV4dCB4PSIzNTAiIHk9IjE2IiBmb250LXNpemU9IjEyIiBmaWxsPSIjNUY1RTVBIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7qtJHqs6Ag7ZGc7ZiEIOqygOyImCDCtyDsoJzsobDsgqwoT0RNL09FTSkg7Jew6rKw6rmM7KeAPC90ZXh0Pg0KPHRleHQgeD0iMzUwIiB5PSIzMiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMyQzJDMkEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuyLpO2WiSDsl7DqsrA8L3RleHQ+DQo8dGV4dCB4PSIzNTAiIHk9IjQ2MiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMyQzJDMkEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuusuOyEnOyXkOyEnCDrgZ3rgqg8L3RleHQ+DQo8dGV4dCB4PSIzNTAiIHk9IjQ3OCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzVGNUU1QSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+6riw7ZqN7IScIOyekeyEseycvOuhnCDsooXro4w8L3RleHQ+DQo8dGV4dCB4PSI3MiIgeT0iMjM2IiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzJDMkMyQSIgdGV4dC1hbmNob3I9ImVuZCI+67KU7JqpPC90ZXh0Pg0KPHRleHQgeD0iNzIiIHk9IjI1NCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzVGNUU1QSIgdGV4dC1hbmNob3I9ImVuZCI+66qo65OgIOyCsOyXhTwvdGV4dD4NCjx0ZXh0IHg9IjYyOCIgeT0iMjM2IiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzJDMkMyQSI+67ew7YuwPC90ZXh0Pg0KPHRleHQgeD0iNjI4IiB5PSIyNTQiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM1RjVFNUEiPu2Kue2ZlDwvdGV4dD4NCjxjaXJjbGUgY3g9IjE2MCIgY3k9IjMwMCIgcj0iMTEiIGZpbGw9IiNGQUVDRTciIHN0cm9rZT0iIzk5M0MxRCIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4NCjx0ZXh0IHg9IjE3NiIgeT0iMjk3IiBmb250LXNpemU9IjE0IiBmaWxsPSIjMkMyQzJBIj7rp6Tri4jtjKjsiqTtirg8L3RleHQ+DQo8dGV4dCB4PSIxNzYiIHk9IjMxMyIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzVGNUU1QSI+6riw7ZqN7IScIOKGkiDqsJzrsJwg64+E6rWsICjsoJzsobAg7JWE64uYKTwvdGV4dD4NCjxjaXJjbGUgY3g9IjUwNSIgY3k9IjE1MCIgcj0iMTEiIGZpbGw9IiNFRUVERkUiIHN0cm9rZT0iIzUzNEFCNyIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4NCjx0ZXh0IHg9IjQ4OSIgeT0iMTQ3IiBmb250LXNpemU9IjE0IiBmaWxsPSIjMkMyQzJBIiB0ZXh0LWFuY2hvcj0iZW5kIj7rnbzsmrDrk5zrnqnsiqQgKOy9nOuniCk8L3RleHQ+DQo8dGV4dCB4PSI0ODkiIHk9IjE2MyIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzVGNUU1QSIgdGV4dC1hbmNob3I9ImVuZCI+66mU7J207YGs7JeFIOyEpOqzhOyEnCDihpIgT0RNIOyDgeuLtCDsl7DqsrA8L3RleHQ+DQo8dGV4dCB4PSI0ODkiIHk9IjE3OCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzVGNUU1QSIgdGV4dC1hbmNob3I9ImVuZCI+6rSR6rOgIO2RnO2YhCDqsoDsiJjripQg7Ja46riJIOyXhuydjDwvdGV4dD4NCjxjaXJjbGUgY3g9IjU2MCIgY3k9IjM0MCIgcj0iMTEiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzBGNkU1NiIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4NCjx0ZXh0IHg9IjU0MiIgeT0iMzM3IiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzA4NTA0MSIgdGV4dC1hbmNob3I9ImVuZCI+7Jqw66asICjsp4DquIgpPC90ZXh0Pg0KPHRleHQgeD0iNTQyIiB5PSIzNTMiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMwRjZFNTYiIHRleHQtYW5jaG9yPSJlbmQiPuudvOyduCDtm4Trs7Qgwrcg6riw7ZqN7ISc6rmM7KeAPC90ZXh0Pg0KPGNpcmNsZSBjeD0iNTYwIiBjeT0iODUiIHI9IjEzIiBmaWxsPSIjOUZFMUNCIiBzdHJva2U9IiMwRjZFNTYiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtZGFzaGFycmF5PSIzIDIiLz4NCjx0ZXh0IHg9IjU0MiIgeT0iODEiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMDg1MDQxIiB0ZXh0LWFuY2hvcj0iZW5kIj7smrDrpqwgKOuqqe2RnCk8L3RleHQ+DQo8dGV4dCB4PSI1NDIiIHk9Ijk3IiBmb250LXNpemU9IjEyIiBmaWxsPSIjMEY2RTU2IiB0ZXh0LWFuY2hvcj0iZW5kIj7quLDtmo3shJwg4oaSIO2RnO2YhCDqsoDsiJgg4oaSIE9FTSDrrLjsnZg8L3RleHQ+DQo8bGluZSB4MT0iNTYwIiB5MT0iMzI3IiB4Mj0iNTYwIiB5Mj0iMTAyIiBzdHJva2U9IiMwRjZFNTYiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtZGFzaGFycmF5PSI1IDQiLz4NCjxwb2x5Z29uIHBvaW50cz0iNTU1LDEwOCA1NjAsOTggNTY1LDEwOCIgZmlsbD0iIzBGNkU1NiIvPg0KPHRleHQgeD0iNTcyIiB5PSIyMDAiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMwRjZFNTYiPuyVhOyngTwvdGV4dD48dGV4dCB4PSI1NzIiIHk9IjIxNCIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzBGNkU1NiI+66+46rWs7ZiEPC90ZXh0Pg0KPC9zdmc+DQo=" alt="포지셔닝 맵 2: 산업 특화도 × 실행 연결도"></div><div class="cap">맵 2 · 산업 특화도 × 실행 연결도 — 제조사 연결은 라우드랩스가 앞섬, 우리 목표는 아직 미구현</div></div>
+    <div class="col"><div class="img" style="flex:1"><img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNjgwIDUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiByb2xlPSJpbWciIGZvbnQtZmFtaWx5PSInTWFsZ3VuIEdvdGhpYycsJ0FwcGxlIFNEIEdvdGhpYyBOZW8nLCdOb3RvIFNhbnMgS1InLHNhbnMtc2VyaWYiPgo8dGl0bGU+7Y+s7KeA7IWU64udIOuntSAxOiDsnbTsmqkg6rCA64ql7ISxIMOXIOq3nOygnCDqt7zqsbA8L3RpdGxlPgo8ZGVzYz7qsIDroZzstpXsnYAg7J207JqpIOqwgOuKpeyEsSjsgqzrgrQg7KCE7Jqp7JeQ7IScIOuIhOq1rOuCmCDqsIDsnoUpLCDshLjroZzstpXsnYAg6rec7KCcIOq3vOqxsCjsm5Dro4wg6rec7KCcwrfqtJHqs6Ag7ZGc7ZiEIO2ZleyduCDsl4bsnYzsl5DshJwg64K07J6lKS4g7JWE66qo66CI7Y287Iuc7ZS9IExFTU9O7J2AIOyCrOuCtCDsoITsmqnCt+q3nOygnCDqt7zqsbAg64aS7J2MLCDrp6Tri4jtjKjsiqTtirjsmYAg65287Jqw65Oc656p7Iqk64qUIOuIhOq1rOuCmCDqsIDsnoXCt+q3nOygnCDqt7zqsbAg64Ku7J2MLCDsmrDrpqwg7JeQ7J207KCE7Yq464qUIOuIhOq1rOuCmCDqsIDsnoXCt+q3nOygnCDqt7zqsbAg64K07J6lIOyasOyDgeuLqC48L2Rlc2M+CjxyZWN0IHdpZHRoPSI2ODAiIGhlaWdodD0iNTAwIiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHg9IjM1MCIgeT0iNDAiIHdpZHRoPSIyNzAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRTFGNUVFIiByeD0iNCIvPgo8dGV4dCB4PSI2MDYiIHk9IjYyIiBmb250LXNpemU9IjEyIiBmaWxsPSIjMEY2RTU2IiB0ZXh0LWFuY2hvcj0iZW5kIj7ruYTslrQg7J6I64qUIOyekOumrDwvdGV4dD4KPGxpbmUgeDE9IjgwIiB5MT0iMjQwIiB4Mj0iNjIwIiB5Mj0iMjQwIiBzdHJva2U9IiNCNEIyQTkiIHN0cm9rZS13aWR0aD0iMSIvPgo8bGluZSB4MT0iMzUwIiB5MT0iNDAiIHgyPSIzNTAiIHkyPSI0NDAiIHN0cm9rZT0iI0I0QjJBOSIgc3Ryb2tlLXdpZHRoPSIxIi8+CjxyZWN0IHg9IjgwIiB5PSI0MCIgd2lkdGg9IjU0MCIgaGVpZ2h0PSI0MDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0QzRDFDNyIgc3Ryb2tlLXdpZHRoPSIxIiByeD0iNCIvPgo8dGV4dCB4PSIzNTAiIHk9IjE2IiBmb250LXNpemU9IjEyIiBmaWxsPSIjNUY1RTVBIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7sm5Dro4wg6rec7KCcIMK3IOq0keqzoCDtkZztmIQg7ZmV7J247J2EIOyKpOyKpOuhnCDrsJjsmIE8L3RleHQ+Cjx0ZXh0IHg9IjM1MCIgeT0iMzIiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMkMyQzJBIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7qt5zsoJwg6re86rGwIOuCtOyepTwvdGV4dD4KPHRleHQgeD0iMzUwIiB5PSI0NjIiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMkMyQzJBIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7qt5zsoJwg7ZmV7J24IOyXhuydjDwvdGV4dD4KPHRleHQgeD0iMzUwIiB5PSI0NzgiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM1RjVFNUEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuyCrOyaqeyekOqwgCDsp4HsoJEg67KV6recIO2ZleyduDwvdGV4dD4KPHRleHQgeD0iNzIiIHk9IjIzNiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMyQzJDMkEiIHRleHQtYW5jaG9yPSJlbmQiPuyCrOuCtDwvdGV4dD4KPHRleHQgeD0iNzIiIHk9IjI1NCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzVGNUU1QSIgdGV4dC1hbmNob3I9ImVuZCI+7KCE7JqpPC90ZXh0Pgo8dGV4dCB4PSI2MjgiIHk9IjIzNiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMyQzJDMkEiPuuIhOq1rOuCmDwvdGV4dD4KPHRleHQgeD0iNjI4IiB5PSIyNTQiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM1RjVFNUEiPuqwgOyehTwvdGV4dD4KPGNpcmNsZSBjeD0iMTM1IiBjeT0iODUiIHI9IjExIiBmaWxsPSIjRkRGM0UxIiBzdHJva2U9IiM5QTZBMTIiIHN0cm9rZS13aWR0aD0iMS41Ii8+Cjx0ZXh0IHg9IjE1MSIgeT0iODIiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiMyQzJDMkEiPuyVhOuqqOugiO2NvOyLnO2UvSBMRU1PTjwvdGV4dD4KPHRleHQgeD0iMTUxIiB5PSI5OCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzVGNUU1QSI+7IKs64K0IOyXsOq1rOybkCDsoITsmqkgwrcg7Jew6rWs7J6Q66OMwrfqt5zsoJwg6rKA7YagPC90ZXh0Pgo8Y2lyY2xlIGN4PSI1NjUiIGN5PSIzMjAiIHI9IjExIiBmaWxsPSIjRUVFREZFIiBzdHJva2U9IiM1MzRBQjciIHN0cm9rZS13aWR0aD0iMS41Ii8+Cjx0ZXh0IHg9IjU0OSIgeT0iMzE3IiBmb250LXNpemU9IjE0IiBmaWxsPSIjMkMyQzJBIiB0ZXh0LWFuY2hvcj0iZW5kIj7rnbzsmrDrk5zrnqnsiqQgKOy9nOuniCk8L3RleHQ+Cjx0ZXh0IHg9IjU0OSIgeT0iMzMzIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNUY1RTVBIiB0ZXh0LWFuY2hvcj0iZW5kIj7rrLTro4wg6rCA7J6FIMK3IOyDieyhsCDrqZTsnbTtgazsl4Ug7IOB7ZKIIOq4sO2ajTwvdGV4dD4KPHRleHQgeD0iNTQ5IiB5PSIzNDgiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM1RjVFNUEiIHRleHQtYW5jaG9yPSJlbmQiPuq3nOygnCDtmZXsnbg6IOqzteyLnSDsnpDro4zsl5Ag7Ja46riJIOyXhuydjDwvdGV4dD4KPGNpcmNsZSBjeD0iNTY1IiBjeT0iNDAwIiByPSIxMSIgZmlsbD0iI0ZBRUNFNyIgc3Ryb2tlPSIjOTkzQzFEIiBzdHJva2Utd2lkdGg9IjEuNSIvPgo8dGV4dCB4PSI1NDkiIHk9IjM5NyIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzJDMkMyQSIgdGV4dC1hbmNob3I9ImVuZCI+66ek64uI7Yyo7Iqk7Yq4PC90ZXh0Pgo8dGV4dCB4PSI1NDkiIHk9IjQxMyIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzVGNUU1QSIgdGV4dC1hbmNob3I9ImVuZCI+64iE6rWs64KYIOqwgOyehSDCtyDrt7Dti7Ag6rec7KCcIOyXhuydjDwvdGV4dD4KPGNpcmNsZSBjeD0iNTY1IiBjeT0iMTIwIiByPSIxMyIgZmlsbD0iIzlGRTFDQiIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuNSIvPgo8dGV4dCB4PSI1NDciIHk9IjExNiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMwODUwNDEiIHRleHQtYW5jaG9yPSJlbmQiPuyasOumrCDsl5DsnbTsoITtirg8L3RleHQ+Cjx0ZXh0IHg9IjU0NyIgeT0iMTMyIiBmb250LXNpemU9IjEyIiBmaWxsPSIjMEY2RTU2IiB0ZXh0LWFuY2hvcj0iZW5kIj7smbjrtoAg7YyQ66ekIMK3IOybkOujjCDtm4Trs7TtkZwgwrcg6rSR6rOgIO2RnO2YhCDqt5zsuZk8L3RleHQ+Cjwvc3ZnPgo=" alt="포지셔닝 맵 1: 이용 가능성 × 규제 근거"></div><div class="cap">맵 1 · 이용 가능성 × 규제 근거 — 규제 근거는 사내 AI에만, 누구나 쓰는 도구에는 없음</div></div>
+    <div class="col"><div class="img" style="flex:1"><img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNjgwIDUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiByb2xlPSJpbWciIGZvbnQtZmFtaWx5PSInTWFsZ3VuIEdvdGhpYycsJ0FwcGxlIFNEIEdvdGhpYyBOZW8nLCdOb3RvIFNhbnMgS1InLHNhbnMtc2VyaWYiPg0KPHRpdGxlPu2PrOyngOyFlOuLnSDrp7UgMjog7IKw7JeFIO2Kue2ZlOuPhCDDlyDsi6Ttlokg7Jew6rKw64+EPC90aXRsZT4NCjxkZXNjPuqwgOuhnOy2leydgCDsgrDsl4Ug7Yq57ZmU64+EKOuylOyaqeyXkOyEnCDrt7Dti7Ag7Yq57ZmUKSwg7IS466Gc7LaV7J2AIOyLpO2WiSDsl7DqsrDrj4Qo66y47ISc7JeQ7IScIOuBneuCqOyXkOyEnCDqtJHqs6Ag7ZGc7ZiEIOqygOyImOyZgCDsoJzsobDsgqwg7Jew6rKw6rmM7KeAKS4g66ek64uI7Yyo7Iqk7Yq464qUIOuylOyaqcK36rCc67CcIOuPhOq1rCDsl7DqsrDroZwg7KSR6rCEIOyVhOuemCwg65287Jqw65Oc656p7Iqk64qUIOu3sO2LsCDtirntmZTCt09ETSDsg4Hri7Qg7Jew6rKw66GcIOychOyqvSwg7Jqw66asIOyXkOydtOyghO2KuOuKlCDsp4DquIjsnYAg6riw7ZqN7ISc7JeQ7IScIOuBneuCmOqzoCDrqqntkZzripQg7ZGc7ZiEIOqygOyImMK3T0VNIOusuOydmOq5jOyngC48L2Rlc2M+DQo8cmVjdCB3aWR0aD0iNjgwIiBoZWlnaHQ9IjUwMCIgZmlsbD0iI0ZGRkZGRiIvPg0KPGxpbmUgeDE9IjgwIiB5MT0iMjQwIiB4Mj0iNjIwIiB5Mj0iMjQwIiBzdHJva2U9IiNCNEIyQTkiIHN0cm9rZS13aWR0aD0iMSIvPg0KPGxpbmUgeDE9IjM1MCIgeTE9IjQwIiB4Mj0iMzUwIiB5Mj0iNDQwIiBzdHJva2U9IiNCNEIyQTkiIHN0cm9rZS13aWR0aD0iMSIvPg0KPHJlY3QgeD0iODAiIHk9IjQwIiB3aWR0aD0iNTQwIiBoZWlnaHQ9IjQwMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRDNEMUM3IiBzdHJva2Utd2lkdGg9IjEiIHJ4PSI0Ii8+DQo8dGV4dCB4PSIzNTAiIHk9IjE2IiBmb250LXNpemU9IjEyIiBmaWxsPSIjNUY1RTVBIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7qtJHqs6Ag7ZGc7ZiEIOqygOyImCDCtyDsoJzsobDsgqwoT0RNL09FTSkg7Jew6rKw6rmM7KeAPC90ZXh0Pg0KPHRleHQgeD0iMzUwIiB5PSIzMiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMyQzJDMkEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuyLpO2WiSDsl7DqsrA8L3RleHQ+DQo8dGV4dCB4PSIzNTAiIHk9IjQ2MiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMyQzJDMkEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuusuOyEnOyXkOyEnCDrgZ3rgqg8L3RleHQ+DQo8dGV4dCB4PSIzNTAiIHk9IjQ3OCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzVGNUU1QSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+6riw7ZqN7IScIOyekeyEseycvOuhnCDsooXro4w8L3RleHQ+DQo8dGV4dCB4PSI3MiIgeT0iMjM2IiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzJDMkMyQSIgdGV4dC1hbmNob3I9ImVuZCI+67KU7JqpPC90ZXh0Pg0KPHRleHQgeD0iNzIiIHk9IjI1NCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzVGNUU1QSIgdGV4dC1hbmNob3I9ImVuZCI+66qo65OgIOyCsOyXhTwvdGV4dD4NCjx0ZXh0IHg9IjYyOCIgeT0iMjM2IiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzJDMkMyQSI+67ew7YuwPC90ZXh0Pg0KPHRleHQgeD0iNjI4IiB5PSIyNTQiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM1RjVFNUEiPu2Kue2ZlDwvdGV4dD4NCjxjaXJjbGUgY3g9IjE2MCIgY3k9IjMwMCIgcj0iMTEiIGZpbGw9IiNGQUVDRTciIHN0cm9rZT0iIzk5M0MxRCIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4NCjx0ZXh0IHg9IjE3NiIgeT0iMjk3IiBmb250LXNpemU9IjE0IiBmaWxsPSIjMkMyQzJBIj7rp6Tri4jtjKjsiqTtirg8L3RleHQ+DQo8dGV4dCB4PSIxNzYiIHk9IjMxMyIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzVGNUU1QSI+6riw7ZqN7IScIOKGkiDqsJzrsJwg64+E6rWsICjsoJzsobAg7JWE64uYKTwvdGV4dD4NCjxjaXJjbGUgY3g9IjUwNSIgY3k9IjE1MCIgcj0iMTEiIGZpbGw9IiNFRUVERkUiIHN0cm9rZT0iIzUzNEFCNyIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4NCjx0ZXh0IHg9IjQ4OSIgeT0iMTQ3IiBmb250LXNpemU9IjE0IiBmaWxsPSIjMkMyQzJBIiB0ZXh0LWFuY2hvcj0iZW5kIj7rnbzsmrDrk5zrnqnsiqQgKOy9nOuniCk8L3RleHQ+DQo8dGV4dCB4PSI0ODkiIHk9IjE2MyIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzVGNUU1QSIgdGV4dC1hbmNob3I9ImVuZCI+7IOJ7KGwIOuplOydtO2BrOyXhSDshKTqs4TshJwg4oaSIE9ETSDsg4Hri7Qg7Jew6rKwPC90ZXh0Pg0KPHRleHQgeD0iNDg5IiB5PSIxNzgiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM1RjVFNUEiIHRleHQtYW5jaG9yPSJlbmQiPuq0keqzoCDtkZztmIQg6rKA7IiY64qUIOyWuOq4iSDsl4bsnYw8L3RleHQ+DQo8Y2lyY2xlIGN4PSI1NjAiIGN5PSIzNDAiIHI9IjExIiBmaWxsPSIjRkZGRkZGIiBzdHJva2U9IiMwRjZFNTYiIHN0cm9rZS13aWR0aD0iMS41Ii8+DQo8dGV4dCB4PSI1NDIiIHk9IjMzNyIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMwODUwNDEiIHRleHQtYW5jaG9yPSJlbmQiPuyasOumrCAo7KeA6riIKTwvdGV4dD4NCjx0ZXh0IHg9IjU0MiIgeT0iMzUzIiBmb250LXNpemU9IjEyIiBmaWxsPSIjMEY2RTU2IiB0ZXh0LWFuY2hvcj0iZW5kIj7rnbzsnbgg7ZuE67O0IMK3IOq4sO2ajeyEnOq5jOyngDwvdGV4dD4NCjxjaXJjbGUgY3g9IjU2MCIgY3k9Ijg1IiByPSIxMyIgZmlsbD0iIzlGRTFDQiIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWRhc2hhcnJheT0iMyAyIi8+DQo8dGV4dCB4PSI1NDIiIHk9IjgxIiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzA4NTA0MSIgdGV4dC1hbmNob3I9ImVuZCI+7Jqw66asICjrqqntkZwpPC90ZXh0Pg0KPHRleHQgeD0iNTQyIiB5PSI5NyIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzBGNkU1NiIgdGV4dC1hbmNob3I9ImVuZCI+6riw7ZqN7IScIOKGkiDtkZztmIQg6rKA7IiYIOKGkiBPRU0g66y47J2YPC90ZXh0Pg0KPGxpbmUgeDE9IjU2MCIgeTE9IjMyNyIgeDI9IjU2MCIgeTI9IjEwMiIgc3Ryb2tlPSIjMEY2RTU2IiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWRhc2hhcnJheT0iNSA0Ii8+DQo8cG9seWdvbiBwb2ludHM9IjU1NSwxMDggNTYwLDk4IDU2NSwxMDgiIGZpbGw9IiMwRjZFNTYiLz4NCjx0ZXh0IHg9IjU3MiIgeT0iMjAwIiBmb250LXNpemU9IjExIiBmaWxsPSIjMEY2RTU2Ij7slYTsp4E8L3RleHQ+PHRleHQgeD0iNTcyIiB5PSIyMTQiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMwRjZFNTYiPuuvuOq1rO2YhDwvdGV4dD4NCjwvc3ZnPg0K" alt="포지셔닝 맵 2: 산업 특화도 × 실행 연결도"></div><div class="cap">맵 2 · 산업 특화도 × 실행 연결도 — 제조사 연결은 라우드랩스가 앞섬, 우리 목표는 아직 미구현</div></div>
   </div>
   <div class="src">출처: beautyagent/positioning/positioning_map.md (11/18 갱신) · loudlabs.ai 요금제 · 크몽 라우드랩스 컨설팅</div>
   <div class="pg">3</div>
@@ -211,29 +242,21 @@ a{color:var(--teal-d)}
   <h1>월 구독 ₩29,000 · <em>구독자 5명</em>이면 손익분기 (인프라 기준)</h1>
   <p class="q">"지속 가능한가?" — 어떻게 돈이 남는가</p>
   <div class="body">
-    <div class="col" style="flex:1.3">
-      <table>
+    <div class="col" style="flex:1;gap:20px">
+      <table style="font-size:22px">
         <tr><th>상품 (안)</th><th class="r">가격</th><th class="r">1건·1명당 이익</th><th class="r">고정비를 넘기는 기준</th></tr>
         <tr><td>무료 체험</td><td class="r">기획서 1건</td><td class="r">–</td><td class="r">가입 유도</td></tr>
         <tr><td>건당 이용권 (수정 5회)</td><td class="r">₩14,900</td><td class="r">약 ₩12,300</td><td class="r">월 7건</td></tr>
         <tr><td><b>월 구독</b> (5건, 초과 건당 ₩4,900)</td><td class="r"><b>₩29,000</b></td><td class="r">약 ₩17,900</td><td class="num r">구독자 5명</td></tr>
       </table>
-      <table>
+      <table style="font-size:21px">
         <tr><th>단위 경제의 전제</th><th class="r">값</th></tr>
         <tr><td>고정비 (Supabase Pro · Vercel Pro 1석 · PG 연관리비)</td><td class="r">월 약 ₩75,000</td></tr>
         <tr><td>기획서 1건 Claude API 비용 <span class="tag h">추정</span></td><td class="r">₩500~1,500 → ₩2,000로 잡음</td></tr>
         <tr><td>결제 수수료 (토스페이먼츠 카드 3.4% + 부가세)</td><td class="r">약 3.74%</td></tr>
         <tr><td>Vercel 3석이면 고정비 / 손익분기</td><td class="r">월 약 ₩133,000 / 구독자 8명</td></tr>
       </table>
-      <div class="note">이익 = 판매가 − API 비용 − 결제 수수료. <b>인건비·마케팅비·도메인은 빠진 '인프라 기준'</b>이고, 첫 달 PG 가입비 22만 원이 따로 들어요. 월 구독 ₩29,000은 매니패스트 Pro(월 $20)와 같은 가격이에요.</div>
-    </div>
-    <div class="col" style="flex:1">
-      <div class="todo"><span class="t">추후 보충</span><b>시나리오 (보수 · 기준 · 낙관)</b>
-        <ul><li>구독자 수·이탈률별 월 손익 표 없음 (고정비 변화만 계산됨)</li><li>보수 <i>(비어 있음)</i> · 기준 <i>(비어 있음)</i> · 낙관 <i>(비어 있음)</i></li></ul></div>
-      <div class="todo"><span class="t">추후 보충</span><b>BM 캔버스 수정</b>
-        <ul><li>전제 결정 (11/18): <b>외부 판매</b> · 대상은 <b>신생 한방뷰티 브랜드 기획자</b></li><li>캔버스는 아직 "사내 도구, 수익 없음" — 결정에 맞춰 수정 예정</li></ul></div>
-      <div class="todo"><span class="t">추후 보충</span><b>지불 의향 · 실제 API 비용</b>
-        <ul><li>₩29,000이 맞는 가격인지 고객 응답 0건</li><li>시안 1건 실제 실행 토큰 측정 전</li></ul></div>
+      <div class="note" style="font-size:16px">이익 = 판매가 − API 비용 − 결제 수수료. <b>인건비·마케팅비·도메인은 빠진 '인프라 기준'</b>이고, 첫 달 PG 가입비 22만 원이 따로 들어요. 월 구독 ₩29,000은 매니패스트 Pro(월 $20)와 같은 가격이에요.</div>
     </div>
   </div>
   <div class="src">출처: beautyagent/에이전트 요금구조제안.md 2·5·8장 · idea/MEJ_기획자페르소나_근거.md 3장 (BM 캔버스)</div>
@@ -243,7 +266,7 @@ a{color:var(--teal-d)}
 <!-- 5 MVP -->
 <section class="slide">
   <div class="bar"></div><div class="chip">5 · MVP</div>
-  <h1>v1 화면은 지금 <em>링크로 바로</em> 열린다</h1>
+  <h1><em>링크로 바로</em> 여는 v1 화면</h1>
   <p class="q">"보여 줄 수 있나?" — 실제로 동작하고 반응이 있는가</p>
   <div class="body">
     <div class="col" style="flex:1.2">
@@ -251,7 +274,7 @@ a{color:var(--teal-d)}
         <tr><th style="width:30%">결과물</th><th>하는 일</th></tr>
         <tr><td><b>v1 출시 기획실</b> (공개 링크)</td><td>계절 선택 → 기후 이슈 → 원료 후보로 라인 후보 → 기준 ★ 비중으로 순위 → 상세 화면 (구성 · 가격 · 페르소나별 권유 · 원료별 패키지 색)</td></tr>
         <tr><td><b>v1.1 자체 사이트</b> (로컬)</td><td>뉴스를 수집해 DB에 쌓기 → '뜨는 원료' 점수 · 실시간 기획 포인트</td></tr>
-        <tr><td><b>에이전트 대시보드</b></td><td>서브에이전트 4종이 playbook 13단계를 돌고 run_log에 기록</td></tr>
+        <tr><td><b>에이전트 대시보드</b></td><td>서브에이전트 4종이 기획 13단계를 차례로 돌고 결과를 기록</td></tr>
       </table>
       <div class="note">v1 URL<br><a class="url" href="https://htmlpreview.github.io/?https://github.com/k-1026/AxO/blob/research/presentation/MEJ_%EC%B6%9C%EC%8B%9C%EC%88%9C%EC%9C%84_%EB%B2%84%ED%8A%BC%EC%8B%9C%EC%95%88_%EC%B5%9C%EC%8B%A0.html" target="_blank">htmlpreview.github.io/?…/research/presentation/MEJ_출시순위_버튼시안_최신.html</a></div>
     </div>
@@ -262,8 +285,6 @@ a{color:var(--teal-d)}
         <tr><td>기획자가 이 결과로 기획 시간을 줄인다</td><td><span class="tag h">미판정</span></td></tr>
         <tr><td>실시간 트렌드가 기획 포인트를 바꾼다</td><td><span class="tag h">미판정</span></td></tr>
       </table>
-      <div class="todo"><span class="t">추후 보충</span><b>가설 판정 (사용자 반응)</b>
-        <ul><li>사용자 테스트 0건 — '작동'은 확인, '쓸모'는 미판정</li><li>판정 결과: <i>(비어 있음)</i></li><li>v1.1 실시간 사이트는 공개 URL 없음</li></ul></div>
     </div>
   </div>
   <div class="src">출처: beautyagent/MEJ_청향 기획에이전트_최신.md · AxO_피치_7장_1118.md 5장 · 피치근거_충족현황_1118.md</div>
@@ -285,31 +306,43 @@ a{color:var(--teal-d)}
 <!-- 6 팀 -->
 <section class="slide">
   <div class="bar"></div><div class="chip">6 · 팀</div>
-  <h1>3명이 <em>출처가 남는 저장소</em>로 3주 동안 만들었다</h1>
+  <h1><em>출처가 남는 저장소</em>로 3주간 함께 작업</h1>
   <p class="q">"이 팀이 할 수 있나?" — 누가 무엇을 맡았고 어떤 AI로 했는가</p>
-  <div class="body">
-    <div class="col" style="flex:1.45">
-      <table>
-        <tr><th style="width:22%">팀원</th><th>맡은 것</th></tr>
-        <tr><td><b>HSJ</b><br>시장과 명세</td><td>계절 기후 K4 · 가격 기준 K5 · 시장 근거 · 기능 명세(spec) · 밸류체인 · 포지셔닝 맵 · 요금 구조 · 유저 플로우</td></tr>
-        <tr><td><b>LJH</b><br>규제와 경쟁</td><td>광고 표현 규칙 K6 · 기능성 고시 성분 대조 · 원료별 경쟁 제품 · 올리브영 상위 제품 가격 · BM 유저스토리<br><span class="note">11/18부터 참여 종료 → 남은 일(경쟁 비교 · 효과 측정 · results.md)은 <b>HSJ</b>가 이어받음</span></td></tr>
-        <tr><td><b>MEJ</b><br>고객과 화면</td><td>고객 인사이트 · BM 페르소나·BM 캔버스 · OEM·원가율 기준 · 출시 기획실 화면 · 트렌드 수집 · 엑셀 모델 · 에이전트 대시보드</td></tr>
-      </table>
-      <div class="note">조사 기록 방식: 모든 조사에 [사실] / [해석] / [아이디어] 태그와 🟢🟡🔴 출처 등급 → PR로 research 브랜치에 합침</div>
+  <div class="body" style="flex-direction:column;gap:20px">
+    <div style="display:flex;gap:22px">
+      <div class="col">
+        <div style="font-weight:700;color:var(--teal-d);font-size:16px">자료 조사 역할 (3명, ~11/17)</div>
+        <table style="font-size:16.5px">
+          <tr><th style="width:22%">팀원</th><th>맡은 것</th></tr>
+          <tr><td><b>HSJ</b><br>시장과 명세</td><td>계절 기후 · 가격 기준 · 시장 근거 · 기능 명세(spec) · 밸류체인 · 포지셔닝 맵 · 요금 구조 · 유저 플로우</td></tr>
+          <tr><td><b>LJH</b><br>규제와 경쟁</td><td>광고 표현 규칙 · 기능성 고시 성분 대조 · 원료별 경쟁 제품 · 올리브영 상위 제품 가격 · BM 유저스토리</td></tr>
+          <tr><td><b>MEJ</b><br>고객과 화면</td><td>고객 인사이트 · BM 페르소나·BM 캔버스 · OEM·원가율 기준 · 출시 기획실 화면 · 트렌드 수집 · 엑셀 모델 · 에이전트 대시보드</td></tr>
+        </table>
+      </div>
+      <div class="col">
+        <div style="font-weight:700;color:var(--teal-d);font-size:16px">피칭데이 보충 역할 (2명, 11/18~) — LJH 참여 종료, 남은 일은 HSJ가 이어받음</div>
+        <table style="font-size:16.5px">
+          <tr><th style="width:16%">팀원</th><th>맡은 것</th></tr>
+          <tr><td><b>MEJ</b></td><td>신생 한방뷰티 브랜드 기획자 인터뷰·설문 (VOC · 지불 의향 · 가설 판정) · 엑셀 에이전트 시트 (SOM · 시나리오 · 민감도) · BM 캔버스 수정</td></tr>
+          <tr><td><b>HSJ</b></td><td>대상 수 · 경쟁 비교 · 출처 확인 <span class="tag k">완료</span> · 효과 측정 · API 비용 실측 · results.md</td></tr>
+          <tr><td><b>둘 다</b></td><td>사용 도구 (AI 도구와 대표 지시문)</td></tr>
+        </table>
+      </div>
     </div>
-    <div class="col" style="flex:1">
-      <table>
+    <div style="display:flex;gap:22px;align-items:flex-start">
+      <table style="font-size:16.5px;flex:1.2">
         <tr><th>작업 흔적</th><th class="r">값</th></tr>
         <tr><td>research 브랜치 커밋 (10/28~11/17)</td><td class="num r">279개</td></tr>
         <tr><td>HSJ · LJH · MEJ 커밋 (자동 갱신 80건 별도)</td><td class="r">47 · 39 · 30</td></tr>
         <tr><td>사업 타당성 엑셀 모델</td><td class="r">11개 시트, 모두 수식</td></tr>
-        <tr><td>Claude Code 서브에이전트</td><td class="r">4종 · playbook 13단계</td></tr>
+        <tr><td>Claude Code 서브에이전트</td><td class="r">4종 · 기획 13단계</td></tr>
       </table>
-      <div class="todo"><span class="t">추후 보충</span><b>사용 도구 (팀원별)</b>
-        <ul><li>팀원별 AI 사용 기록은 HSJ(유저 플로우.md)만 있음</li><li>LJH · MEJ가 쓴 AI 도구·대표 지시문: <i>(비어 있음)</i></li><li>역할 분담이 실제와 맞는지 팀 확인 필요</li></ul></div>
+      <div class="col" style="flex:1;gap:10px">
+        <div class="note" style="font-size:14px">조사 기록 방식: 모든 조사에 [사실] / [해석] / [아이디어] 태그와 출처 등급 → PR로 research 브랜치에 합침</div>
+      </div>
     </div>
   </div>
-  <div class="src">출처: AxO_피치_7장_1118.md 6장 (git log origin/research) · idea/런칭기획에이전트_워크플로우_역할분담.md · .claude/agents/</div>
+  <div class="src">출처: AxO_피치_7장_1118.md 6장 (git log origin/research) · idea/런칭기획에이전트_워크플로우_역할분담.md · 피칭데이/피칭데이_역할분담.md · .claude/agents/</div>
   <div class="pg">6</div>
 </section>
 
@@ -319,12 +352,6 @@ a{color:var(--teal-d)}
   <h1>신생 한방뷰티 브랜드 기획자와의 <em>시범 사용</em>을 연결해 주세요</h1>
   <p class="q">"그래서 무엇을 해 주면 되나?" — 다음 단계와 필요한 것</p>
   <div class="body" style="flex-direction:column;gap:18px">
-    <div style="display:flex;gap:24px">
-      <div class="todo" style="flex:1"><span class="t">추후 보충</span><b>민감도 1위 가정 (에이전트 기준)</b>
-        <ul><li>요금 가정(구독자 수 · 가격 · API 비용 · 고정비)을 ±20% 바꾼 분석 없음</li><li>1위 가정: <i>(비어 있음)</i></li></ul></div>
-      <div class="todo" style="flex:1"><span class="t">추후 보충</span><b>results.md '계획' 칸</b>
-        <ul><li>저장소에 results.md 없음</li><li>다음 단계 계획: <i>(비어 있음)</i></li></ul></div>
-    </div>
     <div class="band">
       <b>요청 한 문장 (초안 · 팀 확정 필요)</b><br>
       대구·경북 화장품 지원기관을 통해 신생 한방뷰티 브랜드 기획자와의 시범 사용·인터뷰를 연결해 주시면, 지불 의향과 사용 빈도를 실제 반응으로 검증하겠습니다.
