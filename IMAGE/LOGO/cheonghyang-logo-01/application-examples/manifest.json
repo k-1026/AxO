@@ -1,0 +1,62 @@
+{
+  "created": "2026-11-13",
+  "logo": "../cheonghyang-logo-01.png",
+  "logoName": "청향 로고 1",
+  "usage": "⚠️ AI 생성 디자인 검토용 시안",
+  "targetProductCount": 6,
+  "completedCount": 4,
+  "completed": [
+    {
+      "file": "toner.png",
+      "sha256": "cc247a90b3b715f6b6928d4f28f947720ee98856587bb6a75d6ba8cd25eebc3c",
+      "bytes": 1567120,
+      "key": "toner",
+      "product": "토너",
+      "generatedSourceFile": "exec-4242ec72-3ae2-4427-91eb-8cbc331b3c8a.png",
+      "userAttachmentSelected": false,
+      "prompt": "Edit target: Image 1 is the existing toner product photograph. Supporting insert: Image 2 is the EXACT approved Korean wordmark \"청향\" in a thin light sans-serif font. Change ONLY the printed branding in Image 1. Remove all existing CHAHAR letters AND their enclosing circular outlines, replacing them with the exact Korean wordmark 청향 from Image 2. Preserve both Hangul syllables in their full original font proportions; no separately resized final circles, no bold strokes. Print the logo in the same rich red as the original lettering, centered on the same front area, at a similar tasteful width to the old lettering. No enclosing circle around the new wordmark. The transparent padding around Image 2 is not part of the logo. Keep EVERYTHING ELSE exactly unchanged: the transparent toner bottle, pink liquid, rounded glossy red flip-top jar-shaped cap, right-hand inset showing the open cap, and every reflection, materials, fill levels, colors, shadows, pale pink backdrop, composition and camera angle. Do not redesign the containers. No extra text, product-type labels, English, Chinese characters or new symbols. Output only the edited product photograph with the original wide composition and aspect ratio."
+    },
+    {
+      "file": "serum.png",
+      "sha256": "1e679d5bdb9e6f3cf1c8ec8a507aab69b12c63ac896128ddc39c176b5fb4a52d",
+      "bytes": 1635520,
+      "key": "serum",
+      "product": "세럼",
+      "generatedSourceFile": "exec-a7cec4c9-5607-431e-9dbb-5af7b3d4deab.png",
+      "userAttachmentSelected": false,
+      "prompt": "Edit target: Image 1 is the existing CHAHAR serum product photograph. Supporting insert: Image 2 is the EXACT approved Korean wordmark \"청향\" in a very thin light sans-serif font. Change ONLY the printed branding in Image 1. Remove the existing CHAHAR lettering AND its enclosing circular outline from the front of the main serum bottle, and replace them with the exact Korean wordmark from Image 2, printed in the same rich red as the previous lettering, centered on the same front label area. Preserve the entire natural shape and proportions of both Hangul syllables 청향 exactly as in the logo reference; do not alter individual circles or make the font bold. The logo should be elegantly legible at a similar width to the old CHAHAR lettering, with no enclosing circle. Image 2's transparent padding is not part of the logo. Keep EVERYTHING ELSE in Image 1 unchanged: same serum bottle shape, fill level, bubbles, interior dropper, pale-pink rubber bulb, glossy red rounded collar, glass reflections, background, shadows, the right-hand close-up inset, composition, and camera angle. Do not redesign the packaging, add products, add a slogan, add English text, or add Chinese characters. Output the edited product photograph only, with the original wide composition and resolution proportions."
+    },
+    {
+      "file": "cream.png",
+      "sha256": "baeb4314af77c2ee5a874f24fae2ab404246aaa04e21b79a9f2f828f37b301cc",
+      "bytes": 1501513,
+      "key": "cream",
+      "product": "크림",
+      "generatedSourceFile": "exec-114bf5ee-8d38-46a4-b71c-ca4e133f2f5f.png",
+      "userAttachmentSelected": false,
+      "prompt": "Edit target: Image 1 is the existing cream product photograph. Supporting insert: Image 2 is the EXACT approved Korean wordmark \"청향\" in a thin light sans-serif font. Change ONLY the printed branding in Image 1. Remove all existing CHAHAR letters AND their enclosing circular outlines, replacing them with the exact Korean wordmark 청향 from Image 2. Preserve both Hangul syllables in their full original font proportions; no separately resized final circles, no bold strokes. Print the logo in white, as the existing cream-jar branding is white, centered on the same front area, at a similar tasteful width to the old lettering. No enclosing circle around the new wordmark. The transparent padding around Image 2 is not part of the logo. Keep EVERYTHING ELSE exactly unchanged: the opaque pink round cream jar, glossy red lid, base, right inset with open jar and small capsules in the pink cream. Replace branding on BOTH the large closed jar AND the small open jar in the inset, materials, fill levels, colors, shadows, pale pink backdrop, composition and camera angle. Do not redesign the containers. No extra text, product-type labels, English, Chinese characters or new symbols. Output only the edited product photograph with the original wide composition and aspect ratio."
+    },
+    {
+      "file": "lotion-pump.png",
+      "sha256": "f3239a70bada2566151b0e5650219d6e1e798e6ad0ef8504a4af464b2986616e",
+      "bytes": 1704160,
+      "key": "lotion-pump",
+      "product": "로션 펌프형",
+      "generatedSourceFile": "exec-8108680f-8065-4a10-9829-ab289ce49ae6.png",
+      "userAttachmentSelected": true,
+      "prompt": "Edit target: Image 1 is the existing lotion_pump product photograph. Supporting insert: Image 2 is the EXACT approved Korean wordmark \"청향\" in a thin light sans-serif font. Change ONLY the printed branding in Image 1. Remove all existing CHAHAR letters AND their enclosing circular outlines, replacing them with the exact Korean wordmark 청향 from Image 2. Preserve both Hangul syllables in their full original font proportions; no separately resized final circles, no bold strokes. Print the logo in the same rich red as the original lettering, centered on the same front area, at a similar tasteful width to the old lettering. No enclosing circle around the new wordmark. The transparent padding around Image 2 is not part of the logo. Keep EVERYTHING ELSE exactly unchanged: the opaque milky pink lotion pump bottle, glossy red slim pump and rounded jar-like collar, right-hand pump close-up inset, and every reflection, materials, fill levels, colors, shadows, pale pink backdrop, composition and camera angle. Do not redesign the containers. No extra text, product-type labels, English, Chinese characters or new symbols. Output only the edited product photograph with the original wide composition and aspect ratio."
+    }
+  ],
+  "pending": [
+    {
+      "key": "lotion-tube",
+      "product": "로션 튜브형",
+      "status": "이미지 생성 한도로 미생성"
+    },
+    {
+      "key": "mist",
+      "product": "미스트",
+      "status": "이미지 생성 한도로 미생성"
+    }
+  ]
+}

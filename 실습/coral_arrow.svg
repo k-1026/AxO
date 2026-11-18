@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="400" viewBox="0 0 680 400" role="img" font-family="'Pretendard','Noto Sans KR','Malgun Gothic',sans-serif">
+<title>크리에이티브 트랙 코랄 화살표와 기업 후보 위치</title>
+<desc>IP에서 콘텐츠, 캠페인, 뷰티 커머스로 이어지는 코랄 화살표 위에 아모레퍼시픽, 코스맥스, 실리콘투가 각각 어디서 돈을 버는지 표시한 그림. 기업 위치는 팀 해석([I]).</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect width="680" height="400" fill="#FFFFFF"/>
+<g font-size="14" font-weight="500" text-anchor="middle" dominant-baseline="central">
+<rect x="50" y="40" width="130" height="56" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+<text x="115" y="58" fill="#712B13">IP</text>
+<rect x="200" y="40" width="130" height="56" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+<text x="265" y="58" fill="#712B13">콘텐츠</text>
+<rect x="350" y="40" width="130" height="56" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+<text x="415" y="58" fill="#712B13">캠페인</text>
+<rect x="500" y="40" width="130" height="56" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+<text x="565" y="58" fill="#712B13">뷰티 커머스</text>
+<rect x="50" y="160" width="280" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="190" y="178" fill="#444441">아모레퍼시픽 · 브랜드사</text>
+<rect x="350" y="160" width="130" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="415" y="178" fill="#444441">코스맥스</text>
+<rect x="530" y="160" width="110" height="56" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="585" y="178" fill="#0C447C">실리콘투</text>
+<rect x="530" y="260" width="110" height="56" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="585" y="278" fill="#0C447C">해외 소비자</text>
+</g>
+<g font-size="12" text-anchor="middle" dominant-baseline="central">
+<text x="115" y="78" fill="#993C1D">약령시·오미자</text>
+<text x="265" y="78" fill="#993C1D">향·계절 루틴</text>
+<text x="415" y="78" fill="#993C1D">계절 기획전</text>
+<text x="565" y="78" fill="#993C1D">올리브영·자사몰</text>
+<text x="190" y="198" fill="#5F5E5A">IP부터 캠페인까지 직접 운영</text>
+<text x="415" y="198" fill="#5F5E5A">제조사 · 생산</text>
+<text x="585" y="198" fill="#185FA5">플랫폼·수출</text>
+<text x="585" y="298" fill="#185FA5">유럽·북미·중동</text>
+</g>
+<line x1="180" y1="68" x2="198" y2="68" stroke="#D85A30" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="330" y1="68" x2="348" y2="68" stroke="#D85A30" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="480" y1="68" x2="498" y2="68" stroke="#D85A30" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="115" y1="158" x2="115" y2="98" stroke="#888780" stroke-width="0.5" stroke-dasharray="3 3"/>
+<line x1="265" y1="158" x2="265" y2="98" stroke="#888780" stroke-width="0.5" stroke-dasharray="3 3"/>
+<path d="M480 188 L510 188 L510 98" fill="none" stroke="#888780" stroke-width="1" marker-end="url(#arrow)"/>
+<line x1="585" y1="96" x2="585" y2="158" stroke="#378ADD" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="585" y1="216" x2="585" y2="258" stroke="#378ADD" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M528 300 L265 300 L265 218" fill="none" stroke="#1D9E75" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+<g font-size="12" fill="#5F5E5A">
+<text x="300" y="318">구매·리뷰 데이터 → 다음 계절 콘텐츠</text>
+<text x="88" y="356">코랄: 우리 트랙</text>
+<text x="248" y="356">블루: 출하·수출</text>
+<text x="408" y="356">틸: 데이터 피드백</text>
+<text x="50" y="380">회색 상자 = 기업 후보, 점선 = 그 기업이 맡는 단계 · 기업 위치는 [I] 해석</text>
+</g>
+<line x1="50" y1="352" x2="80" y2="352" stroke="#D85A30" stroke-width="1.5"/>
+<line x1="210" y1="352" x2="240" y2="352" stroke="#378ADD" stroke-width="1.5"/>
+<line x1="370" y1="352" x2="400" y2="352" stroke="#1D9E75" stroke-width="1" stroke-dasharray="4 4"/>
+</svg>

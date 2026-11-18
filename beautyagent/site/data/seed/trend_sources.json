@@ -1,0 +1,161 @@
+{
+  "kind": "trend_sources",
+  "note": "트렌드 에이전트가 확인하는 출처",
+  "source": "site/public/index.html 하드코딩에서 이관 (2026-11-17)",
+  "data": [
+    {
+      "id": "google-trends",
+      "name": "Google Trends",
+      "url": "https://trends.google.com/trends/explore",
+      "type": "검색 관심",
+      "tier": "signal"
+    },
+    {
+      "id": "spate",
+      "name": "Spate",
+      "url": "https://www.spate.nyc/resources/reports",
+      "type": "검색·소셜 분석",
+      "tier": "signal"
+    },
+    {
+      "id": "cosme",
+      "name": "@cosme 랭킹",
+      "url": "https://s.cosme.net/ranking",
+      "type": "일본 제품 리뷰·랭킹",
+      "tier": "signal"
+    },
+    {
+      "id": "naver-datalab",
+      "name": "네이버 데이터랩 (검색어 트렌드·쇼핑인사이트)",
+      "url": "https://datalab.naver.com/",
+      "type": "국내 검색·쇼핑 관심",
+      "tier": "signal"
+    },
+    {
+      "id": "nedrug",
+      "name": "의약품안전나라 (기능성화장품 보고)",
+      "url": "https://nedrug.mfds.go.kr/",
+      "type": "기능성 제품 보고 현황",
+      "tier": "signal"
+    },
+    {
+      "id": "hwahae",
+      "name": "화해 랭킹",
+      "url": "https://www.hwahae.co.kr/rankings",
+      "type": "리뷰 기반 랭킹",
+      "tier": "signal"
+    },
+    {
+      "id": "oliveyoung-ranking",
+      "name": "올리브영 판매 랭킹",
+      "url": "https://www.oliveyoung.co.kr/store/main/getBestList.do",
+      "type": "판매 랭킹",
+      "tier": "signal"
+    },
+    {
+      "id": "kosis-online",
+      "name": "통계청 온라인쇼핑동향 (KOSIS)",
+      "url": "https://kosis.kr/",
+      "type": "화장품 온라인 거래액 (매월)",
+      "tier": "signal"
+    },
+    {
+      "id": "customs-trade",
+      "name": "관세청 수출입 무역통계",
+      "url": "https://tradedata.go.kr/",
+      "type": "화장품 수출 (매월)",
+      "tier": "signal"
+    },
+    {
+      "id": "oliveyoung",
+      "name": "올리브영",
+      "url": "https://corp.oliveyoung.com/ko/newsroom/press",
+      "type": "공식 콘텐츠·판매랭킹",
+      "tier": "case"
+    },
+    {
+      "id": "jangup",
+      "name": "장업신문",
+      "url": "https://www.jangup.com/",
+      "type": "업계 기사",
+      "tier": "case"
+    },
+    {
+      "id": "cosmetics-business",
+      "name": "Cosmetics Business",
+      "url": "https://www.cosmeticsbusiness.com/cosmetics-business-reveals-the-top-5-skin-care-2",
+      "type": "업계 기사·제품 사례",
+      "tier": "case"
+    },
+    {
+      "id": "cosmorning",
+      "name": "코스모닝",
+      "url": "https://www.cosmorning.com/",
+      "type": "국내 업계 기사",
+      "tier": "case"
+    },
+    {
+      "id": "thebk",
+      "name": "뷰티경제",
+      "url": "https://www.thebk.co.kr/",
+      "type": "국내 업계 기사",
+      "tier": "case"
+    },
+    {
+      "id": "mintel",
+      "name": "Mintel · GNPD",
+      "url": "https://www.mintel.com/insights/beauty-and-personal-care/",
+      "type": "시장 전망·신제품 데이터",
+      "tier": "background"
+    },
+    {
+      "id": "niq",
+      "name": "NielsenIQ",
+      "url": "https://nielseniq.com/global/en/insights/report/2026/niq-state-of-global-beauty-2026/",
+      "type": "구매·시장 데이터",
+      "tier": "background"
+    },
+    {
+      "id": "mckinsey",
+      "name": "McKinsey — State of Beauty",
+      "url": "https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/state-of-beauty",
+      "type": "시장·채널 전망",
+      "tier": "background"
+    },
+    {
+      "id": "cosmotrends",
+      "name": "Cosmoprof × BEAUTYSTREAMS — CosmoTrends",
+      "url": "https://lp.cosmoprof.com/hubfs/BEAUTYSTREAMS_CosmoProfWorldwideBologna_CosmoTrends_2026_compressed.pdf",
+      "type": "전시·제품 혁신",
+      "tier": "background"
+    },
+    {
+      "id": "pinterest",
+      "name": "Pinterest Predicts",
+      "url": "https://business.pinterest.com/en-gb/pinterest-predicts/",
+      "type": "시각 트렌드·검색 전망",
+      "tier": "background"
+    },
+    {
+      "id": "kcii",
+      "name": "대한화장품산업연구원",
+      "url": "https://www.kcii.re.kr/",
+      "type": "국내 산업 보고서",
+      "tier": "background"
+    },
+    {
+      "id": "kotra",
+      "name": "KOTRA 해외시장뉴스",
+      "url": "https://dream.kotra.or.kr/",
+      "type": "국가별 시장 동향",
+      "tier": "background"
+    },
+    {
+      "id": "opensurvey",
+      "name": "오픈서베이 뷰티 트렌드 리포트",
+      "url": "https://blog.opensurvey.co.kr/trendreport/beauty-2026/",
+      "type": "국내 소비자 조사",
+      "tier": "background"
+    }
+  ]
+}
