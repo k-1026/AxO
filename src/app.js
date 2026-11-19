@@ -419,6 +419,21 @@ if (typeof document.addEventListener === "function" && typeof window !== "undefi
 
 function render() { hideSampleZoom(); renderPackageFilters(); renderSeasons(); renderTrendComment(); renderStudio(); renderResults(); }
 
+/** AI 채팅에 함께 보낼 '지금 화면 정보' (계절, 고른 기준, 후보 순위). 점수는 계산 코드가 낸 값 그대로예요. */
+export function getPlanningContext() {
+  if (!SEASONS || !SEASONS[season]) return "";
+  const lines = [
+    `현재 계절: ${season}`,
+    `기후 이슈: ${SEASONS[season].issues.map(i => `${i[0]}(${i[2]})`).join(", ")}`,
+    `기획자가 고른 기준: ${CRIT.filter(c => !c.off && W[c.k]).map(c => `${c.nm} ${stars(W[c.k])}`).join(", ") || "없음"}`,
+    "후보 순위:",
+    ...RES.map(r => r.blocked.length
+      ? `- 순위 제외 ${r.l.name}: ${r.blocked.map(b => `${b.g.nm} ${b.r[0]}`).join(", ")}`
+      : `- ${r.rank}위 ${r.l.name} · ${scoreText(r)} · 구성 ${r.l.lineup.map(x => x[1]).join("+")} · 고민 ${r.l.concern}`),
+  ];
+  return lines.join("\n");
+}
+
 export function startApp(data) {
   ({ SEASONS, HERBS, DESIGN, TREND_SOURCES, TREND_TIERS } = data);
   TREND = data.HERB_TREND;
