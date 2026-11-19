@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>시즌 기획 작업흐름</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f6f1e7;
+    --card: #fffdf8;
+    --ink: #1f2a24;
+    --muted: #6b6f68;
+    --line: #ddd4c3;
+    --green: #2f5d46;
+    --green-soft: #e3ece4;
+    --ochre: #b5762a;
+    --ochre-soft: #f4e6d0;
+    --red: #a6432f;
+    --red-soft: #f5e0da;
+    --stage: #2a2f2b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--stage); }
+  body {
+    font-family: "Noto Sans KR", system-ui, sans-serif;
+    color: var(--ink);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* 1920×1080 고정 캔버스를 화면에 맞춰 축소 */
+  #deck { position: fixed; inset: 0; display: grid; place-items: center; }
+  .slide {
+    position: absolute;
+    width: 1920px; height: 1080px;
+    background: var(--paper);
+    padding: 44px 72px 0;
+    display: flex; flex-direction: column;
+    transform-origin: center center;
+  }
+
+  .head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 18px; }
+  .kicker { font-size: 19px; font-weight: 700; letter-spacing: .08em; color: var(--ochre); margin-bottom: 6px; }
+  h1 {
+    font-family: "Noto Serif KR", serif;
+    font-size: 44px; font-weight: 900; line-height: 1.2; letter-spacing: -0.01em;
+  }
+  h1 em { font-style: normal; color: var(--green); }
+  .legend { display: flex; gap: 16px; font-size: 16px; color: var(--muted); padding-bottom: 6px; }
+  .who { display: inline-block; font-size: 13px; font-weight: 700; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+  .who.me { background: var(--ochre); color: #fff; }
+  .who.lj { background: #e4e0f0; color: #4b3f80; }
+  .who.hs { background: #dde8f0; color: #2c5470; }
+  .who.ai { background: var(--green-soft); color: var(--green); }
+
+  .label { font-size: 16px; font-weight: 900; color: var(--muted); letter-spacing: .06em; margin-bottom: 8px; }
+
+  /* ── 1. 워크플로우 ── */
+  .pipe { display: grid; grid-template-columns: repeat(9, 1fr); gap: 9px; }
+  .st {
+    position: relative; background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 10px 12px; min-height: 128px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .st:not(:last-child)::after {
+    content: "▶"; position: absolute; right: -10px; top: 50%; transform: translateY(-50%);
+    font-size: 12px; color: var(--ochre); z-index: 2;
+  }
+  .st .t { display: flex; align-items: center; gap: 6px; }
+  .st .n {
+    flex: none; display: grid; place-items: center; min-width: 28px; height: 28px; padding: 0 5px; border-radius: 14px;
+    background: var(--green); color: var(--paper);
+    font-family: "Noto Serif KR", serif; font-weight: 900; font-size: 14px;
+  }
+  .st b { font-size: 18px; font-weight: 900; line-height: 1.2; }
+  .st p { font-size: 14px; color: var(--muted); line-height: 1.33; }
+  .st .who { align-self: flex-start; margin-top: auto; }
+  .st.me { background: #fbf1e2; border: 2.5px solid var(--ochre); }
+  .st.me .n { background: var(--ochre); }
+
+  /* ── 2. 라인 분기 + 은진 산출물 ── */
+  .mid { display: grid; grid-template-columns: 1fr 1fr 1.05fr; gap: 16px; margin-top: 18px; height: 382px; }
+  .box {
+    background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+    padding: 16px 20px; display: flex; flex-direction: column; min-height: 0; overflow: hidden;
+  }
+  .box h2 { font-size: 23px; font-weight: 900; display: flex; align-items: center; gap: 10px; }
+  .tag { font-size: 13px; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
+  .box .sub { font-size: 15px; color: var(--muted); margin: 3px 0 10px; }
+
+  .lane.base { border-top: 8px solid var(--green); }
+  .lane.base .tag { background: var(--green-soft); color: var(--green); }
+  .lane.func { border-top: 8px solid var(--ochre); }
+  .lane.func .tag { background: var(--ochre-soft); color: var(--ochre); }
+
+  .rows { display: grid; grid-template-columns: 96px 1fr; row-gap: 7px; column-gap: 10px; font-size: 16px; line-height: 1.38; }
+  .rows dt { font-weight: 900; color: var(--muted); font-size: 14px; padding-top: 2px; }
+  .rows dd b { font-weight: 700; }
+  .ok { color: var(--green); font-weight: 700; }
+  .no { color: var(--red); font-weight: 700; }
+  .ex { margin-top: auto; border-radius: 12px; padding: 9px 13px; font-size: 14px; line-height: 1.4; }
+  .base .ex { background: var(--green-soft); }
+  .func .ex { background: var(--ochre-soft); }
+  .ex b { font-weight: 900; }
+
+  .mine { border: 3px solid var(--ochre); background: #fffaf1; }
+  .mine h2 { color: var(--ochre); }
+  .out { display: flex; flex-direction: column; gap: 9px; }
+  .o { display: grid; grid-template-columns: 54px 1fr; gap: 10px; align-items: start; }
+  .o .k {
+    display: grid; place-items: center; height: 30px; border-radius: 8px;
+    background: var(--ochre); color: #fff; font-weight: 900; font-size: 15px;
+  }
+  .o .k.plus { background: var(--red); }
+  .o b { font-size: 17px; font-weight: 900; }
+  .o p { font-size: 14px; color: var(--muted); line-height: 1.35; }
+
+  /* ── 3. 은진 일정 ── */
+  .plan { margin-top: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; height: 262px; }
+  .day {
+    background: var(--green); color: var(--paper); border-radius: 18px; padding: 14px 20px;
+    display: flex; flex-direction: column; min-height: 0;
+  }
+  .day h3 { font-size: 20px; font-weight: 900; color: #f3d9a8; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: baseline; }
+  .day h3 small { font-size: 14px; font-weight: 400; color: #c5d3c8; }
+  .tl { display: grid; grid-template-columns: 112px 1fr; row-gap: 6px; column-gap: 12px; font-size: 16px; line-height: 1.35; }
+  .tl dt { font-weight: 700; color: #f3d9a8; font-variant-numeric: tabular-nums; }
+  .tl dd { color: #eef3ef; }
+  .tl dd small { color: #c5d3c8; font-size: 13px; }
+  .tl .push dt, .tl .push dd { color: #fff; }
+  .pp { display: inline-block; font-size: 12px; font-weight: 900; padding: 1px 8px; border-radius: 999px; background: var(--ochre); color: #fff; margin-right: 6px; vertical-align: 1px; }
+
+  .footer { position: absolute; left: 72px; right: 72px; bottom: 14px; display: flex; justify-content: space-between; font-size: 14px; color: var(--muted); }
+
+  @media print {
+    @page { size: 1920px 1080px; margin: 0; }
+    html, body { background: none; overflow: visible; height: auto; }
+    #deck { position: static; display: block; }
+    .slide { position: relative; transform: none !important; }
+  }
+</style>
+</head>
+<body>
+<div id="deck">
+<section class="slide">
+
+  <div class="head">
+    <div>
+      <div class="kicker">신규 제품 런칭 기획 에이전트 · 은진(MEJ) 작업흐름</div>
+      <h1>계절만 넣으면 런칭 기획안 1장 — <em>은진은 원료·라인</em>을 채운다</h1>
+    </div>
+    <div class="legend">
+      <span class="who me">은진</span>
+      <span class="who lj">진하</span>
+      <span class="who hs">성지</span>
+      <span class="who ai">AI가 판단</span>
+    </div>
+  </div>
+
+  <!-- 1. 워크플로우 -->
+  <div class="label">① 에이전트 워크플로우 · 주황 = 은진 자료로 돌아가는 단계</div>
+  <div class="pipe">
+    <div class="st"><div class="t"><span class="n">IN</span><b>계절 입력</b></div><p>봄·여름·가을·겨울만. 타입·라인은 AI가 추천</p></div>
+    <div class="st me"><div class="t"><span class="n">1</span><b>피부타입</b></div><p>계절 고민 → 진정·민감·보습·장벽</p><span class="who me">기획데이터 5장</span></div>
+    <div class="st"><div class="t"><span class="n">2</span><b>라인 추천</b></div><p>개수·종류를 AI가 정함 <b style="font-size:14px;color:var(--ochre)">+ 기초/기능성</b></p><span class="who ai">AI</span></div>
+    <div class="st me"><div class="t"><span class="n">3</span><b>한약재 매칭</b></div><p>키워드 → 향 세기 → 배합 제한 → 경쟁 선점. 경북 산지 가산점</p><span class="who me">K3 원료표</span></div>
+    <div class="st me"><div class="t"><span class="n">3-1</span><b>1차 출시 구성</b></div><p>라인마다 다르게, 올리브영 상위 제품 근거</p><span class="who me">K2 라인 규칙</span></div>
+    <div class="st"><div class="t"><span class="n">4</span><b>캐릭터·네이밍</b></div><p>브랜드명 + 약재 + 고민 + 유형</p><span class="who hs">K1·세계관</span></div>
+    <div class="st"><div class="t"><span class="n">5</span><b>가격</b></div><p>경쟁 제품 ml당 가격, 원가는 견적 없으면 "확인 필요"</p><span class="who lj">K5 가격표</span></div>
+    <div class="st"><div class="t"><span class="n">6·7</span><b>절기·팝업</b></div><p>1차 → 반응 → 2차 확장, 약전골목 스토리</p><span class="who hs">K4 절기·대구</span></div>
+    <div class="st"><div class="t"><span class="n">8</span><b>광고 체크</b></div><p>금지어 셀프 체크 + 근거 목록 → 기획안 1장</p><span class="who lj">K6 금지어</span></div>
+  </div>
+
+  <!-- 2. 라인 분기 + 은진 산출물 -->
+  <div class="mid">
+    <div class="box lane base">
+      <h2>기초 라인 <span class="tag">일반 화장품</span></h2>
+      <div class="sub">계절마다 바뀌는 중저가 시즌 라인</div>
+      <dl class="rows">
+        <dt>1차 구성 틀</dt><dd><b>진정</b> 토너 + 젤 크림 · <b>민감·장벽</b> 클렌저 + 토너 + 크림 · <b>보습</b> 토너 + 세럼 + 크림</dd>
+        <dt>쓸 수 있는 말</dt><dd><span class="ok">진정에 도움 · 촉촉함 · 산뜻함 · 윤기</span></dd>
+        <dt>못 쓰는 말</dt><dd><span class="no">치료 · 염증 완화 · 미백 · 주름 개선</span></dd>
+        <dt>출시 조건</dt><dd>제조·책임판매업체 통해 바로 가능</dd>
+      </dl>
+      <div class="ex"><b>2차 확장 후보</b> 1차 밖 제품(미스트·마스크·에센스)은 따로 표시 → 반응 보고 추가</div>
+    </div>
+
+    <div class="box lane func">
+      <h2>기능성 라인 <span class="tag">식약처 심사·보고</span></h2>
+      <div class="sub">계절 고민이 법정 기능성에 해당할 때 갈라짐</div>
+      <dl class="rows">
+        <dt>계절 매칭</dt><dd>여름 <b>자외선 차단</b> · 가을 <b>미백</b> · 겨울 <b>주름 개선</b> · 봄 <b>피부장벽</b> <small style="color:var(--muted)">(예시)</small></dd>
+        <dt>구조</dt><dd>한방 약재 = 스토리 · <b>고시 기능성 성분</b> = 효능 근거 (예: 유용성감초추출물 → 미백)</dd>
+        <dt>쓸 수 있는 말</dt><dd><span class="ok">심사·보고 완료 후 인정받은 문구만</span></dd>
+        <dt>출시 조건</dt><dd>고시 성분·함량이면 <b>보고</b>, 아니면 <b>심사</b> → 기간·비용 큼</dd>
+      </dl>
+      <div class="ex"><b>지침 수정</b> "미백·주름 금지" 규칙을 <b>기능성 라인 예외</b>로 → 성지에게 전달</div>
+    </div>
+
+    <div class="box mine">
+      <h2>은진이 만들 것</h2>
+      <div class="sub">에이전트가 지어내지 않게 넣는 근거 파일</div>
+      <div class="out">
+        <div class="o"><span class="k">K3</span><div><b>원료 후보표 8개</b><p>원료명(한자) · 허용 효능 키워드 · 타입·계절 · <b style="font-size:14px">향 세기(약/중/강)</b> · 산지(경북 표시) · 배합 제한 · 연구 근거 1줄</p></div></div>
+        <div class="o"><span class="k">K2</span><div><b>라인별 1차 출시 구성</b><p>Aside로 올리브영 상위 제품을 고민별 3~5개 → 라인 구성 정리·제안 (목록은 진하가 공유)</p></div></div>
+        <div class="o"><span class="k plus">+기능</span><div><b>기능성 열 추가</b><p>K3에 "고시 기능성 성분과 짝" 열 · K2에 "기능성 라인 구성" 한 줄</p></div></div>
+        <div class="o"><span class="k">단어장</span><div><b>glossary.md</b><p>원료 8개 정식 이름: 약재명(한자) · 화장품 성분명 · 마케팅 용어 (약전·성분사전 교차확인)</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. 은진 일정 -->
+  <div class="plan">
+    <div class="day">
+      <h3>11/3(화) 오늘 15:00~17:50 <small>원료·라인 초안</small></h3>
+      <dl class="tl">
+        <dt>15:00~15:10</dt><dd>3명 같이 결정 사항 확인</dd>
+        <dt>15:10~16:10</dt><dd><b>K3 원료 후보표 8개</b> — 효능 키워드 · 향 세기 · 산지 <small>(4계절 고민을 고르게)</small></dd>
+        <dt>16:10~16:50</dt><dd><b>K2 라인별 1차 구성</b> — 진하가 준 올리브영 목록으로</dd>
+        <dt>16:50</dt><dd><span class="pp">PUSH</span>MEJ 브랜치 commit + push → 성지 취합</dd>
+        <dt>16:50~17:40</dt><dd><b>glossary.md 초안</b> (원료 8개만)</dd>
+        <dt>17:40~17:50</dt><dd><span class="pp">PUSH</span>commit + push, 학습로그 3줄</dd>
+      </dl>
+    </div>
+    <div class="day">
+      <h3>11/4(수) 내일 오전 · 13:00 마감 <small>빈칸 메우기 → 실행 검토</small></h3>
+      <dl class="tl">
+        <dt>09:00~09:40</dt><dd>원료표 빈칸: <b>배합 제한 · 연구 근거 1줄 · 기능성 짝</b></dd>
+        <dt>09:40</dt><dd><span class="pp">PUSH</span>성지가 받아 지식 파일 교체 <small>(늦으면 된 만큼만)</small></dd>
+        <dt>10:00~11:00</dt><dd>출력 검토: 피부타입 · 라인 · 출시 구성 · 원료 추천</dd>
+        <dt>11:00~11:40</dt><dd>라인·원료 수정본 전달 → 재실행</dd>
+        <dt>11:40~12:30</dt><dd><b>glossary 최종본</b></dd>
+        <dt>12:30~13:00</dt><dd><span class="pp">PUSH</span>commit + push → PR(base: research), 학습로그 공유</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>출처: 런칭기획에이전트_워크플로우_역할분담.md(11/3) · 계절-절기-에이전트-기획안.md · 기능성 구분: 화장품법 시행규칙 제2조, 기능성화장품 심사에 관한 규정</span>
+    <span>AxO · MEJ</span>
+  </div>
+
+</section>
+</div>
+
+<script>
+  const slide = document.querySelector('.slide');
+  function fit() {
+    const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+    slide.style.transform = `scale(${s})`;
+  }
+  addEventListener('resize', fit);
+  fit();
+</script>
+</body>
+</html>

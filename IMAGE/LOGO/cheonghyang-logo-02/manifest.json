@@ -1,0 +1,37 @@
+{
+  "created": "2026-11-13",
+  "name": "청향 로고 2",
+  "brand": "청향",
+  "font": "Noto Sans KR Light",
+  "design": "한글 비율 유지, 청향 자간 0.15em, 아래 오미자 보조 표기",
+  "ingredientFontSize": "브랜드 글자 크기의 25%",
+  "selection": "사용자가 자간을 넓힌 현재 시안을 로고 2로 지정",
+  "usage": "⚠️ 브랜드 검토용 디자인",
+  "files": [
+    {
+      "file": "cheonghyang-logo-02-preview.png",
+      "sha256": "91005659877ea7d61a04c67997ac92a65813dd553319988d198cb8add3404992",
+      "bytes": 27180
+    },
+    {
+      "file": "cheonghyang-logo-02.png",
+      "sha256": "a5198f0b4e1d88242bdad8104993f3ec857fee918742919b55a1ab2e3d90906d",
+      "bytes": 46316
+    },
+    {
+      "file": "cheonghyang-logo-02.svg",
+      "sha256": "12115099465ced1751dc72982473e43a711511032088a8ee9176eb1a2ea57a5f",
+      "bytes": 7493
+    },
+    {
+      "file": "cheonghyang-wordmark-02.png",
+      "sha256": "56a465825bb8f6124b786de2b752bb7c6fadd095c253ac7d77718e57b532452b",
+      "bytes": 46211
+    },
+    {
+      "file": "cheonghyang-wordmark-02.svg",
+      "sha256": "7dfbdd472bfc19d2a4db672dc0fb1f8d2d09c545730ffe10e5070fcb2e982b28",
+      "bytes": 4566
+    }
+  ]
+}

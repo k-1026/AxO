@@ -1,0 +1,12 @@
+{
+  "logoVersion": "2",
+  "pending": [
+    {
+      "key": "lotion-tube",
+      "product": "로션 튜브형",
+      "status": "이미지 생성 한도로 미생성"
+    }
+  ],
+  "instructions": "튜브형 로션의 형태·색·재질을 유지하고 청향 로고 2를 적용. 청향은 작게, 오미자는 브랜드의 25% 크기로 아래 중앙에 적용.",
+  "referenceLogo": "../cheonghyang-logo-02.png"
+}

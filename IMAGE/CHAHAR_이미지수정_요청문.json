@@ -1,0 +1,9 @@
+{
+  "updated": "2026-11-13",
+  "status": "superseded",
+  "instructionFile": "수정1/CHAHAR_이미지생성_통합지시문.txt",
+  "imageDirectory": "수정1",
+  "historyFile": "수정1/생성과정_원문기록.json",
+  "manifestFile": "수정1/이미지목록.json",
+  "note": "이전 요청문 원문은 historyFile에 보존. 실행 시 instructionFile의 최종 지시와 생성 상태를 확인."
+}

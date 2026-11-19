@@ -1,0 +1,66 @@
+{
+  "created": "2026-11-13",
+  "tool": "built-in image_gen edit",
+  "status": "partial: toner generated; subsequent serum/cream calls failed usage_limit_reached; remaining outputs not generated",
+  "resetAtSeoul": "2026-11-14 09:15:39 +09:00",
+  "blocker": "image generation HTTP429 usage_limit_reached",
+  "capacityOrigin": "사용자 지정값, 이전 자료의 기획 예시 대신 이번 값을 적용",
+  "dimensionsOrigin": "외형 치수는 크기 비교용 작업 가정이며 사용자 확정 치수나 실측값이 아님",
+  "specs": [
+    {
+      "key": "toner",
+      "capacityML": 200,
+      "status": "generated",
+      "source": "D:\\L.L.M Academy (AX부트캠프)\\AX크리에이티브트랙 팀AxO\\HSJ\\AxO\\IMAGE\\초안1\\CHAHAR_토너.png",
+      "output": "CHAHAR_토너_200ml.png",
+      "prompt": "Precise-object-edit, CHAHAR toner 200 mL design visualization. Image 1 is original TONER edit target. Image 2 is LOTION TUBE reference for only the red pot-shaped flip-top cap exterior. Change toner cylindrical flip-top cap into smooth cherry-red Korean pot/jar-shaped flip-top closure: gently bulging rounded belly, subtly tucked base, curved shoulders, no ribs, no metal bands. It sits on existing narrow bottle neck; do not add a pump or tube. Main hero cap is CLOSED; right macro shows this same pot-shaped cap flipped open with plain round toner orifice, hinge and sealing peg physically coherent. CRITICAL preserve Image 1 bottle BODY width-to-height proportion and shoulder/base curvature EXACTLY, do not make body shorter or wider: original body approximately 1.80 tall per unit maximum width. Keep transparent body filled with rosy watery toner, thin circular CHAHAR logo, glass-like thickness, studio pink background, hero left and right rounded-detail panel. This is now user-selected nominal 200mL design, not measured capacity. For relative-size family reference assume bottle BODY around 60mm width x108mm height (body includes shoulder and foot, excludes closure), closed overall around132mm. This is an illustrative external size assumption, preserve original shape ratio. Left hero stays substantial, about760px overall height, baseline y930 on 1536x1024 composition. Only CHAHAR text on packaging; no volume label or other copy. Do not copy lotion body or cream contents."
+    },
+    {
+      "key": "serum",
+      "capacityML": 50,
+      "status": "blocked_usage_limit",
+      "source": "D:\\L.L.M Academy (AX부트캠프)\\AX크리에이티브트랙 팀AxO\\HSJ\\AxO\\IMAGE\\초안4\\CHAHAR_세럼.png",
+      "prompt": "Precise-object-edit for nominal CHAHAR SERUM 50mL capacity design. Preserve established transparent rounded bottle, rosy filled serum and pipette, red pot-shaped dropper collar, and tall soft PINK rubber bulb with EXACT current bulb aspect ratio. Preserve CHAHAR circle logo, shoulders, foot, all smooth curves, pink-white studio and hero-left detail-right layout. Rework bottle as a compact 50mL serum with illustrative external body about46mm diameter x61mm height (excluding collar and dropper); overall around96mm tall. Physical volume target 50mL is user specified, not a measurement. The body must feel pocket-sized and be visually smaller than toner200mL and mist250mL, not a large full-size toner. Keep body width/height shape close to reference; scale body and hardware proportionately as a real small serum package. In 1536x1024 frame, main bottle hero occupies about590px overall height, BASELINE y920 and center x450, leaving more air above, instead of filling entire frame. Right macro remains large and shows same redesigned compact product details. No numeric labels on packaging; only CHAHAR. Preserve pink bulb, never white."
+    },
+    {
+      "key": "cream",
+      "capacityML": 50,
+      "status": "blocked_usage_limit",
+      "source": "D:\\L.L.M Academy (AX부트캠프)\\AX크리에이티브트랙 팀AxO\\HSJ\\AxO\\IMAGE\\초안4\\CHAHAR_크림.png",
+      "prompt": "Precise-object-edit, nominal CHAHAR CREAM 50mL capacity design. Preserve this EXACT smooth red pot lid with no ribs/metal band, fully OPAQUE milky-pink round pot body, slightly raised circular foot, white CHAHAR circle and right open-jar capsule gel-cream. Keep pink gel-cream with existing small pearl-white and pink capsules visible ONLY through open top; opaque walls reveal nothing inside. Shape jar as compact 50mL cream: illustrative external maximum diameter64mm, body height36mm, closed total height53mm. This is user-design capacity target, not measured capacity. Keep original pot silhouette proportions; relative to a200mL toner this is a short palm-sized jar. On1536x1024 frame the LEFT closed hero should occupy about400px total height at baseline y920, centerx460, maximum widthabout480px, with intentional elegant negative space above. RIGHT inset open jar remains the existing large clear detail, same redesigned pot geometry. Preserve background, pink-white lighting, material quality, smooth lid. No dimensions or capacity text on packaging; CHAHAR only."
+    },
+    {
+      "key": "mist_round",
+      "capacityML": 250,
+      "status": "pending",
+      "source": "D:\\L.L.M Academy (AX부트캠프)\\AX크리에이티브트랙 팀AxO\\HSJ\\AxO\\IMAGE\\초안4\\CHAHAR_미스트_둥근캡_닫힘.png",
+      "prompt": "Precise-object-edit of existing CHAHAR design. Preserve cherry-red/pink palette, only CHAHAR circular logo on packaging, materials, formulation, hero-left and detail-right composition. Capacities below are USER-SPECIFIED design targets, not measured or certified fill capacities. Adjust actual physical body geometry and relative size to target capacity, not just liquid level. Retain smooth pot-family shoulders and foot. No dimensions or numeric capacity labels on packaging. Nominal MIST 250mL, high-capacity tall transparent bottle with rosy watery liquid, dip tube, pot-shaped red collar. Suggested external BODY envelope58mm diameter x130mm height excluding neck/actuator, overall160mm; illustrative size assumption, not verified engineering dimensions. Keep elongated body and increase volume impression over toner200mL (25 percent more contents, not25 percent extra linear length). Clear protective cap closes over ONLY narrow red spray pump; bottom lip stops on TOP of pot collar. Red pot collar is entirely OUTSIDE and BELOW cap. On1536x1024 main hero about850px overall height baseliney920. Right detail identical structure. Round narrow cylindrical cap with rounded dome crown; retain this round-cap version."
+    },
+    {
+      "key": "mist_square",
+      "capacityML": 250,
+      "status": "pending",
+      "source": "D:\\L.L.M Academy (AX부트캠프)\\AX크리에이티브트랙 팀AxO\\HSJ\\AxO\\IMAGE\\초안4\\CHAHAR_미스트_네모캡_닫힘.png",
+      "prompt": "Precise-object-edit of existing CHAHAR design. Preserve cherry-red/pink palette, only CHAHAR circular logo on packaging, materials, formulation, hero-left and detail-right composition. Capacities below are USER-SPECIFIED design targets, not measured or certified fill capacities. Adjust actual physical body geometry and relative size to target capacity, not just liquid level. Retain smooth pot-family shoulders and foot. No dimensions or numeric capacity labels on packaging. Nominal MIST 250mL, high-capacity tall transparent bottle with rosy watery liquid, dip tube, pot-shaped red collar. Suggested external BODY envelope58mm diameter x130mm height excluding neck/actuator, overall160mm; illustrative size assumption, not verified engineering dimensions. Keep elongated body and increase volume impression over toner200mL (25 percent more contents, not25 percent extra linear length). Clear protective cap closes over ONLY narrow red spray pump; bottom lip stops on TOP of pot collar. Red pot collar is entirely OUTSIDE and BELOW cap. On1536x1024 main hero about850px overall height baseliney920. Right detail identical structure. Narrow square-section cuboid protective cap with flat top and straight flat sides. Same250mL body as round-cap version."
+    },
+    {
+      "key": "lotion_pump",
+      "capacityML": 80,
+      "status": "pending",
+      "source": "D:\\L.L.M Academy (AX부트캠프)\\AX크리에이티브트랙 팀AxO\\HSJ\\AxO\\IMAGE\\초안4\\CHAHAR_로션_펌프형.png",
+      "prompt": "Precise-object-edit of existing CHAHAR design. Preserve cherry-red/pink palette, only CHAHAR circular logo on packaging, materials, formulation, hero-left and detail-right composition. Capacities below are USER-SPECIFIED design targets, not measured or certified fill capacities. Adjust actual physical body geometry and relative size to target capacity, not just liquid level. Retain smooth pot-family shoulders and foot. No dimensions or numeric capacity labels on packaging. Nominal PUMP LOTION80mL. Compact fully OPAQUE milky pink rounded body, no tube or fill visible; refined red functional pump with smooth pot collar. Illustrative body envelope51mm diameter x57mm bodyheight excluding pump, overall97mm; not measured/verified dimension. Small bottle, much less body volume than toner200mL and mist250mL, somewhat larger body volume than serum50mL. On1536x1024 main hero about620px overallheight baseline920, centerx450. Preserve right macro pump and small lotion bead. Preserve all established forms/materials."
+    },
+    {
+      "key": "lotion_tube",
+      "capacityML": 120,
+      "status": "pending",
+      "source": "D:\\L.L.M Academy (AX부트캠프)\\AX크리에이티브트랙 팀AxO\\HSJ\\AxO\\IMAGE\\초안4\\CHAHAR_로션_튜브형.png",
+      "prompt": "Precise-object-edit of existing CHAHAR design. Preserve cherry-red/pink palette, only CHAHAR circular logo on packaging, materials, formulation, hero-left and detail-right composition. Capacities below are USER-SPECIFIED design targets, not measured or certified fill capacities. Adjust actual physical body geometry and relative size to target capacity, not just liquid level. Retain smooth pot-family shoulders and foot. No dimensions or numeric capacity labels on packaging. Nominal TUBE LOTION120mL. Preserve short plump frosted semitransparent pink flexible tube, tiny capsules in same pale pink gel-cream as cream, capsules smaller than cream, red pot-shaped bottom flip cap exterior. BASIC short cylindrical dispensing orifice on flat deck and matching sealing pin in right open-detail; no pot-shaped spout. Illustrative external envelope70mm laid-flat width x92mm bodyheight x30mm inflated maximumdepth, overall114mm including cap, not measured or engineering guarantee. Physical120mL impression: volume between pump80mL and toner200mL. Keep short plump outline, increase real body depth/width instead of making tall thin tube. On1536x1024 main hero about730px totalheight baseline920. Preserve all other details."
+    },
+    {
+      "key": "lineup",
+      "status": "pending_after_all_individuals",
+      "prompt": "Create one shared-scale photorealistic CHAHAR six-product family lineup, all on SAME baseline, SAME camera distance, no individual zoom, retain exact approved revised designs from input images. Left to right TONER200mL (original bottle body1.80height/width, new pot-shaped flipcap), SERUM50mL (pink tall rubber bulb exact approved proportions), CREAM50mL (opaque pink jar red smooth lid), MIST250mL (tall transparent rosy body, narrow clear rounded cap covering only spray pump, red pot collar external), PUMP LOTION80mL (fully opaque compact pink body red pump), TUBE LOTION120mL (short plump translucent pink microcapsule gel-cream tube, pot-shaped outer flipcap). Common illustrative relative external body envelopes in mm: toner60diameterx108bodyheight closed132; serum46diameterx61bodyheight total96; cream64diameterx36bodyheight total53; mist58diameterx130bodyheight total160; pump51diameterx57bodyheight total97; tube70laidflatwidthx92bodyheightx30depth total114. These are visual sizing assumptions to express user capacities, not certified measured fill volumes. Mist tallest, toner next, tube next, pump and serum short, cream shortest and wide. One continuous pink-white studio floor, consistent lighting and scale, full silhouettes separated, brand CHAHAR only on products. Put clean small captions UNDER products on background, exactly 'TONER 200 mL', 'SERUM 50 mL', 'CREAM 50 mL', 'MIST 250 mL', 'LOTION 80 mL', 'TUBE 120 mL'. No inset panels. This is design size comparison, not engineering drawing."
+    }
+  ]
+}

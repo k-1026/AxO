@@ -1,3 +1,5 @@
+> **뷰티 에이전트 작업 모음:** [beautyagent 폴더](beautyagent/README.md)에서 대시보드·플레이북·발표 자료·브랜드 자료를 한 번에 찾을 수 있습니다.
+
 # 🌿 대구 한방 뷰티 에이전트 – 팀 조사 규칙
  
 > 대구 약전골목에서 출발한 한방 뷰티 브랜드의 AI 에이전트를 만들기 위한 자료조사 공간이에요.
@@ -12,23 +14,49 @@
 | `README.md` | 팀 규칙 설명서 (지금 이 파일) | 처음에 한 번 읽기 |
 | `research/_template.md` | 조사 저장 양식 | **복사해서** 내 파일로 쓰기 (원본 수정 ❌) |
 | `prompts/source-grading-prompt.md` | 출처 등급(🟢🟡🔴) 매기는 AI 프롬프트 | AI에 붙여 넣고 자료와 함께 실행 |
+| `playbook.md` | 사업 타당성 분석 기획절차서 (13단계) | 기획·계획서 작업은 이 절차대로 (Claude Code도 자동으로 따름) |
+| `cosmetics-launch-checklist.md` | 화장품 출시 검토 항목과 가중치 예시 | playbook 1단계(판정 기준)·12단계(우선순위)의 입력 |
 | `CLAUDE.md` | Claude Code용 자동 지시 | 신경 안 써도 됨 (Claude Code가 알아서 읽음) |
+| `AGENTS.md` | 다른 AI 코딩 도구용 자동 지시 (`CLAUDE.md`와 같은 내용) | 신경 안 써도 됨 (규칙이 바뀌면 `CLAUDE.md`와 함께 수정) |
+| `.claude/agents/` | Claude Code 서브에이전트 4종 (researcher · competitor-analyzer · model-simulator · reviewer) | playbook 단계별로 나눠 맡음 |
 | `research/glossary.md` | 팀 단어장 | 새 용어를 쓰면 추가 |
+| `idea/` | 에이전트 기획안, 워크플로우·역할분담 (팀이 정한 방향) | 기획이 바뀌면 여기 문서를 고치기 |
+| `presentation/` | 발표 자료 (중간보고, 슬라이드, PDF) | 발표 준비물은 여기에 저장 |
 | `CHANGELOG.md` | 주간 정리 | 매주 3줄 쓰기 |
  
 ```
 저장소/
 ├── README.md
 ├── CLAUDE.md
+├── AGENTS.md
+├── playbook.md              # 기획절차서 (모든 기획 작업의 기준)
+├── cosmetics-launch-checklist.md
 ├── CHANGELOG.md
+├── .claude/agents/          # 서브에이전트 4종
 ├── prompts/
 │   └── source-grading-prompt.md
+├── idea/                    # 에이전트 기획안 · 워크플로우·역할분담
+│   ├── LJH_계절-제품개발-에이전트-기획안.md (+ 요약 .html)
+│   └── 런칭기획에이전트_워크플로우_역할분담.md (+ .html)
+├── presentation/            # 발표 자료 · 중간보고
 └── research/
     ├── _template.md
     ├── glossary.md
-    ├── assets/              # 사진·캡처
-    └── 내이름_주제.md       # 각자 조사 파일
+    ├── data/                # 원본 데이터 (CSV, 엑셀, PDF)
+    ├── assets/              # 사진·캡처·생성 이미지
+    └── 내이름_주제.md       # 각자 조사 파일 (지식 파일 K1~K9 포함)
 ```
+
+**어디에 저장하나요?**
+
+| 이런 파일이면 | 여기에 |
+|---|---|
+| 조사 결과, 지식 파일(K1~K9) | `research/내이름_주제.md` (`_template.md` 복사) |
+| 원본 데이터 (CSV, 엑셀, 보고서 PDF) | `research/data/` |
+| 사진, 캡처, AI 생성 이미지 | `research/assets/` (출처 표에 적기) |
+| 에이전트 기획안, 워크플로우, 역할분담, 팀 결정 | `idea/` (파일 이름은 `내이름_주제.md`) |
+| 발표 자료, 중간보고, 슬라이드 | `presentation/` |
+| 저장소 맨 위 | `README.md`, `CLAUDE.md`, `AGENTS.md`, `playbook.md`, `cosmetics-launch-checklist.md`, `CHANGELOG.md`만 두기 |
  
 ---
  

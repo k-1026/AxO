@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>고객 여정 지도 · 한방 뷰티 기초라인</title>
+<style>
+  :root{
+    --ink:#1d2430; --sub:#5d6675; --line:#dfe4ea; --bg:#f4f6f8; --card:#ffffff;
+    --accent:#0f7f78; --accent-soft:#e6f3f2;
+    --pain:#c2410c; --pain-soft:#fdeee6; --pain-line:#e8895f;
+    --opp:#2b5fb3; --opp-soft:#e8effa;
+    --touch-soft:#f1f3f6;
+    --pos:#0f7f78; --neg:#c2410c;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e8ecf2; --sub:#9aa4b2; --line:#2e3642; --bg:#14181f; --card:#1b2129;
+      --accent:#3fb8b0; --accent-soft:#1d3a39;
+      --pain:#f2a07f; --pain-soft:#3a2420; --pain-line:#c2623d;
+      --opp:#7ea8ea; --opp-soft:#1f2c42; --touch-soft:#242b35;
+      --pos:#3fb8b0; --neg:#f2a07f;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e8ecf2; --sub:#9aa4b2; --line:#2e3642; --bg:#14181f; --card:#1b2129;
+    --accent:#3fb8b0; --accent-soft:#1d3a39;
+    --pain:#f2a07f; --pain-soft:#3a2420; --pain-line:#c2623d;
+    --opp:#7ea8ea; --opp-soft:#1f2c42; --touch-soft:#242b35;
+    --pos:#3fb8b0; --neg:#f2a07f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo",sans-serif;padding:24px 0}
+  .frame{width:100%;margin:0 auto;position:relative;overflow:hidden}
+  .slide{width:1600px;height:900px;background:var(--card);padding:34px 56px;position:absolute;top:0;left:0;transform-origin:top left;border-radius:14px;box-shadow:0 2px 14px rgba(0,0,0,.08);display:flex;flex-direction:column;gap:10px}
+  .tag{font-size:14px;letter-spacing:.12em;color:var(--accent);font-weight:700}
+  h1{font-size:29px;line-height:1.25}
+  h1 em{font-style:normal;color:var(--accent)}
+  .goal{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:15px;line-height:1.45;background:var(--accent-soft);border-radius:10px;padding:10px 16px}
+  .goal b{color:var(--accent)}
+  .legend{display:flex;gap:16px;font-size:13px;color:var(--sub);align-items:center;flex-wrap:wrap}
+  .legend span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+  .lg-stage::before{background:var(--accent)}
+  .lg-touch::before{background:var(--touch-soft);border:1px solid var(--line)}
+  .lg-pain::before{background:var(--pain-soft);border:1px solid var(--pain-line)}
+  .lg-opp::before{background:var(--opp-soft)}
+  .lg-emo::before{background:var(--ink);border-radius:50%;width:9px;height:9px}
+
+  .map{display:grid;grid-template-columns:132px repeat(var(--n),1fr);gap:5px;flex:1;min-height:0;align-content:stretch}
+  .rowlab{font-size:14px;font-weight:700;color:var(--sub);display:flex;align-items:center;gap:6px;padding-left:4px}
+  .stage{background:var(--accent);color:#fff;padding:7px 22px 7px 14px;display:flex;flex-direction:column;justify-content:center;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 50%,calc(100% - 16px) 100%,0 100%);border-radius:6px}
+  .stage .no{font-size:12px;opacity:.85;font-weight:700}
+  .stage .nm{font-size:16px;font-weight:700;line-height:1.25}
+  .cell{border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:13px;line-height:1.4;display:flex;align-items:center;background:var(--card)}
+  .cell.think{font-style:italic}
+  .cell.touch{background:var(--touch-soft);font-weight:600}
+  .cell.pain{background:var(--pain-soft);border:1.5px solid var(--pain-line)}
+  .cell.opp{background:var(--opp-soft);border-color:transparent}
+  .tag-id{display:inline-block;font-size:11px;font-weight:800;border-radius:4px;padding:1px 5px;margin-right:5px;flex:none}
+  .tag-id.p{background:var(--pain);color:#fff}
+  .tag-id.o{background:var(--opp);color:#fff}
+  .tag-id.t{background:var(--ink);color:var(--card)}
+  .rowlab.painlab{color:var(--pain)}
+  .rowlab.oplab{color:var(--opp)}
+
+  .curve{grid-column:2 / -1;position:relative;height:150px;background:var(--card);border:1px solid var(--line);border-radius:8px}
+  .curve svg{position:absolute;inset:0;width:100%;height:100%}
+  .curve polyline{fill:none;stroke:var(--accent);stroke-width:3;vector-effect:non-scaling-stroke}
+  .curve .dot{position:absolute;width:13px;height:13px;border-radius:50%;background:var(--accent);border:2px solid var(--card);transform:translate(-50%,-50%)}
+  .curve .dot.low{background:var(--neg)}
+  .curve .val{position:absolute;transform:translate(-50%,-150%);font-size:13px;font-weight:700;white-space:nowrap}
+  .curve .zero{position:absolute;left:0;right:0;top:50%;border-top:1px dashed var(--line)}
+  .curve .axis{position:absolute;left:8px;font-size:12px;color:var(--sub)}
+  .curve .lowlab{position:absolute;right:10px;bottom:6px;font-size:12px;color:var(--neg);font-weight:700}
+
+  .foot{font-size:12px;color:var(--sub);line-height:1.5}
+</style>
+</head>
+<body>
+<div class="frame">
+<section class="slide">
+  <div class="tag">고객 여정 지도 · 11.09 실습 · 뷰티 트랙 (가상 고객 1명 · 초안)</div>
+  <h1>피부 고민에서 시작해 <em>계절 기초라인 재구매</em>까지, 한 명의 여정</h1>
+  <div class="goal">
+    <b>고객</b><span>가상 고객 A · 20대 후반 직장인 · 건조하고 예민한 피부. 계절이 바뀌면 트러블이 반복되고, 한방은 "어르신 화장품"이라고 생각해 망설인다. 향·사용감·가격이 맞으면 산다.</span>
+    <b>목표</b><span>"내 피부와 이번 계절에 맞는 한방 기초라인을, 실패 없이 하나 고르는 것"</span>
+  </div>
+  <div class="legend"><span class="lg-stage">여정 단계</span><span class="lg-touch">터치포인트 (📍 화면·사람·장소·문서)</span><span class="lg-pain">페인포인트 (P)</span><span class="lg-opp">기회 포인트 (O)</span><span class="lg-emo">감정 곡선 (+2 ~ −2)</span></div>
+
+  <div class="map" style="--n:6">
+    <div></div>
+    <div class="stage"><div class="no">01</div><div class="nm">피부 고민 인식</div></div>
+    <div class="stage"><div class="no">02</div><div class="nm">정보 찾기·후기 보기</div></div>
+    <div class="stage"><div class="no">03</div><div class="nm">약전골목 체험</div></div>
+    <div class="stage"><div class="no">04</div><div class="nm">제품 고르기·가격 확인</div></div>
+    <div class="stage"><div class="no">05</div><div class="nm">첫 구매 (소용량)</div></div>
+    <div class="stage"><div class="no">06</div><div class="nm">사용·계절 재구매</div></div>
+
+    <div class="rowlab">고객 행동</div>
+    <div class="cell">계절이 바뀌며 생긴 건조·트러블을 검색한다</div>
+    <div class="cell">한방 제품 후기를 찾지만 '어르신용' 글이 많아 망설인다</div>
+    <div class="cell">팝업에서 약재 향을 맡고 피부 측정 후 샘플을 써 본다</div>
+    <div class="cell">기초라인 3종(토너·세럼·크림) 가격과 용량을 비교한다</div>
+    <div class="cell">소용량 키트를 골라 한 번 써 보기로 결정한다</div>
+    <div class="cell">계절이 바뀌면 다음 라인을 다시 찾아본다</div>
+
+    <div class="rowlab">생각</div>
+    <div class="cell think">"한방은 나한테 너무 어른스럽지 않을까?"</div>
+    <div class="cell think">"내 피부 타입이랑 비슷한 사람은 어땠을까?"</div>
+    <div class="cell think">"이 향 계속 맡아도 괜찮을까?"</div>
+    <div class="cell think">"이 가격이면 3개월은 버틸 수 있을까?"</div>
+    <div class="cell think">"작은 거부터 써 보면 실패해도 괜찮겠다"</div>
+    <div class="cell think">"이번엔 피부가 좋아졌다. 다음 계절도 이걸로"</div>
+
+    <div class="rowlab">감정 곡선</div>
+    <div class="curve" data-scores="-1,0,2,-1,1,2" data-n="6"></div>
+
+    <div class="rowlab">📍 터치포인트</div>
+    <div class="cell touch"><span class="tag-id t">화면</span>검색 결과 · 후기 영상</div>
+    <div class="cell touch"><span class="tag-id t">문서</span>제품 상세 · 후기 게시판</div>
+    <div class="cell touch"><span class="tag-id t">장소</span>약전골목 팝업 · <span class="tag-id t">사람</span>피부 상담</div>
+    <div class="cell touch"><span class="tag-id t">화면</span>기초라인 비교표 · 자사몰</div>
+    <div class="cell touch"><span class="tag-id t">장소</span>올리브영 · <span class="tag-id t">문서</span>소용량 키트 안내</div>
+    <div class="cell touch"><span class="tag-id t">화면</span>알림 · <span class="tag-id t">화면</span>정기배송·기획전</div>
+
+    <div class="rowlab painlab">⚠ 페인포인트</div>
+    <div class="cell pain"><span class="tag-id p">P1</span>피부 고민과 제품이 이어지지 않아 어디서 시작할지 모름</div>
+    <div class="cell pain"><span class="tag-id p">P2</span>"어르신용" 인식, 나와 비슷한 사람의 후기가 적음</div>
+    <div class="cell pain"><span class="tag-id p">P3</span>향 호불호를 사기 전에 확인하기 어려움</div>
+    <div class="cell pain"><span class="tag-id p">P4</span>고가 인식 (세트 가격이 한 번에 크게 느껴짐)</div>
+    <div class="cell pain"><span class="tag-id p">P5</span>계절이 바뀌어도 재구매 시점을 놓침</div>
+
+    <div class="rowlab oplab">💡 기회 포인트</div>
+    <div class="cell opp"><span class="tag-id o">O1</span>피부 측정 결과에서 바로 추천 라인 샘플 신청</div>
+    <div class="cell opp"><span class="tag-id o">O2</span>같은 피부 타입·연령대의 사용 후기만 따로 보여 주기</div>
+    <div class="cell opp"><span class="tag-id o">O3</span>약전골목 시향 바와 향 샘플 키트 제공</div>
+    <div class="cell opp"><span class="tag-id o">O4</span>소용량 키트·체험 코스로 첫 가격 부담 낮추기</div>
+    <div class="cell opp"><span class="tag-id o">O5</span>계절 교체 시점에 맞춘 알림과 정기배송</div>
+  </div>
+  <div class="foot">※ 초안. 가상 고객이며, 목표·페르소나는 중간보고 발표(구매 장벽·재구매 슬라이드)와 실습/00_README.md 기준. 감정 점수, P·O 항목은 가설이므로 리뷰·댓글 근거 id를 붙인 뒤 확정하세요.</div>
+</section>
+</div>
+
+<script>
+  function fit(){
+    document.querySelectorAll('.frame').forEach(function(f){
+      var s = f.querySelector('.slide');
+      var scale = f.clientWidth / 1600;
+      s.style.transform = 'scale(' + scale + ')';
+      f.style.height = (900 * scale) + 'px';
+    });
+  }
+  window.addEventListener('resize', fit);
+  fit();
+
+  // 감정 곡선: data-scores(-2~+2)를 단계 가운데에 점으로 찍고 선으로 잇기
+  document.querySelectorAll('.curve').forEach(function(el){
+    var scores = el.dataset.scores.split(',').map(Number);
+    var n = scores.length, pts = [];
+    var svgNS = 'http://www.w3.org/2000/svg';
+    var zero = document.createElement('div'); zero.className='zero'; el.appendChild(zero);
+    var a1 = document.createElement('span'); a1.className='axis'; a1.style.top='4px'; a1.textContent='+2 긍정'; el.appendChild(a1);
+    var a2 = document.createElement('span'); a2.className='axis'; a2.style.bottom='4px'; a2.textContent='−2 부정'; el.appendChild(a2);
+    scores.forEach(function(s,i){
+      var x = (i+0.5)/n*100, y = (2-s)/4*100;
+      pts.push(x+','+y);
+      var d = document.createElement('div'); d.className='dot'+(s<0?' low':'');
+      d.style.left=x+'%'; d.style.top=y+'%'; el.appendChild(d);
+      var v = document.createElement('div'); v.className='val';
+      v.style.left=x+'%'; v.style.top=y+'%'; v.style.color = s<0 ? 'var(--neg)' : 'var(--ink)';
+      v.textContent=(s>0?'+':'')+s; el.appendChild(v);
+    });
+    var svg = document.createElementNS(svgNS,'svg'); svg.setAttribute('viewBox','0 0 100 100'); svg.setAttribute('preserveAspectRatio','none');
+    var pl = document.createElementNS(svgNS,'polyline'); pl.setAttribute('points', pts.join(' '));
+    svg.appendChild(pl); el.insertBefore(svg, el.firstChild);
+  });
+</script>
+</body>
+</html>

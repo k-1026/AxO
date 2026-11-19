@@ -1,0 +1,47 @@
+{
+  "kind": "samples",
+  "note": "청향 로고 2 적용 용기 샘플 사진과 본품 자르기 영역 [x0,y0,x1,y1]",
+  "source": "site/public/index.html 하드코딩에서 이관 (2026-11-17)",
+  "data": {
+    "base": "/IMAGE/LOGO/cheonghyang-logo-02/application-examples/",
+    "files": {
+      "toner": "toner.png",
+      "serum": "serum.png",
+      "cream": "cream.png",
+      "lotion": "lotion-pump.png",
+      "mist": "mist.png"
+    },
+    "box": {
+      "toner": [
+        245,
+        75,
+        675,
+        965
+      ],
+      "serum": [
+        245,
+        40,
+        690,
+        950
+      ],
+      "cream": [
+        195,
+        275,
+        820,
+        830
+      ],
+      "lotion": [
+        240,
+        260,
+        655,
+        935
+      ],
+      "mist": [
+        250,
+        25,
+        590,
+        935
+      ]
+    }
+  }
+}

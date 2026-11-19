@@ -1,0 +1,31 @@
+{
+  "created": "2026-11-13",
+  "source": "사용자가 제공한 영상 4개",
+  "method": "원본 내용 변경 없이 영문 파일명으로 복사",
+  "files": [
+    {
+      "file": "serum-change-request-01.mp4",
+      "sha256": "58141f5ce14c34cdf55d3ab8756140c5dd5af17ca99d1a1e63fb5b08f747b759",
+      "bytes": 2389070,
+      "originalFileName": "대표_세럼_이미지_변경_요청_35ab4886.mp4"
+    },
+    {
+      "file": "serum-change-request-02.mp4",
+      "sha256": "f24625e53da07f20d69493d89480ed981ed78114e68a90d738ff51dd1fe6a9d1",
+      "bytes": 1829067,
+      "originalFileName": "대표_세럼_이미지_변경_요청_e6bcedf4.mp4"
+    },
+    {
+      "file": "four-gardens-story-01.mp4",
+      "sha256": "b2c5b4b90c2a7d56b8182307ea8108ff0b5c10b50054c14692ca9221198ff107",
+      "bytes": 3280787,
+      "originalFileName": "네_개의_정원_여행_이야기_e20bbf88.mp4"
+    },
+    {
+      "file": "four-gardens-story-02.mp4",
+      "sha256": "eb5bc5a7a32c3182e6253a520c4b17e6e161b3fa39de46f461f7f1a8fd31e0fc",
+      "bytes": 3205259,
+      "originalFileName": "네_개의_정원_여행_이야기_53885c5e.mp4"
+    }
+  ]
+}

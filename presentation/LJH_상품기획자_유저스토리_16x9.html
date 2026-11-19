@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>상품기획자의 유저스토리와 인수조건 · 16:9</title>
+<style>
+:root{--ink:#182e37;--muted:#637e89;--teal:#00999b;--pale:#eff8f7;--line:#c2e0e0;--navy:#192c34;--orange:#eb6948;--blue:#326ee2;--scale:1}
+*{box-sizing:border-box}html,body{margin:0;height:100%;width:100%;overflow:hidden}body{background:#e5ecee;color:var(--ink);font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo",sans-serif;word-break:keep-all;-webkit-font-smoothing:antialiased}button,input{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--teal);outline-offset:4px}h1,h2,p{margin:0}
+.viewport{position:absolute;inset:0 0 73px;display:flex;align-items:center;justify-content:center}.slide{width:1600px;height:900px;flex:none;position:relative;background:#fff;padding:46px 68px 35px;transform:scale(var(--scale));transform-origin:center;box-shadow:0 15px 70px #20303912}
+.eyebrow{display:flex;align-items:center;justify-content:space-between;font-size:15px;color:var(--teal);font-weight:700;letter-spacing:.02em}.eyebrow .mark{width:43px;height:5px;border-radius:4px;background:var(--teal)}.draft{border-radius:100px;background:#e4f4f4;padding:8px 17px}
+h1{font-size:46px;font-weight:800;letter-spacing:-1.9px;line-height:1.25;margin-top:14px}h1 em{font-style:normal;color:var(--teal)}.subtitle{font-size:20px;color:var(--muted);line-height:1.5;margin-top:11px}
+.formula{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:26px}.formula-part{height:154px;padding:21px 24px;background:var(--pale);border:1px solid var(--line);border-radius:12px;position:relative}.formula-part:not(:last-child)::after{content:'›';position:absolute;right:-18px;top:58px;color:#a2bac2;font-size:27px;font-weight:400}.formula-label{font-size:17px;color:var(--muted);font-weight:600}.formula-value{font-size:24px;font-weight:800;line-height:1.5;margin-top:11px;letter-spacing:-.6px}.formula-hint{font-size:15px;line-height:1.5;color:var(--muted);margin-top:8px}.formula-part.confirm{background:var(--navy);border-color:var(--navy);color:#fff}.confirm .formula-label,.confirm .formula-hint{color:#b9cbd0}.confirm .formula-value{font-size:27px}
+.content{display:grid;grid-template-columns:558px minmax(0,1fr);gap:24px;margin-top:23px;height:374px}.panel{border:1px solid;border-radius:12px;overflow:hidden;display:flex;flex-direction:column}.story-panel{border-color:#f2b4a5}.ac-panel{border-color:#afc6f4}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:47px;padding:10px 22px;color:#fff}.story-panel .panel-head{background:var(--orange)}.ac-panel .panel-head{background:var(--blue)}.panel-head h2{font-size:21px;font-weight:750;letter-spacing:-.4px}.panel-head span{font-size:14px;opacity:.95;white-space:nowrap}
+.story-body{padding:20px 24px;display:flex;flex-direction:column;flex:1}.story-sentence{font-size:24px;line-height:1.55;letter-spacing:-.7px;font-weight:500}.story-sentence strong{font-weight:800}.story-sentence .want{color:#c3482e}.story-sentence .why{background:linear-gradient(transparent 68%,#ffe8b9 68%,#ffe8b9 94%,transparent 94%)}.scope{margin-top:auto;border-top:1px solid #f4ded7;padding-top:15px;display:flex;gap:12px;align-items:baseline;font-size:17px;line-height:1.6}.scope span{color:#a05f4d;font-weight:700;white-space:nowrap}.scope b{font-size:19px;font-weight:600}
+.ac-list{display:flex;flex-direction:column;list-style:none;margin:0;padding:0 22px;flex:1}.ac-item{display:grid;grid-template-columns:34px minmax(0,1fr) 107px;gap:12px;align-items:center;flex:1;border-bottom:1px solid #e7edf5;min-height:0}.ac-item:last-child{border-bottom:0}.ac-num{color:var(--blue);font-size:19px;font-weight:800;align-self:start;padding-top:18px;font-variant-numeric:tabular-nums}.condition{font-size:17px;color:var(--muted);line-height:1.5;margin-bottom:3px}.result{font-size:22px;line-height:1.5;letter-spacing:-.5px;font-weight:550}.result strong{font-weight:800;color:#2159bd}.choices{display:flex;justify-content:flex-end;gap:10px}.choice{display:flex;align-items:center;gap:5px;font-size:15px;white-space:nowrap;cursor:pointer}.choice input{width:17px;height:17px;margin:0;accent-color:var(--blue);cursor:pointer}.ac-foot{font-size:13px;color:var(--muted);padding:0 22px 10px;display:flex;align-items:center;justify-content:space-between;gap:10px}.reset{border:0;background:none;color:var(--blue);font-size:13px;padding:0;text-decoration:underline;text-underline-offset:3px}
+.bottom-line{margin-top:19px;min-height:49px;display:flex;align-items:center;gap:19px;background:var(--navy);color:#fff;border-radius:10px;padding:12px 24px;font-size:19px;line-height:1.45;letter-spacing:-.3px}.bottom-line b{color:#b6db66;font-size:19px;white-space:nowrap}.bottom-line span{color:#e7eff2}.bottom-line .dot{width:4px;height:4px;border-radius:50%;background:#8ca3ab;flex:none}
+.footer{position:absolute;bottom:17px;left:68px;right:68px;display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;line-height:1.5}.footer a{color:var(--teal);text-underline-offset:3px}.page-no{background:var(--teal);color:#fff;border-radius:7px;min-width:27px;height:27px;display:grid;place-items:center;font-size:12px}
+.toolbar{position:absolute;left:50%;bottom:15px;transform:translateX(-50%);display:flex;align-items:center;gap:7px;background:#fff;padding:7px 10px;border:1px solid #cfdddf;border-radius:10px;max-width:calc(100% - 20px);white-space:nowrap}.tool{border:0;background:transparent;color:var(--ink);padding:8px 13px;border-radius:5px;font-size:13px;min-height:36px}.tool:hover{background:#eff5f5}.tool-sep{width:1px;height:22px;background:#d8e3e5;margin:0 3px}.shortcut{font-size:12px;color:var(--muted);padding:0 8px}.status{position:absolute;bottom:75px;left:50%;transform:translateX(-50%);font-size:14px;padding:10px 15px;background:#fff;border-radius:7px;box-shadow:0 4px 15px #182e3720;display:none}.status.visible{display:block}
+dialog{border:1px solid var(--line);border-radius:12px;max-width:760px;width:calc(100% - 40px);max-height:83vh;padding:28px;color:var(--ink);background:#fff;font-size:16px;line-height:1.75}dialog::backdrop{background:#162b3480}.dialog-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}dialog h2{font-size:24px}dialog h3{font-size:18px;margin:20px 0 8px}dialog a{color:#167d85}dialog table{width:100%;border-collapse:collapse;font-size:13px}dialog th,dialog td{text-align:left;vertical-align:top;border-bottom:1px solid #dbe7e9;padding:9px 6px}dialog .minor{font-size:14px;color:var(--muted);margin-top:15px}
+@media(max-width:600px){.shortcut,.toolbar .tool-sep{display:none}.toolbar{gap:0;padding:6px}.tool{font-size:12px;padding:8px 11px;min-height:40px}}
+@page{size:1600px 900px;margin:0}
+@media print{html,body{height:900px;width:1600px;overflow:visible;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}.viewport{position:static;display:block}.slide{transform:none!important;box-shadow:none}.toolbar,dialog,.status,.reset{display:none!important}.choice input{appearance:none;border:1px solid var(--muted);border-radius:3px}.choice input:checked{background:var(--blue);box-shadow:inset 0 0 0 3px #fff}}
+</style>
+</head>
+<body>
+<main class="viewport" aria-label="유저스토리 16:9 발표 슬라이드">
+<article class="slide" id="slide" aria-labelledby="slide-title">
+ <div class="eyebrow"><span class="mark" aria-hidden="true"></span><span class="draft">[아이디어] 우리 브랜드 · 상품기획자</span></div>
+ <h1 id="slide-title">유저스토리와 인수조건 <em>— 계절별 라인 후보 비교</em></h1>
+ <p class="subtitle">대상 화면 하나, 사용자의 행동 하나. 완료 여부는 실제 화면에서 예 / 아니오로 확인한다.</p>
+
+ <div class="formula" aria-label="누가, 무엇을, 왜, 확인">
+  <section class="formula-part"><p class="formula-label">누가</p><p class="formula-value">상품기획자로서</p><p class="formula-hint">우리 한방 스킨케어 브랜드의<br>신제품을 준비하는 사람</p></section>
+  <section class="formula-part"><p class="formula-label">무엇을</p><p class="formula-value">라인 후보를<br>비교하고 싶다</p></section>
+  <section class="formula-part"><p class="formula-label">왜</p><p class="formula-value">회의에 제안할 후보를<br>고르기 위해</p></section>
+  <section class="formula-part confirm"><p class="formula-label">확인</p><p class="formula-value">인수조건 4개</p><p class="formula-hint">“~하면, ~가 보인다”<br>화면에서 예 / 아니오로 판정</p></section>
+ </div>
+
+ <div class="content">
+  <section class="panel story-panel" aria-labelledby="story-title">
+   <header class="panel-head"><h2 id="story-title">우리 브랜드의 유저스토리</h2><span>가상 사용 시나리오</span></header>
+   <div class="story-body">
+    <p class="story-sentence">우리 한방 스킨케어 브랜드의<br><strong>상품기획자로서,</strong><br>다음 계절에 맞는<br><strong class="want">제품 라인 후보를 비교하고 싶다.</strong><br><span class="why">출시 검토 회의에 제안할 후보를<br>고르기 위해.</span></p>
+    <p class="scope"><span>대상 화면</span><b>계절별 라인 후보 비교 화면</b></p>
+   </div>
+  </section>
+  <section class="panel ac-panel" aria-labelledby="ac-title">
+   <header class="panel-head"><h2 id="ac-title">확인 · 인수조건</h2><span id="check-status" aria-live="polite">미확인 · 0 / 4</span></header>
+   <ol class="ac-list">
+    <li class="ac-item"><span class="ac-num">01</span><div><p class="condition">‘겨울’을 선택하면</p><p class="result"><strong>‘겨울’ 표시와 라인 후보 2~3개</strong>가 보인다.</p></div><div class="choices" role="group" aria-label="인수조건 1 판정"><label class="choice"><input type="radio" name="ac1" value="yes" aria-label="인수조건 1 예">예</label><label class="choice"><input type="radio" name="ac1" value="no" aria-label="인수조건 1 아니오">아니오</label></div></li>
+    <li class="ac-item"><span class="ac-num">02</span><div><p class="condition">라인 후보가 표시되면</p><p class="result">후보마다 <strong>대표 원료·제품 구성·예상 가격</strong>이 보인다.</p></div><div class="choices" role="group" aria-label="인수조건 2 판정"><label class="choice"><input type="radio" name="ac2" value="yes" aria-label="인수조건 2 예">예</label><label class="choice"><input type="radio" name="ac2" value="no" aria-label="인수조건 2 아니오">아니오</label></div></li>
+    <li class="ac-item"><span class="ac-num">03</span><div><p class="condition">라인 후보가 표시되면</p><p class="result">후보마다 <strong>출시 추천 순위와 추천 이유</strong>가 보인다.</p></div><div class="choices" role="group" aria-label="인수조건 3 판정"><label class="choice"><input type="radio" name="ac3" value="yes" aria-label="인수조건 3 예">예</label><label class="choice"><input type="radio" name="ac3" value="no" aria-label="인수조건 3 아니오">아니오</label></div></li>
+    <li class="ac-item"><span class="ac-num">04</span><div><p class="condition">원가 자료가 없는 후보가 있으면</p><p class="result">해당 후보의 가격 옆에 <strong>‘원가 확인 필요’</strong>가 보인다.</p></div><div class="choices" role="group" aria-label="인수조건 4 판정"><label class="choice"><input type="radio" name="ac4" value="yes" aria-label="인수조건 4 예">예</label><label class="choice"><input type="radio" name="ac4" value="no" aria-label="인수조건 4 아니오">아니오</label></div></li>
+   </ol>
+   <div class="ac-foot"><span>실제 결과 화면을 보고 직접 판정</span><button class="reset" id="reset" type="button">판정 초기화</button></div>
+  </section>
+ </div>
+
+ <div class="bottom-line"><b>스토리 점검</b><span>행동은 ‘비교’ 하나</span><i class="dot" aria-hidden="true"></i><span>목적은 ‘회의에 제안할 후보 선택’</span><i class="dot" aria-hidden="true"></i><span>완료 기준은 화면에서 확인</span></div>
+ <footer class="footer"><span>[아이디어] 팀 내부 기획 [1][2]를 바탕으로 작성한 초안 · <a href="#" id="source-link">출처 및 발표 메모</a></span><span class="page-no">1</span></footer>
+</article>
+</main>
+
+<nav class="toolbar" aria-label="발표 조작"><button class="tool" id="fullscreen" type="button">전체화면</button><button class="tool" id="notes" type="button">출처 / 발표 메모</button><button class="tool" id="print" type="button">인쇄 / PDF</button><span class="tool-sep" aria-hidden="true"></span><span class="shortcut">F 전체화면 · N 메모</span></nav>
+<div class="status" id="status" role="status"></div>
+
+<dialog id="notes-dialog" aria-labelledby="notes-title">
+ <div class="dialog-head"><h2 id="notes-title">출처 및 발표 메모</h2><button class="tool" id="close-notes" type="button" aria-label="발표 메모 닫기">닫기</button></div>
+ <p>“우리 에이전트의 사용자는 우리 브랜드의 상품기획자입니다. 다음 계절에 맞는 제품 라인 후보를 비교하고 싶어 합니다. 출시 검토 회의에서 제안할 후보를 고르기 위해서입니다. 이 스토리는 ‘계절별 라인 후보 비교 화면’ 하나를 기준으로 썼습니다.”</p>
+ <p style="margin-top:12px">“완료 여부는 네 가지로 확인합니다. 계절에 맞는 후보가 보이는지, 후보마다 원료·구성·가격이 보이는지, 추천 순위와 이유가 보이는지, 원가 자료가 없을 때 ‘원가 확인 필요’가 표시되는지입니다. 실제 화면을 보고 각각 예 또는 아니오로 판정합니다.”</p>
+ <h3>자료 출처</h3>
+ <table><thead><tr><th scope="col">번호</th><th scope="col">구분</th><th scope="col">자료</th><th scope="col">확인일</th></tr></thead><tbody>
+ <tr><td>[1]</td><td>팀 내부 기획</td><td>LJH · <a href="../idea/LJH_계절-제품개발-에이전트-기획안.md" target="_blank" rel="noopener">계절 제품 개발 아이디어 에이전트 기획안</a><br>2026-11-04 전면 수정. 사용자, 계절 입력, 후보 수, 가격, 출시 순위와 이유를 참고.</td><td>2026-11-12</td></tr>
+ <tr><td>[2]</td><td>팀 내부 결정</td><td>팀 · <a href="../idea/런칭기획에이전트_워크플로우_역할분담.md" target="_blank" rel="noopener">계절 제품 개발 아이디어 에이전트: 워크플로우와 역할 분담</a><br>2026-11-04 수정. 상품기획팀 BM이 결과를 확인한다는 팀 결정 참고.</td><td>2026-11-12</td></tr>
+ </tbody></table>
+ <p class="minor">구성은 사용자가 첨부한 ‘유저스토리와 인수조건’ 형식에 맞췄다. 문장과 인수조건은 팀 기획을 바탕으로 작성한 [아이디어] 초안이며, 실제 사용자 인터뷰나 구현 완료의 증거가 아니다. 예/아니오는 사용자가 실제 화면을 보고 선택하며 새로고침하면 초기화된다. 외부 시장 수치나 약재 효능을 새로 제시하지 않았다. 파일을 저장소 밖으로 옮기면 내부 자료 링크가 작동하지 않을 수 있다.</p>
+</dialog>
+<script>
+(() => {
+ 'use strict';
+ const dialog=document.getElementById('notes-dialog');
+ const radios=Array.from(document.querySelectorAll('.choice input'));
+ function fit(){document.documentElement.style.setProperty('--scale',String(Math.max(.05,Math.min((window.innerWidth-32)/1600,(window.innerHeight-96)/900))));}
+ function update(){const checked=radios.filter(el=>el.checked);const yes=checked.filter(el=>el.value==='yes').length;document.getElementById('check-status').textContent=checked.length?'확인 '+checked.length+' / 4 · 예 '+yes+' · 아니오 '+(checked.length-yes):'미확인 · 0 / 4';}
+ function openNotes(){if(!dialog.open)dialog.showModal();}
+ async function fullscreen(){try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{const status=document.getElementById('status');status.textContent='전체화면은 브라우저에서 파일을 열어 사용해 주세요.';status.classList.add('visible');setTimeout(()=>status.classList.remove('visible'),4000);}}
+ document.getElementById('fullscreen').addEventListener('click',fullscreen);
+ document.getElementById('notes').addEventListener('click',openNotes);
+ document.getElementById('source-link').addEventListener('click',event=>{event.preventDefault();openNotes();});
+ document.getElementById('close-notes').addEventListener('click',()=>dialog.close());
+ document.getElementById('print').addEventListener('click',()=>window.print());
+ document.getElementById('reset').addEventListener('click',()=>{radios.forEach(el=>el.checked=false);update();});
+ radios.forEach(el=>el.addEventListener('change',update));
+ window.addEventListener('resize',fit);
+ document.addEventListener('keydown',event=>{if(dialog.open||event.altKey||event.ctrlKey||event.metaKey||/INPUT|TEXTAREA|SELECT/.test(event.target.tagName))return;if(event.key.toLowerCase()==='f')fullscreen();if(event.key.toLowerCase()==='n')openNotes();});
+ fit();update();
+})();
+</script>
+</body>
+</html>
