@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-19T07:34:06Z",
+  "updatedAt": "2026-11-19T08:37:16Z",
   "intervalMinutes": 60,
   "lookbackDays": 90,
   "sourceChecks": [
@@ -8,7 +8,7 @@
       "id": "google-trends",
       "source": "Google Trends",
       "url": "https://trends.google.com/trends/explore",
-      "checkedAt": "2026-11-19T07:34:06Z",
+      "checkedAt": "2026-11-19T08:37:16Z",
       "status": "checked",
       "note": "Aside 공개 화면 확인 · 기본 탐색 화면의 전세계·지난 12개월 설정·검색어 입력 UI 접근 확인. 결과 영역은 로딩 표시로 스킨케어 비교 지수 미수집. 인기 상승·판매량 근거로 사용하지 않음."
     },
@@ -19,7 +19,7 @@
       "checkedAt": "2026-11-19T04:37:35Z",
       "status": "unavailable",
       "note": "Aside 공개 화면 확인 · 보고서 소개 홈은 열리지만 공개 보고서 목록이 비어 있어 신규·변경 확인 불가. 마지막 목록 성공 확인일 유지, 로그인·로봇 확인은 진행하지 않음.",
-      "attemptedAt": "2026-11-19T07:34:06Z"
+      "attemptedAt": "2026-11-19T08:37:16Z"
     },
     {
       "id": "cosme",
@@ -29,13 +29,13 @@
       "status": "unavailable",
       "note": "Aside 공개 화면 확인 · 등록 랭킹 화면에 403 ERROR·Request blocked 표시. 리뷰·순위 본문 확인 불가로 우회하지 않고 마지막 성공 확인일 유지.",
       "http": 403,
-      "attemptedAt": "2026-11-19T07:34:06Z"
+      "attemptedAt": "2026-11-19T08:37:16Z"
     },
     {
       "id": "naver-datalab",
       "source": "네이버 데이터랩 (검색어 트렌드·쇼핑인사이트)",
       "url": "https://datalab.naver.com/",
-      "checkedAt": "2026-11-19T07:34:06Z",
+      "checkedAt": "2026-11-19T08:37:16Z",
       "status": "checked",
       "note": "Aside 공개 화면 확인 · 공개 홈과 11월 18일까지의 패션의류 인기 검색어 목록 확인. 화장품 비교·API 지수 미수집으로 판매량·관심 상승 근거 미사용."
     },
@@ -43,15 +43,15 @@
       "id": "nedrug",
       "source": "의약품안전나라 (기능성화장품 보고)",
       "url": "https://nedrug.mfds.go.kr/",
-      "checkedAt": "2026-11-19T07:34:06Z",
+      "checkedAt": "2026-11-19T08:37:16Z",
       "status": "checked",
-      "note": "Aside 공개 화면 확인 · 공식 의약품안전나라 홈·정보 메뉴 접근 확인. 기능성화장품 개별 보고일·원료별 건수는 미수집으로 경쟁 증가·효능 근거 미추가."
+      "note": "Aside 공개 화면 확인 · 공식 홈과 기능성화장품제품정보 메뉴 확인. 개별 제품 보고일·원료별 건수 비교 미수집으로 경쟁 증가·효능 근거 미추가."
     },
     {
       "id": "hwahae",
       "source": "화해 랭킹",
       "url": "https://www.hwahae.co.kr/rankings",
-      "checkedAt": "2026-11-19T07:34:06Z",
+      "checkedAt": "2026-11-19T08:37:16Z",
       "status": "checked",
       "note": "Aside 공개 화면 확인 · 공개 전체 카테고리 목록에 2026-11-19 업데이트 표시 확인. 평점·목록은 보이나 집계기간·산정기준 미검증으로 판매량·선호 상승 근거 미사용."
     },
@@ -62,13 +62,13 @@
       "checkedAt": "2026-11-19T06:35:17Z",
       "status": "unavailable",
       "note": "Aside 공개 화면 확인 · 지정 스킨케어 랭킹 주소에 접속 정보 확인 중·잠시만 기다려 주세요 화면이 표시되어 제품·순위 본문 미확인. 접근 확인을 우회하지 않고 마지막 성공 확인일 유지. 공식 뉴스룸을 판매랭킹으로 대체하지 않음.",
-      "attemptedAt": "2026-11-19T07:34:06Z"
+      "attemptedAt": "2026-11-19T08:37:16Z"
     },
     {
       "id": "kosis-online",
       "source": "통계청 온라인쇼핑동향 (KOSIS)",
       "url": "https://kosis.kr/",
-      "checkedAt": "2026-11-19T07:34:06Z",
+      "checkedAt": "2026-11-19T08:37:16Z",
       "status": "checked",
       "note": "Aside 공개 화면 확인 · 공식 포털 홈·검색 메뉴 접근 확인. 화장품 온라인 거래액의 개별 표·공표일·비교기간은 미검증으로 새 수치 미사용."
     },
@@ -76,7 +76,7 @@
       "id": "customs-trade",
       "source": "관세청 수출입 무역통계",
       "url": "https://tradedata.go.kr/",
-      "checkedAt": "2026-11-19T07:34:06Z",
+      "checkedAt": "2026-11-19T08:37:16Z",
       "status": "checked",
       "note": "Aside 공개 화면 확인 · 공식 수출입무역통계 홈·차트 접근 확인. 화장품 품목·국가별 통계는 미수집으로 전체 수출을 화장품 수요로 해석하지 않음."
     },
@@ -84,7 +84,7 @@
       "id": "oliveyoung",
       "source": "올리브영",
       "url": "https://corp.oliveyoung.com/ko/newsroom/press",
-      "checkedAt": "2026-11-19T07:34:06Z",
+      "checkedAt": "2026-11-19T08:37:16Z",
       "status": "checked",
       "note": "Aside 공개 화면 확인 · 공식 보도자료 목록 최신 표기 2026-11-17 유지 확인. 새 기초제품·계절 수요 원문 추가 미검증으로 기존 근거 유지. 뉴스룸을 판매랭킹으로 취급하지 않음."
     },
@@ -92,7 +92,7 @@
       "id": "jangup",
       "source": "장업신문",
       "url": "https://www.jangup.com/",
-      "checkedAt": "2026-11-19T07:34:06Z",
+      "checkedAt": "2026-11-19T08:37:16Z",
       "status": "checked",
       "note": "Aside 공개 화면 확인 · 홈의 겨울 셀프 케어·가을 보습 트렌드와 향수·헤어 신제품 목록 유지 확인. 새 얼굴용 기초 제형 원문·수요 조사 추가 미검증으로 기존 계절 제안 유지."
     },
@@ -100,7 +100,7 @@
       "id": "cosmetics-business",
       "source": "Cosmetics Business",
       "url": "https://www.cosmeticsbusiness.com/cosmetics-business-reveals-the-top-5-skin-care-2",
-      "checkedAt": "2026-11-19T07:34:06Z",
+      "checkedAt": "2026-11-19T08:37:16Z",
       "status": "checked",
       "note": "Aside 공개 화면 확인 · 등록된 2026-03-03 연간 스킨케어 기사 공개 페이지 확인. 90일 신호 범위를 벗어나 새 계절 핵심 근거 미추가. 특정 시장 설명을 전세계 수요로 일반화하지 않음."
     },
@@ -108,7 +108,7 @@
       "id": "cosmorning",
       "source": "코스모닝",
       "url": "https://www.cosmorning.com/",
-      "checkedAt": "2026-11-19T07:34:06Z",
+      "checkedAt": "2026-11-19T08:37:16Z",
       "status": "checked",
       "note": "Aside 공개 화면 확인 · 2026-11-19 공개 홈의 신제품·제형·아누아 일본 어워드 기사 안내 확인. 개별 원문 날짜·심사기준·조사 범위 추가 미검증으로 수상 사례를 대중 선호·판매 증가로 해석하지 않고 핵심 근거 미추가."
     },
@@ -116,15 +116,15 @@
       "id": "thebk",
       "source": "뷰티경제",
       "url": "https://www.thebk.co.kr/",
-      "checkedAt": "2026-11-19T07:34:06Z",
+      "checkedAt": "2026-11-19T08:37:16Z",
       "status": "checked",
-      "note": "Aside 공개 화면 확인 · 홈 발행 표기 2026-11-19 16:12와 중국 티몰 에센스 시장·수출 관련 영문 기사 안내 확인. 개별 원문 집계 방법·기간·표본 미검증으로 새 수치 미사용, 중국 플랫폼 신호를 전세계 수요로 일반화하지 않음."
+      "note": "Aside 공개 화면 확인 · 홈 발행 표기 2026-11-19 16:33과 중국 티몰 에센스·수출 영문 기사 안내 유지 확인. 개별 원문 집계 방법·기간·표본 미검증으로 새 수치 미사용, 중국 플랫폼 신호를 전세계 수요로 일반화하지 않음."
     },
     {
       "id": "mintel",
       "source": "Mintel · GNPD",
       "url": "https://www.mintel.com/insights/beauty-and-personal-care/",
-      "checkedAt": "2026-11-19T07:34:06Z",
+      "checkedAt": "2026-11-19T08:37:16Z",
       "status": "checked",
       "note": "Aside 공개 화면 확인 · 공개 목록에서 2026-11-11 Longevity in Beauty & Personal Care·2026-09-11 Beyond Skincare Protection 표기 유지 확인. 개별 본문·국가·조사기간 미검증으로 핵심 근거 미추가. 유료 GNPD 미접근."
     },
@@ -132,7 +132,7 @@
       "id": "niq",
       "source": "NielsenIQ",
       "url": "https://nielseniq.com/global/en/insights/report/2026/niq-state-of-global-beauty-2026/",
-      "checkedAt": "2026-11-19T07:34:06Z",
+      "checkedAt": "2026-11-19T08:37:16Z",
       "status": "checked",
       "note": "Aside 공개 화면 확인 · 등록 State of Global Beauty 2026 공개 개요·보고서 신청 안내 확인. 기존 Global Beauty Views item과 다른 URL이므로 해당 item 확인일 유지. 새 계절 구매 흐름 미검증."
     },
@@ -143,13 +143,13 @@
       "checkedAt": "2026-11-19T04:37:35Z",
       "status": "unavailable",
       "note": "Aside 공개 화면 확인 · 등록 State of Beauty URL의 제목·공개 개요는 보이나 Register for free to continue reading·Registration required 안내가 표시됨. 가입·우회 없이 추가 확인을 중단하고 마지막 성공 확인일·기존 연간 배경 근거 유지.",
-      "attemptedAt": "2026-11-19T07:34:06Z"
+      "attemptedAt": "2026-11-19T08:37:16Z"
     },
     {
       "id": "cosmotrends",
       "source": "Cosmoprof × BEAUTYSTREAMS — CosmoTrends",
       "url": "https://lp.cosmoprof.com/hubfs/BEAUTYSTREAMS_CosmoProfWorldwideBologna_CosmoTrends_2026_compressed.pdf",
-      "checkedAt": "2026-11-19T07:34:06Z",
+      "checkedAt": "2026-11-19T08:37:16Z",
       "status": "checked",
       "note": "Aside 공개 화면 확인 · 공식 Bologna CosmoTrends 2026 PDF가 브라우저에서 48쪽으로 열림을 확인. 신규 판·정확한 발행일·개별 제품 추가 미검증으로 핵심 근거 미추가. 전시 선정을 판매 성공으로 해석하지 않음."
     },
@@ -157,7 +157,7 @@
       "id": "pinterest",
       "source": "Pinterest Predicts",
       "url": "https://business.pinterest.com/en-gb/pinterest-predicts/",
-      "checkedAt": "2026-11-19T07:34:06Z",
+      "checkedAt": "2026-11-19T08:37:16Z",
       "status": "checked",
       "note": "Aside 공개 화면 확인 · Predicts 2026 공개 화면의 Cool Blue·Gimme Gummy 등 연간 시각·라이프스타일 제안 유지 확인. 발행일·국가·분석기간 추가 미검증으로 핵심 근거 미추가, 현재 스킨케어 판매 증가로 해석하지 않음."
     },
@@ -165,7 +165,7 @@
       "id": "kcii",
       "source": "대한화장품산업연구원",
       "url": "https://www.kcii.re.kr/",
-      "checkedAt": "2026-11-19T07:34:06Z",
+      "checkedAt": "2026-11-19T08:37:16Z",
       "status": "checked",
       "note": "Aside 공개 화면 확인 · 공식 홈의 산업정보·해외시장정보 메뉴와 한-브 진출지원 안내 접근 확인. 개별 시장보고서 본문·범위 추가 미검증으로 새 계절 수요 근거 미추가."
     },
@@ -173,7 +173,7 @@
       "id": "kotra",
       "source": "KOTRA 해외시장뉴스",
       "url": "https://dream.kotra.or.kr/",
-      "checkedAt": "2026-11-19T07:34:06Z",
+      "checkedAt": "2026-11-19T08:37:16Z",
       "status": "checked",
       "note": "Aside 공개 화면 확인 · 해외경제정보드림 공개 홈·뉴스 목록과 11월 19일 프랑스 폐기물 방지법 기사 안내 확인. 개별 화장품 시장 원문·조사 범위 추가 미검증으로 새 계절 핵심 근거 미추가."
     },
@@ -181,7 +181,7 @@
       "id": "opensurvey",
       "source": "오픈서베이 뷰티 트렌드 리포트",
       "url": "https://blog.opensurvey.co.kr/trendreport/beauty-2026/",
-      "checkedAt": "2026-11-19T07:34:06Z",
+      "checkedAt": "2026-11-19T08:37:16Z",
       "status": "checked",
       "note": "Aside 공개 화면 확인 · 2026-01-12 한미 비교 공개 요약과 한국·미국 18~49세 여성 각 600명 조사 안내 확인. 관련 11월 뷰티·시술 보고서 링크는 본문 미검증으로 새 근거 미추가. 한미 표본을 전세계로 일반화하지 않음."
     }
