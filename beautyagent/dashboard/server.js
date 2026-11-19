@@ -179,23 +179,55 @@ function handleEvent(ev) {
 }
 
 /* ── 실행·중지 ── */
+/* ── 단계 현황: run_log를 요약해 실행 지시에 넣음 (메인이 처음부터 다시 판단하지 않도록) ── */
+const STEP_NAMES = ["결정 질문·판정 기준", "자료 수집", "가정 세우기", "시장 규모", "경쟁 비교", "포지셔닝", "단위경제", "계단식 비용", "손익·손익분기", "월별 현금흐름", "민감도·역산", "우선순위", "결론·검토"];
+// 단계가 기대는 앞 단계 (이 결과가 없거나 낡았을 때만 앞 단계를 다시 함)
+const STEP_DEPS = { 1: [], 2: [], 3: [2], 4: [2, 3], 5: [2], 6: [5], 7: [3], 8: [7], 9: [4, 7, 8], 10: [9], 11: [9], 12: [5, 6], 13: [1, 9, 10, 11, 12] };
+function stepSummary() {
+  const latest = {}, review = {};
+  for (const e of cachedLog) if (!e._invalid && e.step != null) (e.actor === "reviewer" ? review : latest)[+e.step] = e;
+  const xlsxT = fs.existsSync(MODEL) ? fs.statSync(MODEL).mtimeMs : 0;
+  const lines = [];
+  for (let n = 1; n <= 13; n++) {
+    const e = latest[n], r = review[n];
+    if (!e) { lines.push(`- ${n}단계 ${STEP_NAMES[n - 1]}: 기록 없음 (앞 단계: ${STEP_DEPS[n].join(",") || "없음"})`); continue; }
+    const t = Date.parse(e.timestamp || "") || 0;
+    const stale = t && xlsxT > t + 60000 ? " · 이 기록 뒤에 엑셀이 바뀜" : "";
+    lines.push(`- ${n}단계 ${STEP_NAMES[n - 1]}: ${e.status || "상태 없음"} (줄 ${e.line}, ${e.actor || ""}, ${e.timestamp || ""})${e.status_reason ? " — " + String(e.status_reason).slice(0, 120) : ""}${stale}${r ? ` · 검토 ${r.verdict || r.status}` : ""}`);
+  }
+  return lines.join("\n");
+}
+const STEP_RULES = [
+  "[단계 선택 규칙] 매번 1단계부터 다시 하지 않는다. 아래 '현재 단계 현황'을 보고 필요한 단계만 돌린다.",
+  "- 요청이 있으면: 요청이 가리키는 단계만 고른다. 그 단계의 앞 단계(괄호 안) 결과가 '통과' 또는 '보류'로 이미 있으면 다시 하지 않고 그 결과(run_log, 엑셀 덤프)를 그대로 쓴다. 앞 단계 기록이 없거나 '이 기록 뒤에 엑셀이 바뀜'이고 요청 단계에 영향이 있을 때만 앞 단계를 다시 한다.",
+  "- '통과'인 단계는 건너뛴다. 단, 요청이 다시 하라고 하거나 그 단계가 쓰는 입력이 바뀌었으면 다시 한다.",
+  "- '보류'(사람이 정할 값이 비어 막힌 단계)는 해당 칸이 채워졌는지만 덤프로 확인한다. 아직 비어 있으면 다시 돌리지 않고 [확인필요]로 둔 채 뒤 단계를 진행한다.",
+  "- '미통과'는 사유를 보고 고칠 수 있는 것(자료 보강, 계산 수정, reviewer 지적)만 그 단계를 다시 맡긴다. 사람이 정할 값 때문이면 '보류'로 기록하고 넘어간다.",
+  "- 서로 기대지 않는 단계는 동시에 맡긴다 (예: 2단계와 5단계, 10단계와 11단계).",
+  "- 시작할 때 '이번에 돌릴 단계 / 건너뛸 단계와 이유'를 한 줄로 밝힌다.",
+].join("\n");
 function buildPrompt(request) {
   return [
     "CLAUDE.md와 playbook.md를 먼저 읽고 그 절차대로 아래 요청을 진행해.",
-    "- 요청이 playbook 몇 단계인지 밝히고, 단계별로 맡은 서브에이전트(researcher, competitor-analyzer, model-simulator, reviewer)에게 Task로 맡겨.",
+    "- 단계별로 맡은 서브에이전트(researcher, competitor-analyzer, model-simulator, reviewer)에게 Task로 맡겨.",
     "- 단계를 하나 끝낼 때마다 CLAUDE.md 규칙대로 run_log.jsonl 맨 끝에 한 줄을 추가해. actor에는 실제로 그 단계를 한 서브에이전트 이름을 적어.",
     "- git commit·push는 하지 마. 사람에게 질문할 수 없으니 막히면 [확인필요]로 남기고 다음으로 넘어가.",
+    "",
+    STEP_RULES,
+    "",
+    "[현재 단계 현황 — run_log.jsonl 요약, 서버가 실행 직전에 만듦]",
+    stepSummary(),
     "",
     "요청: " + request,
   ].join("\n");
 }
-// 요청을 비워 두고 실행하면: playbook 전체를 다음 미완료 단계부터 끝까지 자동 진행
+// 요청을 비워 두고 실행하면: 필요한 단계만 골라 13단계 결론까지 진행
 const AUTO_REQUEST = [
-  "[자동 실행] 기준 엑셀 idea/market_model_case_AxO.xlsx의 사업(한방 기초라인 출시)에 대해 playbook 전체를 진행해.",
-  "1) run_log.jsonl을 읽고 '통과'로 기록되지 않은 가장 앞 단계부터 시작해. 기록이 없으면 1단계부터.",
-  "2) 13단계까지 순서대로 진행하고, reviewer 점검은 4·6·11단계 뒤와 13단계에서 묶어서 받아 (각 단계의 '타당한지 확인하는 방법' 기준).",
-  "3) 사람이 정해야 하는 값(예: 1단계 판정 기준)은 기존 문서(cosmetics-launch-checklist.md, 엑셀 안내 시트, CLAUDE.md)에서 근거 있는 제안값을 세우고 [확인필요]로 표시한 뒤 계속 진행해.",
-  "4) 마지막에 13단계 결론(가 / 부 / 조건부 시행)과 남은 [확인필요] 목록을 정리해.",
+  "[자동 실행] 기준 엑셀 idea/market_model_case_AxO.xlsx의 사업(한방 기초라인 출시)에 대해 13단계 결론까지 필요한 단계만 진행해.",
+  "1) '현재 단계 현황'에서 기록이 없거나, 고칠 수 있는 이유로 미통과이거나, 입력이 바뀐 단계만 고른다. 통과·보류 단계는 다시 하지 않는다.",
+  "2) 고른 단계는 앞 단계 순서를 지키되 서로 기대지 않는 단계는 동시에 돌린다. reviewer 점검은 4·6·11단계 묶음과 13단계에서 받는다 (이미 그 묶음이 검토를 통과했고 바뀐 게 없으면 생략).",
+  "3) 사람이 정해야 하는 값은 근거 있는 제안값을 세우되 엑셀 입력 칸은 비워 두고 [확인필요]로 기록한다.",
+  "4) 마지막에 13단계 결론(가 / 부 / 조건부 시행)과 남은 [확인필요]·보류 목록을 정리한다.",
 ].join("\n");
 // 메인 에이전트를 '지휘만 하는' 역할로 고정 (직접 조사·계산하지 않고 서브에이전트에게 맡김)
 const ORCHESTRATOR = [
@@ -251,7 +283,7 @@ function startRun(request) {
     state.run = { ...state.run, status: "error", error: String(e.message) }; pushState();
     return { ok: false, error: String(e.message) };
   }
-  state.run = { status: "running", pid: child.pid, startedAt: new Date().toISOString(), endedAt: null, request: request === AUTO_REQUEST ? "자동 실행 · playbook 전체 (다음 미완료 단계부터)" : request, exitCode: null, error: null };
+  state.run = { status: "running", pid: child.pid, startedAt: new Date().toISOString(), endedAt: null, request: request === AUTO_REQUEST ? "자동 실행 · 필요한 단계만 골라 결론까지" : request, exitCode: null, error: null };
   pushState();
   let buf = "";
   const raw = fs.createWriteStream(path.join(__dirname, "last_run.stream.jsonl"), { flags: "w" });

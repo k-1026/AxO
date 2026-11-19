@@ -1,0 +1,27 @@
+{
+  "kind": "price_range",
+  "note": "중저가 ml당 정가 범위 (가격 기준표)",
+  "source": "site/public/index.html 하드코딩에서 이관 (2026-11-17)",
+  "data": {
+    "toner": [
+      36,
+      90
+    ],
+    "serum": [
+      148,
+      430
+    ],
+    "cream": [
+      280,
+      410
+    ],
+    "lotion": [
+      98,
+      193
+    ],
+    "mist": [
+      88,
+      192
+    ]
+  }
+}
