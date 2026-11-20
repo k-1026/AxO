@@ -1,16 +1,19 @@
 import {
-  FINISH, PURPOSE_LABEL, PRICE_RANGE, ITEM, LINE_RULE, lineupFor, ROLE, COMBO_WHY, TALK, PERSONAS, LIGHT,
+  FINISH, PURPOSE_LABEL, ITEM, LINE_RULE, lineupFor, ROLE, COMBO_WHY, TALK, PERSONAS, LIGHT,
   COMBO_KW, PAIN_KW, PRESETS, SEASON_TREND_NOTES, PRODUCT_BOX, SAMPLE_BASE, SAMPLE
 } from "./config/rules.js";
-import { eulReul, josa, dots, chips, stars, won, esc, scoreText } from "./utils/text.js";
+import { eulReul, josa, dots, chips, won, esc } from "./utils/text.js";
 import { fetchLatestBeautyTrends } from "./data/repository.js";
+import { loadSeen, addSeen } from "./data/seen.js";
 
 /* Supabase(또는 기본 데이터)에서 받아 startApp()에서 채워요. */
 let SEASONS, HERBS, DESIGN, TREND, BEAUTY_TRENDS, TREND_SOURCES, TREND_TIERS;
 let beautyFetchNote = "";
 
 
-/* ════════ 후보 풀 만들기: 원료의 목적 ∩ 계절 목적 ════════ */
+/* ════════ 후보 풀 만들기: 원료 12종 × 원료마다 가진 모든 목적 ════════
+   계절·제철로 거르지 않아요. 계절의 기후 이슈는 설명(날씨·고민)에만 써요. */
+const lineKey = l => `${l.herb}|${l.purpose}`;
 
 /* ════════ 조합 추천 이유 · 셀러 한마디 ════════
    라인 구성 규칙의 목적별 구성 틀(●)과 계절 고민으로 이유를 만들고,
@@ -79,34 +82,14 @@ function personaKw(k, l, a) {
 
 function candidates(season) {
   const iss = SEASONS[season].issues;
-  return HERBS.map(h => {
-    const hits = h.purposes.map(p => ({ p, issues: iss.filter(i => i[3].includes(p)) })).filter(x => x.issues.length);
-    if (!hits.length) return null;
-    const firstAt = p => { for (let i = 0; i < iss.length; i++) { const j = iss[i][3].indexOf(p); if (j >= 0) return i * 10 + j; } return 99; };
-    hits.sort((a, b) => b.issues.length - a.issues.length || firstAt(a.p) - firstAt(b.p));
-    const { p, issues } = hits[0];
+  return HERBS.flatMap(h => h.purposes.map(p => {
+    const issues = iss.filter(i => i[3].includes(p));
     return { ...h, color: DESIGN[h.herb].main, design: DESIGN[h.herb], finish: FINISH[p], purpose: p, issues, name: `${h.herb} ${PURPOSE_LABEL[p]} 라인`, functional: p === "미백(톤)",
       concern: issues.map(i => i[2]).join(" / "), lineup: lineupFor(p), next: (LINE_RULE[p] || {}).next || [], extra: (LINE_RULE[p] || {}).extra || "" };
-  }).filter(Boolean).map(l => ({ ...l, why: comboWhy(l, season), talk: sellerTalk(l, season), persona: personaAppeal(l) }));
+  })).map(l => ({ ...l, why: comboWhy(l, season), talk: sellerTalk(l, season), persona: personaAppeal(l) }));
 }
 
-/* ════════ 필수 통과 조건 (PASS / FAIL / UNKNOWN / NA) ════════ */
-const perMl = l => l.lineup.map(([t, k, ml, p]) => ({ t, k, per: Math.round(p / ml), r: PRICE_RANGE[t] }));
-const GATES = [
-  { nm: "기초라인 적합", get: l => l.typeGate || ["PASS", "토너·세럼·크림 구성 가능"] },
-  { nm: "한방 원료 근거", get: l => l.hanbangGate || ["PASS", "공정서 약재"] },
-  { nm: "쓸 수 있는 원료", get: () => ["PASS", "안전기준 별표1·2와 이름 일치 없음 (콘셉트 단계 기준, 성분 단위는 샘플 단계에 성적서로 확인)"] },
-  { nm: "광고 표현", get: l => ["PASS", `원료 후보표의 '쓸 수 있는 말'만 사용: ${l.words}`] },
-  { nm: "기능성 절차", get: l => l.functional ? ["PASS", l.func || "고시 성분을 배합해 보고"] : ["NA", "일반 화장품이라 해당 없음"] },
-  { nm: "중저가 가격", get: l => {
-      const bad = perMl(l).filter(x => x.per < x.r[0] || x.per > x.r[1]);
-      return bad.length ? ["FAIL", bad.map(x => `${x.k} ${x.per}원/ml 범위 밖`).join(", ")] : ["PASS", perMl(l).map(x => `${x.k} ${x.per}원/ml`).join(" · ")];
-    } },
-  { nm: "계절 고민 연결", get: l => ["PASS", l.issues.map(i => i[0]).join(" · ")] }
-];
-
-/* ════════ 후보 순위 근거 버튼 (세부 기준은 버튼 비중을 나눠 씀) ════════ */
-const trendLabel = () => TREND ? `기준일 ${TREND.collectedAt}` : "트렌드 파일 수집 전";
+/* ════════ 후보 순서 기준 (사용자에게 보이지 않는 고정 기준: 추천 조합 '체크리스트 기본') ════════ */
 function trendScore(l) {
   if (!TREND) return [null, "검색 흐름 자료 확인 필요"];
   if ((Date.now() - new Date(TREND.collectedAt)) / 864e5 > 30) return [null, `오래된 자료 (${TREND.collectedAt})`];
@@ -132,12 +115,11 @@ const CRIT = [
   { k: "effect", nm: "✨ 핵심 효능", area: "완제품 시험 전", off: true },
   { k: "channel", nm: "📣 채널·고객 확보", area: "채널 자료 없음", off: true }
 ];
-let season = "봄", W = { ...PRESETS[0].w }, presetOn = 0, designMode = "tint";
-const prevRank = {};
+let season = null;
+/* 라인·원료 순서는 계절·기후와 상관없이 정해요: '계절 고민 크기'(demand)는 빼요. */
+const W = Object.fromEntries(Object.entries(PRESETS[0].w).filter(([k]) => k !== "demand")), designMode = "tint";
 
 function evaluate(l) {
-  const gates = GATES.map(g => ({ g, r: g.get(l) }));
-  const blocked = gates.filter(x => x.r[0] === "FAIL" || x.r[0] === "UNKNOWN");
   const chosen = CRIT.filter(c => !c.off && W[c.k]);
   const sumW = chosen.reduce((a, c) => a + W[c.k], 0);
   let known = 0, unk = 0, got = 0;
@@ -149,7 +131,7 @@ function evaluate(l) {
     return { c, subs, avg: ks.length ? ks.reduce((a, x) => a + x.r[0], 0) / ks.length : null };
   });
   const lo = sumW ? Math.round(known / sumW * 100) : 0, hi = sumW ? Math.round((known + unk) / sumW * 100) : 0;
-  return { l, gates, blocked, parts, lo, hi, mid: (lo + hi) / 2, evid: sumW ? Math.round(got / sumW * 100) : 0 };
+  return { l, parts, lo, hi, mid: (lo + hi) / 2, evid: sumW ? Math.round(got / sumW * 100) : 0 };
 }
 function hsl(hex) {
   const n = parseInt(hex.slice(1), 16), r = (n >> 16) / 255, g = ((n >> 8) & 255) / 255, b = (n & 255) / 255;
@@ -192,12 +174,22 @@ const tileBg = l => `background:#FAF8F3`;
 function renderSeasons() {
   const el = document.getElementById("seasons");
   el.innerHTML = Object.keys(SEASONS).map(s => `<button class="season" role="tab" type="button" aria-selected="${s === season}" data-s="${s}">${SEASONS[s].icon} ${s}</button>`).join("");
-  el.querySelectorAll(".season").forEach(b => b.onclick = () => { season = b.dataset.s; render(); });
+  el.querySelectorAll(".season").forEach(b => b.onclick = () => selectSeason(b.dataset.s));
+}
+function renderSeasonInfo() {
   document.body.dataset.season = season;
-  document.getElementById("eng").textContent = `${SEASONS[season].eng} Collection Planning`;
   document.getElementById("title").textContent = `${season}, 어떤 라인을 먼저 낼까요?`;
   document.getElementById("issues").innerHTML = SEASONS[season].issues.map(([t, n, c, p]) =>
     `<div class="issue"><div class="t">${esc(t)}</div><div class="n">${esc(n)}</div><div class="c">${esc(c)} → ${p.map(esc).join(", ")}</div></div>`).join("");
+}
+async function selectSeason(s) {
+  season = s;
+  renderSeasons(); renderSeasonInfo(); renderTrendComment();
+  const info = document.getElementById("season-info");
+  info.hidden = false;
+  if (!SHOWN[season]) await nextRecommendation();
+  else renderResults();
+  info.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function trendComment(s, data, now = Date.now()) {
@@ -273,85 +265,59 @@ function renderTrendComment() {
     + `<div class="ev-h">트렌드 에이전트가 확인하는 출처 ${TREND_SOURCES.length}곳</div>${tierHtml}`;
 }
 
-function renderStudio() {
-  const pr = document.getElementById("presets");
-  pr.innerHTML = PRESETS.map((p, i) => `<button class="preset${i === presetOn ? " on" : ""}" type="button" data-i="${i}">${esc(p.nm)}</button>`).join("")
-    + `<button class="preset${presetOn === -1 ? " on" : ""}" type="button" data-i="-1">직접 고르기</button>`;
-  pr.querySelectorAll(".preset").forEach(b => b.onclick = () => { presetOn = +b.dataset.i; W = presetOn >= 0 ? { ...PRESETS[presetOn].w } : {}; render(); });
-  const on = CRIT.filter(c => !c.off), off = CRIT.filter(c => c.off);
-  document.getElementById("cbtns").innerHTML = on.map(c =>
-    `<button class="cbtn" type="button" data-k="${c.k}" data-w="${W[c.k] || 0}" aria-pressed="${!!W[c.k]}"><span class="nm">${esc(c.nm)}</span><span class="st">${stars(W[c.k] || 0)}</span><span class="ar">${esc(c.area)}${c.k === "trend" ? " · " + esc(trendLabel()) : ""}</span></button>`).join("")
-    + `<div class="prep">자료 준비 중</div>` + off.map(c => `<button class="cbtn" type="button" disabled><span class="nm">${esc(c.nm)}</span><span class="st">준비 중</span><span class="ar">${esc(c.area)}</span></button>`).join("");
-  document.querySelectorAll(".cbtn[data-k]").forEach(b => b.onclick = () => { const k = b.dataset.k; W[k] = ((W[k] || 0) + 1) % 3; if (!W[k]) delete W[k]; presetOn = -2; render(); });
-  document.getElementById("gates").innerHTML = GATES.map(g => `<span class="gate"><i>✓</i>${esc(g.nm)}</span>`).join("");
-  if (document.getElementById("design")) document.getElementById("design").innerHTML = [["tint", "색상 변경"]].map(([k, t]) =>
-    `<button class="preset${designMode === k ? " on" : ""}" type="button" data-m="${k}">${t}</button>`).join("");
-  document.querySelectorAll("#design .preset").forEach(b => b.onclick = () => { designMode = b.dataset.m; render(); });
-}
+/* ════════ 추천 후보 3개 · 재추천 ════════
+   고정 기준 점수순으로 줄 세운 뒤 3개씩 골라요.
+   - 이 계절에서 이미 보여 준 라인은 다시 보여 주지 않아요.
+   - 다른 계절에서 이미 본 라인은 빼지 않고 뒤로 미뤄요 (안 본 라인 먼저). */
+const PICK = 3;
+const SHOWN = {};      // 계절별로 지금 화면에 보여 주는 후보
 let RES = [];
+function ranked(s) {
+  return candidates(s).map(evaluate).sort((a, b) => b.mid - a.mid || b.evid - a.evid);
+}
+async function nextRecommendation() {
+  const s = season, seen = await loadSeen();
+  const here = seen[s] || new Set();
+  const elsewhere = new Set(Object.entries(seen).filter(([k]) => k !== s).flatMap(([, v]) => [...v]));
+  const left = ranked(s).filter(r => !here.has(lineKey(r.l)));
+  const pick = [...left.filter(r => !elsewhere.has(lineKey(r.l))), ...left.filter(r => elsewhere.has(lineKey(r.l)))].slice(0, PICK);
+  SHOWN[s] = pick;
+  if (s === season) renderResults();
+  await addSeen(s, pick.map(r => lineKey(r.l)));
+}
 function renderResults() {
-  const pool = candidates(season);
-  const all = pool.map(evaluate);
-  const ok = all.filter(r => !r.blocked.length).sort((a, b) => b.mid - a.mid || b.evid - a.evid);
-  const out = all.filter(r => r.blocked.length);
-  ok.forEach((r, i) => { r.rank = i + 1; r.unsure = (ok[i + 1] && r.lo <= ok[i + 1].hi) || (ok[i - 1] && ok[i - 1].lo <= r.hi); });
-  const key = season + "|";
-  ok.forEach(r => { const p = prevRank[key + r.l.herb]; r.move = p == null ? null : p - r.rank; });
-  RES = [...ok, ...out];
-  document.getElementById("col-title").textContent = `${season} 컬렉션 후보`;
-  document.getElementById("col-sub").textContent = `원료 12종 중 ${pool.length}개 라인이 ${season} 피부 목적과 맞아요 · 순위 ${ok.length}개 · 추가 검증 ${out.length}개`;
+  RES = SHOWN[season] || [];
   const el = document.getElementById("results");
-  if (!Object.keys(W).length) { el.innerHTML = `<div class="empty">왼쪽에서 후보 순위 근거를 하나 이상 골라 주세요.</div>`; return; }
-  const mv = r => r.move == null ? "" : r.move > 0 ? `<span class="move up">▲ ${r.move}</span>` : r.move < 0 ? `<span class="move down">▼ ${-r.move}</span>` : "";
-  const whyChips = r => {
-    const subs = r.parts.flatMap(p => p.subs.map(x => ({ p, x })));
-    const strong = subs.filter(o => o.x.r[0] >= 4).sort((a, b) => W[b.p.c.k] - W[a.p.c.k]).filter((o, i, arr) => arr.findIndex(z => z.p.c.k === o.p.c.k) === i).slice(0, 3);
-    const weak = subs.filter(o => o.x.r[0] != null && o.x.r[0] <= 2).slice(0, 2);
-    const unk = subs.filter(o => o.x.r[0] == null).length;
-    return strong.map(o => `<span>${esc(o.p.c.nm)} ${stars(W[o.p.c.k])}</span>`).join("")
-      + weak.map(o => `<span class="weak">약함 · ${esc(o.x.s.nm)}</span>`).join("") + (unk ? `<span class="unk">확인 필요 ${unk}</span>` : "");
-  };
-  const top = ok.slice(0, 3), rest = [...ok.slice(3), ...out];
-  el.innerHTML = `<div class="top3">${top.map(r => `
-    <button class="card" type="button" data-h="${esc(r.l.herb)}">
-      <div class="card-rank"><span class="ribbon">No.${r.rank}</span>${mv(r)}</div>
+  if (!RES.length) { el.innerHTML = `<div class="empty">더 추천할 후보가 없어요.</div>`; return; }
+  el.innerHTML = `<div class="top3">${RES.map(r => `
+    <button class="card" type="button" data-k="${esc(lineKey(r.l))}">
       <div class="visual" style="${tileBg(r.l)}">${tiles(r.l)}</div>
       <div class="body">
         <div class="herb">${esc(r.l.herb)}${r.l.hanja ? `(${r.l.hanja})` : ""} · ${esc(r.l.purpose)} · ${r.l.functional ? "기능성 보고 필요" : "일반 화장품"}</div>
         <h3>${esc(r.l.name)}</h3>
         <div class="price">${r.l.lineup.map(([, k, ml, p]) => `${esc(k)} ${ml}ml ${won(p)}`).join(" · ")}</div>
-        <div class="meter"><span class="bar"><i style="left:${r.lo}%;width:${r.hi - r.lo}%"></i><b style="width:${r.lo}%"></b></span><strong>${r.lo === r.hi ? r.lo : r.lo + "~" + r.hi}</strong>점</div>
-        <div class="why">${whyChips(r)}</div>
-        ${r.unsure ? `<div class="flag">점수 범위가 겹쳐 확인 필요 칸에 따라 순위가 바뀔 수 있어요</div>` : ""}
       </div>
-    </button>`).join("")}</div>
-    <div class="others"><h3>다른 후보</h3>${rest.map(r => `
-      <button class="row${r.rank ? "" : " blocked"}" type="button" data-h="${esc(r.l.herb)}">
-        <span class="rk">${r.rank ? "No." + r.rank : "—"}</span><span class="dot" style="background:${r.l.color}"></span>
-        <span class="nm"><b>${esc(r.l.name)}</b><small>${r.rank ? esc(r.l.purpose) : "추가 검증 · " + r.blocked.map(x => esc(x.g.nm)).join(", ")}</small></span>
-        <span class="sc">${r.rank ? scoreText(r) : "순위 제외"}</span>
-        <span class="mv">${r.move > 0 ? `<span style="color:var(--ok)">▲ ${r.move}</span>` : r.move < 0 ? `<span style="color:var(--warn)">▼ ${-r.move}</span>` : ""}</span>
-      </button>`).join("")}</div>`;
-  el.querySelectorAll("[data-h]").forEach(b => b.onclick = () => openDetail(RES.find(r => r.l.herb === b.dataset.h)));
-  ok.forEach(r => { prevRank[key + r.l.herb] = r.rank; });
+    </button>`).join("")}</div>`;
+  el.querySelectorAll("[data-k]").forEach(b => b.onclick = () => openDetail(RES.find(r => lineKey(r.l) === b.dataset.k)));
 }
+async function reroll() {
+  if (!season) return;
+  const d = document.getElementById("detail");
+  if (d.open) d.close();
+  await nextRecommendation();
+  document.getElementById("results").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+document.addEventListener("click", e => { if (e.target.closest && e.target.closest('[data-action="reroll"]')) reroll(); });
+
 function openDetail(r) {
-  hideSampleZoom();
   const l = r.l;
-  const v = document.getElementById("d-visual"); v.innerHTML = tiles(l); v.style.cssText = tileBg(l) + ";border-radius:14px;padding:14px";
-  document.getElementById("d-steps").innerHTML = [["sample", "샘플 그대로"], ["tint", "색상 변경"]].map(([m, t]) =>
-    `<div>${tileHtml(l, "serum", "세럼", m)}<p>${t}</p></div>`).join("");
-  const dz = l.design;
-  document.getElementById("d-palette").innerHTML = `
-    <div><i style="background:${dz.main}"></i>베이스 <code>${dz.main}</code> · ${esc(dz.from)}</div><div><i style="background:${dz.cap}"></i>라벨 포인트 <code>${dz.cap}</code></div>`;
-  document.getElementById("d-vnote").textContent = "";
-  document.getElementById("d-rank").textContent = r.rank ? `${season} No.${r.rank} · ${scoreText(r)}` : `${season} · 추가 검증 (필수 조건 미통과)`;
+  document.getElementById("d-rank").textContent = season;
   document.getElementById("d-name").textContent = l.name;
   document.getElementById("d-facts").innerHTML = `
     <dt>구분</dt><dd>${l.functional ? "기능성 보고 필요" : "일반 화장품"}</dd>
     <dt>대표 약재</dt><dd>${esc(l.herb)}${l.hanja ? `(${l.hanja})` : ""}</dd>
     <dt>쓸 수 있는 말</dt><dd>${esc(l.words)}</dd>`;
-  document.getElementById("d-why-combo").innerHTML = `<dt>날씨</dt><dd>${chips(l.issues.map(i => i[0]))}</dd><dt>고민</dt><dd>${chips([...new Set(l.issues.flatMap(i => i[2].split(" · ")))].slice(0, 4))}</dd><dt>목적</dt><dd>${chips([l.purpose])}</dd><dt>구성</dt><dd>${chips([l.lineup.map(([, k]) => k).join(" → ")])}</dd><dt>포인트</dt><dd>${chips(String(COMBO_KW[l.purpose] || "").split(" · "))}</dd>`;
+  document.getElementById("d-why-combo").innerHTML = `<dt>목적</dt><dd>${chips([l.purpose])}</dd><dt>구성</dt><dd>${chips([l.lineup.map(([, k]) => k).join(" → ")])}</dd><dt>포인트</dt><dd>${chips(String(COMBO_KW[l.purpose] || "").split(" · "))}</dd>`;
   { const ranked = PERSONAS.map(pp => ({ pp, a: l.persona[pp.k] })).sort((x, y) => y.a.fit - x.a.fit);
     const pick = ranked.filter(x => x.a.fit >= 4).slice(0, 2);
     const show = pick.length ? pick : ranked.slice(0, 1);
@@ -359,77 +325,27 @@ function openDetail(r) {
   document.getElementById("d-lineup").innerHTML = l.lineup.map(([, k, ml, p]) => `<tr><td>${esc(k)} <span class="note">1차</span></td><td>${ml}ml</td><td>${won(p)}</td><td>${won(Math.round(p / ml))}</td></tr>`).join("")
     + (l.extra ? `<tr><td>${esc(l.extra)} <span class="note">1차</span></td><td colspan="3" class="note">용기 샘플·가격 기준 준비 중</td></tr>` : "")
     + (l.next.length ? `<tr><td colspan="4" class="note">2차 확장 후보: ${l.next.map(esc).join(" · ")}</td></tr>` : "");
-  const lab = { PASS: "PASS", FAIL: "FAIL", UNKNOWN: "UNKNOWN", NA: "해당 없음" };
-  document.getElementById("d-gates").innerHTML = `<div class="gchips">${r.gates.map(x => `<span class="gchip ${x.r[0]}">${x.r[0] === "PASS" ? "✓" : x.r[0] === "NA" ? "–" : "!"} ${esc(x.g.nm)}</span>`).join("")}</div>` + r.gates.filter(x => x.r[0] === "FAIL" || x.r[0] === "UNKNOWN").map(x => `<div class="note">${esc(x.g.nm)}: ${esc(x.r[1])}</div>`).join("");
-  document.getElementById("d-crit").innerHTML = r.parts.map(p => `<div class="h" title="${esc(p.subs.map(x => x.s.nm + ': ' + x.r[1]).join(' / '))}"><span>${esc(p.c.nm)} ${stars(W[p.c.k])}</span><span>${p.avg == null ? "확인 필요" : (Math.round(p.avg * 10) / 10) + " / 5"}</span></div>`).join("")
-    + (r.lo !== r.hi ? `<p class="note">확인 안 된 칸이 있어 ${scoreText(r)} 범위로 보여 줘요.</p>` : "");
   const d = document.getElementById("detail"); d.showModal ? d.showModal() : d.setAttribute("open", "");
 }
-document.getElementById("d-close").onclick = () => { hideSampleZoom(); document.getElementById("detail").close(); };
+document.getElementById("d-close").onclick = () => document.getElementById("detail").close();
 document.getElementById("detail").addEventListener("click", e => { if (e.target.id === "detail") e.target.close(); });
 
-const SAMPLE_ZOOM = 2.6, SAMPLE_LENS_SIZE = 230;
-let sampleZoom = { tile: null, lens: null, content: null };
-function sampleLensPosition(rect, x, y, viewportWidth, viewportHeight) {
-  const half = SAMPLE_LENS_SIZE / 2;
-  return { left: Math.max(8, Math.min(viewportWidth - SAMPLE_LENS_SIZE - 12, x - half)),
-    top: Math.max(8, Math.min(viewportHeight - SAMPLE_LENS_SIZE - 12, y - half)),
-    tx: half - (x - rect.left) * SAMPLE_ZOOM, ty: half - (y - rect.top) * SAMPLE_ZOOM };
+/* ════════ 화면 전환: 첫 화면 · 출시 기획실 · 요금제 · 마이 기획실 ════════ */
+function showView(v) {
+  document.querySelectorAll("[data-view-panel]").forEach(p => { p.hidden = p.dataset.viewPanel !== v; });
+  document.querySelectorAll(".menu [data-view]").forEach(b => b.classList.toggle("on", b.dataset.view === v));
+  window.scrollTo(0, 0);
 }
-function hideSampleZoom() {
-  if (sampleZoom.lens) sampleZoom.lens.hidden = true;
-  sampleZoom.tile = null;
-}
-function moveSampleZoom(event) {
-  if (event.pointerType === "touch") { hideSampleZoom(); return; }
-  const tile = event.target && event.target.closest ? event.target.closest(".tile") : null;
-  const photo = tile && tile.closest("#detail") && tile.querySelector(".product-cutout");
-  if (!photo) { hideSampleZoom(); return; }
-  if (!sampleZoom.lens) {
-    const lens = document.createElement("div"), content = document.createElement("div");
-    lens.className = "sample-lens"; lens.setAttribute("aria-hidden", "true");
-    content.className = "sample-lens-content"; lens.appendChild(content);
-    sampleZoom.lens = lens; sampleZoom.content = content;
-  }
-  const parent = tile.closest("dialog") || document.body;
-  if (sampleZoom.lens.parentNode !== parent) parent.appendChild(sampleZoom.lens);
-  const rect = tile.getBoundingClientRect();
-  if (!rect.width || !rect.height) { hideSampleZoom(); return; }
-  if (sampleZoom.tile !== tile) {
-    sampleZoom.content.replaceChildren(photo.cloneNode(true));
-    sampleZoom.tile = tile;
-  }
-  sampleZoom.content.style.width = rect.width + "px";
-  sampleZoom.content.style.height = rect.height + "px";
-  sampleZoom.lens.style.background = getComputedStyle(tile).backgroundColor;
-  const position = sampleLensPosition(rect, event.clientX, event.clientY, window.innerWidth, window.innerHeight);
-  sampleZoom.lens.style.left = position.left + "px";
-  sampleZoom.lens.style.top = position.top + "px";
-  sampleZoom.content.style.transform = `translate(${position.tx}px,${position.ty}px) scale(${SAMPLE_ZOOM})`;
-  sampleZoom.lens.hidden = false;
-}
-if (typeof document.addEventListener === "function" && typeof window !== "undefined") {
-  document.addEventListener("pointermove", moveSampleZoom, { passive: true });
-  document.addEventListener("pointerleave", hideSampleZoom);
-  window.addEventListener("scroll", hideSampleZoom, true);
-  window.addEventListener("resize", hideSampleZoom);
-  window.addEventListener("blur", hideSampleZoom);
-  document.getElementById("detail").addEventListener("close", hideSampleZoom);
-}
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-view]"); if (b) showView(b.dataset.view); });
 
-function render() { hideSampleZoom(); renderPackageFilters(); renderSeasons(); renderTrendComment(); renderStudio(); renderResults(); }
-
-/** AI 채팅에 함께 보낼 '지금 화면 정보' (계절, 고른 기준, 후보 순위). 점수는 계산 코드가 낸 값 그대로예요. */
+/** AI 채팅에 함께 보낼 '지금 화면 정보' (계절, 추천 후보). */
 export function getPlanningContext() {
-  if (!SEASONS || !SEASONS[season]) return "";
+  if (!SEASONS || !season || !SEASONS[season]) return "";
   const lines = [
     `현재 계절: ${season}`,
     `기후 이슈: ${SEASONS[season].issues.map(i => `${i[0]}(${i[2]})`).join(", ")}`,
-    `기획자가 고른 기준: ${CRIT.filter(c => !c.off && W[c.k]).map(c => `${c.nm} ${stars(W[c.k])}`).join(", ") || "없음"}`,
-    "후보 순위:",
-    ...RES.map(r => r.blocked.length
-      ? `- 순위 제외 ${r.l.name}: ${r.blocked.map(b => `${b.g.nm} ${b.r[0]}`).join(", ")}`
-      : `- ${r.rank}위 ${r.l.name} · ${scoreText(r)} · 구성 ${r.l.lineup.map(x => x[1]).join("+")} · 고민 ${r.l.concern}`),
+    "추천 후보:",
+    ...RES.map(r => `- ${r.l.name} · 구성 ${r.l.lineup.map(x => x[1]).join("+")}${r.l.concern ? ` · 고민 ${r.l.concern}` : ""}`),
   ];
   return lines.join("\n");
 }
@@ -439,5 +355,5 @@ export function startApp(data) {
   TREND = data.HERB_TREND;
   BEAUTY_TRENDS = data.BEAUTY_TRENDS;
   beautyFetchNote = data.note || "";
-  render();
+  renderPackageFilters(); renderSeasons();
 }

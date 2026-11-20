@@ -111,3 +111,18 @@ begin
     execute format('grant select on public.%I to anon, authenticated', t);
   end loop;
 end $$;
+
+-- ── 재추천 기록 (로그인 사용자에게 이미 보여 준 후보 라인) ──────────
+-- line_key = '원료|목적' (예: 감초|진정). 본인 기록만 읽고 쓸 수 있어요.
+create table if not exists public.recommendation_history (
+  user_id     uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  season      text not null,
+  line_key    text not null,
+  created_at  timestamptz not null default now(),
+  primary key (user_id, season, line_key)
+);
+alter table public.recommendation_history enable row level security;
+drop policy if exists "본인 재추천 기록 읽기" on public.recommendation_history;
+create policy "본인 재추천 기록 읽기" on public.recommendation_history for select to authenticated using (user_id = auth.uid());
+drop policy if exists "본인 재추천 기록 쓰기" on public.recommendation_history;
+create policy "본인 재추천 기록 쓰기" on public.recommendation_history for insert to authenticated with check (user_id = auth.uid());
