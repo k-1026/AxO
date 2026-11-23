@@ -78,3 +78,8 @@ export const PRODUCT_BOX = { toner: [245, 75, 675, 965], serum: [245, 40, 690, 9
 
 /* 용기 샘플 파일 이름 (public/IMAGE/LOGO/cheonghyang-logo-02/application-examples) · 주소 앞부분은 config/assets.js */
 export const SAMPLE = { toner: "toner.png", serum: "serum.png", cream: "cream.png", lotion: "lotion-pump.png", mist: "mist.png" };
+
+/* 의약품식 효능 표현 금지어 · 화장품 광고에 쓰지 않아요 */
+export const BANNED_PHRASES = ["여드름 치료", "치료", "완치", "염증", "항염", "소염", "재생", "혈액순환", "아토피", "처방"];
+/* 금지어처럼 보이지만 쓸 수 있는 말(용기·종이 이야기 등) */
+export const BANNED_EXCEPTIONS = ["재생 용기", "재생 플라스틱", "재생지", "재생 종이", "재생용지"];
