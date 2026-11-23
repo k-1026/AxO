@@ -5,14 +5,24 @@ import { HttpError } from "../http.js";
 
 const isText = v => typeof v === "string" && v.trim() !== "";
 
-/* 화면에 보여 줄 내용만 남겨요 */
+const pick = (o, keys) => Object.fromEntries(keys.filter(k => o && k in o).map(k => [k, o[k]]));
+
+/* 화면에 필요한 칸만 허용 목록으로 남겨요. 새 내부 칸이 생겨도 새어 나가지 않아요. (후보 점수 칸은 화면에 안 쓰여서 candidate는 통째로 뺐어요) */
 function publicContent(c) {
-  const { log, ...rest } = c ?? {};
-  const candidate = rest.candidate && typeof rest.candidate === "object"
-    ? (({ mid, evid, ...r }) => r)(rest.candidate) : rest.candidate;
-  const scenarios = Array.isArray(rest.scenarios)
-    ? rest.scenarios.map(({ image_prompt, ...r }) => r) : rest.scenarios;
-  return { ...rest, candidate, scenarios };
+  const p = c?.plan ?? {};
+  return {
+    ...pick(c, ["season", "herb", "purpose"]),
+    plan: {
+      ...pick(p, ["concept_name", "concept", "target", "key_claims", "notes", "cautions", "review_notes"]),
+      products: Array.isArray(p.products) ? p.products.map(x => pick(x, ["type", "name", "ml", "price", "role", "status"])) : []
+    },
+    scenarios: Array.isArray(c?.scenarios)
+      ? c.scenarios.map(s => ({
+        ...pick(s, ["title", "concept", "target", "channel"]),
+        cuts: Array.isArray(s?.cuts) ? s.cuts.map(x => pick(x, ["scene", "copy"])) : []
+      }))
+      : []
+  };
 }
 
 export default async function planGet(body, { token, deps }) {

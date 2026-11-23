@@ -78,6 +78,7 @@ function render(d) {
     <section class="my-sec"><h3>시나리오</h3><div class="my-scns">${(c.scenarios || []).slice(0, 3).map((s, i) => scenarioHtml(s, i, d.image_urls[i], isLatest)).join("")}</div></section>`;
   root().dataset.plan = d.plan.id;
   root().dataset.version = d.version.version_no;
+  root().dataset.latest = isLatest ? "1" : "0";
 }
 
 export function openPlan(planId, versionNo, notes) {
@@ -100,7 +101,7 @@ async function makeImage(btn, idx, regenerate) {
   const same = () => root().dataset.plan === planId && Number(root().dataset.version) === versionNo && slot.isConnected;
   try {
     const { url } = await callApi("/api/plan-image", { plan_id: planId, version_no: versionNo, idx, regenerate });
-    if (same()) slot.innerHTML = slotHtml(idx, url, true);
+    if (same()) slot.innerHTML = slotHtml(idx, url, root().dataset.latest === "1");
   } catch (e) {
     if (same()) slot.innerHTML = old;
     if (!(e instanceof AuthRequired)) alert(e.message || "이미지를 만들지 못했어요. 잠시 후 다시 시도해 주세요.");

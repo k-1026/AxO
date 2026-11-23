@@ -280,9 +280,11 @@ describe("/api/plan-image", () => {
 describe("/api/plan-get", () => {
   const content = {
     season: "여름", herb: "어성초", purpose: "모공·피지",
-    candidate: { name: "n", lineup: [], mid: 3, evid: 4 },
-    plan: { concept_name: "c" },
-    scenarios: [{ title: "a", image_prompt: "secret" }, { title: "b", image_prompt: "secret" }, { title: "c", image_prompt: "secret" }],
+    candidate: { name: "n", lineup: [], mid: 3, evid: 4, secret_internal: 1 },
+    plan: { concept_name: "c", concept: "k", target: "t", key_claims: ["a"], notes: [], cautions: [], review_notes: [], secret_internal: 1,
+      products: [{ type: "toner", name: "p", ml: 100, price: 1000, role: "r", status: "1차", secret_internal: 1 }] },
+    scenarios: [0, 1, 2].map(i => ({ title: `s${i}`, concept: "c", target: "t", channel: "ch", image_prompt: "secret", secret_internal: 1, cuts: [{ scene: "a", copy: "b", secret_internal: 1 }] })),
+    secret_internal: 1,
     log: { x: 1 }
   };
   const ver = (over = {}) => ({ id: "v2", version_no: 2, content, images: [{ idx: 1, path: "u1/p1/2-1.png" }], ...over });
@@ -324,7 +326,13 @@ describe("/api/plan-get", () => {
     expect(out.latest_version_no).toBe(2);
     expect(out.plan).toMatchObject({ id: "p1", season: "여름", herb: "어성초" });
     const text = JSON.stringify(out);
-    expect(text).not.toMatch(/image_prompt|secret|"log"|"mid"|"evid"/);
+    expect(text).not.toMatch(/image_prompt|secret|"log"|"mid"|"evid"|candidate/);
+    const c = out.version.content;
+    expect(Object.keys(c).sort()).toEqual(["herb", "plan", "purpose", "scenarios", "season"]);
+    expect(Object.keys(c.plan).sort()).toEqual(["cautions", "concept", "concept_name", "key_claims", "notes", "products", "review_notes", "target"]);
+    expect(Object.keys(c.plan.products[0]).sort()).toEqual(["ml", "name", "price", "role", "status", "type"]);
+    expect(Object.keys(c.scenarios[0]).sort()).toEqual(["channel", "concept", "cuts", "target", "title"]);
+    expect(Object.keys(c.scenarios[0].cuts[0]).sort()).toEqual(["copy", "scene"]);
     expect(out.version.content.scenarios).toHaveLength(3);
     expect(store.getVersion).toHaveBeenCalledWith({ tag: "client" }, "p1", undefined);
   });
