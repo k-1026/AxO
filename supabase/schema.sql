@@ -1,4 +1,4 @@
--- 청향 시즌 출시 기획실 · Supabase 스키마
+-- HerbHub 출시 기획실 · Supabase 스키마
 -- Supabase 대시보드 → SQL Editor 에서 이 파일을 먼저 실행하고, 그다음 seed.sql 을 실행하세요.
 -- 다시 실행해도 되도록 IF NOT EXISTS / DROP POLICY IF EXISTS 를 썼어요.
 
