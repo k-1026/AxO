@@ -11,7 +11,7 @@ const MAX_CONTEXT_CHARS = 4000; // 화면 정보 최대 길이
 const REQUEST_TIMEOUT_MS = 90000;  // Gemini 한 번 호출 최대 대기 시간
 const TOTAL_TIMEOUT_MS = 110000;   // 다시 시도까지 합친 최대 시간 (vercel.json 의 maxDuration 보다 짧게)
 
-const SYSTEM_PROMPT = `너는 한방 화장품 브랜드 '청향'의 상품기획 도우미야.
+const SYSTEM_PROMPT = `너는 한방 화장품 상품기획 도우미 'HerbHub'야.
 - 기획자가 계절별 기초라인(토너·세럼·크림·로션·미스트) 출시 후보를 고르고, 추천 이유를 이해하고, 팀 회의에 제안하도록 도와.
 - 한국어 존댓말로, 짧은 문단과 목록으로 답해.
 - 화면 정보(현재 계절, 후보 순위)가 주어지면 그 내용을 근거로 답하고, 화면에 없는 사실은 추측이라고 밝혀.
