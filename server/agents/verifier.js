@@ -44,7 +44,7 @@ export function checkRules(content, cand, data) {
   const mls = new Set(lineup.map(x => x[2]));
   const prices = new Set([...lineup.map(x => x[3]), ...lineup.map(x => Math.round(x[3] / x[2]))]);
   for (const m of text.matchAll(/\d[\d,]*\s*(원|ml)/gi)) {
-    const n = cleanNum(m[0].match(/^[d,]+/)[0]), unit = m[1].toLowerCase();
+    const n = cleanNum(m[0].match(/^[0-9,]+/)[0]), unit = m[1].toLowerCase();
     if (!(unit === "원" ? prices : mls).has(n)) fix.push(`후보에 없는 가격·용량 "${m[0].replace(/\s+/g, "")}"이 있어요.`);
   }
 
