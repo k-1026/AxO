@@ -1,6 +1,6 @@
 /* Vercel 서버 함수: POST /api/chat  →  Gemini 응답
    Vercel → Settings → Environment Variables 에 GEMINI_API_KEY (선택: GEMINI_MODEL) 를 넣어 주세요. */
-import { chatWithGemini, ChatError } from "../server/gemini.js";
+import { chatWithGemini, ChatError } from "../server/llm/gemini.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {

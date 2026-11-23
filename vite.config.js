@@ -1,5 +1,5 @@
 import { defineConfig, loadEnv } from "vite";
-import { chatWithGemini, ChatError } from "./server/gemini.js";
+import { chatWithGemini, ChatError } from "./server/llm/gemini.js";
 
 // npm run dev 에서도 /api/chat 이 동작하도록, Vercel 함수와 같은 코드를 개발 서버에 붙여요.
 // .env 의 GEMINI_API_KEY 는 여기(서버)에서만 읽고 브라우저로 보내지 않아요.
