@@ -92,6 +92,15 @@ async function latestVersionNo(client, planId) {
   return rows?.[0]?.version_no ?? null;
 }
 
+/** 그 기획안의 버전 번호 전체 (큰 번호부터). 없거나 남의 것이면 빈 목록 */
+export async function listVersionNos(client, planId) {
+  const rows = check(
+    await client.from("plan_versions").select("version_no").eq("plan_id", planId).order("version_no", { ascending: false }),
+    "버전 목록 조회"
+  ).data ?? [];
+  return rows.map(r => r.version_no);
+}
+
 /** 내 기획안 한 줄(계절·원료·목적·이미지 다시 만들기 횟수). 없거나 남의 것이면(RLS) null */
 export async function getPlan(client, planId) {
   const rows = check(

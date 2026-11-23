@@ -8,6 +8,7 @@ import { LlmError } from "../server/llm/gemini.js";
 import { HttpError, bearer, runRoute } from "../server/http.js";
 import plan from "../server/routes/plan.js";
 import planImage from "../server/routes/plan-image.js";
+import planGet from "../server/routes/plan-get.js";
 
 const NOW = Date.parse("2026-11-23T00:00:00+09:00");
 const BODY = { season: "여름", herb: "어성초", purpose: "모공·피지" };
@@ -273,5 +274,63 @@ describe("/api/plan-image", () => {
     const deps = imgDeps(store, { editImage: vi.fn(async () => { throw new LlmError("바빠요", 503); }) });
     expect(await status(planImage(B, ctx(deps)))).toBe(503);
     expect(store.saveImage).not.toHaveBeenCalled();
+  });
+});
+
+describe("/api/plan-get", () => {
+  const content = {
+    season: "여름", herb: "어성초", purpose: "모공·피지",
+    candidate: { name: "n", lineup: [], mid: 3, evid: 4 },
+    plan: { concept_name: "c" },
+    scenarios: [{ title: "a", image_prompt: "secret" }, { title: "b", image_prompt: "secret" }, { title: "c", image_prompt: "secret" }],
+    log: { x: 1 }
+  };
+  const ver = (over = {}) => ({ id: "v2", version_no: 2, content, images: [{ idx: 1, path: "u1/p1/2-1.png" }], ...over });
+  const getStore = (over = {}) => makeStore({
+    listPlans: vi.fn(async () => [{ id: "p1", season: "여름", latest_version: 2 }]),
+    listVersionNos: vi.fn(async () => [2, 1]),
+    getVersion: vi.fn(async () => ver()),
+    ...over
+  });
+
+  it("토큰 없으면 401, 잘못된 입력은 400", async () => {
+    const deps = { store: getStore() };
+    expect(await status(planGet({}, ctx(deps, null)))).toBe(401);
+    expect(await status(planGet({ plan_id: 7 }, ctx(deps)))).toBe(400);
+    expect(await status(planGet({ plan_id: "p1", version_no: 1.5 }, ctx(deps)))).toBe(400);
+  });
+  it("plan_id가 없으면 본인 목록을 본인 client로 가져와요", async () => {
+    const store = getStore();
+    const out = await planGet({}, ctx({ store }));
+    expect(out).toEqual({ plans: [{ id: "p1", season: "여름", latest_version: 2 }] });
+    expect(store.userClient).toHaveBeenCalledWith("tok");
+    expect(store.listPlans.mock.calls[0][0]).toEqual({ tag: "client" });
+  });
+  it("남의 기획안이면 404", async () => {
+    const store = getStore({ getPlan: vi.fn(async () => null) });
+    expect(await status(planGet({ plan_id: "x" }, ctx({ store })))).toBe(404);
+    expect(store.getVersion).not.toHaveBeenCalled();
+  });
+  it("없는 버전이면 404", async () => {
+    const store = getStore({ getVersion: vi.fn(async () => null) });
+    expect(await status(planGet({ plan_id: "p1", version_no: 9 }, ctx({ store })))).toBe(404);
+  });
+  it("버전·버전 목록·이미지 주소 3칸을 돌려주고, 내부 점수·프롬프트·로그는 빼요", async () => {
+    const store = getStore();
+    const out = await planGet({ plan_id: "p1" }, ctx({ store }));
+    expect(out.versions).toEqual([2, 1]);
+    expect(out.image_urls).toEqual([null, "https://signed/u1/p1/2-1.png", null]);
+    expect(out.version.version_no).toBe(2);
+    expect(out.latest_version_no).toBe(2);
+    expect(out.plan).toMatchObject({ id: "p1", season: "여름", herb: "어성초" });
+    const text = JSON.stringify(out);
+    expect(text).not.toMatch(/image_prompt|secret|"log"|"mid"|"evid"/);
+    expect(out.version.content.scenarios).toHaveLength(3);
+    expect(store.getVersion).toHaveBeenCalledWith({ tag: "client" }, "p1", undefined);
+  });
+  it("version_no를 주면 그 버전을 불러와요", async () => {
+    const store = getStore();
+    await planGet({ plan_id: "p1", version_no: 1 }, ctx({ store }));
+    expect(store.getVersion).toHaveBeenCalledWith({ tag: "client" }, "p1", 1);
   });
 });

@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   ConflictError, NotFoundError, getUser, createPlan, getVersion, insertVersion,
-  saveImage, signedUrls, usage, editCount, bumpImageRegens, monthStartKst, getPlan, claimImage, releaseClaim, isImagePath
+  saveImage, signedUrls, usage, editCount, bumpImageRegens, monthStartKst, getPlan, claimImage, releaseClaim, isImagePath, listVersionNos
 } from "../server/store.js";
 
 const has = (ops, m) => ops.some(o => o[0] === m);
@@ -252,5 +252,18 @@ describe("claimImage · releaseClaim", () => {
     const c = fakeClient((t, ops) => (t === "plan_versions" ? ok([{ id: "v1", version_no: 1 }])
       : ok([{ idx: 0, path: "u1/p/1-0.png" }, { idx: 1, path: "u1/pending:t" }, { idx: 2, path: "u1/failed:t" }])));
     expect((await getVersion(c, "p1", 1)).images).toEqual([{ idx: 0, path: "u1/p/1-0.png" }]);
+  });
+});
+
+describe("listVersionNos", () => {
+  it("버전 번호를 큰 순서로 돌려줘요", async () => {
+    const c = fakeClient(() => ok([{ version_no: 3 }, { version_no: 2 }, { version_no: 1 }]));
+    expect(await listVersionNos(c, "p1")).toEqual([3, 2, 1]);
+    expect(c.calls[0].table).toBe("plan_versions");
+    expect(arg(c.calls[0].ops, "eq")).toEqual(["plan_id", "p1"]);
+    expect(arg(c.calls[0].ops, "order")).toEqual(["version_no", { ascending: false }]);
+  });
+  it("없으면 빈 목록", async () => {
+    expect(await listVersionNos(fakeClient(() => ok(null)), "p1")).toEqual([]);
   });
 });
