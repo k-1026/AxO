@@ -26,4 +26,6 @@ function devChatApi(env) {
 export default defineConfig(({ mode }) => ({
   base: "./",
   plugins: [devChatApi(loadEnv(mode, process.cwd(), ""))],
+  // 개인정보 처리방침(privacy.html)도 함께 빌드해요 → /privacy 로 열려요 (vercel.json cleanUrls)
+  build: { rollupOptions: { input: { main: "index.html", privacy: "privacy.html" } } },
 }));

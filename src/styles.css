@@ -186,3 +186,8 @@ dl.kw dt { color: var(--muted); font-weight: 700; } dl.kw dd { margin: 0; displa
 .kwc { background: var(--accent-soft); color: var(--ink); border-radius: 999px; padding: 1px 9px; font-size: .76rem; }
 .visual { aspect-ratio: 1600 / 960; height: auto; box-sizing: border-box; }
 .visual .tile { flex: none !important; width: var(--w); height: auto; }
+
+/* 하단 개인정보 처리방침 링크 */
+.site-footer { text-align: center; padding: 28px 16px 36px; font-size: .82rem; }
+.site-footer a { color: var(--muted); text-decoration: none; }
+.site-footer a:hover { color: var(--accent); text-decoration: underline; }
