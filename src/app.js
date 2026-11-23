@@ -1,8 +1,8 @@
 import {
-  PERSONAS, COMBO_KW, PAIN_KW, SEASON_TREND_NOTES, PRODUCT_BOX, SAMPLE
+  COMBO_KW, SEASON_TREND_NOTES, PRODUCT_BOX, SAMPLE
 } from "./config/rules.js";
 import { SAMPLE_BASE } from "./config/assets.js";
-import { lineKey, personaKw, buildCandidates, rankLines } from "./core/candidates.js";
+import { lineKey, buildCandidates, rankLines } from "./core/candidates.js";
 import { eulReul, josa, dots, chips, won, esc } from "./utils/text.js";
 import { fetchLatestBeautyTrends } from "./data/repository.js";
 import { loadSeen, addSeen } from "./data/seen.js";
@@ -62,13 +62,13 @@ function renderSeasons() {
   el.querySelectorAll(".season").forEach(b => b.onclick = () => selectSeason(b.dataset.s));
 }
 function renderSeasonInfo() {
-  document.body.dataset.season = season;
   document.getElementById("title").textContent = `${season}, 어떤 라인을 먼저 낼까요?`;
   document.getElementById("issues").innerHTML = SEASONS[season].issues.map(([t, n, c, p]) =>
     `<div class="issue"><div class="t">${esc(t)}</div><div class="n">${esc(n)}</div><div class="c">${esc(c)} → ${p.map(esc).join(", ")}</div></div>`).join("");
 }
 async function selectSeason(s) {
   season = s;
+  document.body.dataset.season = s;
   renderSeasons(); renderSeasonInfo(); renderTrendComment();
   const info = document.getElementById("season-info");
   info.hidden = false;
@@ -208,10 +208,6 @@ function openDetail(r) {
     <dt>대표 약재</dt><dd>${esc(l.herb)}${l.hanja ? `(${l.hanja})` : ""}</dd>
     <dt>쓸 수 있는 말</dt><dd>${esc(l.words)}</dd>`;
   document.getElementById("d-why-combo").innerHTML = `<dt>목적</dt><dd>${chips([l.purpose])}</dd><dt>구성</dt><dd>${chips([l.lineup.map(([, k]) => k).join(" → ")])}</dd><dt>포인트</dt><dd>${chips(String(COMBO_KW[l.purpose] || "").split(" · "))}</dd>`;
-  { const ranked = PERSONAS.map(pp => ({ pp, a: l.persona[pp.k] })).sort((x, y) => y.a.fit - x.a.fit);
-    const pick = ranked.filter(x => x.a.fit >= 4).slice(0, 2);
-    const show = pick.length ? pick : ranked.slice(0, 1);
-    document.getElementById("d-persona").innerHTML = show.map(({ pp, a }) => `<div class="pcard good"><div class="ph"><b>${pp.icon} ${esc(pp.type)} 고객</b></div><dl class="kw"><dt>고민</dt><dd>${chips([PAIN_KW[pp.k]])}</dd><dt>어필</dt><dd>${chips(personaKw(pp.k, l, a))}</dd></dl></div>`).join(""); }
   document.getElementById("d-lineup").innerHTML = l.lineup.map(([, k, ml, p]) => `<tr><td>${esc(k)} <span class="note">1차</span></td><td>${ml}ml</td><td>${won(p)}</td><td>${won(Math.round(p / ml))}</td></tr>`).join("")
     + (l.extra ? `<tr><td>${esc(l.extra)} <span class="note">1차</span></td><td colspan="3" class="note">용기 샘플·가격 기준 준비 중</td></tr>` : "")
     + (l.next.length ? `<tr><td colspan="4" class="note">2차 확장 후보: ${l.next.map(esc).join(" · ")}</td></tr>` : "");
@@ -224,6 +220,8 @@ document.getElementById("detail").addEventListener("click", e => { if (e.target.
 function showView(v) {
   document.querySelectorAll("[data-view-panel]").forEach(p => { p.hidden = p.dataset.viewPanel !== v; });
   document.querySelectorAll(".menu [data-view]").forEach(b => b.classList.toggle("on", b.dataset.view === v));
+  // 계절 색은 출시 기획실에서 계절을 고른 뒤에만 써요. 다른 화면은 사이트 기본 색 하나로 보여요.
+  if (v === "launch" && season) document.body.dataset.season = season; else delete document.body.dataset.season;
   window.scrollTo(0, 0);
 }
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-view]"); if (b) showView(b.dataset.view); });
