@@ -76,6 +76,16 @@ export const SEASON_TREND_NOTES = {
 
 export const PRODUCT_BOX = { toner: [245, 75, 675, 965], serum: [245, 40, 690, 950], cream: [195, 275, 820, 830], lotion: [240, 260, 655, 935], mist: [250, 25, 590, 935] };
 
-/* 용기 샘플 (public/IMAGE/LOGO/cheonghyang-logo-02/application-examples) */
-export const SAMPLE_BASE = `${import.meta.env.BASE_URL}IMAGE/LOGO/cheonghyang-logo-02/application-examples/`;
+/* 용기 샘플 파일 이름 (public/IMAGE/LOGO/cheonghyang-logo-02/application-examples) · 주소 앞부분은 config/assets.js */
 export const SAMPLE = { toner: "toner.png", serum: "serum.png", cream: "cream.png", lotion: "lotion-pump.png", mist: "mist.png" };
+
+/* 의약품식 효능 표현 금지어 · 화장품 광고에 쓰지 않아요 */
+export const BANNED_PHRASES = ["여드름 치료", "치료", "완치", "염증", "항염", "소염", "재생", "혈액순환", "아토피", "처방"];
+/* 금지어처럼 보이지만 쓸 수 있는 말(용기·종이 이야기 등) */
+export const BANNED_EXCEPTIONS = ["재생 용기", "재생 플라스틱", "재생지", "재생 종이", "재생용지"];
+/* 영어 이미지 문구용 금지어 · 대소문자 구분 없이 낱말 경계에서 잡아요 */
+export const BANNED_ENGLISH = [
+  /\btreat(?:s|ed|ing|ment|ments)?\b/i, /\bcur(?:e|es|ed|ing)\b/i, /\bheal(?:s|ed|ing)?\b/i,
+  /\banti-?inflammatory\b/i, /\binflammation\b/i, /\bblood\s+circulation\b/i, /\beczema\b/i,
+  /\batopic\b/i, /\bprescription\b/i, /\bregenerat\w*/i
+];

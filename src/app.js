@@ -1,7 +1,8 @@
 import {
-  FINISH, PURPOSE_LABEL, ITEM, LINE_RULE, lineupFor, ROLE, COMBO_WHY, TALK,
-  COMBO_KW, PRESETS, SEASON_TREND_NOTES, PRODUCT_BOX, SAMPLE_BASE, SAMPLE
+  COMBO_KW, SEASON_TREND_NOTES, PRODUCT_BOX, SAMPLE
 } from "./config/rules.js";
+import { SAMPLE_BASE } from "./config/assets.js";
+import { lineKey, buildCandidates, rankLines } from "./core/candidates.js";
 import { eulReul, josa, dots, chips, won, esc } from "./utils/text.js";
 import { fetchLatestBeautyTrends } from "./data/repository.js";
 import { loadSeen, addSeen } from "./data/seen.js";
@@ -11,80 +12,12 @@ let SEASONS, HERBS, DESIGN, TREND, BEAUTY_TRENDS, TREND_SOURCES, TREND_TIERS;
 let beautyFetchNote = "";
 
 
-/* ════════ 후보 풀 만들기: 원료 12종 × 원료마다 가진 모든 목적 ════════
-   계절·제철로 거르지 않아요. 계절의 기후 이슈는 설명(날씨·고민)에만 써요. */
-const lineKey = l => `${l.herb}|${l.purpose}`;
-
-/* ════════ 조합 추천 이유 · 셀러 한마디 ════════
-   라인 구성 규칙의 목적별 구성 틀(●)과 계절 고민으로 이유를 만들고,
-   셀러 문구는 원료 후보표의 '쓸 수 있는 말'과 광고 표현 규칙 안에서만 써요 (치료·염증 완화·재생 같은 의약품식 표현 없음). */
-function sellerTalk(l, season) {
-  let t = (TALK[l.purpose] || TALK["보습"])(l.herb, season);
-  const extra = [];
-  if (l.gb && l.gb[0] === 5) extra.push(`경북에서 가장 많이 나는 ${l.herb}${eulReul(l.herb)} 담았어요`);
-  else if (l.gb && l.gb[0] === 4) extra.push(`경북에서 많이 나는 ${l.herb}${eulReul(l.herb)} 담았어요`);
-  if (l.scent && l.scent[0] === 5) extra.push("한약 냄새가 강하지 않아 처음 쓰시는 분도 편해요");
-  if (extra.length) t += " " + extra.join(". ") + ".";
-  return t;
-}
-function comboWhy(l, season) {
-  const roles = l.lineup.map(([, k]) => `${k}(${ROLE[k] || "기초 단계"})`).join(" + ");
-  return `${season} ${l.issues.map(i => i[0]).join("·")} 때문에 '${l.concern}' 고민이 커지는 시기라 '${l.purpose}' 라인으로 잡았어요. ${COMBO_WHY[l.purpose] || ""} 구성: ${roles}.`;
-}
-
-function candidates(season) {
-  const iss = SEASONS[season].issues;
-  return HERBS.flatMap(h => h.purposes.map(p => {
-    const issues = iss.filter(i => i[3].includes(p));
-    return { ...h, color: DESIGN[h.herb].main, design: DESIGN[h.herb], finish: FINISH[p], purpose: p, issues, name: `${h.herb} ${PURPOSE_LABEL[p]} 라인`, functional: p === "미백(톤)",
-      concern: issues.map(i => i[2]).join(" / "), lineup: lineupFor(p), next: (LINE_RULE[p] || {}).next || [], extra: (LINE_RULE[p] || {}).extra || "" };
-  })).map(l => ({ ...l, why: comboWhy(l, season), talk: sellerTalk(l, season) }));
-}
-
-/* ════════ 후보 순서 기준 (사용자에게 보이지 않는 고정 기준: 추천 조합 '체크리스트 기본') ════════ */
-function trendScore(l) {
-  if (!TREND) return [null, "검색 흐름 자료 확인 필요"];
-  if ((Date.now() - new Date(TREND.collectedAt)) / 864e5 > 30) return [null, `오래된 자료 (${TREND.collectedAt})`];
-  const h = TREND.herbs && TREND.herbs[l.herb];
-  return h && h.score != null ? [h.score, `${h.signal} · 최근÷이전 ${h.change ?? "–"} (${TREND.collectedAt}, 네이버 데이터랩)`] : [null, `${l.herb} 검색 흐름 자료 없음`];
-}
-const CRIT = [
-  { k: "demand", nm: "🛒 계절 고민 크기", area: "고객 문제와 수요 · 계절 기후 표", subs: [
-      { nm: "이 목적과 이어지는 기후 이슈 수", get: l => { const n = l.issues.length; return [n >= 3 ? 5 : n === 2 ? 4 : 3, `${n}개 · ${l.issues.map(i => i[0]).join(", ")}`]; } } ] },
-  { k: "edge", nm: "🎯 빈자리 공략", area: "경쟁 차별성 · 경쟁제품", subs: [
-      { nm: "약재 선점", get: l => l.preempt }, { nm: "한방 브랜드 선점", get: l => l.hanbang } ] },
-  { k: "feel", nm: "🌿 순한 향", area: "사용감 · 원료 향 세기", subs: [ { nm: "향 세기", get: l => l.scent } ] },
-  { k: "price", nm: "🏷️ 가격 경쟁력", area: "지불 가격 · 가격 기준표 · 경쟁제품", subs: [
-      { nm: "같은 약재 제품보다 낮은 ml당 가격", get: l => l.rival } ] },
-  { k: "ready", nm: "⚡ 빠른 출시", area: "출시 준비도 · 기능성 고시 대조", subs: [
-      { nm: "기능성 보고 필요 여부", get: l => l.functional ? [2, "미백 기능성 보고가 필요해 준비가 길어요"] : [5, "일반 화장품이라 바로 출시 가능"] } ] },
-  { k: "fresh", nm: "🌸 제철 원료", area: "처방·원료 적합성 · 원료 예상 계절", subs: [
-      { nm: "출시 계절과 원료 계절", get: l => l.seasons.includes(season) ? [5, `원료 예상 계절에 ${season} 포함`] : [2, `원료 예상 계절: ${l.seasons.join("·")}`] } ] },
-  { k: "brand", nm: "🏮 우리 지역 이야기", area: "브랜드 적합성 · 원료 산지", subs: [
-      { nm: "경북 생산 비중", get: l => l.gb }, { nm: "산지 이야기 차별성", get: l => l.origin } ] },
-  { k: "trend", nm: "📈 뜨는 원료", area: "트렌드 에이전트 · 주간 검색 흐름", subs: [ { nm: "최근 4주 검색 흐름", get: l => trendScore(l) } ] },
-  { k: "profit", nm: "💰 수익성", area: "원가 자료 없음", off: true },
-  { k: "effect", nm: "✨ 핵심 효능", area: "완제품 시험 전", off: true },
-  { k: "channel", nm: "📣 채널·고객 확보", area: "채널 자료 없음", off: true }
-];
 let season = null;
-/* 라인·원료 순서는 계절·기후와 상관없이 정해요: '계절 고민 크기'(demand)는 빼요. */
-const W = Object.fromEntries(Object.entries(PRESETS[0].w).filter(([k]) => k !== "demand")), designMode = "tint";
+const designMode = "tint";
 
-function evaluate(l) {
-  const chosen = CRIT.filter(c => !c.off && W[c.k]);
-  const sumW = chosen.reduce((a, c) => a + W[c.k], 0);
-  let known = 0, unk = 0, got = 0;
-  const parts = chosen.map(c => {
-    const subs = c.subs.map(s => ({ s, r: s.get(l) }));
-    const sw = W[c.k] / subs.length;
-    subs.forEach(x => { if (x.r[0] == null) unk += sw; else { known += sw * x.r[0] / 5; got += sw; } });
-    const ks = subs.filter(x => x.r[0] != null);
-    return { c, subs, avg: ks.length ? ks.reduce((a, x) => a + x.r[0], 0) / ks.length : null };
-  });
-  const lo = sumW ? Math.round(known / sumW * 100) : 0, hi = sumW ? Math.round((known + unk) / sumW * 100) : 0;
-  return { l, parts, lo, hi, mid: (lo + hi) / 2, evid: sumW ? Math.round(got / sumW * 100) : 0 };
-}
+/* 후보 계산은 core 모듈을 써요. 화면이 가진 데이터를 묶어서 넘겨요. */
+const coreData = () => ({ SEASONS, HERBS, DESIGN, HERB_TREND: TREND });
+
 function hsl(hex) {
   const n = parseInt(hex.slice(1), 16), r = (n >> 16) / 255, g = ((n >> 8) & 255) / 255, b = (n & 255) / 255;
   const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn, l = (mx + mn) / 2;
@@ -148,7 +81,7 @@ function trendComment(s, data, now = Date.now()) {
   const note = SEASON_TREND_NOTES[s];
   const age = data && (now - Date.parse(data.collectedAt)) / 864e5;
   const fresh = data && Number.isFinite(age) && age >= 0 && age <= 30;
-  const available = new Set(candidates(s).map(l => l.herb));
+  const available = new Set(buildCandidates(coreData(), s).map(l => l.herb));
   const rows = fresh && data.herbs ? Object.entries(data.herbs).filter(([herb, r]) =>
     available.has(herb) && r && Number.isFinite(r.change) && r.change >= 0).map(([herb,r]) => ({herb,...r})) : [];
   const up = rows.filter(r => r.signal === "상승" && r.change >= 1.2).sort((a,b) => b.change-a.change).slice(0,2);
@@ -225,7 +158,7 @@ const PICK = 3;
 const SHOWN = {};      // 계절별로 지금 화면에 보여 주는 후보
 let RES = [];
 function ranked(s) {
-  return candidates(s).map(evaluate).sort((a, b) => b.mid - a.mid || b.evid - a.evid);
+  return rankLines(coreData(), s, Date.now());
 }
 async function nextRecommendation() {
   const s = season, seen = await loadSeen();
@@ -261,8 +194,13 @@ async function reroll() {
 }
 document.addEventListener("click", e => { if (e.target.closest && e.target.closest('[data-action="reroll"]')) reroll(); });
 
+/* 상세 창에 열려 있는 후보: [기획안 만들기]가 읽어 가요. */
+let currentLine = null;
+export const getCurrentLine = () => (currentLine ? { season, herb: currentLine.herb, purpose: currentLine.purpose } : null);
+
 function openDetail(r) {
   const l = r.l;
+  currentLine = l;
   document.getElementById("d-rank").textContent = season;
   document.getElementById("d-name").textContent = l.name;
   document.getElementById("d-facts").innerHTML = `

@@ -126,3 +126,181 @@ drop policy if exists "본인 재추천 기록 읽기" on public.recommendation_
 create policy "본인 재추천 기록 읽기" on public.recommendation_history for select to authenticated using (user_id = auth.uid());
 drop policy if exists "본인 재추천 기록 쓰기" on public.recommendation_history;
 create policy "본인 재추천 기록 쓰기" on public.recommendation_history for insert to authenticated with check (user_id = auth.uid());
+
+-- ── 트렌드 컬러 팔레트 (계절별, 디자인·광고 에이전트가 최신 1행을 써요) ──────
+-- 모두 읽을 수 있고, 쓰기는 관리자(SQL Editor)만 해요. 사용자용 쓰기 정책은 두지 않아요.
+create table if not exists public.color_trends (
+  id          uuid primary key default gen_random_uuid(),
+  season      text not null,                  -- 봄 · 여름 · 가을 · 겨울
+  name        text not null,                  -- 팔레트 이름
+  colors      text[] not null default '{}',   -- 색 hex 목록 (예: {#A8C3A0,#F2E8D5})
+  source      text,                           -- 출처 이름
+  url         text,                           -- 출처 URL
+  as_of       date not null,                  -- 기준일
+  created_at  timestamptz not null default now()
+);
+create index if not exists color_trends_season_idx on public.color_trends(season, as_of desc);
+alter table public.color_trends enable row level security;
+drop policy if exists "public read" on public.color_trends;
+create policy "public read" on public.color_trends for select to anon, authenticated using (true);
+revoke all on public.color_trends from anon, authenticated;
+grant select on public.color_trends to anon, authenticated;
+
+-- ── 기획안 (로그인 사용자 본인 것만) ─────────────────────────
+-- image_regens = 이미지 [다시 만들기] 횟수. 사용자가 직접 고치지 못하게 칸별 권한만 줘요(아래 grant).
+-- 사용량은 plans 행 수로 세므로 사용자는 기획안을 직접 넣거나 지울 수 없어요. 새 기획안은 create_plan 함수로만 만들어요.
+create table if not exists public.plans (
+  id            uuid primary key default gen_random_uuid(),
+  user_id       uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  season        text,
+  herb          text,
+  purpose       text,
+  title         text,
+  image_regens  int  not null default 0 check (image_regens >= 0),
+  created_at    timestamptz not null default now(),
+  updated_at    timestamptz not null default now()
+);
+create index if not exists plans_user_updated_idx on public.plans(user_id, updated_at desc);
+create index if not exists plans_user_created_idx on public.plans(user_id, created_at);
+alter table public.plans enable row level security;
+drop policy if exists "본인 기획안 읽기" on public.plans;
+create policy "본인 기획안 읽기" on public.plans for select to authenticated using (user_id = auth.uid());
+-- 예전에 만든 넣기·삭제 정책이 있으면 지워요 (다시 만들지 않아요)
+drop policy if exists "본인 기획안 쓰기" on public.plans;
+drop policy if exists "본인 기획안 수정" on public.plans;
+create policy "본인 기획안 수정" on public.plans for update to authenticated using (user_id = auth.uid()) with check (user_id = auth.uid());
+drop policy if exists "본인 기획안 삭제" on public.plans;
+-- 칸별 권한: 읽기와 제목·수정일 고치기만. (넣기·지우기 없음, user_id·created_at·image_regens 는 손대지 못해요)
+revoke all on public.plans from anon, authenticated;
+grant select on public.plans to authenticated;
+grant update (title, updated_at) on public.plans to authenticated;
+
+-- 기획안 버전 (수정할 때마다 새 번호로 1행 추가, 고치거나 지우지 않아요)
+create table if not exists public.plan_versions (
+  id            uuid primary key default gen_random_uuid(),
+  plan_id       uuid not null references public.plans(id) on delete cascade,
+  version_no    int  not null check (version_no >= 1),
+  content       jsonb not null,               -- plan + scenarios + candidate 값
+  source        text not null check (source in ('generate','edit')),
+  edit_request  text,                         -- 수정 요청 글
+  created_at    timestamptz not null default now(),
+  unique (plan_id, version_no)
+);
+alter table public.plan_versions enable row level security;
+drop policy if exists "본인 기획안 버전 읽기" on public.plan_versions;
+create policy "본인 기획안 버전 읽기" on public.plan_versions for select to authenticated
+  using (exists (select 1 from public.plans p where p.id = plan_versions.plan_id and p.user_id = auth.uid()));
+drop policy if exists "본인 기획안 버전 쓰기" on public.plan_versions;
+create policy "본인 기획안 버전 쓰기" on public.plan_versions for insert to authenticated
+  with check (exists (select 1 from public.plans p where p.id = plan_versions.plan_id and p.user_id = auth.uid()));
+revoke all on public.plan_versions from anon, authenticated;
+grant select, insert on public.plan_versions to authenticated;
+
+-- 버전별 이미지 경로 (시나리오 0~2). 파일은 저장소 버킷 plan-images 에 있어요.
+create table if not exists public.plan_images (
+  version_id  uuid not null references public.plan_versions(id) on delete cascade,
+  idx         int  not null check (idx between 0 and 2),
+  path        text not null,                  -- {user_id}/{plan_id}/{version_no}-{idx}.png (만드는 중: {user_id}/pending:{시각}, 실패: {user_id}/failed:{시각} = 이미지 없음)
+  created_at  timestamptz not null default now(),
+  primary key (version_id, idx)
+);
+alter table public.plan_images enable row level security;
+drop policy if exists "본인 기획안 이미지 읽기" on public.plan_images;
+create policy "본인 기획안 이미지 읽기" on public.plan_images for select to authenticated
+  using (exists (select 1 from public.plan_versions v join public.plans p on p.id = v.plan_id
+                 where v.id = plan_images.version_id and p.user_id = auth.uid()));
+drop policy if exists "본인 기획안 이미지 쓰기" on public.plan_images;
+create policy "본인 기획안 이미지 쓰기" on public.plan_images for insert to authenticated
+  with check (split_part(path, '/', 1) = auth.uid()::text
+              and exists (select 1 from public.plan_versions v join public.plans p on p.id = v.plan_id
+                          where v.id = plan_images.version_id and p.user_id = auth.uid()));
+drop policy if exists "본인 기획안 이미지 수정" on public.plan_images;
+create policy "본인 기획안 이미지 수정" on public.plan_images for update to authenticated
+  using (exists (select 1 from public.plan_versions v join public.plans p on p.id = v.plan_id
+                 where v.id = plan_images.version_id and p.user_id = auth.uid()))
+  with check (split_part(path, '/', 1) = auth.uid()::text
+              and exists (select 1 from public.plan_versions v join public.plans p on p.id = v.plan_id
+                          where v.id = plan_images.version_id and p.user_id = auth.uid()));
+revoke all on public.plan_images from anon, authenticated;
+grant select, insert, update on public.plan_images to authenticated;
+
+-- 새 기획안 + 버전 1을 한 트랜잭션으로 넣어요. 로그인하지 않았으면 오류를 내요.
+-- 사용자는 plans 에 직접 넣을 수 없어서, 이 함수(만든 사람 권한)로만 기획안을 만들어요. 횟수 확인은 서버(limits.js)가 먼저 해요.
+create or replace function public.create_plan(p_season text, p_herb text, p_purpose text, p_title text, p_content jsonb)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+declare
+  v_user    uuid := auth.uid();
+  v_plan    uuid;
+  v_version uuid;
+begin
+  if v_user is null then
+    raise exception '로그인이 필요해요.' using errcode = '42501';
+  end if;
+  if p_content is null then
+    raise exception '기획안 내용이 비어 있어요.' using errcode = '22004';
+  end if;
+  insert into public.plans (user_id, season, herb, purpose, title)
+  values (v_user, p_season, p_herb, p_purpose, p_title)
+  returning id into v_plan;
+  insert into public.plan_versions (plan_id, version_no, content, source, edit_request)
+  values (v_plan, 1, p_content, 'generate', null)
+  returning id into v_version;
+  return jsonb_build_object('plan_id', v_plan, 'version_id', v_version, 'version_no', 1);
+end;
+$$;
+revoke all on function public.create_plan(text, text, text, text, jsonb) from public, anon;
+grant execute on function public.create_plan(text, text, text, text, jsonb) to authenticated;
+
+-- 이미지 [다시 만들기] 횟수를 한 번에 1 늘려요. 본인 기획안이 아니면 null 을 돌려줘요.
+-- 사용자는 image_regens 칸을 직접 고칠 수 없어서, 이 함수(만든 사람 권한)로만 늘릴 수 있어요. 줄이는 방법은 없어요.
+create or replace function public.bump_image_regens(p_plan_id uuid)
+returns int
+language sql
+security definer
+set search_path = public, pg_temp
+as $$
+  update public.plans
+     set image_regens = image_regens + 1
+   where id = p_plan_id and user_id = auth.uid()
+  returning image_regens;
+$$;
+revoke all on function public.bump_image_regens(uuid) from public, anon;
+grant execute on function public.bump_image_regens(uuid) to authenticated;
+
+-- ── 이용권 (결제 연동 없음, 관리자가 SQL 로 넣어요) ─────────────
+-- single: remaining = 남은 건수 / monthly: period_start ~ period_end (한국 날짜). 본인 것만 읽고, 쓰기 정책은 두지 않아요.
+create table if not exists public.entitlements (
+  id            uuid primary key default gen_random_uuid(),
+  user_id       uuid not null references auth.users(id) on delete cascade,
+  kind          text not null check (kind in ('single','monthly')),
+  remaining     int  check (remaining >= 0),
+  period_start  date,
+  period_end    date,
+  created_at    timestamptz not null default now(),
+  check (kind <> 'single'  or remaining is not null),
+  check (kind <> 'monthly' or (period_start is not null and period_end is not null and period_start <= period_end))
+);
+create index if not exists entitlements_user_idx on public.entitlements(user_id);
+alter table public.entitlements enable row level security;
+drop policy if exists "본인 이용권 읽기" on public.entitlements;
+create policy "본인 이용권 읽기" on public.entitlements for select to authenticated using (user_id = auth.uid());
+revoke all on public.entitlements from anon, authenticated;
+grant select on public.entitlements to authenticated;
+
+-- ── 기획안 이미지 저장소 (비공개 버킷) ────────────────────────
+-- 경로 {user_id}/{plan_id}/{version_no}-{n}.png. 본인 폴더만 읽고 쓰며, 화면은 서명 URL 로 보여 줘요.
+insert into storage.buckets (id, name, public) values ('plan-images', 'plan-images', false) on conflict (id) do nothing;
+drop policy if exists "기획안 이미지 본인 읽기" on storage.objects;
+create policy "기획안 이미지 본인 읽기" on storage.objects for select to authenticated
+  using (bucket_id = 'plan-images' and (storage.foldername(name))[1] = auth.uid()::text);
+drop policy if exists "기획안 이미지 본인 올리기" on storage.objects;
+create policy "기획안 이미지 본인 올리기" on storage.objects for insert to authenticated
+  with check (bucket_id = 'plan-images' and (storage.foldername(name))[1] = auth.uid()::text);
+drop policy if exists "기획안 이미지 본인 덮어쓰기" on storage.objects;
+create policy "기획안 이미지 본인 덮어쓰기" on storage.objects for update to authenticated
+  using (bucket_id = 'plan-images' and (storage.foldername(name))[1] = auth.uid()::text)
+  with check (bucket_id = 'plan-images' and (storage.foldername(name))[1] = auth.uid()::text);

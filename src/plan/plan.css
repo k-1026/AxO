@@ -1,0 +1,46 @@
+/* 기획안 만들기 대기 화면 */
+.plan-wait { border: 0; border-radius: 18px; padding: 0; width: min(92vw, 380px); box-shadow: 0 20px 60px rgba(34,44,58,.25); }
+.plan-wait::backdrop { background: rgba(34,44,58,.45); }
+.pw-box { padding: 32px 24px; text-align: center; }
+.pw-box h2 { font-size: 1.15rem; margin: 18px 0 8px; }
+.pw-box p { margin: 0 0 6px; color: var(--muted); font-size: .92rem; line-height: 1.6; word-break: keep-all; }
+.pw-sub { color: var(--accent); font-weight: 700; }
+.pw-spin { width: 42px; height: 42px; margin: 0 auto; border-radius: 50%; border: 4px solid var(--line); border-top-color: var(--accent); animation: pw-rot 1s linear infinite; }
+@keyframes pw-rot { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .pw-spin { animation-duration: 3s; } }
+#d-create:disabled { opacity: .5; cursor: not-allowed; }
+
+/* 마이 기획실 */
+.my-msg { padding: 48px 0; text-align: center; color: var(--muted); line-height: 1.7; word-break: keep-all; }
+.my-sub, .my-meta, .my-none { color: var(--muted); font-size: .88rem; }
+.my-h { margin: 0 0 16px; }
+.my-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.my-card { width: 100%; text-align: left; font: inherit; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; cursor: pointer; display: flex; flex-direction: column; gap: 4px; color: var(--ink); }
+.my-card:hover { border-color: var(--accent); }
+.my-card small { color: var(--muted); }
+.my-back { margin-bottom: 14px; }
+.my-notice { background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; }
+.my-notice p { margin: 2px 0; font-size: .9rem; }
+.my-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+.my-head h2 { margin: 4px 0 0; }
+.my-ver select { font: inherit; margin-left: 6px; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--line); }
+.my-old { background: #FFF8E1; border-radius: 10px; padding: 8px 12px; font-size: .88rem; }
+.my-sec { margin-top: 22px; }
+.my-sec h3 { font-size: 1rem; margin: 0 0 6px; }
+.my-sec p, .my-sec li { line-height: 1.65; word-break: keep-all; }
+.my-table { overflow-x: auto; }
+.my-table table { border-collapse: collapse; width: 100%; min-width: 480px; font-size: .88rem; }
+.my-table th, .my-table td { border-bottom: 1px solid var(--line); padding: 8px 6px; text-align: left; }
+.my-scns { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; }
+.my-scn { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--surface); }
+.my-img { position: relative; aspect-ratio: 1 / 1; background: var(--accent-soft); display: flex; align-items: center; justify-content: center; }
+.my-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.my-empty { text-align: center; padding: 12px; color: var(--muted); font-size: .9rem; }
+.my-regen { position: absolute; right: 8px; bottom: 8px; font: inherit; font-size: .78rem; background: rgba(255,255,255,.92); border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; cursor: pointer; }
+.my-scn-body { padding: 12px 14px 16px; }
+.my-scn-body h4 { margin: 0 0 4px; }
+.my-scn-body p { margin: 4px 0; }
+.my-cuts { padding-left: 18px; margin: 8px 0 0; }
+.my-cuts li { margin-bottom: 6px; line-height: 1.55; }
+.my-cuts span { display: block; color: var(--muted); font-size: .85rem; }
+.my-cuts q { quotes: none; font-weight: 700; }
