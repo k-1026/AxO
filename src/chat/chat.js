@@ -3,7 +3,7 @@ import { esc } from "../utils/text.js";
 
 const API_URL = "/api/chat";
 const MAX_INPUT = 2000;
-const GREETING = "안녕하세요, 청향 상품기획 도우미예요. 지금 화면의 계절과 후보 순위를 보고 답해 드려요.\n\n예: **1위 후보를 추천한 이유를 회의용으로 정리해 줘**";
+const GREETING = "안녕하세요, HerbHub 상품기획 도우미예요. 지금 화면의 계절과 후보 순위를 보고 답해 드려요.\n\n예: **1위 후보를 추천한 이유를 회의용으로 정리해 줘**";
 const SUGGESTIONS = ["1위 후보 추천 이유 정리해 줘", "후보 1·2위를 비교해 줘", "순위에서 제외된 후보는 왜 빠졌어?"];
 
 /* 아주 작은 마크다운: **굵게**, 목록(- / 1.), 줄바꿈. 먼저 이스케이프해서 HTML 주입을 막아요. */
@@ -31,7 +31,7 @@ function md(text) {
 function panelHtml() {
   return `<section class="chat-panel" id="chat-panel" role="dialog" aria-modal="false" aria-labelledby="chat-title" hidden>
   <header class="chat-head">
-    <div><strong id="chat-title">AI Chat</strong><span class="chat-sub">청향 상품기획 도우미 · Gemini</span></div>
+    <div><strong id="chat-title">AI Chat</strong><span class="chat-sub">HerbHub 상품기획 도우미 · Gemini</span></div>
     <div class="chat-actions">
       <button type="button" class="chat-icon" id="chat-reset" title="새 대화" aria-label="새 대화">↺</button>
       <button type="button" class="chat-icon" id="chat-close" title="닫기" aria-label="닫기">✕</button>
