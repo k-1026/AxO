@@ -58,8 +58,8 @@ export function assembleScenarios(raw) {
     const where = `시나리오 ${i + 1}`;
     if (!s || !Array.isArray(s.cuts) || s.cuts.length < 3 || s.cuts.length > 4) throw new PlanFormatError(`${where}의 장면은 3~4개여야 해요.`);
     if (!s.cuts.every(c => c && typeof c.scene === "string" && typeof c.copy === "string")) throw new PlanFormatError(`${where}의 장면 형식이 맞지 않아요.`);
-    const [title, concept, target, channel, image_prompt] = ["title", "concept", "target", "channel", "image_prompt"].map(k => str(s[k]));
-    if (!title || !image_prompt) throw new PlanFormatError(`${where}의 제목·이미지 설명이 비어 있어요.`);
+    const [title, concept, target, channel, image_prompt] = ["title", "concept", "target", "channel", "image_prompt"].map(k => clean(s[k], `${where} ${k}`));
+    if (!str(s.title) || !image_prompt) throw new PlanFormatError(`${where}의 제목·이미지 설명이 비어 있어요.`);
     return {
       title, concept, target, channel, image_prompt,
       cuts: s.cuts.map((c, j) => ({ scene: clean(c.scene, `${where} 장면 ${j + 1}`), copy: clean(c.copy, `${where} 장면 ${j + 1}`) }))
@@ -72,7 +72,7 @@ export function assembleScenarios(raw) {
 export function buildImagePrompt(scenario, cand, data, palette) {
   const l = lineOf(cand), d = (data?.DESIGN || {})[l.herb] || l.design || {};
   const out = [
-    `Scene: ${scenario.image_prompt}`,
+    `Scene: ${stripBanned(scenario.image_prompt)}`,
     "Premium Korean herbal skincare product photo, clean and natural lighting.",
     "The containers must have no logo, no text, no letters and no brand name on them (용기에 로고·글자·브랜드명 없음).",
     `Container colors from the herb: body ${d.main}, cap ${d.cap}, liquid ${d.liquid}.`

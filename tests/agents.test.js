@@ -95,6 +95,20 @@ describe("designer", () => {
     expect(r.scenarios[0].cuts[0].copy).toBe("");
     expect(r.notes.length).toBe(1);
   });
+  it("제목·이미지 설명의 금지 표현도 빼고 notes에 남겨요", () => {
+    const raw = rawScn(3);
+    raw.scenarios[0].title = "염증 케어";
+    raw.scenarios[0].image_prompt = "Mint bottle on marble. Anti-inflammatory serum.";
+    const r = assembleScenarios(raw);
+    expect(r.scenarios[0].title).toBe("");
+    expect(r.scenarios[0].image_prompt).toBe("Mint bottle on marble.");
+    expect(r.notes.length).toBe(2);
+  });
+  it("buildImagePrompt는 금지 표현을 다시 걸러요", () => {
+    const t = buildImagePrompt({ image_prompt: "Mint bottle. Anti-inflammatory serum. 염증 완화" }, cand, fallback, null);
+    expect(t).not.toMatch(/inflammatory|염증/i);
+    expect(t).toContain("Mint bottle");
+  });
   it("컷이 3~4개가 아니면 throw", () => {
     const raw = rawScn(3); raw.scenarios[1].cuts = raw.scenarios[1].cuts.slice(0, 2);
     expect(() => assembleScenarios(raw)).toThrow(PlanFormatError);
