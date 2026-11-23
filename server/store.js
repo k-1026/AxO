@@ -68,22 +68,18 @@ export function monthStartKst(now) {
   return new Date(Date.UTC(k.getUTCFullYear(), k.getUTCMonth(), 1) - KST_MS).toISOString();
 }
 
-/** plans 1행 + 버전 1을 넣어요. 과정 기록(log)은 버전 내용 안에 같이 남겨요. */
+/**
+ * 기획안과 버전 1을 DB 함수 create_plan 으로 한 번에(같은 트랜잭션) 넣어요.
+ * 사용자는 plans 를 직접 넣거나 지울 수 없어요(schema.sql). 과정 기록(log)은 버전 내용 안에 같이 남겨요.
+ */
 export async function createPlan(client, { season, herb, purpose, title, content, log }) {
-  const plan = check(
-    await client.from("plans").insert({ season, herb, purpose, title }).select("id").single(),
+  const body = log === undefined ? content : { ...content, log };
+  const r = check(
+    await client.rpc("create_plan", { p_season: season, p_herb: herb, p_purpose: purpose, p_title: title, p_content: body }),
     "기획안 저장"
   ).data;
-  const body = log === undefined ? content : { ...content, log };
-  const ver = await client.from("plan_versions")
-    .insert({ plan_id: plan.id, version_no: 1, content: body, source: "generate", edit_request: null })
-    .select("id, version_no").single();
-  if (ver?.error) {
-    // 버전을 못 넣었으면 빈 기획안이 남지 않게 지워요 (지우기 실패는 원래 오류를 덮지 않아요)
-    try { await client.from("plans").delete().eq("id", plan.id); } catch { /* 무시 */ }
-    check(ver, "기획안 버전 저장");
-  }
-  return { plan_id: plan.id, version_no: 1 };
+  if (!r?.plan_id) throw new StoreError("기획안 저장에 실패했어요: 응답에 기획안 번호가 없어요.");
+  return { plan_id: r.plan_id, version_no: 1 };
 }
 
 /* 그 기획안의 최신 버전 번호. 기획안이 없거나 남의 것이면(RLS) null */

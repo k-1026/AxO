@@ -49,18 +49,20 @@ describe("getUser", () => {
 });
 
 describe("createPlan", () => {
-  it("plans를 넣고 버전 1을 넣어요", async () => {
-    const c = fakeClient((table, ops) => {
-      if (table === "plans") return ok({ id: "p1" });
-      if (table === "plan_versions") return ok({ id: "v1", version_no: 1 });
-    });
+  it("create_plan RPC 한 번으로 기획안과 버전 1을 함께 넣어요 (과정 기록은 content.log)", async () => {
+    const c = fakeClient(() => ok(null), { rpc: () => ok({ plan_id: "p1", version_id: "v1", version_no: 1 }) });
     const r = await createPlan(c, { season: "여름", herb: "어성초", purpose: "모공·피지", title: "t", content: { plan: {} }, log: [{ step: 1 }] });
     expect(r).toEqual({ plan_id: "p1", version_no: 1 });
-    const [plans, vers] = c.calls;
-    expect(arg(plans.ops, "insert")[0]).toMatchObject({ season: "여름", herb: "어성초", purpose: "모공·피지", title: "t" });
-    const row = arg(vers.ops, "insert")[0];
-    expect(row).toMatchObject({ plan_id: "p1", version_no: 1, source: "generate" });
-    expect(row.content.log).toEqual([{ step: 1 }]);
+    expect(c.rpcs).toHaveLength(1);
+    const [fn, params] = c.rpcs[0];
+    expect(fn).toBe("create_plan");
+    expect(params).toEqual({ p_season: "여름", p_herb: "어성초", p_purpose: "모공·피지", p_title: "t", p_content: { plan: {}, log: [{ step: 1 }] } });
+    expect(c.calls).toHaveLength(0); // 표에 직접 넣거나 지우지 않아요
+  });
+
+  it("RPC가 실패하면 오류를 던져요", async () => {
+    const c = fakeClient(() => ok(null), { rpc: () => ({ data: null, error: { message: "로그인이 필요해요" } }) });
+    await expect(createPlan(c, { season: "여름", herb: "쑥", purpose: "보습", title: "t", content: {} })).rejects.toThrow(/기획안 저장/);
   });
 });
 
