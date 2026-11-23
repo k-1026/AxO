@@ -41,9 +41,22 @@ export function withDeps(deps = {}, env = {}) {
   };
 }
 
+const LLM_MESSAGE = {
+  503: "AI 사용량이 많아요. 잠시 후 다시 시도해 주세요.",
+  504: "AI 응답이 너무 오래 걸려요. 잠시 후 다시 시도해 주세요.",
+  500: "서버 설정에 문제가 있어요. 관리자에게 알려 주세요.",
+  502: "AI 응답을 받지 못했어요. 잠시 후 다시 시도해 주세요."
+};
+const LLM_STATUS = new Set([500, 502, 503, 504]);
+
 /** 사용자에게 보여 줘도 되는 오류만 그 상태로, 나머지는 500 일반 문구로 바꿔요 */
 export function toHttpError(e) {
-  if (e instanceof HttpError || e instanceof LlmError || e instanceof LimitError || e instanceof ConflictError || e instanceof NotFoundError) {
+  // AI 서버 오류 글에는 상대 서버가 보낸 내용(키 일부 등)이 섞일 수 있어서, 상태별 고정 문구만 보내고 자세한 내용은 로그에만 남겨요.
+  if (e instanceof LlmError) {
+    console.error("[api] LlmError", e.status, e.message);
+    return { status: LLM_STATUS.has(e.status) ? e.status : 502, message: LLM_MESSAGE[e.status] ?? LLM_MESSAGE[502] };
+  }
+  if (e instanceof HttpError || e instanceof LimitError || e instanceof ConflictError || e instanceof NotFoundError) {
     return { status: e.status, message: e.message };
   }
   console.error("[api]", e);

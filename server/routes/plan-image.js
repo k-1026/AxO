@@ -59,7 +59,21 @@ export default async function planImage(body, { token, deps }) {
   const names = sampleFilesFor(cand);
   const images = await Promise.all(names.map(async name => ({ name, bytes: await deps.readSample(name) })));
 
-  const bytes = await deps.editImage({ prompt: buildImagePrompt(scenario, cand, data, palette), images });
-  const saved = await store.saveImage(client, user.id, plan_id, version.id, idx, bytes);
-  return { idx, url: await urlOf(saved) };
+  // 비어 있는 자리를 채울 때는 먼저 자리를 차지해서, 동시에 여러 번 눌러도 이미지는 한 번만 만들어요.
+  let claim = null;
+  if (!regenerate) {
+    claim = await store.claimImage(client, user.id, version.id, idx, deps.now?.() ?? Date.now());
+    if (!claim) throw new HttpError(409, "이미지를 만들고 있어요. 잠시 후 다시 확인해 주세요.");
+  }
+  try {
+    const bytes = await deps.editImage({ prompt: buildImagePrompt(scenario, cand, data, palette), images });
+    const saved = await store.saveImage(client, user.id, plan_id, version.id, idx, bytes);
+    return { idx, url: await urlOf(saved) };
+  } catch (e) {
+    if (claim) {
+      try { await store.releaseClaim(client, user.id, version.id, idx, claim, deps.now?.() ?? Date.now()); }
+      catch (r) { console.error("[api] 이미지 자리 풀기 실패", r); }
+    }
+    throw e;
+  }
 }

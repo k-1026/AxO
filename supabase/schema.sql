@@ -200,7 +200,7 @@ grant select, insert on public.plan_versions to authenticated;
 create table if not exists public.plan_images (
   version_id  uuid not null references public.plan_versions(id) on delete cascade,
   idx         int  not null check (idx between 0 and 2),
-  path        text not null,                  -- {user_id}/{plan_id}/{version_no}-{idx}.png
+  path        text not null,                  -- {user_id}/{plan_id}/{version_no}-{idx}.png (만드는 중: {user_id}/pending:{시각}, 실패: {user_id}/failed:{시각} = 이미지 없음)
   created_at  timestamptz not null default now(),
   primary key (version_id, idx)
 );

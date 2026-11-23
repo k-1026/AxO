@@ -40,6 +40,8 @@ function makeStore(over = {}) {
     saveImage: vi.fn(async (c, u, p, v, idx) => `${u}/${p}/1-${idx}.png`),
     signedUrls: vi.fn(async (c, paths) => Object.fromEntries(paths.map(p => [p, `https://signed/${p}`]))),
     bumpImageRegens: vi.fn(async () => 1),
+    claimImage: vi.fn(async (c, u) => `${u}/pending:t`),
+    releaseClaim: vi.fn(async () => {}),
     ...over
   };
 }
@@ -130,6 +132,15 @@ describe("/api/plan", () => {
     expect(usage).toHaveBeenCalledTimes(2);
     expect(store.createPlan).not.toHaveBeenCalled();
   });
+  it("AI 서버 오류 글(키 조각 포함)은 응답에 나가지 않고 상태별 고정 문구만 나가요", async () => {
+    const r = await runRoute(async () => { throw new LlmError("Incorrect API key: sk-test123", 502); }, {}, {});
+    expect(r.status).toBe(502);
+    expect(JSON.stringify(r.body)).not.toContain("sk-");
+    expect(errSpy.mock.calls.flat().join(" ")).toContain("sk-test123");
+    const r2 = await runRoute(async () => { throw new LlmError("x sk-abc", 504); }, {}, {});
+    expect(r2.status).toBe(504);
+    expect(JSON.stringify(r2.body)).not.toContain("sk-");
+  });
   it("저장소 오류는 500 일반 문구로 바뀌어요", async () => {
     const store = makeStore({ createPlan: vi.fn(async () => { throw new Error("db 비밀"); }) });
     const r = await runRoute(plan, BODY, ctx(planDeps(store)));
@@ -218,6 +229,43 @@ describe("/api/plan-image", () => {
     expect(await status(planImage({ ...B, regenerate: true }, ctx(deps)))).toBe(409);
     expect(store.bumpImageRegens).not.toHaveBeenCalled();
     expect(deps.editImage).not.toHaveBeenCalled();
+  });
+  it("같은 빈 자리에 동시에 두 번 요청해도 editImage는 한 번만 불러요", async () => {
+    const c = await makeContent();
+    let taken = false;
+    const store = makeStore({
+      getVersion: vi.fn(async () => version(c)),
+      claimImage: vi.fn(async (cl, u) => { if (taken) return null; taken = true; return `${u}/pending:t`; })
+    });
+    const deps = imgDeps(store);
+    const res = await Promise.allSettled([planImage(B, ctx(deps)), planImage(B, ctx(deps))]);
+    expect(deps.editImage).toHaveBeenCalledTimes(1);
+    expect(res.filter(r => r.status === "fulfilled")).toHaveLength(1);
+    expect(res.find(r => r.status === "rejected").reason.status).toBe(409);
+  });
+  it("만들기에 실패하면 자리를 풀어서 나중에 다시 만들 수 있어요", async () => {
+    const c = await makeContent();
+    let taken = false;
+    const store = makeStore({
+      getVersion: vi.fn(async () => version(c)),
+      claimImage: vi.fn(async (cl, u) => { if (taken) return null; taken = true; return `${u}/pending:t`; }),
+      releaseClaim: vi.fn(async () => { taken = false; })
+    });
+    const editImage = vi.fn()
+      .mockRejectedValueOnce(new LlmError("바빠요", 503))
+      .mockResolvedValue(new Uint8Array([1]));
+    const deps = imgDeps(store, { editImage });
+    expect(await status(planImage(B, ctx(deps)))).toBe(503);
+    expect(store.releaseClaim).toHaveBeenCalledTimes(1);
+    expect(store.releaseClaim.mock.calls[0][5 - 1]).toBe("u1/pending:t");
+    expect(await planImage(B, ctx(deps))).toEqual({ idx: 1, url: "https://signed/u1/p1/1-1.png" });
+    expect(editImage).toHaveBeenCalledTimes(2);
+  });
+  it("regenerate는 자리 예약 없이 바로 만들어요", async () => {
+    const c = await makeContent();
+    const store = makeStore({ getVersion: vi.fn(async () => version(c)) });
+    await planImage({ ...B, regenerate: true }, ctx(imgDeps(store)));
+    expect(store.claimImage).not.toHaveBeenCalled();
   });
   it("editImage가 LlmError면 그 상태를 그대로 써요", async () => {
     const c = await makeContent();

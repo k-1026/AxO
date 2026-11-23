@@ -114,7 +114,7 @@ export async function getVersion(client, planId, versionNo) {
     await client.from("plan_images").select("idx, path").eq("version_id", v.id).order("idx", { ascending: true }),
     "이미지 조회"
   ).data ?? [];
-  return { ...v, images: images.map(({ idx, path }) => ({ idx, path })) };
+  return { ...v, images: images.filter(i => isImagePath(i.path)).map(({ idx, path }) => ({ idx, path })) };
 }
 
 /**
@@ -139,7 +139,7 @@ export async function insertVersion(client, planId, baseNo, { content, source, e
     const rows = check(
       await client.from("plan_images").select("idx, path").eq("version_id", copyImagesFrom.versionId).in("idx", idx),
       "이미지 조회"
-    ).data ?? [];
+    ).data?.filter(r => isImagePath(r.path)) ?? [];
     if (rows.length) {
       check(
         await client.from("plan_images").insert(rows.map(r => ({ version_id: ver.id, idx: r.idx, path: r.path }))),
@@ -150,6 +150,51 @@ export async function insertVersion(client, planId, baseNo, { content, source, e
 
   check(await client.from("plans").update({ updated_at: new Date().toISOString() }).eq("id", planId), "기획안 수정일 저장");
   return { id: ver.id, version_no: ver.version_no };
+}
+
+/* 이미지 자리 예약: 만드는 동안 plan_images.path 를 "{user_id}/pending:{시각}" 으로 둬요. 실패하면 "{user_id}/failed:{시각}" 이에요.
+   두 값 모두 "이미지 없음"으로 보고, 파일이 올라가면 saveImage 가 진짜 경로로 바꿔요. */
+export const CLAIM_TTL_MS = 3 * 60 * 1000;
+const markerOf = path => String(path ?? "").split("/")[1] ?? "";
+export const isImagePath = path => {
+  const m = markerOf(path);
+  return Boolean(m) && !m.startsWith("pending:") && !m.startsWith("failed:");
+};
+
+/**
+ * 그 버전·번호의 이미지 자리를 먼저 차지해요(비어 있을 때만 insert). 차지하면 예약 경로를, 이미 누가 만드는 중이면 null을 돌려줘요.
+ * 실패 표시가 있거나 3분이 지난 예약은 다시 차지할 수 있어요(경로가 그대로일 때만 바꿔서 둘이 동시에 가져가지 못해요).
+ */
+export async function claimImage(client, userId, versionId, idx, now) {
+  const t = new Date(now ?? Date.now()).toISOString();
+  const path = `${userId}/pending:${t}`;
+  const ins = await client.from("plan_images").insert({ version_id: versionId, idx, path });
+  if (!ins?.error) return path;
+  if (ins.error.code !== "23505") check(ins, "이미지 자리 잡기");
+
+  const cur = check(
+    await client.from("plan_images").select("path").eq("version_id", versionId).eq("idx", idx).limit(1),
+    "이미지 조회"
+  ).data?.[0];
+  if (!cur) return null;
+  const m = markerOf(cur.path);
+  const stale = m.startsWith("failed:") ||
+    (m.startsWith("pending:") && new Date(now ?? Date.now()).getTime() - Date.parse(m.slice(8)) > CLAIM_TTL_MS);
+  if (!stale) return null;
+  const won = check(
+    await client.from("plan_images").update({ path }).eq("version_id", versionId).eq("idx", idx).eq("path", cur.path).select("path"),
+    "이미지 자리 잡기"
+  ).data;
+  return won?.length ? path : null;
+}
+
+/** 만들기에 실패했을 때 예약에 실패 표시를 해서, 바로 다시 시도할 수 있게 해요 */
+export async function releaseClaim(client, userId, versionId, idx, claimPath, now) {
+  const failed = `${userId}/failed:${new Date(now ?? Date.now()).toISOString()}`;
+  check(
+    await client.from("plan_images").update({ path: failed }).eq("version_id", versionId).eq("idx", idx).eq("path", claimPath),
+    "이미지 자리 풀기"
+  );
 }
 
 /** 이미지를 {user_id}/{plan_id}/{version_no}-{idx}.png 로 올리고 plan_images에 upsert해요. 경로를 돌려줘요. */

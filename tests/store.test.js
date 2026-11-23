@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   ConflictError, NotFoundError, getUser, createPlan, getVersion, insertVersion,
-  saveImage, signedUrls, usage, editCount, bumpImageRegens, monthStartKst, getPlan
+  saveImage, signedUrls, usage, editCount, bumpImageRegens, monthStartKst, getPlan, claimImage, releaseClaim, isImagePath
 } from "../server/store.js";
 
 const has = (ops, m) => ops.some(o => o[0] === m);
@@ -212,5 +212,45 @@ describe("getPlan", () => {
     expect(c.calls[0].table).toBe("plans");
     expect(arg(c.calls[0].ops, "eq")).toEqual(["id", "p1"]);
     expect(await getPlan(fakeClient(() => ok([])), "p2")).toBeNull();
+  });
+});
+
+describe("claimImage · releaseClaim", () => {
+  const NOW = Date.parse("2026-11-23T12:00:00Z");
+  const dup = { data: null, error: { code: "23505", message: "dup" } };
+
+  it("비어 있으면 insert로 예약 경로를 얻어요", async () => {
+    const c = fakeClient(() => ok(null));
+    const p = await claimImage(c, "u1", "v1", 1, NOW);
+    expect(p).toBe("u1/pending:2026-11-23T12:00:00.000Z");
+    expect(arg(c.calls[0].ops, "insert")[0]).toEqual({ version_id: "v1", idx: 1, path: p });
+    expect(isImagePath(p)).toBe(false);
+  });
+  it("누가 만드는 중이거나 이미 이미지가 있으면 null", async () => {
+    const fresh = fakeClient((t, ops) => (has(ops, "insert") ? dup : ok([{ path: "u1/pending:2026-11-23T11:59:00.000Z" }])));
+    expect(await claimImage(fresh, "u1", "v1", 1, NOW)).toBeNull();
+    const done = fakeClient((t, ops) => (has(ops, "insert") ? dup : ok([{ path: "u1/p1/1-1.png" }])));
+    expect(await claimImage(done, "u1", "v1", 1, NOW)).toBeNull();
+    expect(done.calls.some(x => has(x.ops, "update"))).toBe(false);
+  });
+  it("실패 표시나 3분 지난 예약은 다시 차지해요 (경로가 그대로일 때만)", async () => {
+    for (const old of ["u1/failed:2026-11-23T11:59:59.000Z", "u1/pending:2026-11-23T11:50:00.000Z"]) {
+      const c = fakeClient((t, ops) => (has(ops, "insert") ? dup : has(ops, "update") ? ok([{ path: "x" }]) : ok([{ path: old }])));
+      expect(await claimImage(c, "u1", "v1", 1, NOW)).toBe("u1/pending:2026-11-23T12:00:00.000Z");
+      const upd = c.calls.find(x => has(x.ops, "update")).ops;
+      expect(upd.filter(o => o[0] === "eq").map(o => o.slice(1))).toContainEqual(["path", old]);
+    }
+    const lost = fakeClient((t, ops) => (has(ops, "insert") ? dup : has(ops, "update") ? ok([]) : ok([{ path: "u1/failed:2026-11-23T11:59:59.000Z" }])));
+    expect(await claimImage(lost, "u1", "v1", 1, NOW)).toBeNull();
+  });
+  it("releaseClaim은 그 예약에 실패 표시를 해요", async () => {
+    const c = fakeClient(() => ok(null));
+    await releaseClaim(c, "u1", "v1", 1, "u1/pending:t", NOW);
+    expect(arg(c.calls[0].ops, "update")[0].path).toMatch(/^u1\/failed:/);
+  });
+  it("getVersion은 예약·실패 경로를 이미지로 치지 않아요", async () => {
+    const c = fakeClient((t, ops) => (t === "plan_versions" ? ok([{ id: "v1", version_no: 1 }])
+      : ok([{ idx: 0, path: "u1/p/1-0.png" }, { idx: 1, path: "u1/pending:t" }, { idx: 2, path: "u1/failed:t" }])));
+    expect((await getVersion(c, "p1", 1)).images).toEqual([{ idx: 0, path: "u1/p/1-0.png" }]);
   });
 });
