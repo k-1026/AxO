@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   ConflictError, NotFoundError, getUser, createPlan, getVersion, insertVersion,
-  saveImage, signedUrls, usage, editCount, bumpImageRegens, monthStartKst
+  saveImage, signedUrls, usage, editCount, bumpImageRegens, monthStartKst, getPlan
 } from "../server/store.js";
 
 const has = (ops, m) => ops.some(o => o[0] === m);
@@ -201,5 +201,16 @@ describe("usage · editCount · bumpImageRegens", () => {
   it("bumpImageRegens가 null이면(없거나 남의 기획안) NotFoundError", async () => {
     const c = fakeClient(() => ok(null), { rpc: () => ok(null) });
     await expect(bumpImageRegens(c, "p1")).rejects.toBeInstanceOf(NotFoundError);
+  });
+});
+
+describe("getPlan", () => {
+  it("내 기획안 한 줄을 돌려주고, 없거나 남의 것이면 null", async () => {
+    const row = { id: "p1", season: "여름", herb: "어성초", purpose: "모공·피지", image_regens: 2 };
+    const c = fakeClient(() => ok([row]));
+    expect(await getPlan(c, "p1")).toEqual(row);
+    expect(c.calls[0].table).toBe("plans");
+    expect(arg(c.calls[0].ops, "eq")).toEqual(["id", "p1"]);
+    expect(await getPlan(fakeClient(() => ok([])), "p2")).toBeNull();
   });
 });

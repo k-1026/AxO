@@ -92,6 +92,15 @@ async function latestVersionNo(client, planId) {
   return rows?.[0]?.version_no ?? null;
 }
 
+/** 내 기획안 한 줄(계절·원료·목적·이미지 다시 만들기 횟수). 없거나 남의 것이면(RLS) null */
+export async function getPlan(client, planId) {
+  const rows = check(
+    await client.from("plans").select("id, season, herb, purpose, image_regens").eq("id", planId).limit(1),
+    "기획안 조회"
+  ).data;
+  return rows?.[0] ?? null;
+}
+
 /** 버전 하나와 그 이미지들. versionNo가 없으면 최신 버전. 없으면 null */
 export async function getVersion(client, planId, versionNo) {
   let q = client.from("plan_versions")
