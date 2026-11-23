@@ -38,6 +38,10 @@ function dialogHtml() {
 </dialog>`;
 }
 
+/* 로그인 창을 여는 함수. initAuth()가 만들어 둔 창을 열어요. */
+let openAuth = () => {};
+export const openAuthDialog = () => openAuth();
+
 export function initAuth() {
   const slot = document.getElementById("auth");
   if (!slot) return;
@@ -66,6 +70,7 @@ export function initAuth() {
   const open = () => { setMode("signin"); dlg.showModal ? dlg.showModal() : dlg.setAttribute("open", ""); $("auth-email").focus(); };
   const close = () => (dlg.close ? dlg.close() : dlg.removeAttribute("open"));
 
+  openAuth = open;
   $("auth-close").onclick = close;
   dlg.addEventListener("click", e => { if (e.target === dlg) close(); });
   $("auth-switch").onclick = () => setMode(mode === "signin" ? "signup" : "signin");

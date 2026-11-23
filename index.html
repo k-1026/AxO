@@ -81,7 +81,7 @@
       <tbody>
         <tr><td>무료 체험</td><td>기획서 1건</td></tr>
         <tr><td>건당 이용권 (수정 5회)</td><td><b>₩14,900</b></td></tr>
-        <tr class="pick"><td>월 구독 (5건, 초과 건당 ₩4,900)</td><td><b>₩29,000</b></td></tr>
+        <tr class="pick"><td>월 구독 (20건, 초과 건당 ₩4,900)</td><td><b>₩29,000</b></td></tr>
       </tbody>
     </table>
   </div>
@@ -104,8 +104,18 @@
       <div class="detail-actions">
         <button class="btn-line" type="button" data-action="reroll">재추천</button>
         <button class="btn-solid" type="button" id="d-next">다음 단계</button>
+        <button class="btn-solid" type="button" id="d-create">기획안 만들기</button>
       </div>
     </div>
+  </div>
+</dialog>
+
+<dialog id="plan-wait" class="plan-wait" aria-labelledby="pw-title">
+  <div class="pw-box" role="status" aria-live="polite">
+    <div class="pw-spin" aria-hidden="true"></div>
+    <h2 id="pw-title">기획안을 만들고 있어요</h2>
+    <p id="pw-msg">1~3분 걸려요. 창을 닫지 말고 기다려 주세요.</p>
+    <p class="pw-sub" id="pw-sub"></p>
   </div>
 </dialog>
 

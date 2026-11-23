@@ -1,0 +1,12 @@
+/* 기획안 만들기 대기 화면 */
+.plan-wait { border: 0; border-radius: 18px; padding: 0; width: min(92vw, 380px); box-shadow: 0 20px 60px rgba(34,44,58,.25); }
+.plan-wait::backdrop { background: rgba(34,44,58,.45); }
+.pw-box { padding: 32px 24px; text-align: center; }
+.pw-box h2 { font-size: 1.15rem; margin: 18px 0 8px; }
+.pw-box p { margin: 0 0 6px; color: var(--muted); font-size: .92rem; line-height: 1.6; word-break: keep-all; }
+.pw-sub { color: var(--accent); font-weight: 700; }
+.pw-spin { width: 42px; height: 42px; margin: 0 auto; border-radius: 50%; border: 4px solid var(--line); border-top-color: var(--accent); animation: pw-rot 1s linear infinite; }
+@keyframes pw-rot { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .pw-spin { animation-duration: 3s; } }
+#d-create:disabled { opacity: .5; cursor: not-allowed; }
+.plan-temp { padding: 40px 0; }

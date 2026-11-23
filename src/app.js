@@ -1,6 +1,5 @@
 import {
-  FINISH, PURPOSE_LABEL, ITEM, LINE_RULE, lineupFor, ROLE, COMBO_WHY, TALK, PERSONAS, LIGHT,
-  COMBO_KW, PAIN_KW, PRESETS, SEASON_TREND_NOTES, PRODUCT_BOX, SAMPLE
+  PERSONAS, COMBO_KW, PAIN_KW, SEASON_TREND_NOTES, PRODUCT_BOX, SAMPLE
 } from "./config/rules.js";
 import { SAMPLE_BASE } from "./config/assets.js";
 import { lineKey, personaKw, buildCandidates, rankLines } from "./core/candidates.js";
@@ -195,8 +194,13 @@ async function reroll() {
 }
 document.addEventListener("click", e => { if (e.target.closest && e.target.closest('[data-action="reroll"]')) reroll(); });
 
+/* 상세 창에 열려 있는 후보: [기획안 만들기]가 읽어 가요. */
+let currentLine = null;
+export const getCurrentLine = () => (currentLine ? { season, herb: currentLine.herb, purpose: currentLine.purpose } : null);
+
 function openDetail(r) {
   const l = r.l;
+  currentLine = l;
   document.getElementById("d-rank").textContent = season;
   document.getElementById("d-name").textContent = l.name;
   document.getElementById("d-facts").innerHTML = `
