@@ -8,9 +8,16 @@ export class AuthRequired extends Error {
 
 const PRICING_MSG = "이용 가능한 횟수를 모두 썼어요. 요금제 화면에서 이용권이나 월 구독을 확인해 주세요.";
 
-export async function callApi(path, body) {
-  const token = hasSupabase ? (await supabase.auth.getSession()).data.session?.access_token : null;
+/* 요청 전에 로그인 여부만 확인해요. 로그인이 안 돼 있으면 로그인 창을 열고 AuthRequired를 던져요. */
+export async function getToken() {
+  if (!hasSupabase) throw new Error("로그인 기능이 아직 연결되지 않았어요. 관리자에게 문의해 주세요.");
+  const token = (await supabase.auth.getSession()).data.session?.access_token;
   if (!token) { openAuthDialog(); throw new AuthRequired(); }
+  return token;
+}
+
+export async function callApi(path, body) {
+  const token = await getToken();
   let res;
   try {
     res = await fetch(path, {
