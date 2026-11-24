@@ -41,12 +41,12 @@ async function rebuild(client, content, deps) {
   }
 }
 
-/* 화면에 보내는 제안: 보여 줄 칸만 허용 목록으로 남겨요. image_prompt·product_roles 는 apply 가 다시 조립하는 데 필요해서 같이 보내요 */
+/* 화면에 보내는 제안: 보여 줄 칸만 허용 목록으로 남겨요. image_prompts·product_roles 는 apply 가 다시 조립하는 데 필요해서 같이 보내요 */
 function toClient(p) {
   const out = { summary: p.summary, changes: p.changes, regenerate_images: p.regenerate_images };
   if (p.plan) out.plan = { ...publicContent({ plan: p.plan }).plan, product_roles: p.plan.product_roles };
   if (p.scenarios) {
-    out.scenarios = publicContent({ scenarios: p.scenarios }).scenarios.map((s, i) => ({ ...s, image_prompt: p.scenarios[i].image_prompt }));
+    out.scenarios = publicContent({ scenarios: p.scenarios }).scenarios.map((s, i) => ({ ...s, image_prompts: p.scenarios[i].image_prompts }));
   }
   return out;
 }

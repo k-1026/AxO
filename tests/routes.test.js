@@ -19,9 +19,9 @@ const rawPlan = () => ({
   product_roles: [{ name: "토너", role: "결 정돈" }], cautions: []
 });
 const rawScn = () => ({
-  scenarios: Array.from({ length: 3 }, (_, i) => ({
+  scenarios: Array.from({ length: 1 }, (_, i) => ({
     title: `시나리오${i}`, concept: "c", target: "t", channel: "인스타",
-    cuts: [{ scene: "a", copy: "산뜻해요" }, { scene: "b", copy: "보송해요" }, { scene: "c", copy: "좋아요" }], image_prompt: "x"
+    cuts: [{ scene: "a", copy: "산뜻해요" }, { scene: "b", copy: "보송해요" }, { scene: "c", copy: "좋아요" }], image_prompts: ["x0", "x1", "x2"]
   }))
 });
 const answers = new Map([
@@ -104,7 +104,7 @@ describe("/api/plan", () => {
     expect(store.createPlan).toHaveBeenCalledTimes(1);
     const [, arg] = store.createPlan.mock.calls[0];
     expect(arg).toMatchObject({ season: "여름", herb: "어성초", purpose: "모공·피지", title: "어성초 산뜻 토너" });
-    expect(arg.content.scenarios).toHaveLength(3);
+    expect(arg.content.scenarios).toHaveLength(1);
     expect(arg.log.length).toBeGreaterThan(0);
   });
   it("generate가 LlmError(504)면 504, createPlan은 안 불려요", async () => {
@@ -181,10 +181,18 @@ describe("/api/plan-image", () => {
     expect(req.images.map(i => i.name)).toEqual(deps.readSample.mock.calls.map(x => x[0]));
     expect(req.images.every(i => /^(toner|serum|cream|lotion-pump|mist)\.png$/.test(i.name))).toBe(true);
     expect(req.prompt).toContain("no logo");
+    expect(req.prompt).toContain("Scene: x1"); // 이미지 1번 설명(원료·질감 컷)을 써요
     const save = store.saveImage.mock.calls[0];
     expect(save.slice(1, 5)).toEqual(["u1", "p1", "v1", 1]);
     expect(save[5]).toEqual(new Uint8Array([9, 9]));
     expect(store.bumpImageRegens).not.toHaveBeenCalled();
+  });
+  it("예전 형식(시나리오 3개)도 idx 번째 시나리오의 설명으로 만들어요", async () => {
+    const c = await makeContent();
+    c.scenarios = [0, 1, 2].map(i => ({ ...c.scenarios[0], image_prompts: undefined, image_prompt: `old${i}` }));
+    const store = makeStore({ getVersion: vi.fn(async () => version(c)) }), deps = imgDeps(store);
+    await planImage(B, ctx(deps));
+    expect(deps.editImage.mock.calls[0][0].prompt).toContain("Scene: old1");
   });
   it("남의 기획안(안 보임)이면 404", async () => {
     const store = makeStore({ getPlan: vi.fn(async () => null) }), deps = imgDeps(store);

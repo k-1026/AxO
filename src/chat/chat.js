@@ -7,7 +7,8 @@ import { callApi, ApiError, AuthRequired } from "../plan/api.js";
 const MAX_INPUT = 2000;   // 서버가 받는 메시지 한 개 최대 길이
 const MAX_HISTORY = 20;   // 서버가 받는 대화 최대 개수
 const GREETING = "이 기획안에서 고치고 싶은 부분을 말씀해 주세요. 바뀌는 내용을 먼저 보여 드리고, **[적용]**을 누르면 새 버전으로 저장해요.";
-const SUGGESTIONS = ["타깃을 20대 직장인으로 바꿔 줘", "핵심 문구를 더 짧게 다듬어 줘", "시나리오 1 이미지를 다시 만들어 줘"];
+const SUGGESTIONS = ["타깃을 20대 직장인으로 바꿔 줘", "핵심 문구를 더 짧게 다듬어 줘", "사용 장면 이미지를 다시 만들어 줘"];
+const IMAGE_KINDS = ["제품 대표 컷", "원료·질감 컷", "사용 장면 컷"]; // server/agents/designer.js 와 같은 순서
 const RETRY_TEXT = "검증에서 걸린 부분을 피해서 고친 안을 다시 제안해 줘";
 
 /* 아주 작은 마크다운: **굵게**, 목록(- / 1.), 줄바꿈. 먼저 이스케이프해서 HTML 주입을 막아요. */
@@ -33,7 +34,7 @@ function md(text) {
 
 function cardHtml(p) {
   const changes = (p.changes || []).map(c => `<li><b>${esc(c.part)}</b>${c.before ? `<span class="ec-before">${esc(c.before)}</span>` : ""}<span class="ec-after">→ ${esc(c.after)}</span></li>`).join("");
-  const imgs = (p.regenerate_images || []).map(i => `시나리오 ${i + 1}`).join(", ");
+  const imgs = (p.regenerate_images || []).map(i => IMAGE_KINDS[i] || `이미지 ${i + 1}`).join(", ");
   return `<div class="edit-card">
     <p class="ec-sum">${esc(p.summary)}</p>
     ${changes ? `<ul class="ec-list">${changes}</ul>` : ""}

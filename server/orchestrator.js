@@ -61,7 +61,7 @@ export async function runPlanPipeline({ data, season, herb, purpose, generate, n
   /* 기획안의 의견 글은 빼고 검사해요 (의견 속 금지어가 다시 잡히지 않게) */
   const after = checkRules({ plan: { ...plan, review_notes: [] }, scenarios: scn.scenarios }, cand, data);
   review_notes.push(...after.fix, ...after.notes, ...scn.notes);
-  step("디자인", true, `시나리오 ${scn.scenarios.length}개를 만들었어요.`);
+  step("디자인", true, "광고 시나리오 1개와 이미지 설명 3개를 만들었어요.");
 
   if (!content.palette) review_notes.push("트렌드 팔레트 자료 없음");
   plan.review_notes = uniq(review_notes);

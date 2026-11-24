@@ -4,7 +4,7 @@ import { findLine } from "../src/core/candidates.js";
 import { checkRules } from "../server/agents/verifier.js";
 import { pickCandidate, InvalidCandidateError, RESEARCH_SCHEMA, buildResearchPrompt, cleanNotes } from "../server/agents/research.js";
 import { PLAN_SCHEMA, buildPlanPrompt, assemblePlan, PlanFormatError } from "../server/agents/writer.js";
-import { SCENARIO_SCHEMA, buildScenarioPrompt, assembleScenarios, buildImagePrompt, sampleFilesFor } from "../server/agents/designer.js";
+import { SCENARIO_SCHEMA, buildScenarioPrompt, assembleScenarios, buildImagePrompt, sampleFilesFor, imagePromptAt, IMAGE_KINDS } from "../server/agents/designer.js";
 
 const NOW = Date.parse("2026-11-23T00:00:00+09:00");
 const cand = findLine(fallback, "여름", "어성초", "모공·피지", NOW);
@@ -24,7 +24,7 @@ const rawPlan = () => ({
 const rawScn = n => ({
   scenarios: Array.from({ length: n }, (_, i) => ({
     title: `시나리오${i}`, concept: "c", target: "t", channel: "인스타",
-    cuts: [{ scene: "a", copy: "산뜻해요" }, { scene: "b", copy: "보송해요" }, { scene: "c", copy: "좋아요" }], image_prompt: "x"
+    cuts: [{ scene: "a", copy: "산뜻해요" }, { scene: "b", copy: "보송해요" }, { scene: "c", copy: "좋아요" }], image_prompts: ["x0", "x1", "x2"]
   }))
 });
 
@@ -85,9 +85,25 @@ describe("writer", () => {
 });
 
 describe("designer", () => {
-  it("4개는 3개로 자르고, 2개는 throw", () => {
-    expect(assembleScenarios(rawScn(4)).scenarios.length).toBe(3);
-    expect(() => assembleScenarios(rawScn(2))).toThrow(PlanFormatError);
+  it("시나리오는 1개만 남기고, 없으면 throw", () => {
+    const r = assembleScenarios(rawScn(3));
+    expect(r.scenarios).toHaveLength(1);
+    expect(r.scenarios[0].title).toBe("시나리오0");
+    expect(() => assembleScenarios(rawScn(0))).toThrow(PlanFormatError);
+  });
+  it("이미지 설명은 3개로 자르고, 3개보다 적으면 throw", () => {
+    const raw = rawScn(1); raw.scenarios[0].image_prompts = ["a", "b", "c", "d"];
+    expect(assembleScenarios(raw).scenarios[0].image_prompts).toEqual(["a", "b", "c"]);
+    raw.scenarios[0].image_prompts = ["a", "b"];
+    expect(() => assembleScenarios(raw)).toThrow(PlanFormatError);
+    delete raw.scenarios[0].image_prompts;
+    expect(() => assembleScenarios(raw)).toThrow(PlanFormatError);
+  });
+  it("imagePromptAt: 지금 형식과 예전 형식(시나리오 3개)을 모두 읽어요", () => {
+    expect(imagePromptAt([{ image_prompts: ["a", "b", "c"] }], 2)).toBe("c");
+    expect(imagePromptAt([{ image_prompt: "p0" }, { image_prompt: "p1" }, { image_prompt: "p2" }], 1)).toBe("p1");
+    expect(imagePromptAt([], 0)).toBe("");
+    expect(imagePromptAt(undefined, 0)).toBe("");
   });
   it("금지 문장을 빼고 notes에 남겨요", () => {
     const raw = rawScn(3); raw.scenarios[0].cuts[0].copy = "염증 완화 미스트";
@@ -98,10 +114,10 @@ describe("designer", () => {
   it("제목·이미지 설명의 금지 표현도 빼고 notes에 남겨요", () => {
     const raw = rawScn(3);
     raw.scenarios[0].title = "염증 케어";
-    raw.scenarios[0].image_prompt = "Mint bottle on marble. Anti-inflammatory serum.";
+    raw.scenarios[0].image_prompts[1] = "Mint bottle on marble. Anti-inflammatory serum.";
     const r = assembleScenarios(raw);
     expect(r.scenarios[0].title).toBe("");
-    expect(r.scenarios[0].image_prompt).toBe("Mint bottle on marble.");
+    expect(r.scenarios[0].image_prompts[1]).toBe("Mint bottle on marble.");
     expect(r.notes.length).toBe(2);
   });
   it("buildImagePrompt는 금지 표현을 다시 걸러요", () => {
@@ -110,11 +126,11 @@ describe("designer", () => {
     expect(t).toContain("Mint bottle");
   });
   it("컷이 3~4개가 아니면 throw", () => {
-    const raw = rawScn(3); raw.scenarios[1].cuts = raw.scenarios[1].cuts.slice(0, 2);
+    const raw = rawScn(1); raw.scenarios[0].cuts = raw.scenarios[0].cuts.slice(0, 2);
     expect(() => assembleScenarios(raw)).toThrow(PlanFormatError);
   });
   it("이미지 프롬프트", () => {
-    const sc = assembleScenarios(rawScn(3)).scenarios[0];
+    const sc = { image_prompt: imagePromptAt(assembleScenarios(rawScn(1)).scenarios, 0) };
     const pal = { name: "p", colors: ["#112233", "#445566"] };
     const t = buildImagePrompt(sc, cand, fallback, pal);
     expect(t).toMatch(/#[0-9A-Fa-f]{6}/);
@@ -126,7 +142,10 @@ describe("designer", () => {
   it("프롬프트·스키마", () => {
     expect(SCENARIO_SCHEMA.properties.scenarios).toBeTruthy();
     const plan = assemblePlan(rawPlan(), cand, []);
-    expect(buildScenarioPrompt(plan, cand, "여름", fallback, null)).toContain("어성초");
+    const prompt = buildScenarioPrompt(plan, cand, "여름", fallback, null);
+    expect(prompt).toContain("어성초");
+    expect(prompt).toContain("1개");
+    for (const k of IMAGE_KINDS) expect(prompt).toContain(k);
   });
   it("sampleFilesFor는 type별 중복 없이", () => {
     const gel = { l: { lineup: [["toner", "토너", 1, 1], ["cream", "젤 크림", 1, 1], ["mist", "미스트", 1, 1]], extra: "클렌저" } };

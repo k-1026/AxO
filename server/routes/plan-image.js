@@ -1,8 +1,8 @@
-/* POST /api/plan-image: {plan_id, version_no?, idx, regenerate?} → 시나리오 idx의 이미지를 만들어 저장하고 {idx, url}을 돌려줘요.
+/* POST /api/plan-image: {plan_id, version_no?, idx, regenerate?} → 이미지 idx(0 대표·1 원료·2 사용 장면)를 만들어 저장하고 {idx, url}을 돌려줘요.
    regenerate 는 최신 버전에서만 되고, 아닐 때는 비어 있는 idx만 채워요(이미 있으면 그대로 돌려줘서 두 번 만들지 않아요). */
 import { HttpError } from "../http.js";
 import { pickCandidate, InvalidCandidateError } from "../agents/research.js";
-import { buildImagePrompt, sampleFilesFor } from "../agents/designer.js";
+import { buildImagePrompt, sampleFilesFor, imagePromptAt } from "../agents/designer.js";
 import { latestPalette } from "../data.js";
 import { canRegenImage } from "../limits.js";
 
@@ -35,8 +35,8 @@ export default async function planImage(body, { token, deps }) {
   if (existing && !regenerate) return { idx, url: await urlOf(existing.path) };
 
   const content = version.content ?? {};
-  const scenario = content.scenarios?.[idx];
-  if (!scenario) throw new HttpError(404, "그 번호의 시나리오가 없어요.");
+  const imagePrompt = imagePromptAt(content.scenarios, idx);
+  if (!imagePrompt) throw new HttpError(404, "그 번호의 이미지 설명이 없어요.");
 
   if (regenerate) {
     const ok = canRegenImage(plan.image_regens);
@@ -66,7 +66,7 @@ export default async function planImage(body, { token, deps }) {
     if (!claim) throw new HttpError(409, "이미지를 만들고 있어요. 잠시 후 다시 확인해 주세요.");
   }
   try {
-    const bytes = await deps.editImage({ prompt: buildImagePrompt(scenario, cand, data, palette), images });
+    const bytes = await deps.editImage({ prompt: buildImagePrompt({ image_prompt: imagePrompt }, cand, data, palette), images });
     const saved = await store.saveImage(client, user.id, plan_id, version.id, idx, bytes);
     return { idx, url: await urlOf(saved) };
   } catch (e) {

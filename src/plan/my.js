@@ -1,4 +1,5 @@
-/* 마이 기획실: 내 기획안 목록 → 기획안 보기(버전 선택, 시나리오 3개, 이미지 다시 만들기, 오른쪽 수정 챗봇). */
+/* 마이 기획실: 내 기획안 목록 → 기획안 보기(버전 선택, 광고 시나리오 1개 + 이미지 3장, 이미지 다시 만들기, 오른쪽 수정 챗봇).
+   예전 기획안(시나리오 3개, 시나리오마다 이미지 1장)도 그대로 보여 줘요. */
 import { callApi, AuthRequired } from "./api.js";
 import { mountEditChat } from "../chat/chat.js";
 import { hasSupabase } from "../lib/supabase.js";
@@ -45,25 +46,42 @@ export function showList() {
 }
 
 /* ── 보기 ── */
+const IMAGE_KINDS = ["제품 대표 컷", "원료·질감 컷", "사용 장면 컷"]; // server/agents/designer.js 와 같은 순서
+let legacy = false;    // 지금 보는 버전이 예전 형식(시나리오 3개)인지
+
+const imgLabel = i => (legacy ? `시나리오 ${i + 1}` : IMAGE_KINDS[i]);
+/* 이 버전에 있어야 할 이미지 칸 번호: 지금 형식은 시나리오 1개에 3장, 예전 형식은 시나리오마다 1장 */
+const imageSlots = scenarios => (scenarios.length > 1 ? scenarios.slice(0, 3).map((_, i) => i) : scenarios.length ? [0, 1, 2] : []);
+
 function slotHtml(i, url, isLatest) {
-  if (url) return `<img src="${esc(url)}" alt="시나리오 ${i + 1} 이미지" loading="lazy">${isLatest ? `<button type="button" class="my-regen" data-regen="${i}">이미지 다시 만들기</button>` : ""}`;
+  if (url) return `<img src="${esc(url)}" alt="${esc(imgLabel(i))} 이미지" loading="lazy">${isLatest ? `<button type="button" class="my-regen" data-regen="${i}">이미지 다시 만들기</button>` : ""}`;
   return `<div class="my-empty"><p>이미지가 아직 없어요.</p><button type="button" class="btn-line" data-fill="${i}">다시 만들기</button></div>`;
 }
 
-function scenarioHtml(s, i, url, isLatest) {
-  return `<article class="my-scn">
-    <div class="my-img" data-slot>${slotHtml(i, url, isLatest)}</div>
-    <div class="my-scn-body">
+const scenarioBody = s => `<div class="my-scn-body">
       <h4>${esc(s.title)}</h4>
       <p class="my-meta">채널 ${esc(s.channel)} · 타깃 ${esc(s.target)}</p>
       <p>${esc(s.concept)}</p>
       <ol class="my-cuts">${(s.cuts || []).map(c => `<li><span>${esc(c.scene)}</span><q>${esc(c.copy)}</q></li>`).join("")}</ol>
-    </div>
-  </article>`;
+    </div>`;
+
+/* 예전 형식: 시나리오마다 이미지 1장 */
+function legacyScenarioHtml(s, i, url, isLatest) {
+  return `<article class="my-scn"><div class="my-img" data-slot>${slotHtml(i, url, isLatest)}</div>${scenarioBody(s)}</article>`;
+}
+
+/* 지금 형식: 광고 시나리오 1개 + 이미지 3장 */
+function scenarioSection(scenarios, urls, isLatest) {
+  if (legacy) return `<section class="my-sec"><h3>시나리오</h3><div class="my-scns">${scenarios.slice(0, 3).map((s, i) => legacyScenarioHtml(s, i, urls[i], isLatest)).join("")}</div></section>`;
+  const s = scenarios[0];
+  return `<section class="my-sec"><h3>광고 시나리오</h3>${s ? `<article class="my-scn my-scn-one">${scenarioBody(s)}</article>` : `<p class="my-none">없어요.</p>`}</section>
+    <section class="my-sec"><h3>광고 이미지</h3><div class="my-shots">${IMAGE_KINDS.map((k, i) => `<figure class="my-shot"><div class="my-img" data-slot>${slotHtml(i, urls[i], isLatest)}</div><figcaption>${esc(k)}</figcaption></figure>`).join("")}</div></section>`;
 }
 
 function render(d) {
   const c = d.version.content, p = c.plan ?? {}, isLatest = d.version.version_no === d.latest_version_no;
+  const scenarios = c.scenarios || [];
+  legacy = scenarios.length > 1;
   const rows = (p.products || []).map(x => `<tr><td>${esc(x.name)}</td><td>${x.ml ? `${esc(x.ml)}ml` : "-"}</td><td>${money(x.price)}</td><td>${perMl(x.price, x.ml)}</td><td>${esc(x.role ?? "")}</td><td>${esc(x.status ?? "")}</td></tr>`).join("");
   root().innerHTML = `<div class="my-layout"><div class="my-main">
     <button class="btn-line my-back" type="button" data-my-list>← 목록</button>
@@ -80,7 +98,7 @@ function render(d) {
     <section class="my-sec"><h3>근거 메모</h3>${list(p.notes)}</section>
     <section class="my-sec"><h3>주의사항</h3>${list(p.cautions)}</section>
     <section class="my-sec"><h3>검토 의견</h3>${list(p.review_notes)}</section>
-    <section class="my-sec"><h3>시나리오</h3><div class="my-scns">${(c.scenarios || []).slice(0, 3).map((s, i) => scenarioHtml(s, i, d.image_urls[i], isLatest)).join("")}</div></section>
+    ${scenarioSection(scenarios, d.image_urls || [], isLatest)}
     </div><aside class="my-side" aria-label="기획안 수정"></aside></div>`;
   root().dataset.plan = d.plan.id;
   root().dataset.version = d.version.version_no;
@@ -123,8 +141,8 @@ export function openPlan(planId, versionNo, notes, { fillImages = false } = {}) 
     const d = await callApi("/api/plan-get", versionNo ? { plan_id: planId, version_no: versionNo } : { plan_id: planId });
     if (my !== seq) return;
     const empty = fillImages && d.version.version_no === d.latest_version_no
-      ? [0, 1, 2].filter(i => d.version.content?.scenarios?.[i] && !d.image_urls?.[i]) : [];
-    if (empty.length) notice = [...notice, `기획안을 저장했어요. 제품 이미지 ${empty.length}장을 만드는 중이에요 (1~2분). 기다리는 동안 기획안을 읽어 보세요.`];
+      ? imageSlots(d.version.content?.scenarios || []).filter(i => !d.image_urls?.[i]) : [];
+    if (empty.length) notice = [...notice, `기획안을 저장했어요. 광고 이미지 ${empty.length}장을 만드는 중이에요 (1~2분). 기다리는 동안 기획안을 읽어 보세요.`];
     render(d);
     for (const i of empty) {
       const btn = root().querySelector(`[data-fill="${i}"]`);
@@ -139,7 +157,7 @@ async function makeImage(btn, idx, regenerate, { quiet = false } = {}) {
   const page = root(), planId = page.dataset.plan, versionNo = Number(page.dataset.version);
   const slot = btn.closest("[data-slot]");
   const old = slot.innerHTML;
-  slot.innerHTML = `<div class="my-empty"><p>이미지를 만드는 중이에요…</p></div>`;
+  slot.innerHTML = `<div class="my-empty"><span class="my-spin" aria-hidden="true"></span><p>이미지를 만드는 중이에요…</p></div>`;
   const same = () => root().dataset.plan === planId && Number(root().dataset.version) === versionNo && slot.isConnected;
   try {
     const { url } = await callApi("/api/plan-image", { plan_id: planId, version_no: versionNo, idx, regenerate });

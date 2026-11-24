@@ -17,9 +17,9 @@ const rawPlan = () => ({
   product_roles: [{ name: "토너", role: "결 정돈" }], cautions: []
 });
 const rawScn = () => ({
-  scenarios: Array.from({ length: 3 }, (_, i) => ({
+  scenarios: Array.from({ length: 1 }, (_, i) => ({
     title: `시나리오${i}`, concept: "c", target: "t", channel: "인스타",
-    cuts: [{ scene: "a", copy: "산뜻해요" }, { scene: "b", copy: "보송해요" }, { scene: "c", copy: "좋아요" }], image_prompt: "x"
+    cuts: [{ scene: "a", copy: "산뜻해요" }, { scene: "b", copy: "보송해요" }, { scene: "c", copy: "좋아요" }], image_prompts: ["x0", "x1", "x2"]
   }))
 });
 const content = () => ({
@@ -141,7 +141,7 @@ describe("/api/plan-edit/apply", () => {
     expect(arg.content.plan.concept).toBe("수정된 콘셉트예요.");
     expect(arg.content.plan.review_notes.join()).not.toContain("옛 의견");
     expect(arg.content.season).toBe("여름");
-    expect(arg.content.scenarios).toHaveLength(3);
+    expect(arg.content.scenarios).toHaveLength(1);
     expect(arg.content.palette).toEqual({ colors: ["#fff"] });
   });
   it("기획안 글만 바뀌면 시나리오는 그대로 남아요", async () => {

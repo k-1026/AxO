@@ -16,9 +16,9 @@ const rawPlan = (concept = "번들거림을 가볍게 정돈해요.") => ({
   product_roles: [{ name: "토너", role: "결 정돈" }], cautions: []
 });
 const rawScn = () => ({
-  scenarios: Array.from({ length: 3 }, (_, i) => ({
+  scenarios: Array.from({ length: 1 }, (_, i) => ({
     title: `시나리오${i}`, concept: "c", target: "t", channel: "인스타",
-    cuts: [{ scene: "a", copy: "산뜻해요" }, { scene: "b", copy: "보송해요" }, { scene: "c", copy: "좋아요" }], image_prompt: "x"
+    cuts: [{ scene: "a", copy: "산뜻해요" }, { scene: "b", copy: "보송해요" }, { scene: "c", copy: "좋아요" }], image_prompts: ["x0", "x1", "x2"]
   }))
 });
 
@@ -50,7 +50,8 @@ describe("runPlanPipeline", () => {
     expect(f.calls).toEqual(["RESEARCH", "PLAN", "REVIEW", "SCENARIO"]);
     expect(content.review.rounds).toBe(1);
     expect(content.review.approved).toBe(true);
-    expect(content.scenarios).toHaveLength(3);
+    expect(content.scenarios).toHaveLength(1);
+    expect(content.scenarios[0].image_prompts).toHaveLength(3);
     expect(content.candidate.name).toBeTruthy();
     expect(content.candidate.lineup.length).toBeGreaterThan(0);
     expect(content.plan.products.length).toBeGreaterThan(0);

@@ -15,7 +15,7 @@ export function textOf(content) {
   ];
   for (const pr of p.products || []) out.push(...strs([pr?.type, pr?.name, pr?.role, pr?.status]));
   for (const s of content?.scenarios || []) {
-    out.push(...strs([s?.title, s?.concept, s?.target, s?.channel, s?.image_prompt]));
+    out.push(...strs([s?.title, s?.concept, s?.target, s?.channel, s?.image_prompt, ...(Array.isArray(s?.image_prompts) ? s.image_prompts : [])]));
     for (const c of s?.cuts || []) out.push(...strs([c?.scene, c?.copy]));
   }
   return out.join("\n");
