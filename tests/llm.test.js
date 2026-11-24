@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { generateJson, LlmError, chatWithGemini, ChatError } from "../server/llm/gemini.js";
+import { generateJson, LlmError } from "../server/llm/gemini.js";
 import { editImage, DEFAULT_IMAGE_MODEL } from "../server/llm/openai.js";
 
 const realFetch = globalThis.fetch;
@@ -64,17 +64,6 @@ describe("generateJson", () => {
     expect(await p).toEqual({ ok: true });
     expect(globalThis.fetch).toHaveBeenCalledTimes(2);
     vi.useRealTimers();
-  });
-});
-
-describe("chatWithGemini (옮긴 뒤에도 동작)", () => {
-  it("답과 모델을 돌려줘요", async () => {
-    globalThis.fetch = vi.fn().mockResolvedValue(geminiText("안녕하세요"));
-    const r = await chatWithGemini({ messages: [{ role: "user", content: "안녕" }] }, { apiKey: "k", model: "m" });
-    expect(r).toEqual({ reply: "안녕하세요", model: "m" });
-  });
-  it("키가 없으면 ChatError", async () => {
-    await expect(chatWithGemini({ messages: [] }, {})).rejects.toBeInstanceOf(ChatError);
   });
 });
 

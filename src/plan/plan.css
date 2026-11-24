@@ -11,6 +11,15 @@
 #d-create:disabled { opacity: .5; cursor: not-allowed; }
 
 /* 마이 기획실 */
+.my-layout { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 24px; align-items: start; }
+.my-side { position: sticky; top: 84px; }
+.my-side-note { border: 1px dashed var(--line); border-radius: 16px; padding: 20px; text-align: center; color: var(--muted); }
+.my-side-note p { margin: 0 0 10px; }
+@media (max-width: 960px) {
+  .my-layout { grid-template-columns: minmax(0, 1fr); }
+  .my-side { position: static; }
+  .my-side .edit-chat { height: 520px; }
+}
 .my-msg { padding: 48px 0; text-align: center; color: var(--muted); line-height: 1.7; word-break: keep-all; }
 .my-sub, .my-meta, .my-none { color: var(--muted); font-size: .88rem; }
 .my-h { margin: 0 0 16px; }

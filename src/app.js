@@ -226,17 +226,6 @@ function showView(v) {
 }
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-view]"); if (b) showView(b.dataset.view); });
 
-/** AI 채팅에 함께 보낼 '지금 화면 정보' (계절, 추천 후보). */
-export function getPlanningContext() {
-  if (!SEASONS || !season || !SEASONS[season]) return "";
-  const lines = [
-    `현재 계절: ${season}`,
-    `기후 이슈: ${SEASONS[season].issues.map(i => `${i[0]}(${i[2]})`).join(", ")}`,
-    "추천 후보:",
-    ...RES.map(r => `- ${r.l.name} · 구성 ${r.l.lineup.map(x => x[1]).join("+")}${r.l.concern ? ` · 고민 ${r.l.concern}` : ""}`),
-  ];
-  return lines.join("\n");
-}
 
 export function startApp(data) {
   ({ SEASONS, HERBS, DESIGN, TREND_SOURCES, TREND_TIERS } = data);

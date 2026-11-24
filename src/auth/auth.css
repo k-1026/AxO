@@ -1,5 +1,5 @@
 /* 우측 상단 로그인 */
-.auth { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.auth { display: flex; align-items: center; gap: 8px; flex-shrink: 0; margin-left: auto; }
 .auth-btn { font: inherit; font-size: .82rem; font-weight: 500; color: #fff; background: var(--ink); border: 1px solid var(--ink); border-radius: 999px; padding: 6px 16px; cursor: pointer; white-space: nowrap; }
 .auth-btn:hover { background: var(--accent); border-color: var(--accent); }
 .auth-btn.ghost { color: var(--ink); background: transparent; border-color: var(--line); padding: 5px 12px; }

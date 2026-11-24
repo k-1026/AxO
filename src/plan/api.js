@@ -6,7 +6,12 @@ export class AuthRequired extends Error {
   constructor() { super("로그인이 필요해요."); this.name = "AuthRequired"; }
 }
 
-const PRICING_MSG = "이용 가능한 횟수를 모두 썼어요. 요금제 화면에서 이용권이나 월 구독을 확인해 주세요.";
+/* 서버가 돌려준 오류: status(HTTP 상태)와 data(검증 이유 issues 등)를 함께 들고 있어요. */
+export class ApiError extends Error {
+  constructor(message, status, data) { super(message); this.name = "ApiError"; this.status = status; this.data = data; }
+}
+
+const PRICING_MSG ="이용 가능한 횟수를 모두 썼어요. 요금제 화면에서 이용권이나 월 구독을 확인해 주세요.";
 
 /* 요청 전에 로그인 여부만 확인해요. 로그인이 안 돼 있으면 로그인 창을 열고 AuthRequired를 던져요. */
 export async function getToken() {
@@ -28,7 +33,7 @@ export async function callApi(path, body) {
   } catch { throw new Error("네트워크 연결을 확인해 주세요."); }
   const data = await res.json().catch(() => ({}));
   if (res.status === 401) { openAuthDialog(); throw new AuthRequired(); }
-  if (res.status === 402) throw new Error(PRICING_MSG);
-  if (!res.ok) throw new Error(data.error || "잠시 후 다시 시도해 주세요.");
+  if (res.status === 402) throw new ApiError(PRICING_MSG, 402, data);
+  if (!res.ok) throw new ApiError(data.error || "잠시 후 다시 시도해 주세요.", res.status, data);
   return data;
 }

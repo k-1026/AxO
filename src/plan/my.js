@@ -1,11 +1,13 @@
-/* 마이 기획실: 내 기획안 목록 → 기획안 보기(버전 선택, 시나리오 3개, 이미지 다시 만들기). */
+/* 마이 기획실: 내 기획안 목록 → 기획안 보기(버전 선택, 시나리오 3개, 이미지 다시 만들기, 오른쪽 수정 챗봇). */
 import { callApi, AuthRequired } from "./api.js";
+import { mountEditChat } from "../chat/chat.js";
 import { hasSupabase } from "../lib/supabase.js";
 import { esc } from "../utils/text.js";
 
 const root = () => document.querySelector("#view-my .page");
 let notice = [];       // 기획안 만들기 직후 이미지 실패 안내 (보기 화면 위에 보여 줘요)
 let seq = 0;           // 늦게 도착한 응답이 화면을 덮어쓰지 않게 해요
+let chat = null;       // 지금 기획안의 수정 챗봇 { planId, el } — 버전을 바꿔 다시 그려도 대화가 이어져요
 
 const money = n => (Number.isFinite(n) ? `${n.toLocaleString("ko-KR")}원` : "-");
 const perMl = (price, ml) => (Number.isFinite(price) && Number.isFinite(ml) && ml > 0 ? `${Math.round(price / ml).toLocaleString("ko-KR")}원` : "-");
@@ -27,6 +29,7 @@ async function guard(fn) {
 export function showList() {
   const my = ++seq;
   notice = [];
+  chat = null;
   return guard(async () => {
     message("<p>불러오는 중이에요…</p>");
     const { plans } = await callApi("/api/plan-get", {});
@@ -61,7 +64,7 @@ function scenarioHtml(s, i, url, isLatest) {
 function render(d) {
   const c = d.version.content, p = c.plan ?? {}, isLatest = d.version.version_no === d.latest_version_no;
   const rows = (p.products || []).map(x => `<tr><td>${esc(x.name)}</td><td>${x.ml ? `${esc(x.ml)}ml` : "-"}</td><td>${money(x.price)}</td><td>${perMl(x.price, x.ml)}</td><td>${esc(x.role ?? "")}</td><td>${esc(x.status ?? "")}</td></tr>`).join("");
-  root().innerHTML = `
+  root().innerHTML = `<div class="my-layout"><div class="my-main">
     <button class="btn-line my-back" type="button" data-my-list>← 목록</button>
     ${notice.length ? `<div class="my-notice" role="status">${notice.map(n => `<p>${esc(n)}</p>`).join("")}</div>` : ""}
     <div class="my-head">
@@ -75,10 +78,38 @@ function render(d) {
     <section class="my-sec"><h3>근거 메모</h3>${list(p.notes)}</section>
     <section class="my-sec"><h3>주의사항</h3>${list(p.cautions)}</section>
     <section class="my-sec"><h3>검토 의견</h3>${list(p.review_notes)}</section>
-    <section class="my-sec"><h3>시나리오</h3><div class="my-scns">${(c.scenarios || []).slice(0, 3).map((s, i) => scenarioHtml(s, i, d.image_urls[i], isLatest)).join("")}</div></section>`;
+    <section class="my-sec"><h3>시나리오</h3><div class="my-scns">${(c.scenarios || []).slice(0, 3).map((s, i) => scenarioHtml(s, i, d.image_urls[i], isLatest)).join("")}</div></section>
+    </div><aside class="my-side" aria-label="기획안 수정"></aside></div>`;
   root().dataset.plan = d.plan.id;
   root().dataset.version = d.version.version_no;
   root().dataset.latest = isLatest ? "1" : "0";
+  attachChat(d.plan.id, isLatest);
+}
+
+/* 최신 버전에서만 수정 챗봇을 붙여요. 같은 기획안이면 만들어 둔 패널을 옮겨 붙여서 대화가 이어져요. */
+function attachChat(planId, isLatest) {
+  const side = root().querySelector(".my-side");
+  if (!isLatest) {
+    side.innerHTML = `<div class="my-side-note"><p>수정은 최신 버전에서 할 수 있어요.</p><button class="btn-line" type="button" data-go-latest>최신 버전 보기</button></div>`;
+    return;
+  }
+  if (chat?.planId === planId) { side.appendChild(chat.el); return; }
+  chat = { planId, el: mountEditChat(side, {
+    planId,
+    getVersionNo: () => Number(root().dataset.version),
+    onApplied: (versionNo, regenerate) => afterEdit(planId, versionNo, regenerate),
+    onStale: () => openPlan(planId)
+  }) };
+}
+
+/* 수정을 적용하면 새 버전을 열고, 새로 만들기로 한 이미지 자리를 채워요 (나머지 이미지는 서버가 이전 버전에서 복사해 둬요). */
+async function afterEdit(planId, versionNo, regenerate) {
+  await openPlan(planId, versionNo);
+  if (root().dataset.plan !== planId || Number(root().dataset.version) !== versionNo) return;
+  for (const i of regenerate) {
+    const btn = root().querySelector(`[data-fill="${i}"]`);
+    if (btn) makeImage(btn, i, false);
+  }
 }
 
 export function openPlan(planId, versionNo, notes) {
@@ -115,6 +146,7 @@ export function initMy() {
     if (!t) return;
     if (t.dataset.plan) openPlan(t.dataset.plan);
     else if ("myList" in t.dataset) showList();
+    else if ("goLatest" in t.dataset) openPlan(root().dataset.plan);
     else if (t.dataset.fill != null) makeImage(t, Number(t.dataset.fill), false);
     else if (t.dataset.regen != null) makeImage(t, Number(t.dataset.regen), true);
   });

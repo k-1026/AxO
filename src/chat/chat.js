@@ -1,59 +1,65 @@
-/* 헤더의 'AI Chat' 버튼 → 채팅 팝업. 서버(/api/chat)를 거쳐 Gemini와 대화해요. */
+/* 마이 기획실 '기획안 보기' 오른쪽의 수정 챗봇.
+   요청 → /api/plan-edit/preview 로 답과 수정안(미리보기 카드)을 받고 → [적용]하면 /api/plan-edit/apply 로 새 버전을 저장해요.
+   미리보기는 저장하지 않고 횟수도 세지 않아요. 적용만 수정 횟수에 들어가요. */
 import { esc } from "../utils/text.js";
+import { callApi, ApiError, AuthRequired } from "../plan/api.js";
 
-const API_URL = "/api/chat";
-const MAX_INPUT = 2000;
-const GREETING = "안녕하세요, HerbHub 상품기획 도우미예요. 지금 화면의 계절과 후보 순위를 보고 답해 드려요.\n\n예: **1위 후보를 추천한 이유를 회의용으로 정리해 줘**";
-const SUGGESTIONS = ["1위 후보 추천 이유 정리해 줘", "후보 1·2위를 비교해 줘", "순위에서 제외된 후보는 왜 빠졌어?"];
+const MAX_INPUT = 2000;   // 서버가 받는 메시지 한 개 최대 길이
+const MAX_HISTORY = 20;   // 서버가 받는 대화 최대 개수
+const GREETING = "이 기획안에서 고치고 싶은 부분을 말씀해 주세요. 바뀌는 내용을 먼저 보여 드리고, **[적용]**을 누르면 새 버전으로 저장해요.";
+const SUGGESTIONS = ["타깃을 20대 직장인으로 바꿔 줘", "핵심 문구를 더 짧게 다듬어 줘", "시나리오 1 이미지를 다시 만들어 줘"];
+const RETRY_TEXT = "검증에서 걸린 부분을 피해서 고친 안을 다시 제안해 줘";
 
 /* 아주 작은 마크다운: **굵게**, 목록(- / 1.), 줄바꿈. 먼저 이스케이프해서 HTML 주입을 막아요. */
 function md(text) {
   const inline = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/`([^`]+)`/g, "<code>$1</code>");
   const out = []; let list = null;
   const flush = () => { if (list) { out.push(`<${list.tag}>${list.items.map(i => `<li>${i}</li>`).join("")}</${list.tag}>`); list = null; } };
-  for (const raw of text.split("\n")) {
+  for (const raw of String(text).split("\n")) {
     const line = raw.trimEnd();
-    const ul = line.match(/^\s*[-*•]\s+(.*)$/), ol = line.match(/^\s*\d+[.)]\s+(.*)$/), h = line.match(/^#{1,4}\s+(.*)$/);
+    const ul = line.match(/^\s*[-*•]\s+(.*)$/), ol = line.match(/^\s*\d+[.)]\s+(.*)$/);
     if (ul || ol) {
       const tag = ul ? "ul" : "ol";
       if (!list || list.tag !== tag) { flush(); list = { tag, items: [] }; }
       list.items.push(inline((ul || ol)[1]));
     } else {
       flush();
-      if (h) out.push(`<p><strong>${inline(h[1])}</strong></p>`);
-      else if (line.trim()) out.push(`<p>${inline(line)}</p>`);
+      if (line.trim()) out.push(`<p>${inline(line)}</p>`);
     }
   }
   flush();
   return out.join("");
 }
 
-function panelHtml() {
-  return `<section class="chat-panel" id="chat-panel" role="dialog" aria-modal="false" aria-labelledby="chat-title" hidden>
-  <header class="chat-head">
-    <div><strong id="chat-title">AI Chat</strong><span class="chat-sub">HerbHub 상품기획 도우미 · Gemini</span></div>
-    <div class="chat-actions">
-      <button type="button" class="chat-icon" id="chat-reset" title="새 대화" aria-label="새 대화">↺</button>
-      <button type="button" class="chat-icon" id="chat-close" title="닫기" aria-label="닫기">✕</button>
-    </div>
-  </header>
-  <div class="chat-log" id="chat-log" aria-live="polite"></div>
-  <div class="chat-suggest" id="chat-suggest">${SUGGESTIONS.map(s => `<button type="button" class="chat-chip">${esc(s)}</button>`).join("")}</div>
-  <form class="chat-form" id="chat-form">
-    <textarea id="chat-input" rows="1" maxlength="${MAX_INPUT}" placeholder="무엇이든 물어보세요 (Enter 보내기 · Shift+Enter 줄바꿈)" aria-label="메시지"></textarea>
-    <button type="submit" class="chat-send" id="chat-send" aria-label="보내기">↑</button>
-  </form>
-  <p class="chat-note">AI 답변은 참고용이에요. 점수·순위는 화면의 계산 결과를 따르고, 규제 판단은 담당자 확인이 필요해요.</p>
-</section>`;
+function cardHtml(p) {
+  const changes = (p.changes || []).map(c => `<li><b>${esc(c.part)}</b>${c.before ? `<span class="ec-before">${esc(c.before)}</span>` : ""}<span class="ec-after">→ ${esc(c.after)}</span></li>`).join("");
+  const imgs = (p.regenerate_images || []).map(i => `시나리오 ${i + 1}`).join(", ");
+  return `<div class="edit-card">
+    <p class="ec-sum">${esc(p.summary)}</p>
+    ${changes ? `<ul class="ec-list">${changes}</ul>` : ""}
+    <p class="ec-img">${imgs ? `새로 만들 이미지: ${esc(imgs)}` : "이미지는 그대로 둬요."}</p>
+    <div class="ec-actions"><button type="button" class="btn-line" data-ec="cancel">취소</button><button type="button" class="btn-solid" data-ec="apply">적용</button></div>
+  </div>`;
 }
 
-/** @param {{ getContext?: () => string }} opts */
-export function initChat({ getContext = () => "" } = {}) {
-  const btn = document.getElementById("ai-chat-open");
-  if (!btn) return;
-  document.body.insertAdjacentHTML("beforeend", panelHtml());
-  const $ = id => document.getElementById(id);
-  const panel = $("chat-panel"), log = $("chat-log"), input = $("chat-input"), send = $("chat-send"), suggest = $("chat-suggest");
+/**
+ * @param {HTMLElement} container 패널을 넣을 자리
+ * @param {{ planId: string, getVersionNo: () => number, onApplied: (versionNo: number, regenerate: number[]) => void, onStale: () => void }} opts
+ * @returns {HTMLElement} 패널 (화면을 다시 그릴 때 옮겨 붙여 대화를 이어 가요)
+ */
+export function mountEditChat(container, { planId, getVersionNo, onApplied, onStale }) {
+  container.insertAdjacentHTML("beforeend", `<section class="edit-chat" aria-labelledby="edit-chat-title">
+    <header class="chat-head"><div><strong id="edit-chat-title">기획안 수정</strong><span class="chat-sub">AI에게 말로 고쳐 달라고 해 보세요</span></div></header>
+    <div class="chat-log" aria-live="polite"></div>
+    <div class="chat-suggest">${SUGGESTIONS.map(s => `<button type="button" class="chat-chip">${esc(s)}</button>`).join("")}</div>
+    <form class="chat-form">
+      <textarea rows="1" maxlength="${MAX_INPUT}" placeholder="고칠 내용을 적어 주세요" aria-label="수정 요청"></textarea>
+      <button type="submit" class="chat-send" aria-label="보내기">↑</button>
+    </form>
+    <p class="chat-note">[적용]할 때마다 수정 횟수 1회를 써요 (기획안 1건당 5회). 저장 전에 금지 표현 검증을 다시 해요.</p>
+  </section>`);
+  const panel = container.lastElementChild;
+  const log = panel.querySelector(".chat-log"), input = panel.querySelector("textarea"), send = panel.querySelector(".chat-send"), suggest = panel.querySelector(".chat-suggest");
 
   /** @type {{role:'user'|'assistant', content:string}[]} */
   let history = [];
@@ -65,59 +71,84 @@ export function initChat({ getContext = () => "" } = {}) {
     scroll();
     return log.lastElementChild;
   };
-  const reset = () => {
-    history = []; log.innerHTML = ""; suggest.hidden = false;
-    bubble("assistant", md(GREETING));
-  };
+  const waiting = () => bubble("assistant", `<span class="chat-typing" aria-label="답변 작성 중"><i></i><i></i><i></i></span>`);
   const autosize = () => { input.style.height = "auto"; input.style.height = Math.min(input.scrollHeight, 140) + "px"; };
-  const setBusy = b => { busy = b; send.disabled = b; input.disabled = b; };
+  const setBusy = b => { busy = b; send.disabled = b; input.disabled = b; panel.querySelectorAll("[data-ec]").forEach(x => { x.disabled = b; }); };
+  const remember = (role, content) => { history.push({ role, content: content.slice(0, MAX_INPUT) }); history = history.slice(-MAX_HISTORY); };
+  const closeCards = () => panel.querySelectorAll(".edit-card .ec-actions").forEach(a => a.remove());
 
-  const open = () => {
-    panel.hidden = false; btn.setAttribute("aria-expanded", "true");
-    if (!log.childElementCount) reset();
-    setTimeout(() => input.focus(), 0);
-  };
-  const close = () => { panel.hidden = true; btn.setAttribute("aria-expanded", "false"); btn.focus(); };
+  /* 다른 곳에서 먼저 고쳐졌으면(409) 최신 버전을 다시 불러와요 */
+  const isStale = e => e instanceof ApiError && e.status === 409 && /최신/.test(e.message);
+  function stale() {
+    bubble("assistant", md("다른 곳에서 먼저 수정됐어요. 최신 버전을 불러올게요."));
+    history = []; closeCards();
+    onStale();
+  }
 
   async function ask(text) {
     text = text.trim();
     if (!text || busy) return;
     suggest.hidden = true;
+    closeCards();
     bubble("user", md(text));
-    history.push({ role: "user", content: text });
+    remember("user", text);
     input.value = ""; autosize(); setBusy(true);
-    const wait = bubble("assistant", `<span class="chat-typing" aria-label="답변 작성 중"><i></i><i></i><i></i></span><span class="chat-slow" hidden>AI 사용량이 많아 답변이 늦어지고 있어요…</span>`);
-    const slowTimer = setTimeout(() => { const s = wait.querySelector(".chat-slow"); if (s) s.hidden = false; scroll(); }, 10000);
+    const wait = waiting();
     try {
-      const res = await fetch(API_URL, {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history, context: getContext() }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.reply) throw new Error(data.error || (res.status === 404 ? "AI 서버(/api/chat)를 찾을 수 없어요. npm run dev 또는 Vercel 배포에서 열어 주세요." : `오류 ${res.status}`));
-      history.push({ role: "assistant", content: data.reply });
-      wait.querySelector(".chat-bubble").innerHTML = md(data.reply);
+      const { reply, proposal } = await callApi("/api/plan-edit/preview", { plan_id: planId, base_version_no: getVersionNo(), messages: history });
+      remember("assistant", reply);
+      wait.querySelector(".chat-bubble").innerHTML = md(reply) + (proposal ? cardHtml(proposal) : "");
+      if (proposal) wait._proposal = proposal;
     } catch (e) {
-      history.pop(); // 실패한 질문은 대화 기록에서 빼고 다시 보낼 수 있게 해요
-      wait.classList.add("error");
-      wait.querySelector(".chat-bubble").innerHTML = `${esc(e.message || "응답을 받지 못했어요.")} <button type="button" class="chat-retry">다시 보내기</button>`;
-      wait.querySelector(".chat-retry").onclick = () => { wait.remove(); log.lastElementChild?.classList.contains("user") && log.lastElementChild.remove(); ask(text); };
+      history.pop(); // 실패한 요청은 대화 기록에서 빼요
+      wait.remove();
+      if (e instanceof AuthRequired) bubble("assistant", md("로그인이 필요해요. 로그인한 뒤 다시 보내 주세요."), "error");
+      else if (isStale(e)) stale();
+      else bubble("assistant", esc(e.message || "답을 받지 못했어요. 잠시 후 다시 시도해 주세요."), "error");
     } finally {
-      clearTimeout(slowTimer);
       setBusy(false); scroll(); input.focus();
     }
   }
 
-  btn.setAttribute("aria-controls", "chat-panel");
-  btn.setAttribute("aria-expanded", "false");
-  btn.onclick = () => (panel.hidden ? open() : close());
-  $("chat-close").onclick = close;
-  $("chat-reset").onclick = () => { if (!busy) { reset(); input.focus(); } };
-  panel.addEventListener("keydown", e => { if (e.key === "Escape") close(); });
+  async function apply(msg) {
+    const proposal = msg._proposal;
+    if (!proposal || busy) return;
+    setBusy(true);
+    const wait = waiting();
+    try {
+      const { version_no, regenerate_images } = await callApi("/api/plan-edit/apply", { plan_id: planId, base_version_no: getVersionNo(), proposal });
+      wait.querySelector(".chat-bubble").innerHTML = md(`**v${version_no}** 버전으로 저장했어요.${regenerate_images?.length ? " 이미지를 새로 만드는 중이에요." : ""}`);
+      closeCards();
+      history = []; // 새 버전에서 대화를 새로 시작해요
+      onApplied(version_no, regenerate_images || []);
+    } catch (e) {
+      wait.remove();
+      if (e instanceof AuthRequired) bubble("assistant", md("로그인이 필요해요. 로그인한 뒤 다시 눌러 주세요."), "error");
+      else if (isStale(e)) stale();
+      else if (e instanceof ApiError && e.status === 422) {
+        closeCards();
+        const issues = (e.data?.issues || []).map(i => `- ${i}`).join("\n");
+        bubble("assistant", md(`검증을 통과하지 못해 저장하지 않았어요.${issues ? `\n${issues}` : ""}\n\n고친 안을 다시 제안할까요?`), "error");
+        input.value = RETRY_TEXT; autosize();
+      } else bubble("assistant", esc(e.message || "저장하지 못했어요. 잠시 후 다시 시도해 주세요."), "error");
+    } finally {
+      setBusy(false); scroll();
+    }
+  }
+
+  bubble("assistant", md(GREETING));
   suggest.addEventListener("click", e => { const c = e.target.closest(".chat-chip"); if (c) ask(c.textContent); });
+  log.addEventListener("click", e => {
+    const b = e.target.closest("[data-ec]");
+    if (!b) return;
+    const msg = b.closest(".chat-msg");
+    if (b.dataset.ec === "apply") apply(msg);
+    else { b.closest(".ec-actions").remove(); bubble("assistant", md("알겠어요. 적용하지 않았어요.")); }
+  });
   input.addEventListener("input", autosize);
   input.addEventListener("keydown", e => {
     if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); ask(input.value); }
   });
-  $("chat-form").addEventListener("submit", e => { e.preventDefault(); ask(input.value); });
+  panel.querySelector(".chat-form").addEventListener("submit", e => { e.preventDefault(); ask(input.value); });
+  return panel;
 }
