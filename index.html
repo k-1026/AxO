@@ -6,9 +6,9 @@
 <title>HerbHub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Noto+Serif+KR:wght@400;600;700&display=swap">
 </head>
-<body>
+<body data-view="home">
 <svg width="0" height="0" aria-hidden="true" style="position:absolute;overflow:hidden" xmlns="http://www.w3.org/2000/svg"><defs id="package-filters"></defs>
 <defs>
   <clipPath id="pkg-clip-toner" clipPathUnits="objectBoundingBox"><rect x="0.2224" y=".089" width="0.1406" height=".141" rx="0.0254"/></clipPath>
@@ -28,7 +28,7 @@
 <mask id="pkg-mask-cream" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox" x="0" y="0" width="1" height="1" style="mask-type:alpha"><g fill="white" filter="url(#pkg-edge-feather)"><path d="M .435 .282 C .22 .282 .09 .31 .066 .38 L .06 .477 C .028 .50 .01 .56 .017 .62 C .02 .73 .14 .79 .30 .80 L .68 .80 C .84 .79 .97 .72 .97 .62 C .98 .55 .95 .50 .929 .477 L .92 .38 C .88 .31 .68 .28 .435 .282 Z"/></g></mask></defs></svg>
 
 <div class="topbar"><div class="in">
-  <button class="brand" type="button" data-view="home"><img src="/IMAGE/LOGO/herbhub-logo.png" alt="HerbHub"></button>
+  <button class="brand" type="button" data-view="home" aria-label="HerbHub 홈"><span class="logo-mark" aria-hidden="true"></span></button>
   <nav class="menu" aria-label="메뉴">
     <button type="button" data-view="launch">출시 기획실</button>
     <button type="button" data-view="pricing">요금제</button>
@@ -37,13 +37,30 @@
   <div class="auth" id="auth" aria-label="로그인"></div>
 </div></div>
 
-<!-- 첫 화면: 입장 팝업 -->
+
+<!-- 메인: 기획실 로고와 이미지 -->
 <section class="view view-home" id="view-home" data-view-panel="home">
-  <div class="enter-card" role="group" aria-labelledby="enter-title">
-    <h2 id="enter-title">기획실에 입장하시겠습니까?</h2>
-    <p>계절별 트렌드와 한방 약재로 만든<br>라인 후보로 기획안을 만들어 보세요!</p>
-    <button class="enter-yes" type="button" data-view="launch">입장</button>
+  <div class="home-hero">
+    <p class="home-eyebrow">✦ Herbal beauty launch studio ✦</p>
+    <div class="home-oval"><span class="logo-mark logo-mid" role="img" aria-label="HerbHub"></span></div>
+    <svg class="herb-art" viewBox="0 0 320 240" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M118 92h84M124 92c-18 10-26 30-26 54 0 40 26 66 62 66s62-26 62-66c0-24-8-44-26-54"/>
+        <path d="M128 92v-14h64v14M136 78c0-10 10-16 24-16s24 6 24 16"/>
+        <ellipse cx="160" cy="150" rx="34" ry="24"/><path d="M146 150h28M160 138v24"/>
+        <path d="M62 196c10-38 30-66 58-84"/><path d="M78 160c-14-2-24-12-26-26 14 0 26 10 26 26ZM94 136c-12-6-18-18-16-32 12 4 20 16 16 32ZM70 184c-14 2-26-4-32-16 14-4 26 2 32 16Z"/>
+        <path d="M258 196c-8-30-24-54-46-70"/><path d="M246 164c12-4 20-14 20-28-12 2-22 12-20 28ZM232 142c10-6 14-18 10-30-10 6-16 18-10 30Z"/>
+        <circle cx="236" cy="112" r="5"/><circle cx="248" cy="104" r="5"/><circle cx="244" cy="118" r="5"/>
+        <path d="M44 72l4 10 10 4-10 4-4 10-4-10-10-4 10-4ZM272 52l3 8 8 3-8 3-3 8-3-8-8-3 8-3Z"/>
+        <path d="M30 214h260"/>
+      </svg>
+    <p class="home-copy">계절별 트렌드와 한방 약재로 만든 라인 후보를 고르면<br>기획안 · 광고 시나리오 · 광고 이미지까지 한 번에 만들어 드려요.</p>
+    <button class="home-cta" type="button" data-view="launch">출시 기획실 들어가기</button>
   </div>
+  <ol class="home-steps">
+    <li><b>01</b><strong>계절 고르기</strong><span>봄 · 여름 · 가을 · 겨울 트렌드</span></li>
+    <li><b>02</b><strong>라인 후보 고르기</strong><span>약재 · 피부 목적 · 제품 구성</span></li>
+    <li><b>03</b><strong>기획안 받기</strong><span>마이 기획실에서 보고 고치기</span></li>
+  </ol>
 </section>
 
 <!-- 출시 기획실 -->

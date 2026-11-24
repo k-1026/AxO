@@ -1,0 +1,484 @@
+/* HerbHub 첫 진입 인트로: 전통 약장(서랍장).
+   시안(웹사이트/시안/약장_인트로_시안.html)의 디자인·3D 값을 그대로 옮기고, 모든 규칙을 .yj-intro 안으로 가뒀어요.
+   - 마우스: 커서가 닿은 서랍 한 칸만 0.12초 뒤 0.75초 동안 부드럽게 열려요. 열린 서랍은 아랫칸 쪽을 덮어요.
+   - 클릭: 약장 어디든 누르면 인트로가 사라지고(템플릿처럼 빈 화면 → 메인이 천천히 나타남) 메인으로 가요. */
+
+.yj-intro {
+  --bg-hanji: #E8DFD1;
+  --brass-gold: #C8A252;
+  --brass-highlight: #EAD08C;
+  --text-gold: #D5BA8A;
+  --drawer-depth: 76px;
+  --cabinet-depth: 115px;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 16px;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  /* 한지 질감 배경 */
+  background-color: var(--bg-hanji);
+  background-image:
+    radial-gradient(circle at 50% 42%, rgba(255, 252, 245, 0.72) 0%, rgba(223, 211, 192, 0.55) 100%),
+    repeating-linear-gradient(45deg, rgba(139, 104, 73, 0.025) 0px, rgba(139, 104, 73, 0.025) 1px, transparent 1px, transparent 6px),
+    repeating-linear-gradient(-45deg, rgba(43, 27, 17, 0.02) 0px, rgba(43, 27, 17, 0.02) 1px, transparent 1px, transparent 8px);
+  transition: opacity 0.45s ease;
+}
+.yj-intro * { box-sizing: border-box; }
+/* 나갈 때: 약장이 사라지고 바탕만 남았다가(템플릿과 같은 빈 화면) 오버레이가 걷혀요 */
+.yj-intro.is-leaving .cabinet-stage { opacity: 0; transition: opacity 0.35s ease; }
+.yj-intro.is-gone { opacity: 0; pointer-events: none; }
+
+.yj-intro .cabinet-stage {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto 0;
+  padding: 8px 0;
+  cursor: pointer;
+}
+.yj-intro .yj-grid-small { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin-bottom: 8px; transform-style: preserve-3d; }
+.yj-intro .yj-grid-large { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; transform-style: preserve-3d; }
+.yj-intro .drawer-slot.is-small { height: 44px; }
+.yj-intro .drawer-slot.is-large { height: 48px; }
+.yj-intro .cabinet-stage:focus-visible { outline: 3px solid #C8A252; outline-offset: 6px; border-radius: 8px; }
+@media (min-width: 640px) {
+  .yj-intro { padding: 28px 32px; }
+  .yj-intro .yj-grid-small { gap: 10px; margin-bottom: 10px; }
+  .yj-intro .yj-grid-large { gap: 10px; }
+  .yj-intro .drawer-slot.is-small { height: 52px; }
+  .yj-intro .drawer-slot.is-large { height: 56px; }
+}
+@media (min-width: 768px) {
+  .yj-intro .drawer-slot.is-small { height: 56px; }
+}
+
+/* 인트로가 걷힌 뒤 메인이 천천히 나타나요 (상단바 → 내용 순서) */
+@keyframes hh-page-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+body.page-entering .topbar { animation: hh-page-in 0.7s ease both; }
+body.page-entering #view-home > * { animation: hh-page-in 0.9s ease both; }
+body.page-entering #view-home > *:nth-child(2) { animation-delay: 0.15s; }
+@media (prefers-reduced-motion: reduce) {
+  body.page-entering .topbar, body.page-entering #view-home > * { animation: none; }
+  .yj-intro .drawer-box, .yj-intro .drawer-front { transition: none !important; }
+}
+
+/*
+  [3D 투시 스테이지]
+  약장 본체가 좌측면을 드러낸 3/4 사선 구도(rotateY(15deg))이고, 시점(perspective-origin)은 왼쪽 위예요.
+  서랍이 Z축으로 앞으로 나오면 서랍의 좌측 옆면과 윗면이 약장 본체와 같은 각도로 보이고,
+  위에서 내려다보는 시점이라 앞판은 살짝 아래로 투영돼 아랫칸 쪽을 덮어요 (윗칸 글자는 그대로 보여요).
+*/
+.yj-intro .cabinet-stage {
+  perspective: 1150px;
+  perspective-origin: 4% -24%;
+  filter: drop-shadow(-12px 28px 34px rgba(28, 16, 10, 0.34));
+}
+
+/*
+  [약장 본체 3/4 사선 구도]
+  rotateY(15deg) 로 약장 정면이 살짝 왼쪽을 향하게 돌려 좌측 옆면이 보이게 합니다.
+  서랍 상자(.drawer-box)도 같은 3D 공간(preserve-3d) 안에 있으므로, 서랍이 앞으로 나오면
+  서랍의 좌측 옆면이 약장 본체의 좌측 옆면과 '같은 각도'로 함께 드러납니다.
+*/
+.yj-intro .yakjang-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 820px;
+  margin: 0 auto;
+  padding-top: 24px;
+  transform-style: preserve-3d;
+  transform: rotateY(15deg);
+  /* 그림자(filter)는 여기 두면 3D 가 평면으로 눌려(flatten) 서랍이 튀어나오지 않으므로 .cabinet-stage 로 옮겼습니다 */
+}
+
+/* 좌측 입체 측면 판넬: 정면 왼쪽 모서리에서 뒤쪽(-Z)으로 90° 꺾인 진짜 3D 벽 */
+.yj-intro .yakjang-left-wing {
+  position: absolute;
+  left: 0;
+  top: 22px;
+  bottom: 12px;
+  width: var(--cabinet-depth);
+  background: linear-gradient(270deg, #170D08 0%, #2B1B12 72%, #1C100A 100%);
+  transform-origin: left center;
+  transform: rotateY(90deg);
+  border-radius: 3px 0 0 3px;
+  box-shadow: inset -4px 0 12px rgba(255, 255, 255, 0.05), inset 6px 0 14px rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+}
+
+/* 좌측면 하단 다리 사이 뚫린 곡선 보강대 */
+.yj-intro .yakjang-left-wing::after {
+  content: '';
+  position: absolute;
+  left: 10px;
+  right: 14px;
+  bottom: 0;
+  height: 44px;
+  background-color: var(--bg-hanji);
+  border-top: 9px solid #1C100A;
+  border-left: 11px solid #1C100A;
+  border-right: 11px solid #1C100A;
+  border-radius: 8px 8px 0 0;
+}
+
+/* 약장 상판: 처마 윗면에서 뒤(-Z)로 90° 눕힌 판. 위에서 내려다보는 시점이라 윗면이 보입니다 */
+.yj-intro .yakjang-top-panel {
+  position: absolute;
+  top: 24px;
+  left: -18px;
+  right: -18px;
+  height: calc(var(--cabinet-depth) + 18px);
+  background: linear-gradient(180deg, #432B1D 0%, #36231A 45%, #2B1B12 100%);
+  transform-origin: top center;
+  transform: rotateX(-90deg);
+  border-radius: 4px 4px 0 0;
+  box-shadow: inset 0 -10px 18px rgba(0, 0, 0, 0.45), inset 0 2px 2px rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+/* 상단 처마 (양 끝이 살짝 올라간 전통 곡선 천판) */
+.yj-intro .yakjang-top-roof {
+  position: relative;
+  z-index: 5;
+  height: 26px;
+  margin: 0 -18px;
+  background: linear-gradient(180deg, #432B1D 0%, #2B1B12 65%, #1C100A 100%);
+  border-radius: 4px 4px 2px 2px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.12);
+}
+
+.yj-intro .yakjang-top-roof::before,
+.yj-intro .yakjang-top-roof::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  width: 48px;
+  height: 16px;
+  background: linear-gradient(180deg, #4A3020 0%, #2E1D12 100%);
+}
+
+.yj-intro .yakjang-top-roof::before {
+  left: 0;
+  border-radius: 2px 100% 0 0;
+  transform: rotate(-4deg);
+  transform-origin: bottom left;
+}
+
+.yj-intro .yakjang-top-roof::after {
+  right: 0;
+  border-radius: 100% 2px 0 0;
+  transform: rotate(4deg);
+  transform-origin: bottom right;
+}
+
+/* 약장 본체 프레임 (3D 공간 유지) */
+.yj-intro .yakjang-body {
+  position: relative;
+  z-index: 4;
+  background: linear-gradient(180deg, #2B1B12 0%, #23150D 100%);
+  padding: 14px 16px 16px 16px;
+  border-left: 6px solid #1C100A;
+  border-right: 6px solid #1C100A;
+  border-bottom: 8px solid #180E09;
+  box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.65);
+  transform-style: preserve-3d;
+}
+
+/* 하단 4개의 전통 곡선 다리 받침 */
+.yj-intro .yakjang-legs {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 22px;
+  height: 44px;
+}
+
+.yj-intro .yakjang-leg {
+  width: 34px;
+  height: 44px;
+  background: linear-gradient(90deg, #1C100A 0%, #2E1D12 50%, #1C100A 100%);
+  position: relative;
+  border-radius: 0 0 5px 5px;
+}
+
+.yj-intro .yakjang-legs::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 16px;
+  right: 16px;
+  height: 14px;
+  background: #23150D;
+  border-bottom: 2px solid #160D08;
+  border-radius: 0 0 8px 8px;
+}
+
+/* 바닥 그림자 */
+.yj-intro .yakjang-floor-shadow {
+  width: 94%;
+  height: 18px;
+  margin: -6px auto 0;
+  background: radial-gradient(ellipse at center, rgba(28, 16, 10, 0.34) 0%, rgba(28, 16, 10, 0) 72%);
+  border-radius: 50%;
+}
+
+/* 개별 서랍 슬롯 (고정된 나무 칸막이 틀) */
+.yj-intro .drawer-slot {
+  position: relative;
+  background: #120A06;
+  border-radius: 2px;
+  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.92), 0 1px 0 rgba(255, 255, 255, 0.05);
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+
+/* 서랍이 열릴 때 드러나는 안쪽 어두운 빈 공간(cavity) 및 한약재 디테일 */
+.yj-intro .drawer-cavity {
+  position: absolute;
+  inset: 2px;
+  background: radial-gradient(circle at 50% 65%, #342013 0%, #0D0603 88%);
+  border-radius: 2px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  box-shadow: inset 0 6px 14px rgba(0, 0, 0, 0.95);
+}
+
+.yj-intro .drawer-cavity-herb {
+  font-size: 10px;
+  color: rgba(234, 208, 140, 0.72);
+  letter-spacing: 0.08em;
+  opacity: 0;
+  transition: opacity 0.32s ease;
+}
+
+.yj-intro .drawer-slot.is-open .drawer-cavity-herb {
+  opacity: 1;
+}
+
+/*
+  [3D 서랍 상자]
+  앞판·윗면·좌우 옆면·밑면 판재를 조립한 상자예요. 열리면 Z축으로 --drawer-depth 만큼 앞으로 나와요.
+*/
+.yj-intro .drawer-box {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  /* 닫힐 때: 지연 없이 부드럽게 들어감 */
+  transition: transform 0.55s cubic-bezier(0.33, 1, 0.68, 1);
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+.yj-intro .drawer-slot.is-open {
+  z-index: 60;
+}
+
+/*
+  [서랍 열림]
+  위에서 내려다보는 시점(perspective-origin 위쪽)이라, 앞으로(Z) 나온 서랍은 화면에서 살짝 아래로 투영됩니다.
+  그래서 열린 서랍 앞판이 '아랫칸' 글자 쪽을 덮고, 윗칸 글자는 그대로 보입니다.
+  0.12초 늦게 출발해 0.75초 동안 감속하며 부드럽게 당겨져 나옵니다.
+  3D 공간(preserve-3d) 안에서는 실제 깊이(Z)로 앞뒤가 정해지므로 열린 서랍이 항상 다른 서랍 위에 그려집니다.
+*/
+.yj-intro .drawer-slot.is-open .drawer-box {
+  transform: translate3d(0, 0, var(--drawer-depth));
+  transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.12s;
+}
+
+/* 서랍 앞판 (나무 프레임 + 금빛 음각 한글 + 중앙 원형 놋쇠 링고리) */
+.yj-intro .drawer-front {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(165deg, #3D271A 0%, #2E1D13 55%, #24160E 100%);
+  border: 1.5px solid #4F3524;
+  border-radius: 2px;
+  box-shadow:
+    inset 0 0 0 3px #23150D,
+    inset 0 0 0 4px rgba(139, 104, 73, 0.28),
+    0 2px 5px rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12%;
+  backface-visibility: hidden;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.yj-intro .drawer-slot.is-open .drawer-front {
+  transition: border-color 0.5s ease 0.12s, box-shadow 0.75s ease 0.12s, background 0.5s ease 0.12s;
+}
+
+.yj-intro .drawer-slot.is-open .drawer-front {
+  background: linear-gradient(165deg, #4D3322 0%, #382316 55%, #2B1B12 100%);
+  border-color: #C8A252;
+  box-shadow:
+    inset 0 0 0 3px #2A1910,
+    inset 0 0 0 4px rgba(200, 162, 82, 0.5),
+    0 12px 22px rgba(0, 0, 0, 0.55);
+}
+
+/* 서랍 윗면 오동나무 속살 판재 (상단 투시 소실점 덕분에 입체적으로 드러남) */
+.yj-intro .drawer-top-wall {
+  position: absolute;
+  top: 0;
+  left: 1px;
+  right: 1px;
+  height: var(--drawer-depth);
+  background:
+    repeating-linear-gradient(90deg, rgba(43, 27, 18, 0.08) 0px, rgba(43, 27, 18, 0.08) 2px, transparent 2px, transparent 7px),
+    linear-gradient(180deg, #543926 0%, #9C7653 45%, #C89F75 100%);
+  transform-origin: top center;
+  transform: rotateX(-90deg);
+  border-left: 1.5px solid #3D271A;
+  border-right: 1.5px solid #3D271A;
+  box-shadow: inset 0 10px 18px rgba(20, 12, 7, 0.72), inset 0 -2px 4px rgba(255, 235, 200, 0.3);
+  pointer-events: none;
+}
+
+/* 서랍 내부 약재 칸막이 표현 (윗면 판재 안쪽 깊이감 강조) */
+.yj-intro .drawer-top-wall::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 10px;
+  bottom: 8px;
+  background: radial-gradient(ellipse at center, #4A321F 0%, #26170E 100%);
+  border: 1px solid rgba(196, 155, 114, 0.45);
+  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.85);
+}
+
+/* 서랍 좌측/우측 오동나무 측면 판재 (약장 기울기와 동일한 각도로 좌측 옆면이 입체 노출됨) */
+.yj-intro .drawer-side-left,
+.yj-intro .drawer-side-right {
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  width: var(--drawer-depth);
+  pointer-events: none;
+}
+
+/* 앞판 왼쪽 모서리에서 뒤로 90° — 약장 본체 rotateY(15deg) 안에 있으므로 본체 좌측면과 같은 각도로 보입니다 */
+.yj-intro .drawer-side-left {
+  left: 0;
+  transform-origin: left center;
+  transform: rotateY(90deg);
+  background:
+    repeating-linear-gradient(0deg, rgba(43, 27, 18, 0.08) 0px, rgba(43, 27, 18, 0.08) 2px, transparent 2px, transparent 6px),
+    linear-gradient(90deg, #4B3221 0%, #96704D 55%, #BD946B 100%);
+  border-top: 1.5px solid #D4AC82;
+  border-bottom: 1.5px solid #2B1B12;
+  box-shadow: inset 8px 0 14px rgba(20, 12, 7, 0.65), inset -2px 0 4px rgba(255, 235, 200, 0.25);
+}
+
+.yj-intro .drawer-side-right {
+  right: 0;
+  transform-origin: right center;
+  transform: rotateY(-90deg);
+  background: linear-gradient(270deg, #3D271A 0%, #8C6847 65%, #A67E58 100%);
+  border-top: 1px solid #C49B72;
+  border-bottom: 1px solid #2B1B12;
+  box-shadow: inset -6px 0 12px rgba(20, 12, 7, 0.65);
+}
+
+/* 서랍 밑면 판재 (3D 박스 구조 완성) */
+.yj-intro .drawer-bottom-wall {
+  position: absolute;
+  bottom: 0;
+  left: 1px;
+  right: 1px;
+  height: var(--drawer-depth);
+  background: #23150D;
+  transform-origin: bottom center;
+  transform: rotateX(90deg);
+  pointer-events: none;
+}
+
+/* 금빛 음각 약재 글자 스타일 */
+.yj-intro .herb-char {
+  font-family: 'Noto Serif KR', serif;
+  font-weight: 600;
+  color: var(--text-gold);
+  font-size: clamp(0.75rem, 1.35vw, 0.98rem);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85);
+  transition: color 0.25s ease;
+}
+
+.yj-intro .drawer-slot.is-open .herb-char {
+  color: #F6E4BC;
+}
+
+/* 원형 놋쇠 링고리 (당김쇠) */
+.yj-intro .brass-ring {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--brass-gold);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.yj-intro .brass-ring::after {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--brass-highlight) 0%, var(--brass-gold) 100%);
+}
+
+.yj-intro .drawer-slot.is-open .brass-ring {
+  border-color: var(--brass-highlight);
+  transform: scale(1.14);
+}
+
+/* 반응형 모바일 조정 */
+@media (max-width: 768px) {
+  .yj-intro .cabinet-stage {
+    perspective-origin: 35% -20%;
+  }
+  .yj-intro .yakjang-wrapper {
+    transform: rotateY(8deg);
+  }
+  .yj-intro {
+    --cabinet-depth: 70px;
+  }
+  .yj-intro .yakjang-top-panel {
+    left: -8px;
+    right: -8px;
+  }
+  .yj-intro .yakjang-top-roof {
+    margin: 0 -8px;
+    height: 20px;
+  }
+  .yj-intro .yakjang-body {
+    padding: 10px 10px 12px 10px;
+  }
+  .yj-intro .brass-ring {
+    width: 11px;
+    height: 11px;
+    border-width: 1.5px;
+  }
+  .yj-intro .drawer-front {
+    padding: 0 8%;
+  }
+}

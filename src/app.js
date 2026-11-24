@@ -253,7 +253,8 @@ document.getElementById("d-close").onclick = () => document.getElementById("deta
 document.getElementById("detail").addEventListener("click", e => { if (e.target.id === "detail") e.target.close(); });
 
 /* ════════ 화면 전환: 첫 화면 · 출시 기획실 · 요금제 · 마이 기획실 ════════ */
-function showView(v) {
+export function showView(v) {
+  document.body.dataset.view = v; // 인트로에서는 상단바를 숨겨요
   document.querySelectorAll("[data-view-panel]").forEach(p => { p.hidden = p.dataset.viewPanel !== v; });
   document.querySelectorAll(".menu [data-view]").forEach(b => b.classList.toggle("on", b.dataset.view === v));
   // 계절 색은 출시 기획실에서 계절을 고른 뒤에만 써요. 다른 화면은 사이트 기본 색 하나로 보여요.
