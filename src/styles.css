@@ -216,3 +216,13 @@ dl.kw dt { color: var(--muted); font-weight: 700; } dl.kw dd { margin: 0; displa
 @media (max-width: 560px) { .detail-actions { flex-wrap: wrap; } .pick-count { flex-basis: 100%; } .detail-actions .btn-solid { flex: 1; } }
 .home-copy { word-break: keep-all; }
 @media (max-width: 560px) { .home-copy br { display: none; } }
+
+/* 출시 구성 표의 "추천" 표시: 검정 글씨 + 형광 노랑 글씨 테두리가 깜빡여요 */
+.pick-rec { margin-left: 4px; font-size: .8rem; font-weight: 800; color: #111; letter-spacing: .02em; animation: pick-rec-blink 1s steps(1, end) infinite; }
+@keyframes pick-rec-blink {
+  0%   { text-shadow: 1px 0 0 #E6FF00, -1px 0 0 #E6FF00, 0 1px 0 #E6FF00, 0 -1px 0 #E6FF00, 1px 1px 0 #E6FF00, -1px -1px 0 #E6FF00, 1px -1px 0 #E6FF00, -1px 1px 0 #E6FF00, 0 0 6px #F4FF3A; }
+  50%  { text-shadow: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pick-rec { animation: none; text-shadow: 1px 0 0 #E6FF00, -1px 0 0 #E6FF00, 0 1px 0 #E6FF00, 0 -1px 0 #E6FF00; }
+}

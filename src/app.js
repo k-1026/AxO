@@ -242,7 +242,7 @@ function openDetail(r) {
   /* 추천 구성과 함께 낼 수 있는 제품을 한 표에. 추천 구성은 처음부터 골라 둬요 */
   document.getElementById("d-lineup").innerHTML = productOptions(l).map((o, i) => `<tr>
     <td class="pick-col"><input type="checkbox" id="d-pick-${i}" data-pick="${esc(o.name)}" data-priced="${o.price != null ? 1 : 0}"${o.base ? " checked" : ""}></td>
-    <td><label for="d-pick-${i}">${esc(o.name)}</label>${o.base ? ` <span class="note">추천</span>` : ""}</td>
+    <td><label for="d-pick-${i}">${esc(o.name)}</label>${o.base ? ` <span class="pick-rec">추천</span>` : ""}</td>
     ${o.price != null ? `<td>${qty(o.type, o.ml)}</td><td>${won(o.price)}</td><td>${unitOf(o.type)}당 ${won(Math.round(o.price / o.ml))}</td>` : `<td colspan="3" class="note">가격 기준 준비 중</td>`}
   </tr>`).join("");
   document.getElementById("d-pick-err").textContent = "";
