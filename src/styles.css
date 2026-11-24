@@ -44,11 +44,9 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 /* 메인: 로고 + 일러스트 + 소개 */
 .home-hero { max-width: 900px; margin: 0 auto; padding: 44px 16px 24px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 18px; color: var(--accent); }
 .home-eyebrow { font-family: var(--serif); font-size: .9rem; letter-spacing: .18em; text-transform: uppercase; }
-.logo-mid { height: min(30vw, 130px); }
-.herb-art { width: min(70vw, 300px); height: auto; color: var(--accent); }
+/* 로고: 예전 일러스트 자리·크기(가로 최대 300px)로 */
+.logo-hero { width: min(70vw, 300px); height: auto; margin: 36px 0 28px; }
 .home-copy { font-family: var(--serif); color: var(--ink); font-size: 1.08rem; line-height: 1.9; }
-.home-cta { font: inherit; font-weight: 700; font-size: 1.05rem; color: #fff; background: var(--accent); border: 0; border-radius: 999px; padding: 14px 34px; cursor: pointer; }
-.home-cta:hover { filter: brightness(1.08); }
 .home-steps { list-style: none; max-width: 900px; margin: 10px auto 60px; padding: 0 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
 .home-steps li { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); padding: 18px 20px; display: flex; flex-direction: column; gap: 2px; }
 .home-steps b { font-family: var(--serif); color: var(--accent); font-size: 1.3rem; }
