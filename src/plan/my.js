@@ -6,6 +6,7 @@ import { hasSupabase } from "../lib/supabase.js";
 import { esc } from "../utils/text.js";
 import { productVisual } from "../app.js";
 import { LOADING_IMAGES } from "../config/assets.js";
+import { qty, unitOf } from "../config/rules.js";
 
 const root = () => document.querySelector("#view-my .page");
 let notice = [];       // 보기 화면 위에 보여 줄 안내 (예: 기획안 만들기 직후 이미지 만드는 중)
@@ -13,7 +14,8 @@ let seq = 0;           // 늦게 도착한 응답이 화면을 덮어쓰지 않�
 let chat = null;       // 지금 기획안의 수정 챗봇 { planId, el } — 버전을 바꿔 다시 그려도 대화가 이어져요
 
 const money = n => (Number.isFinite(n) ? `${n.toLocaleString("ko-KR")}원` : "-");
-const perMl = (price, ml) => (Number.isFinite(price) && Number.isFinite(ml) && ml > 0 ? `${Math.round(price / ml).toLocaleString("ko-KR")}원` : "-");
+/* 단위당 가격: 마스크·패드는 매당, 나머지는 ml당 */
+const perUnit = (type, price, n) => (Number.isFinite(price) && Number.isFinite(n) && n > 0 ? `${unitOf(type)}당 ${Math.round(price / n).toLocaleString("ko-KR")}원` : "-");
 const ymd = s => { const d = new Date(s); return Number.isNaN(d.getTime()) ? "" : `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`; };
 const list = arr => (arr?.length ? `<ul>${arr.map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : `<p class="my-none">없어요.</p>`);
 
@@ -85,7 +87,7 @@ function render(d) {
   const c = d.version.content, p = c.plan ?? {}, isLatest = d.version.version_no === d.latest_version_no;
   const scenarios = c.scenarios || [];
   legacy = scenarios.length > 1;
-  const rows = (p.products || []).map(x => `<tr><td>${esc(x.name)}</td><td>${x.ml ? `${esc(x.ml)}ml` : "-"}</td><td>${money(x.price)}</td><td>${perMl(x.price, x.ml)}</td><td>${esc(x.role ?? "")}</td><td>${esc(x.status ?? "")}</td></tr>`).join("");
+  const rows = (p.products || []).map(x => `<tr><td>${esc(x.name)}</td><td>${x.ml ? esc(qty(x.type, x.ml)) : "-"}</td><td>${money(x.price)}</td><td>${perUnit(x.type, x.price, x.ml)}</td><td>${esc(x.role ?? "")}</td><td>${esc(x.status ?? "")}</td></tr>`).join("");
   root().innerHTML = `<div class="my-layout"><div class="my-main">
     <button class="btn-line my-back" type="button" data-my-list>← 목록</button>
     ${notice.length ? `<div class="my-notice" role="status">${notice.map(n => `<p>${esc(n)}</p>`).join("")}</div>` : ""}
@@ -97,7 +99,7 @@ function render(d) {
     <section class="my-sec"><h3>콘셉트</h3><p>${esc(p.concept ?? "")}</p><h3>타깃</h3><p>${esc(p.target ?? "")}</p></section>
     <section class="my-sec"><h3>핵심 문구</h3>${list(p.key_claims)}</section>
     ${(v => v ? `<section class="my-sec"><h3>제품 이미지</h3><div class="my-product">${v}</div></section>` : "")(productVisual(d.plan.season, d.plan.herb, d.plan.purpose))}
-    <section class="my-sec"><h3>제품 구성</h3><div class="my-table"><table><thead><tr><th>이름</th><th>용량</th><th>정가</th><th>ml당 가격</th><th>역할</th><th>구분</th></tr></thead><tbody>${rows}</tbody></table></div></section>
+    <section class="my-sec"><h3>제품 구성</h3><div class="my-table"><table><thead><tr><th>이름</th><th>용량</th><th>정가</th><th>단위당 가격</th><th>역할</th><th>구분</th></tr></thead><tbody>${rows}</tbody></table></div></section>
     <section class="my-sec"><h3>근거 메모</h3>${list(p.notes)}</section>
     <section class="my-sec"><h3>주의사항</h3>${list(p.cautions)}</section>
     <section class="my-sec"><h3>검토 의견</h3>${list(p.review_notes)}</section>

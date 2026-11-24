@@ -1,5 +1,5 @@
 /* 검증 에이전트의 코드 규칙. AI 없이 글이 규칙을 지켰는지 확인해요. */
-import { BANNED_PHRASES, BANNED_EXCEPTIONS, BANNED_ENGLISH, PRICE_RANGE, extrasOf } from "../../src/config/rules.js";
+import { BANNED_PHRASES, BANNED_EXCEPTIONS, BANNED_ENGLISH, PRICE_RANGE, extrasOf, qty, unitOf } from "../../src/config/rules.js";
 import { STATUS } from "./writer.js";
 
 export { REVIEW_SCHEMA, buildReviewPrompt, cleanReview } from "./prompt.js";
@@ -78,10 +78,10 @@ export function checkRules(content, cand, data) {
   const want = [...lineup.map(x => x[1]), ...pending];
   const unknown = products.map(p => p?.name).filter(n => !want.includes(n));
   if (want.some(n => !find(n)) || unknown.length) fix.push(`제품 목록이 후보 구성(${want.join("·")})과 달라요.`);
-  for (const [, name, ml, price] of lineup) {
+  for (const [type, name, ml, price] of lineup) {
     const p = find(name);
     if (!p) continue;
-    if (p.ml !== ml || p.price !== price) fix.push(`제품 "${name}"의 용량·정가가 후보 값(${ml}ml ${price}원)과 달라요.`);
+    if (p.ml !== ml || p.price !== price) fix.push(`제품 "${name}"의 용량·정가가 후보 값(${qty(type, ml)} ${price}원)과 달라요.`);
     if (p.status !== STATUS.ready) fix.push(`제품 "${name}"의 상태는 "${STATUS.ready}"여야 해요.`);
   }
   for (const name of pending) {
@@ -97,7 +97,7 @@ export function checkRules(content, cand, data) {
   // 7. 가격 범위는 의견으로만 남겨요
   for (const [type, name, ml, price] of lineup) {
     const r = PRICE_RANGE[type], per = price / ml;
-    if (r && (per < r[0] || per > r[1])) notes.push(`가격 범위 밖: ${name} ml당 ${Math.round(per)}원`);
+    if (r && (per < r[0] || per > r[1])) notes.push(`가격 범위 밖: ${name} ${unitOf(type)}당 ${Math.round(per)}원`);
   }
   return { fix: uniq(fix), notes: uniq(notes) };
 }

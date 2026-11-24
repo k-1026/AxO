@@ -1,5 +1,5 @@
 /* 에이전트 프롬프트·스키마 공통 조각. AI는 글만 쓰고 숫자는 코드 값을 써요. */
-import { extrasOf } from "../../src/config/rules.js";
+import { extrasOf, qty } from "../../src/config/rules.js";
 
 export const STRING = { type: "STRING" };
 export const STRINGS = { type: "ARRAY", items: STRING };
@@ -13,7 +13,7 @@ export function describeLine(cand, season, data) {
   const l = lineOf(cand);
   const memo = k => (l[k] && l[k][1]) || "미확인";
   const pending = extrasOf(l).map(x => x.name);
-  const items = (l.lineup || []).map(([, name, ml, price]) => `${name} ${ml}ml ${price.toLocaleString("ko-KR")}원`).join(", ");
+  const items = (l.lineup || []).map(([type, name, ml, price]) => `${name} ${qty(type, ml)} ${price.toLocaleString("ko-KR")}원`).join(", ");
   return [
     `계절: ${season}`,
     `원료: ${l.herb}(${l.hanja || "한자 미확인"})`,

@@ -1,13 +1,24 @@
 /* 기획 규칙: 라인 구성, 문구, 페르소나, 추천 조합 등. 화면 로직과 함께 바뀌는 값이라 코드에 둬요. */
 export const FINISH = Object.fromEntries(["진정", "쿨링", "모공·피지", "보습", "민감·장벽", "미백(톤)", "영양", "탄력"].map(p => [p, { mat: "청향 샘플의 제품별 재질·투명도·광택 유지" }]));
 export const PURPOSE_LABEL = { "보습": "수분 보습", "민감·장벽": "장벽 보습", "진정": "진정", "미백(톤)": "톤", "쿨링": "쿨링", "모공·피지": "모공 피지", "영양": "영양", "탄력": "탄력" };
-/* 중저가 ml당 정가 범위 (가격 기준표) · 용량·정가는 범위 안의 예시값 */
-export const PRICE_RANGE = { toner: [36, 90], serum: [148, 430], cream: [280, 410], lotion: [98, 193], mist: [88, 192] };
+/* 중저가 단위당 정가 범위 (가격 기준표) · 용량·정가는 범위 안의 예시값
+   토너~미스트: research/HSJ_가격기준_K5.md · 클렌저·마스크·패드·아이크림: research/MEJ_가격기준_추가제품.md (2026-11-24 올리브영 판매순)
+   마스크·패드는 ml 대신 매(장)당 정가예요 (UNIT 참고) */
+export const PRICE_RANGE = { toner: [36, 90], serum: [148, 430], cream: [280, 410], lotion: [98, 193], mist: [88, 192],
+  cleanser: [53, 136], mask: [2500, 3600], pad: [238, 263], eye: [483, 1033] };
+
+/* 제품 유형별 용량 단위. 없으면 ml. 용량 숫자는 어느 단위든 같은 칸(ml)에 담아요 */
+export const UNIT = { mask: "매", pad: "매" };
+export const unitOf = type => UNIT[type] || "ml";
+/** 용량 글자: qty("pad", 70) → "70매", qty("toner", 200) → "200ml" */
+export const qty = (type, n) => `${n}${unitOf(type)}`;
 
 export const ITEM = {
   toner: ["toner", "토너", 200, 15000], serum: ["serum", "세럼", 50, 19000], cream: ["cream", "크림", 50, 19000],
   gel: ["cream", "젤 크림", 50, 19000], rich: ["cream", "리치 크림", 50, 20000],
-  lotion: ["lotion", "로션", 200, 30000], mist: ["mist", "미스트", 100, 15000]
+  lotion: ["lotion", "로션", 200, 30000], mist: ["mist", "미스트", 100, 15000],
+  cleanser: ["cleanser", "클렌저", 150, 15000], mask: ["mask", "마스크", 5, 15000],
+  pad: ["pad", "패드", 70, 18000], padpack: ["pad", "패드·팩", 70, 18000], eye: ["eye", "아이크림", 30, 22000]
 };
 export const LINE_RULE = {
   "진정":     { first: ["toner", "gel"], next: ["세럼", "미스트", "패드"] },
@@ -25,7 +36,7 @@ export const lineupFor = p => (LINE_RULE[p] || LINE_RULE["보습"]).first.map(k 
 const ITEM_BY_NAME = Object.fromEntries(Object.values(ITEM).map(x => [x[1], x]));
 
 /* 후보 라인에서 고를 수 있는 제품 전체 (추천 구성 → 함께 낼 수 있는 제품 순서).
-   기준값이 없는 제품(클렌저·마스크 등)은 ml·price 가 null 이에요. base = 처음부터 골라 둘 추천 구성 */
+   기준값이 없는 제품은 ml·price 가 null 이에요(가격 준비 중). base = 처음부터 골라 둘 추천 구성 */
 export function productOptions(l) {
   const out = [], seen = new Set();
   const add = ([type, name, ml, price], base) => {
@@ -58,7 +69,8 @@ export function selectLine(l, names) {
 export const extrasOf = l => (Array.isArray(l?.extras) ? l.extras : l?.extra ? [{ type: "cleanser", name: l.extra }] : []);
 
 export const ROLE = { "토너": "결 정돈", "세럼": "원료를 진하게 담는 대표 단계", "크림": "보습 마무리", "젤 크림": "산뜻한 마무리",
-  "리치 크림": "영양감 마무리", "미스트": "수시로 뿌리는 쿨링", "로션": "가벼운 보습" };
+  "리치 크림": "영양감 마무리", "미스트": "수시로 뿌리는 쿨링", "로션": "가벼운 보습",
+  "클렌저": "부드러운 세안", "마스크": "집중 보습 케어", "패드": "닦아 내는 결 정돈", "패드·팩": "닦아 내는 결 정돈", "아이크림": "눈가 보습" };
 
 export const COMBO_WHY = {
   "진정": "예민한 시기엔 단계를 줄여야 부담이 적어서, 토너로 정돈하고 젤 크림으로 가볍게 끝나는 2단계로 묶었어요.",

@@ -1,5 +1,5 @@
 import {
-  COMBO_KW, SEASON_TREND_NOTES, PRODUCT_BOX, SAMPLE, productOptions
+  COMBO_KW, SEASON_TREND_NOTES, PRODUCT_BOX, SAMPLE, qty, unitOf, productOptions
 } from "./config/rules.js";
 import { SAMPLE_BASE } from "./config/assets.js";
 import { lineKey, buildCandidates, rankLines } from "./core/candidates.js";
@@ -187,7 +187,7 @@ function renderResults() {
       <div class="body">
         <div class="herb">${esc(r.l.herb)}${r.l.hanja ? `(${r.l.hanja})` : ""} · ${esc(r.l.purpose)} · ${r.l.functional ? "기능성 보고 필요" : "일반 화장품"}</div>
         <h3>${esc(r.l.name)}</h3>
-        <div class="price">${r.l.lineup.map(([, k, ml, p]) => `${esc(k)} ${ml}ml ${won(p)}`).join(" · ")}</div>
+        <div class="price">${r.l.lineup.map(([t, k, ml, p]) => `${esc(k)} ${qty(t, ml)} ${won(p)}`).join(" · ")}</div>
       </div>
     </button>`).join("")}</div>`;
   el.querySelectorAll("[data-k]").forEach(b => b.onclick = () => openDetail(RES.find(r => lineKey(r.l) === b.dataset.k)));
@@ -243,7 +243,7 @@ function openDetail(r) {
   document.getElementById("d-lineup").innerHTML = productOptions(l).map((o, i) => `<tr>
     <td class="pick-col"><input type="checkbox" id="d-pick-${i}" data-pick="${esc(o.name)}" data-priced="${o.price != null ? 1 : 0}"${o.base ? " checked" : ""}></td>
     <td><label for="d-pick-${i}">${esc(o.name)}</label>${o.base ? ` <span class="note">추천</span>` : ""}</td>
-    ${o.price != null ? `<td>${o.ml}ml</td><td>${won(o.price)}</td><td>${won(Math.round(o.price / o.ml))}</td>` : `<td colspan="3" class="note">가격 기준 준비 중</td>`}
+    ${o.price != null ? `<td>${qty(o.type, o.ml)}</td><td>${won(o.price)}</td><td>${unitOf(o.type)}당 ${won(Math.round(o.price / o.ml))}</td>` : `<td colspan="3" class="note">가격 기준 준비 중</td>`}
   </tr>`).join("");
   document.getElementById("d-pick-err").textContent = "";
   syncPicks();

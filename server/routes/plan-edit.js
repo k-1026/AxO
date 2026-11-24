@@ -2,7 +2,7 @@
    POST /api/plan-edit/apply: {plan_id, base_version_no, proposal} → 글·숫자를 서버에서 다시 조립하고 검증한 뒤 새 버전으로 저장해요 → {version_no, regenerate_images}.
    proposal 은 화면이 오가며 들고 있는 값이라 믿지 않아요. 제품 이름·용량·정가는 코드 값으로 다시 채우고, 검증을 통과해야만 저장해요. */
 import { HttpError } from "../http.js";
-import { pickCandidate, applySelection, InvalidCandidateError, InvalidSelectionError } from "../agents/research.js";
+import { pickCandidate, applySelection, keepSavedProducts, InvalidCandidateError, InvalidSelectionError } from "../agents/research.js";
 import { assemblePlan, PlanFormatError } from "../agents/writer.js";
 import { assembleScenarios } from "../agents/designer.js";
 import { EDIT_SCHEMA, buildEditPrompt, cleanProposal } from "../agents/editor.js";
@@ -33,7 +33,8 @@ async function open(body, { token, deps }) {
 async function rebuild(client, content, deps) {
   const data = await deps.loadData(client);
   try {
-    const cand = applySelection(pickCandidate(data, { season: content?.season, herb: content?.herb, purpose: content?.purpose }, deps.now?.() ?? Date.now()), content?.candidate?.selected);
+    const picked = applySelection(pickCandidate(data, { season: content?.season, herb: content?.herb, purpose: content?.purpose }, deps.now?.() ?? Date.now()), content?.candidate?.selected);
+    const cand = keepSavedProducts(picked, content?.plan?.products); // 저장할 때의 제품·가격 그대로
     return { data, cand };
   } catch (e) {
     if (e instanceof InvalidCandidateError || e instanceof InvalidSelectionError) throw new HttpError(409, "원료 자료가 바뀌어 수정할 수 없어요.");

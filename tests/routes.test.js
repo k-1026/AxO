@@ -103,13 +103,12 @@ describe("/api/plan", () => {
     await plan({ ...BODY, products: ["토너", "세럼", "패드·팩"] }, ctx(deps));
     const { content } = store.createPlan.mock.calls[0][1];
     expect(content.candidate.selected).toEqual(["토너", "세럼", "패드·팩"]);
-    expect(content.plan.products.map(x => [x.name, x.price])).toEqual([["토너", 15000], ["세럼", 19000], ["패드·팩", null]]);
+    expect(content.plan.products.map(x => [x.name, x.price])).toEqual([["토너", 15000], ["세럼", 19000], ["패드·팩", 18000]]);
   });
   it("고른 제품이 잘못되면 400, generate가 안 불려요", async () => {
     const deps = planDeps(makeStore());
     expect(await status(plan({ ...BODY, products: [] }, ctx(deps)))).toBe(400);
     expect(await status(plan({ ...BODY, products: ["아이크림"] }, ctx(deps)))).toBe(400);
-    expect(await status(plan({ ...BODY, products: ["패드·팩"] }, ctx(deps)))).toBe(400);
     expect(await status(plan({ ...BODY, products: "토너" }, ctx(deps)))).toBe(400);
     expect(deps.generate).not.toHaveBeenCalled();
   });

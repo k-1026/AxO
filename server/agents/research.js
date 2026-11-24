@@ -24,6 +24,20 @@ export function applySelection(cand, products) {
   return { ...cand, l: line };
 }
 
+/* 저장된 기획안의 제품 목록(이름·용량·정가·상태)을 그대로 후보 라인에 다시 씌워요.
+   가격 기준표가 나중에 바뀌어도(예: 가격 준비 중이던 클렌저에 정가가 생김) 예전 기획안의 숫자는 그대로 두고, 수정할 때 검증이 어긋나지 않게 해요.
+   저장된 제품 목록이 없거나 형식이 맞지 않으면 지금 기준으로 다시 짠 후보를 그대로 돌려줘요. */
+export function keepSavedProducts(cand, products) {
+  if (!Array.isArray(products) || !products.length) return cand;
+  const ok = x => x && typeof x.name === "string" && typeof x.type === "string";
+  if (!products.every(ok)) return cand;
+  const ready = products.filter(x => Number.isFinite(x.ml) && Number.isFinite(x.price));
+  if (!ready.length) return cand;
+  const lineup = ready.map(x => [x.type, x.name, x.ml, x.price]);
+  const extras = products.filter(x => !ready.includes(x)).map(x => ({ type: x.type, name: x.name }));
+  return { ...cand, l: { ...cand.l, lineup, extra: undefined, extras } };
+}
+
 export const RESEARCH_SCHEMA = {
   type: "OBJECT",
   properties: { notes: STRINGS },
