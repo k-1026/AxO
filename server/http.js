@@ -13,10 +13,12 @@ import * as realStore from "./store.js";
 const SAMPLE_DIR = ["public", "IMAGE", "LOGO", "cheonghyang-logo-02", "application-examples"];
 
 export class HttpError extends Error {
-  constructor(status, message) {
+  /* extra 는 응답 본문에 함께 보낼 값이에요 (예: 422 의 고칠 점 목록) */
+  constructor(status, message, extra) {
     super(message);
     this.name = "HttpError";
     this.status = status;
+    this.extra = extra;
   }
 }
 
@@ -57,7 +59,7 @@ export function toHttpError(e) {
     return { status: LLM_STATUS.has(e.status) ? e.status : 502, message: LLM_MESSAGE[e.status] ?? LLM_MESSAGE[502] };
   }
   if (e instanceof HttpError || e instanceof LimitError || e instanceof ConflictError || e instanceof NotFoundError) {
-    return { status: e.status, message: e.message };
+    return { status: e.status, message: e.message, extra: e.extra };
   }
   console.error("[api]", e);
   return { status: 500, message: "서버 오류가 났어요. 잠시 후 다시 시도해 주세요." };
@@ -68,8 +70,8 @@ export async function runRoute(route, body, ctx) {
   try {
     return { status: 200, body: await route(body, ctx) };
   } catch (e) {
-    const { status, message } = toHttpError(e);
-    return { status, body: { error: message } };
+    const { status, message, extra } = toHttpError(e);
+    return { status, body: { ...extra, error: message } };
   }
 }
 
