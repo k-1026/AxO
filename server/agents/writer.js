@@ -1,6 +1,9 @@
 /* 작성 에이전트: AI는 글(콘셉트·문구·역할)만 쓰고, 제품 이름·용량·정가는 코드가 후보에서 채워요. */
 import { STRING, STRINGS, isStringArray, describeLine } from "./prompt.js";
-import { BANNED_PHRASES, ROLE } from "../../src/config/rules.js";
+import { BANNED_PHRASES, ROLE, extrasOf } from "../../src/config/rules.js";
+
+/* 제품 상태: 용량·정가가 정해진 제품 / 기준값이 아직 없는 제품 */
+export const STATUS = { ready: "출시", pending: "가격 준비 중" };
 
 export class PlanFormatError extends Error {
   constructor(msg) { super(msg); this.name = "PlanFormatError"; }
@@ -55,8 +58,8 @@ export function assemblePlan(raw, cand, notes) {
     const hit = roles.find(r => r && r.name === name && text(r.role));
     return hit ? hit.role.trim() : (ROLE[name] || "");
   };
-  const products = (l.lineup || []).map(([type, name, ml, price]) => ({ type, name, ml, price, role: roleOf(name), status: "1차" }));
-  if (l.extra) products.push({ type: "cleanser", name: l.extra, ml: null, price: null, role: roleOf(l.extra), status: "준비 중" });
+  const products = (l.lineup || []).map(([type, name, ml, price]) => ({ type, name, ml, price, role: roleOf(name), status: STATUS.ready }));
+  for (const x of extrasOf(l)) products.push({ type: x.type, name: x.name, ml: null, price: null, role: roleOf(x.name), status: STATUS.pending });
 
   return {
     concept_name, concept, target, key_claims: key_claims.slice(0, 3), products,

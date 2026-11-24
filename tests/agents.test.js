@@ -48,7 +48,7 @@ describe("writer", () => {
     const raw = rawPlan(); raw.product_roles[0].price = 1;
     const p = assemblePlan(raw, cand, ["메모"]);
     const toner = p.products.find(x => x.name === "토너");
-    expect(toner).toMatchObject({ type: "toner", ml: 200, price: 15000, status: "1차", role: "결 정돈" });
+    expect(toner).toMatchObject({ type: "toner", ml: 200, price: 15000, status: "출시", role: "결 정돈" });
     expect(p.key_claims.length).toBe(3);
     expect(p.notes).toEqual(["메모"]);
     expect(p.review_notes).toEqual([]);
@@ -57,12 +57,12 @@ describe("writer", () => {
     const fix = checkRules({ plan: assemblePlan(rawPlan(), cand, []) }, cand, fallback).fix;
     expect(fix.filter(f => f.includes("제품"))).toEqual([]);
   });
-  it("extra는 마지막에 준비 중·null로 들어가요", () => {
+  it("extra는 마지막에 가격 준비 중·null로 들어가요", () => {
     expect(extraCand).toBeTruthy();
     const raw = rawPlan(); raw.product_roles.push({ name: extraCand.l.extra, role: "세안" });
     const p = assemblePlan(raw, extraCand, []);
     const last = p.products[p.products.length - 1];
-    expect(last).toMatchObject({ name: extraCand.l.extra, status: "준비 중", price: null, ml: null });
+    expect(last).toMatchObject({ name: extraCand.l.extra, status: "가격 준비 중", price: null, ml: null });
     expect(checkRules({ plan: p }, extraCand, fallback).fix.filter(f => f.includes("제품"))).toEqual([]);
   });
   it("역할이 없으면 ROLE로, 그것도 없으면 빈 글", () => {

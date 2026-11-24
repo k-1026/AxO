@@ -1,5 +1,5 @@
 import {
-  COMBO_KW, SEASON_TREND_NOTES, PRODUCT_BOX, SAMPLE
+  COMBO_KW, SEASON_TREND_NOTES, PRODUCT_BOX, SAMPLE, productOptions
 } from "./config/rules.js";
 import { SAMPLE_BASE } from "./config/assets.js";
 import { lineKey, buildCandidates, rankLines } from "./core/candidates.js";
@@ -201,9 +201,33 @@ async function reroll() {
 }
 document.addEventListener("click", e => { if (e.target.closest && e.target.closest('[data-action="reroll"]')) reroll(); });
 
-/* 상세 창에 열려 있는 후보: [기획안 만들기]가 읽어 가요. */
+/* 상세 창에 열려 있는 후보: [기획안 만들기]가 읽어 가요. products = 체크한 제품 이름 */
 let currentLine = null;
-export const getCurrentLine = () => (currentLine ? { season, herb: currentLine.herb, purpose: currentLine.purpose } : null);
+const pickBoxes = () => [...document.querySelectorAll("#d-lineup input[data-pick]")];
+export const getCurrentLine = () => (currentLine
+  ? { season, herb: currentLine.herb, purpose: currentLine.purpose, products: pickBoxes().filter(b => b.checked).map(b => b.dataset.pick) }
+  : null);
+
+/* 체크한 제품이 기획안을 만들 수 있는 조합인지 봐요. 안 되면 이유 문구, 되면 "" */
+export function pickError() {
+  const on = pickBoxes().filter(b => b.checked);
+  if (!on.length) return "제품을 1개 이상 골라 주세요.";
+  if (!on.some(b => b.dataset.priced === "1")) return "용량·정가가 있는 제품을 1개 이상 골라 주세요.";
+  return "";
+}
+
+/* 체크가 바뀔 때마다 줄 흐리게·전체 선택·개수·버튼 문구를 맞춰요 */
+function syncPicks() {
+  const boxes = pickBoxes(), n = boxes.filter(b => b.checked).length;
+  boxes.forEach(b => b.closest("tr").classList.toggle("off", !b.checked));
+  const all = document.getElementById("d-pick-all");
+  all.checked = n === boxes.length; all.indeterminate = n > 0 && n < boxes.length;
+  document.getElementById("d-pick-count").textContent = `${n}개 선택`;
+  document.getElementById("d-create").textContent = n ? `선택한 ${n}개로 기획안 만들기` : "기획안 만들기";
+  if (!pickError()) document.getElementById("d-pick-err").textContent = "";
+}
+document.getElementById("d-lineup").addEventListener("change", syncPicks);
+document.getElementById("d-pick-all").addEventListener("change", e => { pickBoxes().forEach(b => { b.checked = e.target.checked; }); syncPicks(); });
 
 function openDetail(r) {
   const l = r.l;
@@ -215,9 +239,14 @@ function openDetail(r) {
     <dt>대표 약재</dt><dd>${esc(l.herb)}${l.hanja ? `(${l.hanja})` : ""}</dd>
     <dt>쓸 수 있는 말</dt><dd>${esc(l.words)}</dd>`;
   document.getElementById("d-why-combo").innerHTML = `<dt>목적</dt><dd>${chips([l.purpose])}</dd><dt>구성</dt><dd>${chips([l.lineup.map(([, k]) => k).join(" → ")])}</dd><dt>포인트</dt><dd>${chips(String(COMBO_KW[l.purpose] || "").split(" · "))}</dd>`;
-  document.getElementById("d-lineup").innerHTML = l.lineup.map(([, k, ml, p]) => `<tr><td>${esc(k)} <span class="note">1차</span></td><td>${ml}ml</td><td>${won(p)}</td><td>${won(Math.round(p / ml))}</td></tr>`).join("")
-    + (l.extra ? `<tr><td>${esc(l.extra)} <span class="note">1차</span></td><td colspan="3" class="note">용기 샘플·가격 기준 준비 중</td></tr>` : "")
-    + (l.next.length ? `<tr><td colspan="4" class="note">2차 확장 후보: ${l.next.map(esc).join(" · ")}</td></tr>` : "");
+  /* 추천 구성과 함께 낼 수 있는 제품을 한 표에. 추천 구성은 처음부터 골라 둬요 */
+  document.getElementById("d-lineup").innerHTML = productOptions(l).map((o, i) => `<tr>
+    <td class="pick-col"><input type="checkbox" id="d-pick-${i}" data-pick="${esc(o.name)}" data-priced="${o.price != null ? 1 : 0}"${o.base ? " checked" : ""}></td>
+    <td><label for="d-pick-${i}">${esc(o.name)}</label>${o.base ? ` <span class="note">추천</span>` : ""}</td>
+    ${o.price != null ? `<td>${o.ml}ml</td><td>${won(o.price)}</td><td>${won(Math.round(o.price / o.ml))}</td>` : `<td colspan="3" class="note">가격 기준 준비 중</td>`}
+  </tr>`).join("");
+  document.getElementById("d-pick-err").textContent = "";
+  syncPicks();
   const d = document.getElementById("detail"); d.showModal ? d.showModal() : d.setAttribute("open", "");
 }
 document.getElementById("d-close").onclick = () => document.getElementById("detail").close();

@@ -1,5 +1,6 @@
 /* 검증 에이전트의 코드 규칙. AI 없이 글이 규칙을 지켰는지 확인해요. */
-import { BANNED_PHRASES, BANNED_EXCEPTIONS, BANNED_ENGLISH, PRICE_RANGE } from "../../src/config/rules.js";
+import { BANNED_PHRASES, BANNED_EXCEPTIONS, BANNED_ENGLISH, PRICE_RANGE, extrasOf } from "../../src/config/rules.js";
+import { STATUS } from "./writer.js";
 
 export { REVIEW_SCHEMA, buildReviewPrompt, cleanReview } from "./prompt.js";
 
@@ -70,21 +71,23 @@ export function checkRules(content, cand, data) {
     if (h.herb !== l.herb && !l.herb.includes(h.herb) && mentions(rest, h.herb)) fix.push(`후보에 없는 원료 "${h.herb}"을 언급했어요.`);
   }
 
-  // 5. 제품 목록 = 후보 라인 구성 + 준비 중인 extra(클렌저). 이름·용량·정가·상태가 코드 값과 같아야 해요
+  // 5. 제품 목록 = 고른 제품(가격 있는 제품 + 가격 준비 중 제품). 이름·용량·정가·상태가 코드 값과 같아야 해요
   const products = content?.plan?.products || [];
   const find = n => products.find(p => p?.name === n);
-  const want = lineup.map(x => x[1]);
-  if (l.extra) want.push(l.extra);
+  const pending = extrasOf(l).map(x => x.name);
+  const want = [...lineup.map(x => x[1]), ...pending];
   const unknown = products.map(p => p?.name).filter(n => !want.includes(n));
   if (want.some(n => !find(n)) || unknown.length) fix.push(`제품 목록이 후보 구성(${want.join("·")})과 달라요.`);
   for (const [, name, ml, price] of lineup) {
     const p = find(name);
     if (!p) continue;
     if (p.ml !== ml || p.price !== price) fix.push(`제품 "${name}"의 용량·정가가 후보 값(${ml}ml ${price}원)과 달라요.`);
-    if (p.status !== "1차") fix.push(`제품 "${name}"의 상태는 "1차"여야 해요.`);
+    if (p.status !== STATUS.ready) fix.push(`제품 "${name}"의 상태는 "${STATUS.ready}"여야 해요.`);
   }
-  const ex = l.extra && find(l.extra);
-  if (ex && (ex.status !== "준비 중" || ex.ml != null || ex.price != null)) fix.push(`"${l.extra}"는 상태 "준비 중", 용량·정가는 null이어야 해요.`);
+  for (const name of pending) {
+    const ex = find(name);
+    if (ex && (ex.status !== STATUS.pending || ex.ml != null || ex.price != null)) fix.push(`"${name}"는 상태 "${STATUS.pending}", 용량·정가는 null이어야 해요.`);
+  }
 
   // 6. 기능성 심사 안내
   if (l.functional && !(content?.plan?.cautions || []).some(c => typeof c === "string" && c.includes("기능성"))) {

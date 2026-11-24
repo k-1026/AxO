@@ -21,18 +21,54 @@ export const LINE_RULE = {
 };
 export const lineupFor = p => (LINE_RULE[p] || LINE_RULE["보습"]).first.map(k => ITEM[k]);
 
+/* 제품 이름 → 기준 용량·정가. 다른 라인에서 같은 제품을 쓸 때의 값을 그대로 써요 (예: 탄력 라인의 토너 = 다른 라인의 토너 200ml 15,000원). */
+const ITEM_BY_NAME = Object.fromEntries(Object.values(ITEM).map(x => [x[1], x]));
+
+/* 후보 라인에서 고를 수 있는 제품 전체 (추천 구성 → 함께 낼 수 있는 제품 순서).
+   기준값이 없는 제품(클렌저·마스크 등)은 ml·price 가 null 이에요. base = 처음부터 골라 둘 추천 구성 */
+export function productOptions(l) {
+  const out = [], seen = new Set();
+  const add = ([type, name, ml, price], base) => {
+    if (!name || seen.has(name)) return;
+    seen.add(name);
+    out.push({ type, name, ml: ml ?? null, price: price ?? null, base });
+  };
+  for (const row of l?.lineup || []) add(row, true);
+  const more = name => ITEM_BY_NAME[name] || [name === "클렌저" ? "cleanser" : "etc", name, null, null];
+  if (l?.extra) add(more(l.extra), true);
+  for (const name of l?.next || []) add(more(name), false);
+  return out;
+}
+
+/* 고른 제품 이름으로 라인을 다시 짜요 → { line } 또는 { error }.
+   기준값이 있는 제품은 lineup, 없는 제품은 extras(가격 준비 중)로 가요. names 가 없으면 추천 구성을 써요. */
+export function selectLine(l, names) {
+  const opts = productOptions(l);
+  const picked = Array.isArray(names) ? names : opts.filter(o => o.base).map(o => o.name);
+  if (!picked.length) return { error: "제품을 1개 이상 골라 주세요." };
+  if (picked.some(n => typeof n !== "string" || !opts.some(o => o.name === n))) return { error: "이 후보에 없는 제품이 있어요. 다시 골라 주세요." };
+  const chosen = opts.filter(o => picked.includes(o.name));
+  const lineup = chosen.filter(o => o.price != null).map(o => [o.type, o.name, o.ml, o.price]);
+  if (!lineup.length) return { error: "용량·정가가 있는 제품을 1개 이상 골라 주세요." };
+  const extras = chosen.filter(o => o.price == null).map(o => ({ type: o.type, name: o.name }));
+  return { line: { ...l, lineup, extra: undefined, extras, selected: chosen.map(o => o.name) } };
+}
+
+/* 가격 준비 중 제품 목록: 선택을 거친 라인은 extras, 예전 라인은 extra(문자열) */
+export const extrasOf = l => (Array.isArray(l?.extras) ? l.extras : l?.extra ? [{ type: "cleanser", name: l.extra }] : []);
+
 export const ROLE = { "토너": "결 정돈", "세럼": "원료를 진하게 담는 대표 단계", "크림": "보습 마무리", "젤 크림": "산뜻한 마무리",
   "리치 크림": "영양감 마무리", "미스트": "수시로 뿌리는 쿨링", "로션": "가벼운 보습" };
 
 export const COMBO_WHY = {
   "진정": "예민한 시기엔 단계를 줄여야 부담이 적어서, 토너로 정돈하고 젤 크림으로 가볍게 끝나는 2단계로 묶었어요.",
   "쿨링": "더운 날 바로 쓰도록 미스트를 1차에 넣고, 토너와 젤 크림으로 산뜻한 사용감을 맞췄어요.",
-  "민감·장벽": "자극을 줄이려 토너와 크림 2단계로 장벽 보습에 집중했어요. 클렌저도 1차 구성이지만 용기 샘플이 아직 없어요.",
+  "민감·장벽": "자극을 줄이려 토너와 크림 2단계로 장벽 보습에 집중했어요. 클렌저도 추천 구성이지만 용기 샘플이 아직 없어요.",
   "보습": "수분은 토너 → 세럼 → 크림으로 겹쳐 채울수록 촉촉함이 이어져서 3단계로 묶었어요. 세럼이 대표 제품이에요.",
   "영양": "푸석함엔 진한 크림이 중심이라, 토너로 결을 정돈하고 리치 크림으로 영양감을 채우는 2단계로 묶었어요.",
   "미백(톤)": "톤 라인은 원료를 진하게 담는 세럼이 대표 제품이라, 토너 → 세럼 → 크림 루틴으로 묶었어요.",
-  "탄력": "탄력 라인은 세럼과 크림에 집중하고, 토너는 2차 확장으로 미뤘어요.",
-  "모공·피지": "번들거릴 땐 가벼운 토너 하나로 시작하고, 세럼·젤 크림은 2차로 넓혀요. 클렌저도 1차 구성이지만 용기 샘플이 아직 없어요."
+  "탄력": "탄력 라인은 세럼과 크림에 집중했어요. 토너·아이크림은 원하면 함께 골라 넣을 수 있어요.",
+  "모공·피지": "번들거릴 땐 가벼운 토너 하나로 시작하고, 세럼·젤 크림은 원하면 함께 골라 넣어요. 클렌저도 추천 구성이지만 용기 샘플이 아직 없어요."
 };
 
 export const TALK = {

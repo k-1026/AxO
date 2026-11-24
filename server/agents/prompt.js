@@ -1,4 +1,5 @@
 /* 에이전트 프롬프트·스키마 공통 조각. AI는 글만 쓰고 숫자는 코드 값을 써요. */
+import { extrasOf } from "../../src/config/rules.js";
 
 export const STRING = { type: "STRING" };
 export const STRINGS = { type: "ARRAY", items: STRING };
@@ -11,6 +12,7 @@ const lineOf = c => (c && c.l) || c;
 export function describeLine(cand, season, data) {
   const l = lineOf(cand);
   const memo = k => (l[k] && l[k][1]) || "미확인";
+  const pending = extrasOf(l).map(x => x.name);
   const items = (l.lineup || []).map(([, name, ml, price]) => `${name} ${ml}ml ${price.toLocaleString("ko-KR")}원`).join(", ");
   return [
     `계절: ${season}`,
@@ -20,7 +22,7 @@ export function describeLine(cand, season, data) {
     `산지 메모: ${memo("gb")}`,
     `경쟁 메모: ${memo("rival")} / ${memo("preempt")}`,
     `한방 브랜드 메모: ${memo("hanbang")}`,
-    `제품 목록: ${items}${l.extra ? ` (+ ${l.extra}, 용기 샘플 없음)` : ""}`,
+    `제품 목록: ${items}${pending.length ? ` (+ ${pending.join(", ")}: 가격 준비 중, 용기 샘플 없음)` : ""}`,
     `기능성 심사 필요: ${l.functional ? "예" : "아니요"}`
   ].join("\n");
 }

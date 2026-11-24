@@ -1,7 +1,7 @@
 /* POST /api/plan-image: {plan_id, version_no?, idx, regenerate?} → 이미지 idx(0 대표·1 원료·2 사용 장면)를 만들어 저장하고 {idx, url}을 돌려줘요.
    regenerate 는 최신 버전에서만 되고, 아닐 때는 비어 있는 idx만 채워요(이미 있으면 그대로 돌려줘서 두 번 만들지 않아요). */
 import { HttpError } from "../http.js";
-import { pickCandidate, InvalidCandidateError } from "../agents/research.js";
+import { pickCandidate, applySelection, InvalidCandidateError, InvalidSelectionError } from "../agents/research.js";
 import { buildImagePrompt, sampleFilesFor, imagePromptAt } from "../agents/designer.js";
 import { latestPalette } from "../data.js";
 import { canRegenImage } from "../limits.js";
@@ -50,9 +50,9 @@ export default async function planImage(body, { token, deps }) {
   let cand;
   const data = await deps.loadData(client);
   try {
-    cand = pickCandidate(data, { season: content.season, herb: content.herb, purpose: content.purpose }, deps.now?.() ?? Date.now());
+    cand = applySelection(pickCandidate(data, { season: content.season, herb: content.herb, purpose: content.purpose }, deps.now?.() ?? Date.now()), content.candidate?.selected);
   } catch (e) {
-    if (e instanceof InvalidCandidateError) throw new HttpError(404, "기획안의 후보 정보를 찾지 못했어요.");
+    if (e instanceof InvalidCandidateError || e instanceof InvalidSelectionError) throw new HttpError(404, "기획안의 후보 정보를 찾지 못했어요.");
     throw e;
   }
   const palette = content.palette ?? latestPalette(data, content.season);

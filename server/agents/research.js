@@ -1,7 +1,7 @@
 /* 후보 생성 에이전트: 후보를 고르고, 근거 메모를 AI가 정리해요. 숫자는 코드 값만 써요. */
 import { findLine } from "../../src/core/candidates.js";
 import { STRINGS, isStringArray, describeLine } from "./prompt.js";
-import { BANNED_PHRASES } from "../../src/config/rules.js";
+import { BANNED_PHRASES, selectLine } from "../../src/config/rules.js";
 
 export class InvalidCandidateError extends Error {
   constructor(msg) { super(msg); this.name = "InvalidCandidateError"; }
@@ -12,6 +12,16 @@ export function pickCandidate(data, { season, herb, purpose }, now) {
   const cand = findLine(data, season, herb, purpose, now);
   if (!cand) throw new InvalidCandidateError(`후보를 찾지 못했어요: ${season} · ${herb} · ${purpose}`);
   return cand;
+}
+
+/* 사용자가 고른 제품으로 후보 라인을 바꿔요. products 가 없으면(예전 기획안·선택 없음) 추천 구성이에요. */
+export class InvalidSelectionError extends Error {
+  constructor(msg) { super(msg); this.name = "InvalidSelectionError"; }
+}
+export function applySelection(cand, products) {
+  const { line, error } = selectLine(cand.l, products ?? undefined);
+  if (error) throw new InvalidSelectionError(error);
+  return { ...cand, l: line };
 }
 
 export const RESEARCH_SCHEMA = {

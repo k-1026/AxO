@@ -1,5 +1,5 @@
 /* 총괄: 후보 선택 → 자료 정리 → 기획안 → 검증(필요하면 1회 재작성) → 시나리오 순서로 에이전트를 이어 불러요. */
-import { pickCandidate, RESEARCH_SCHEMA, buildResearchPrompt, cleanNotes } from "./agents/research.js";
+import { pickCandidate, applySelection, RESEARCH_SCHEMA, buildResearchPrompt, cleanNotes } from "./agents/research.js";
 import { PLAN_SCHEMA, buildPlanPrompt, assemblePlan } from "./agents/writer.js";
 import { SCENARIO_SCHEMA, buildScenarioPrompt, assembleScenarios } from "./agents/designer.js";
 import { checkRules, REVIEW_SCHEMA, buildReviewPrompt, cleanReview } from "./agents/verifier.js";
@@ -19,12 +19,12 @@ export async function verifyContent(content, cand, data, generate) {
   return { approved: fix.length === 0 && ai.approved, issues: uniq([...fix, ...ai.issues]), notes };
 }
 
-export async function runPlanPipeline({ data, season, herb, purpose, generate, now }) {
+export async function runPlanPipeline({ data, season, herb, purpose, products, generate, now }) {
   const t = now ?? Date.now();
   const log = [];
   const step = (agent, ok, note) => log.push({ step: log.length + 1, agent, ok, note });
 
-  const cand = pickCandidate(data, { season, herb, purpose }, t);
+  const cand = applySelection(pickCandidate(data, { season, herb, purpose }, t), products);
   const l = cand.l;
   step("후보 생성", true, `${l.name} 후보를 골랐어요.`);
 
@@ -37,7 +37,7 @@ export async function runPlanPipeline({ data, season, herb, purpose, generate, n
 
   const content = {
     season, herb, purpose,
-    candidate: { name: l.name, lineup: l.lineup, extra: l.extra, functional: l.functional, mid: cand.mid, evid: cand.evid },
+    candidate: { name: l.name, lineup: l.lineup, extras: l.extras, selected: l.selected, functional: l.functional, mid: cand.mid, evid: cand.evid },
     plan, scenarios: [], palette: latestPalette(data, season), review: { approved: false, issues: [], rounds: 0 }
   };
 

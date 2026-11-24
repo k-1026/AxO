@@ -11,8 +11,8 @@ const good = () => ({
   plan: {
     concept_name: "어성초 산뜻 토너", concept: "장마철 번들거림을 가볍게 정돈하는 토너예요.",
     target: "번들거림이 고민인 20대", key_claims: ["경북 48.1%로 산지가 확인돼요"],
-    products: [{ type: "toner", name: "토너", ml: 200, price: 15000, role: "결 정돈", status: "1차" },
-      { type: "cleanser", name: "클렌저", ml: null, price: null, role: "세안", status: "준비 중" }],
+    products: [{ type: "toner", name: "토너", ml: 200, price: 15000, role: "결 정돈", status: "출시" },
+      { type: "cleanser", name: "클렌저", ml: null, price: null, role: "세안", status: "가격 준비 중" }],
     notes: ["재생 용기 사용을 검토해요"], cautions: [], review_notes: []
   },
   scenarios: [{ title: "여름 토너", concept: "산뜻하게", target: "20대", channel: "인스타", cuts: [{ scene: "세안 후", copy: "보송하게" }], image_prompt: "mint toner bottle" }]
@@ -134,13 +134,13 @@ describe("검토 보완", () => {
   it("extra(클렌저)가 없거나 상태·값이 틀리면 고칠 점이에요", () => {
     const a = good(); a.plan.products = a.plan.products.slice(0, 1);
     expect(fixOf(a).length).toBe(1);
-    const b = good(); b.plan.products[1].status = "1차";
+    const b = good(); b.plan.products[1].status = "출시";
     expect(fixOf(b).length).toBe(1);
     const c = good(); c.plan.products[1].price = 9000;
     expect(fixOf(c).length).toBe(1);
   });
-  it("lineup 제품의 상태가 1차가 아니면 고칠 점이에요", () => {
-    const c = good(); c.plan.products[0].status = "준비 중";
+  it("가격 있는 제품의 상태가 출시가 아니면 고칠 점이에요", () => {
+    const c = good(); c.plan.products[0].status = "가격 준비 중";
     expect(fixOf(c).length).toBe(1);
   });
   it("쑥쑥은 원료 쑥으로 치지 않지만 쑥은 잡아요", () => {
