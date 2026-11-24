@@ -1,10 +1,13 @@
 {
   "cleanUrls": true,
   "functions": {
-    "api/**/*.js": { "maxDuration": 300 },
+    "api/chat.js": { "maxDuration": 120 },
+    "api/plan.js": { "maxDuration": 300 },
+    "api/plan-get.js": { "maxDuration": 60 },
     "api/plan-image.js": {
       "maxDuration": 300,
       "includeFiles": "public/IMAGE/LOGO/cheonghyang-logo-02/application-examples/*.png"
-    }
+    },
+    "api/plan-edit/*.js": { "maxDuration": 300 }
   }
 }
