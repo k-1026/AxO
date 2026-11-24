@@ -8,7 +8,7 @@ const isText = v => typeof v === "string" && v.trim() !== "";
 const pick = (o, keys) => Object.fromEntries(keys.filter(k => o && k in o).map(k => [k, o[k]]));
 
 /* 화면에 필요한 칸만 허용 목록으로 남겨요. 새 내부 칸이 생겨도 새어 나가지 않아요. (후보 점수 칸은 화면에 안 쓰여서 candidate는 통째로 뺐어요) */
-function publicContent(c) {
+export function publicContent(c) {
   const p = c?.plan ?? {};
   return {
     ...pick(c, ["season", "herb", "purpose"]),
