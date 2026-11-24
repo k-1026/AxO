@@ -16,30 +16,46 @@ export class LlmError extends Error {
 
 /** JSON 호출이 쓰는 호출부예요: 붐빌 때(503) 한 번 더 시도하고, 그래도 안 되면 다른 모델로 바꿔요.
  *  ErrorClass 는 던질 오류 종류예요(LlmError). */
+/* 기본 모델이 붐벼서(503·429·시간 초과) 실패하면 잠시 그 모델을 건너뛰어요.
+   기획안 1건은 AI를 4~6번 이어 부르는데, 매번 붐비는 모델을 기다리면 그만큼 느려지기 때문이에요. */
+const PRIMARY_TRY_MS = 25000;      // 대신 쓸 모델이 있을 때 기본 모델을 기다리는 최대 시간
+const BUSY_COOLDOWN_MS = 5 * 60000; // 붐빈 모델을 건너뛰는 시간
+const busyUntil = new Map();        // 모델 → 이 시각까지 건너뜀
+
 async function callGemini(payload, apiKey, model, ErrorClass, { requestTimeoutMs = REQUEST_TIMEOUT_MS, totalTimeoutMs = TOTAL_TIMEOUT_MS } = {}) {
   const primary = model || DEFAULT_MODEL;
-  const tries = [primary, primary, ...FALLBACK_MODELS.filter(m => m !== primary)];
+  const all = [primary, ...FALLBACK_MODELS.filter(m => m !== primary)];
+  const fresh = all.filter(m => !(busyUntil.get(m) > Date.now()));
+  const tries = fresh.length ? fresh : all;
   const deadline = Date.now() + totalTimeoutMs;
   const timeoutError = () => new ErrorClass("AI 응답이 너무 오래 걸려요. 잠시 후 다시 시도해 주세요.", 504);
-  let res, data, useModel;
+  let res = null, data, useModel;
   for (let i = 0; i < tries.length; i++) {
     useModel = tries[i];
     const left = deadline - Date.now();
     if (left < 3000) break;
+    const hasNext = i < tries.length - 1;
+    let timedOut = false;
     try {
       res = await fetch(`${ENDPOINT}/${encodeURIComponent(useModel)}:generateContent`, {
         method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey }, body: payload,
-        signal: AbortSignal.timeout(Math.min(requestTimeoutMs, left)),
+        signal: AbortSignal.timeout(Math.min(hasNext ? PRIMARY_TRY_MS : requestTimeoutMs, left)),
       });
     } catch (e) {
-      if (e?.name === "TimeoutError" || e?.name === "AbortError") throw timeoutError();
-      if (ErrorClass === LlmError) throw new LlmError(`AI에 연결하지 못했어요. (${e?.message || "연결 오류"})`, 502);
-      throw e;
+      if (e?.name !== "TimeoutError" && e?.name !== "AbortError") {
+        if (ErrorClass === LlmError) throw new LlmError(`AI에 연결하지 못했어요. (${e?.message || "연결 오류"})`, 502);
+        throw e;
+      }
+      timedOut = true;
+      res = null;
     }
-    data = await res.json().catch(() => null);
-    if (res.status !== 503) break;
-    console.warn("[gemini] 503", useModel, "→ 다시 시도");
-    if (i < tries.length - 1) await new Promise(r => setTimeout(r, 800));
+    if (!timedOut) {
+      data = await res.json().catch(() => null);
+      if (res.status !== 503 && res.status !== 429) break;
+    }
+    // 붐비거나 너무 오래 걸리면 이 모델은 잠시 건너뛰고 다음 모델로 바꿔요.
+    if (all.length > 1) busyUntil.set(useModel, Date.now() + BUSY_COOLDOWN_MS);
+    console.warn("[gemini]", timedOut ? "시간 초과" : res.status, useModel, hasNext ? "→ 다른 모델로" : "");
   }
   if (!res) throw timeoutError();
   if (!res.ok) {
