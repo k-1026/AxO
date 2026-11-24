@@ -3,8 +3,7 @@
    deps 로 generate·editImage·store·loadData·readSample·now 를 바꿔 끼울 수 있어요(테스트용). */
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { generateJson, LlmError } from "./llm/gemini.js";
-import { editImage } from "./llm/openai.js";
+import { generateJson, editImage, LlmError } from "./llm/gemini.js";
 import { loadServerData } from "./data.js";
 import { LimitError } from "./limits.js";
 import { ConflictError, NotFoundError } from "./store.js";
@@ -34,7 +33,7 @@ export function withDeps(deps = {}, env = {}) {
   return {
     store: realStore,
     generate: (prompt, schema) => generateJson(prompt, schema, { apiKey: env.GEMINI_API_KEY, model: env.GEMINI_MODEL }),
-    editImage: req => editImage(req, { apiKey: env.OPENAI_API_KEY, model: env.OPENAI_IMAGE_MODEL }),
+    editImage: req => editImage(req, { apiKey: env.GEMINI_API_KEY, model: env.GEMINI_IMAGE_MODEL }),
     loadData: client => loadServerData(client),
     // Vercel 에서도 includeFiles 가 같은 상대 경로를 유지하니 process.cwd() 기준으로 읽어요.
     readSample: async name => new Uint8Array(await readFile(path.join(process.cwd(), ...SAMPLE_DIR, name))),

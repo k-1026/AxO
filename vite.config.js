@@ -6,7 +6,7 @@ import planGet from "./server/routes/plan-get.js";
 import planEdit from "./server/routes/plan-edit.js";
 
 // npm run dev 에서도 /api/* 가 동작하도록, Vercel 함수와 같은 코드를 개발 서버에 붙여요.
-// .env 의 키(GEMINI_API_KEY, OPENAI_API_KEY 등)는 여기(서버)에서만 읽고 브라우저로 보내지 않아요.
+// .env 의 키(GEMINI_API_KEY 등)는 여기(서버)에서만 읽고 브라우저로 보내지 않아요.
 
 // 경로 → 처리 함수 표. 새 API 는 여기와 api/*.js 에 같이 등록해요.
 const routes = env => ({

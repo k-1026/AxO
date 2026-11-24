@@ -1,5 +1,7 @@
 # 출시 기획 에이전트 설계
 
+> **2026-11-24 변경:** 이미지 생성도 OpenAI 대신 **Gemini 이미지 모델**로 바꿨어요(글·이미지 모두 `GEMINI_API_KEY` 하나). `server/llm/openai.js`는 지웠고 `editImage`는 `server/llm/gemini.js`에 있어요. Gemini 이미지 모델은 무료 플랜 한도가 0이라, Google AI Studio에서 결제(Billing)를 켜야 이미지가 만들어져요.
+
 - 작성: 2026-11-23 · 브랜치 `HSJ-agents` (main `b1eaa83`에서 분기)
 - 참고: https://github.com/maclovedany/Herbal-Cosmetics-Planner (에이전트 구조만 참고, 코드 형식은 우리 사이트를 따름)
 
@@ -31,7 +33,7 @@
 
 - 화면은 지금처럼 Vite + 순수 JavaScript. 프레임워크를 바꾸지 않는다.
 - 배포는 Vercel 서버 함수(`api/*.js`). 개발 서버에서도 같은 코드가 돌도록 `vite.config.js` 미들웨어에 연결한다(지금 `/api/chat` 방식과 같음).
-- 글 생성은 Gemini(`GEMINI_API_KEY`), 이미지 생성은 OpenAI(`OPENAI_API_KEY`).
+- 글 생성과 이미지 생성 모두 Gemini(`GEMINI_API_KEY`). 이미지는 Gemini 이미지 모델이라 결제(Billing) 설정이 필요하다. (2026-11-24 OpenAI에서 변경)
 - 로그인은 이미 있는 Supabase Auth(카카오·이메일). 기획안 만들기·저장·수정은 로그인한 사람만.
 - 화면 문구와 코드 주석은 지금 코드처럼 한국어 존댓말.
 
@@ -58,7 +60,7 @@
 | 6 | 디자인·광고 | AI | 시나리오 3개 작성 + 시나리오별 이미지 지시문 |
 | 7 | 디자인·광고 | 코드 | 시나리오 문구도 4번 규칙으로 대조. 걸리면 그 문구를 빼고 의견에 남긴다 |
 | 8 | 총괄 | 코드 | 버전 v1 저장 (이미지 칸은 비워 둔다) |
-| 9 | 디자인·광고 | OpenAI 이미지 | 이미지 3장을 따로 요청해 만들고 저장소에 올려 v1에 채운다 (8절). 실패한 장은 빈칸으로 남는다 |
+| 9 | 디자인·광고 | Gemini 이미지 | 이미지 3장을 따로 요청해 만들고 저장소에 올려 v1에 채운다 (8절). 실패한 장은 빈칸으로 남는다 |
 
 AI 응답은 모두 정해진 JSON 형식(Gemini `responseSchema`)으로 받고, 코드가 형식을 다시 확인한다.
 
@@ -81,8 +83,9 @@ AI 검토 항목: 의약품 오인 표현, 원료 자료에 없는 효능·수�
 
 ## 8. 이미지 생성
 
-- OpenAI 이미지 편집 API(`POST /v1/images/edits`)에 **그 라인의 용기 샘플 PNG**를 참고 이미지(`image[]`)로 넣고 지시문으로 광고 장면을 만든다. 샘플 위치: `public/IMAGE/LOGO/cheonghyang-logo-02/application-examples/` (toner·serum·cream·lotion-pump·mist).
-- 모델은 환경변수 `OPENAI_IMAGE_MODEL`로 바꿀 수 있게 하고, 기본값은 구현할 때 문서에서 확인해 `server/llm/openai.js` 한 곳에만 적는다. [확인필요: 기본 모델 ID, 편집 API의 gpt-image 모델 지원]
+- Gemini 이미지 모델(`generateContent`, `responseModalities: ["IMAGE"]`, 정사각형 `aspectRatio: "1:1"`)에 **그 라인의 용기 샘플 PNG**를 참고 이미지(`inlineData`)로 넣고 지시문으로 광고 장면을 만든다. 샘플 위치: `public/IMAGE/LOGO/cheonghyang-logo-02/application-examples/` (toner·serum·cream·lotion-pump·mist).
+- 모델은 환경변수 `GEMINI_IMAGE_MODEL`로 바꿀 수 있고, 기본값(`gemini-3.1-flash-image`)은 `server/llm/gemini.js`의 `DEFAULT_IMAGE_MODEL` 한 곳에만 적는다.
+- 무료 플랜은 이미지 모델 한도가 0이다. 이때는 '잠시 후 다시'가 아니라 설정 문제(500, "서버 설정에 문제가 있어요")로 알리고, 자세한 이유는 서버 로그에 남긴다.
 - 이미지는 글 생성과 **따로** 만든다. 기획안(v1)을 먼저 저장한 뒤 화면이 `POST /api/plan-image`를 시나리오마다 1번씩, 3번 동시에 부른다. 요청 하나가 짧아져 시간 제한에 덜 걸리고, 이미지가 실패해도 기획안은 남는다. 실패한 장은 문안만 보이고 [다시 만들기] 버튼을 둔다.
 - 참고 이미지 파일은 서버 함수가 읽을 수 있어야 한다. Vercel에서는 `vercel.json`의 `includeFiles`로 함수에 포함한다.
 - **로고 없이 용기만** 쓴다. 샘플의 '청향' 로고·글자를 지운 무지 용기로 그리라고 지시문에 넣는다(브랜드명은 샘플용 이름이고 외부 고객에게 나가기 때문). 글자가 남을 수 있어 검증 대상은 아니고 [다시 만들기]로 대응한다.
@@ -148,8 +151,7 @@ AI 검토 항목: 의약품 오인 표현, 원료 자료에 없는 효능·수�
 ```
 src/core/candidates.js     후보·점수 계산 (app.js에서 옮김. 화면·서버 공용, 순수 함수)
 src/config/rules.js        광고 금지어 목록 추가
-server/llm/gemini.js       기존 chatWithGemini + generateJson(JSON 응답)
-server/llm/openai.js       이미지 편집 호출 (모델 ID는 여기에만)
+server/llm/gemini.js       generateJson(JSON 응답) + editImage(이미지). 모델 ID는 여기에만
 server/agents/prompt.js    프롬프트 공용 설명 블록
 server/agents/research.js  후보 생성 (코드 + AI)
 server/agents/writer.js    작성

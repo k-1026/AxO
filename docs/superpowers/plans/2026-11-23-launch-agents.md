@@ -1,12 +1,14 @@
 # 출시 기획 에이전트 Implementation Plan
 
+> **2026-11-24 변경:** 이미지 생성도 OpenAI 대신 **Gemini 이미지 모델**로 바꿨어요(글·이미지 모두 `GEMINI_API_KEY` 하나). `server/llm/openai.js`는 지웠고 `editImage`는 `server/llm/gemini.js`에 있어요. Gemini 이미지 모델은 무료 플랜 한도가 0이라, Google AI Studio에서 결제(Billing)를 켜야 이미지가 만들어져요.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 후보 하나로 기획안 + 광고·마케팅 시나리오 3개(대표 이미지 포함)를 만들어 버전으로 저장하고, 마이 기획실에서 챗봇 미리보기 → 적용으로 새 버전을 만든다.
 
 **Architecture:** 지금 Vite+JS 사이트에 서버 모듈(`server/agents/*`, `server/orchestrator.js`)과 Vercel 함수(`api/*`)를 더한다. 에이전트마다 코드 확인과 AI 일을 나누고, 총괄이 차례로 부른다. AI 호출은 `server/llm/`에만 두고 테스트에서는 가짜 함수로 바꿔 끼운다.
 
-**Tech Stack:** Vite 5, 순수 JavaScript(ESM), Vercel 서버 함수(Node), Supabase(Postgres·Auth·Storage, `@supabase/supabase-js` v2), Gemini REST(글), OpenAI Images Edit REST(이미지), Vitest(테스트).
+**Tech Stack:** Vite 5, 순수 JavaScript(ESM), Vercel 서버 함수(Node), Supabase(Postgres·Auth·Storage, `@supabase/supabase-js` v2), Gemini REST(글·이미지), Vitest(테스트).
 
 **Spec:** `docs/superpowers/specs/2026-11-23-launch-agents-design.md`
 
@@ -16,9 +18,9 @@
 - 화면 문구·코드 주석은 한국어 존댓말(지금 코드 말투).
 - 의약품식 효능 표현 금지: 치료, 완치, 염증, 재생, 혈액순환, 아토피, 처방, 여드름 치료.
 - 점수·가격·용량·라인 구성 숫자는 코드 값만 쓴다. AI 결과에는 코드가 숫자를 붙인다.
-- API 키(`GEMINI_API_KEY`, `OPENAI_API_KEY`)는 서버에서만 읽는다. `VITE_` 접두어 금지.
+- API 키(`GEMINI_API_KEY`)는 서버에서만 읽는다. `VITE_` 접두어 금지.
 - 서비스 키 쓰지 않음. 서버는 사용자 토큰으로 Supabase를 불러 RLS가 그대로 적용되게 한다.
-- 모델 ID는 `server/llm/gemini.js`, `server/llm/openai.js`에만. 환경변수 `GEMINI_MODEL`, `OPENAI_IMAGE_MODEL`로 바꿀 수 있다.
+- 모델 ID는 `server/llm/gemini.js`에만. 환경변수 `GEMINI_MODEL`, `GEMINI_IMAGE_MODEL`로 바꿀 수 있다.
 - 요금제 횟수는 `server/limits.js`에만: 무료 평생 1건, 건당 이용권 1장당 1건, 월 구독 달마다 20건, 기획안 1건당 수정 5회, 이미지 다시 만들기 1건당 6회.
 - 용기 샘플: `public/IMAGE/LOGO/cheonghyang-logo-02/application-examples/{toner,serum,cream,lotion-pump,mist}.png`. 이미지에는 로고·글자를 넣지 않는다.
 - `vercel.json` `maxDuration` 300. Gemini 한 번 호출 제한 60초.
@@ -80,7 +82,11 @@
 - [ ] **Step 4:** `npm test` PASS, `npm run dev` 화면 그대로.
 - [ ] **Step 5:** 커밋 `[HSJ] 서버용 데이터 읽기(server/data.js) 추가`
 
-### Task 3: AI 호출 (Gemini JSON, OpenAI 이미지)
+### Task 3: AI 호출 (Gemini JSON, Gemini 이미지)
+
+> **2026-11-24 변경:** 이미지 생성도 OpenAI 대신 **Gemini 이미지 모델**로 바꿨어요(글·이미지 모두 `GEMINI_API_KEY` 하나). `server/llm/openai.js`는 지웠고 `editImage`는 `server/llm/gemini.js`에 있어요. Gemini 이미지 모델은 무료 플랜 한도가 0이라, Google AI Studio에서 결제(Billing)를 켜야 이미지가 만들어져요.
+
+아래는 처음 구현할 때(OpenAI 이미지)의 계획이에요. 지금 코드는 위 변경을 따라요.
 
 **Files:**
 - Create: `server/llm/openai.js`, `tests/llm.test.js`

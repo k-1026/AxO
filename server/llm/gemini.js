@@ -1,15 +1,17 @@
-/* Gemini 호출 (서버 전용). 기획 에이전트들이 generateJson 으로 JSON 답을 받아요.
+/* Gemini 호출 (서버 전용). 기획 에이전트들이 generateJson 으로 JSON 답을 받고, 디자인 이미지는 editImage 로 그려요.
    API 키는 브라우저로 절대 보내지 않아요. */
 
 const ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models";
 export const DEFAULT_MODEL = "gemini-3.8-flash"; // 바꾸려면 환경변수 GEMINI_MODEL 을 넣어요
 const FALLBACK_MODELS = ["gemini-3.5-flash"];   // 기본 모델이 붐빌 때 대신 쓸 모델
+export const DEFAULT_IMAGE_MODEL = "gemini-3.1-flash-image"; // 이미지 모델. 바꾸려면 환경변수 GEMINI_IMAGE_MODEL 을 넣어요
+const IMAGE_TIMEOUT_MS = 150000; // 이미지 한 장 최대 대기 시간 (vercel.json 의 plan-image maxDuration 300초보다 짧게)
 
 const REQUEST_TIMEOUT_MS = 90000;  // Gemini 한 번 호출 기본 최대 대기 시간
 const JSON_REQUEST_TIMEOUT_MS = 60000; // 기획 에이전트: 한 번 호출 최대 대기 시간
 const TOTAL_TIMEOUT_MS = 110000;   // 다시 시도까지 합친 최대 시간 (vercel.json 의 maxDuration 보다 짧게)
 
-/** 에이전트용 AI 호출(Gemini·OpenAI)이 실패했을 때 던지는 오류예요. status 는 화면에 돌려줄 HTTP 상태예요. */
+/** 에이전트용 AI 호출(Gemini 글·이미지)이 실패했을 때 던지는 오류예요. status 는 화면에 돌려줄 HTTP 상태예요. */
 export class LlmError extends Error {
   constructor(message, status = 502) { super(message); this.name = "LlmError"; this.status = status; }
 }
@@ -94,4 +96,50 @@ export async function generateJson(prompt, schema, { apiKey = process.env.GEMINI
   } catch {
     throw new LlmError("AI 응답을 JSON으로 해석하지 못했어요.", 502);
   }
+}
+
+/**
+ * 에이전트가 주입받아 쓰는 이미지 함수 모양이에요.
+ * @typedef {(req: { prompt: string, images: { name: string, bytes: Uint8Array }[] }) => Promise<Uint8Array>} EditImage
+ */
+
+/* 무료 플랜처럼 그 모델 한도가 0이면 결제(Billing) 설정이 필요한 상황이라, '잠시 후 다시'가 아니라 설정 문제(500)로 알려요. */
+const noQuota = msg => /limit:\s*0(?!\d)/.test(msg);
+
+/**
+ * 용기 샘플 사진(참고 이미지)과 지시문으로 광고 이미지 한 장을 그려요. 키·모델은 안 넘기면 환경변수(GEMINI_API_KEY, GEMINI_IMAGE_MODEL)를 써요.
+ * @param {{ prompt: string, images: { name: string, bytes: Uint8Array }[] }} req
+ * @param {{ apiKey?: string, model?: string }} [env]
+ * @returns {Promise<Uint8Array>}
+ */
+export async function editImage({ prompt, images = [] }, { apiKey = process.env.GEMINI_API_KEY, model = process.env.GEMINI_IMAGE_MODEL } = {}) {
+  if (!apiKey) throw new LlmError("서버에 GEMINI_API_KEY 가 설정되지 않았어요.", 500);
+  const useModel = model || DEFAULT_IMAGE_MODEL;
+  const parts = [
+    ...images.map(img => ({ inlineData: { mimeType: "image/png", data: Buffer.from(img.bytes).toString("base64") } })),
+    { text: prompt },
+  ];
+  let res;
+  try {
+    res = await fetch(`${ENDPOINT}/${encodeURIComponent(useModel)}:generateContent`, {
+      method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+      body: JSON.stringify({ contents: [{ role: "user", parts }], generationConfig: { responseModalities: ["IMAGE"], imageConfig: { aspectRatio: "1:1" } } }),
+      signal: AbortSignal.timeout(IMAGE_TIMEOUT_MS),
+    });
+  } catch (e) {
+    if (e?.name === "TimeoutError" || e?.name === "AbortError") throw new LlmError("이미지 만들기가 너무 오래 걸려요. 잠시 후 다시 시도해 주세요.", 504);
+    throw new LlmError(`이미지 AI에 연결하지 못했어요. (${e?.message || "연결 오류"})`, 502);
+  }
+  const data = await res.json().catch(() => null);
+  if (!res.ok) {
+    const msg = data?.error?.message || `HTTP ${res.status}`;
+    console.error("[gemini-image]", res.status, useModel, msg);
+    if (res.status === 429 && noQuota(msg)) throw new LlmError(`이미지 모델(${useModel}) 사용 한도가 0이에요. Google AI Studio 결제(Billing) 설정이 필요해요.`, 500);
+    const busy = res.status === 429 || res.status === 503;
+    throw new LlmError(busy ? "AI 사용량이 많아요. 잠시 후 다시 시도해 주세요." : `이미지 응답을 받지 못했어요. (HTTP ${res.status}: ${msg})`, busy ? 503 : 502);
+  }
+  const cand = data?.candidates?.[0];
+  const part = (cand?.content?.parts || []).find(p => p.inlineData?.data);
+  if (!part) throw new LlmError(`이미지 데이터가 비어 있어요. (${data?.promptFeedback?.blockReason || cand?.finishReason || "빈 응답"})`, 502);
+  return new Uint8Array(Buffer.from(part.inlineData.data, "base64"));
 }

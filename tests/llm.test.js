@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { generateJson, LlmError } from "../server/llm/gemini.js";
-import { editImage, DEFAULT_IMAGE_MODEL } from "../server/llm/openai.js";
+import { generateJson, editImage, DEFAULT_IMAGE_MODEL, LlmError } from "../server/llm/gemini.js";
 
 const realFetch = globalThis.fetch;
 afterEach(() => {
@@ -67,61 +66,73 @@ describe("generateJson", () => {
   });
 });
 
-describe("editImage", () => {
+describe("editImage (Gemini 이미지)", () => {
   const imgs = [
     { name: "a.png", bytes: new Uint8Array([1, 2, 3]) },
     { name: "b.png", bytes: new Uint8Array([4, 5]) },
   ];
+  const imageRes = b64 => jsonRes({ candidates: [{ content: { parts: [{ text: "설명" }, { inlineData: { mimeType: "image/png", data: b64 } }] } }] });
 
-  it("b64_json을 바이트로 풀어 줘요", async () => {
+  it("inlineData 를 바이트로 풀어 줘요", async () => {
     const out = new Uint8Array([9, 8, 7, 6]);
-    globalThis.fetch = vi.fn().mockResolvedValue(jsonRes({ data: [{ b64_json: Buffer.from(out).toString("base64") }] }));
+    globalThis.fetch = vi.fn().mockResolvedValue(imageRes(Buffer.from(out).toString("base64")));
     const res = await editImage({ prompt: "p", images: imgs }, { apiKey: "k", model: "x" });
-    expect(res.length).toBe(4);
     expect(Array.from(res)).toEqual([9, 8, 7, 6]);
   });
 
-  it("multipart 본문에 image[] 두 개와 필드를 담아요", async () => {
-    globalThis.fetch = vi.fn().mockResolvedValue(jsonRes({ data: [{ b64_json: "AA==" }] }));
+  it("참고 이미지 두 장과 지시문을 한 요청에 담고, 이미지로만 답하게 해요", async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue(imageRes("AA=="));
     await editImage({ prompt: "p", images: imgs }, { apiKey: "k", model: "x" });
     const [url, init] = globalThis.fetch.mock.calls[0];
-    expect(url).toBe("https://api.openai.com/v1/images/edits");
-    expect(init.headers.Authorization).toBe("Bearer k");
-    expect(init.body).toBeInstanceOf(FormData);
-    expect(init.body.getAll("image[]")).toHaveLength(2);
-    expect(init.body.get("model")).toBe("x");
-    expect(init.body.get("prompt")).toBe("p");
-    expect(init.body.get("size")).toBe("1024x1024");
-    expect(init.body.get("n")).toBe("1");
-    expect(init.body.has("response_format")).toBe(false);
+    expect(url).toContain("/x:generateContent");
+    expect(init.headers["x-goog-api-key"]).toBe("k");
+    const body = JSON.parse(init.body);
+    const parts = body.contents[0].parts;
+    expect(parts).toHaveLength(3);
+    expect(parts[0].inlineData).toEqual({ mimeType: "image/png", data: Buffer.from([1, 2, 3]).toString("base64") });
+    expect(parts[2].text).toBe("p");
+    expect(body.generationConfig).toEqual({ responseModalities: ["IMAGE"], imageConfig: { aspectRatio: "1:1" } });
   });
 
   it("모델 기본값은 환경변수, 없으면 DEFAULT_IMAGE_MODEL", async () => {
-    globalThis.fetch = vi.fn().mockResolvedValue(jsonRes({ data: [{ b64_json: "AA==" }] }));
-    vi.stubEnv("OPENAI_API_KEY", "ek");
-    vi.stubEnv("OPENAI_IMAGE_MODEL", "");
+    globalThis.fetch = vi.fn().mockResolvedValue(imageRes("AA=="));
+    vi.stubEnv("GEMINI_API_KEY", "ek");
+    vi.stubEnv("GEMINI_IMAGE_MODEL", "");
     await editImage({ prompt: "p", images: imgs });
-    expect(globalThis.fetch.mock.calls[0][1].body.get("model")).toBe(DEFAULT_IMAGE_MODEL);
-    vi.stubEnv("OPENAI_IMAGE_MODEL", "custom");
+    expect(globalThis.fetch.mock.calls[0][0]).toContain(`/${DEFAULT_IMAGE_MODEL}:generateContent`);
+    vi.stubEnv("GEMINI_IMAGE_MODEL", "custom");
     await editImage({ prompt: "p", images: imgs });
-    expect(globalThis.fetch.mock.calls[1][1].body.get("model")).toBe("custom");
+    expect(globalThis.fetch.mock.calls[1][0]).toContain("/custom:generateContent");
   });
 
-  it("HTTP 400이면 상태가 담긴 LlmError", async () => {
+  it("HTTP 400이면 상태가 담긴 LlmError(502)", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     globalThis.fetch = vi.fn().mockResolvedValue(jsonRes({ error: { message: "bad" } }, 400));
     const err = await editImage({ prompt: "p", images: imgs }, { apiKey: "k" }).catch(e => e);
     expect(err).toBeInstanceOf(LlmError);
+    expect(err.status).toBe(502);
     expect(err.message).toContain("400");
   });
 
+  it("무료 플랜 한도 0(결제 필요)이면 설정 문제 LlmError(500)", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    globalThis.fetch = vi.fn().mockResolvedValue(jsonRes({ error: { message: "Quota exceeded ... limit: 0, model: x" } }, 429));
+    await expect(editImage({ prompt: "p", images: imgs }, { apiKey: "k" })).rejects.toMatchObject({ status: 500 });
+  });
+
+  it("일시적인 429는 사용량 많음 LlmError(503)", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    globalThis.fetch = vi.fn().mockResolvedValue(jsonRes({ error: { message: "Resource exhausted, limit: 10" } }, 429));
+    await expect(editImage({ prompt: "p", images: imgs }, { apiKey: "k" })).rejects.toMatchObject({ status: 503 });
+  });
+
   it("키가 없으면 LlmError", async () => {
-    vi.stubEnv("OPENAI_API_KEY", "");
+    vi.stubEnv("GEMINI_API_KEY", "");
     await expect(editImage({ prompt: "p", images: imgs })).rejects.toBeInstanceOf(LlmError);
   });
 
   it("이미지 데이터가 없으면 LlmError(502)", async () => {
-    globalThis.fetch = vi.fn().mockResolvedValue(jsonRes({ data: [] }));
+    globalThis.fetch = vi.fn().mockResolvedValue(geminiText("그림 없이 글만"));
     await expect(editImage({ prompt: "p", images: imgs }, { apiKey: "k" })).rejects.toMatchObject({ status: 502 });
   });
 });
