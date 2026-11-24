@@ -29,14 +29,13 @@
     {
       "file": "CHAHAR_마스크_시트형.png",
       "type": "마스크",
-      "prompt": "Edit IMAGE 1 (CHAHAR pink sheet mask pouch with left sealed hero and right open pouch inset). IMAGE 2 is ONLY a MATERIAL/TEXTURE reference: the front sachet of the REJURAN commercial package has a smooth understated satin pearl-silver laminated foil surface, flat taut front and subtle sealed perimeter. User wants CHAHAR mask in that texture. Change ONLY the pouch material finish in both views to elegant satin PEARL SILVER-WHITE with a subtle blush-pink reflected tint from existing pink studio environment. Restrained soft metallic foil sheen, flat and smooth lightly flexible laminated sachet, NOT shiny inflated candy-wrapper plastic. Reduce pillowy puffiness and harsh pink glossy creases while retaining a few very subtle realistic edge wrinkles and fine heat sealed borders. Thin packaging, no thick padded cushion effect. Preserve CHAHAR thin cherry-red circle and uppercase CHAHAR only, same logo position and size. Preserve left closed whole sachet silhouette and right rounded-rectangle detail composition showing open pouch and moist white sheet with eye opening/nose flap. Keep pink-white backdrop, studio camera, lighting, placement, masks, original overall composition. Subtle existing pot emboss may stay very understated. Do NOT copy REJURAN words, logos, promotion circles, awards, badges, illustration, advertising layout or turquoise background from image2. No box or new props. One image, landscape3:2, photorealistic 3D cosmetic packaging sample.",
+      "prompt": "Create a NEW CHAHAR SINGLE SHEET FACE MASK pouch packaging sample extending attached tube and cream family. This is a SHEET MASK in a sachet, NOT a cream jar. Premium photorealistic 3D cosmetic product studio render. Exact family palette milky pastel PINK #F7BAD6, cherry RED #D90035, bright pink-white seamless studio background. Landscape 3:2 with LEFT large full closed flat rounded-rectangle flexible foil sachet standing upright at x30%, clear heat-sealed thin perimeter, softly bowed satin pink surface; bottom at90%, top at12%. Sachet has minimal tasteful embossed round pot silhouette near lower part, no busy decoration. Front ONLY thin red circle with uppercase CHAHAR. RIGHT rounded-rectangle detail inset showing a SECOND VIEW OF SAME pouch with upper corner neatly torn open and a folded moist WHITE nonwoven SHEET MASK emerging, partial unfolding showing one eye opening and nose flap to clearly identify mask sheet. Subtle pink essence on sheet, no capsules, no cream swirl. Left hero fully sealed. Matching references soft curved visual language, studio lighting and restrained glossy red narrow seam accents; sachet does NOT need a jar lid. No text except CHAHAR, no capacity, no claims, no people, no medical imagery. Two views only, no third-party brands. Packaging design concept.",
       "size": [
         1536,
         1024
       ],
       "format": "PNG",
-      "sha256": "c21e208505b4425d6247733fe5b150e721a3dc8d40ca25ec0dd19571788c839e",
-      "material": "새틴 펄 실버 화이트 포일; 은은한 핑크 반사"
+      "sha256": "9d40f28bd6e794b140f2755a6185a43c699f52326b3956c981010712f885ae82"
     },
     {
       "file": "CHAHAR_패드_단지형.png",
@@ -61,13 +60,11 @@
       "sha256": "af10bd63cacbfc47d4e4ac471a7f6fe9d57e43fd69cb6ece499978a1857d7b3f"
     }
   ],
-  "revisions": [
-    {
-      "date": "2026-11-24",
-      "file": "CHAHAR_마스크_시트형.png",
-      "previousSha256": "9d40f28bd6e794b140f2755a6185a43c699f52326b3956c981010712f885ae82",
-      "previousPrompt": "Create a NEW CHAHAR SINGLE SHEET FACE MASK pouch packaging sample extending attached tube and cream family. This is a SHEET MASK in a sachet, NOT a cream jar. Premium photorealistic 3D cosmetic product studio render. Exact family palette milky pastel PINK #F7BAD6, cherry RED #D90035, bright pink-white seamless studio background. Landscape 3:2 with LEFT large full closed flat rounded-rectangle flexible foil sachet standing upright at x30%, clear heat-sealed thin perimeter, softly bowed satin pink surface; bottom at90%, top at12%. Sachet has minimal tasteful embossed round pot silhouette near lower part, no busy decoration. Front ONLY thin red circle with uppercase CHAHAR. RIGHT rounded-rectangle detail inset showing a SECOND VIEW OF SAME pouch with upper corner neatly torn open and a folded moist WHITE nonwoven SHEET MASK emerging, partial unfolding showing one eye opening and nose flap to clearly identify mask sheet. Subtle pink essence on sheet, no capsules, no cream swirl. Left hero fully sealed. Matching references soft curved visual language, studio lighting and restrained glossy red narrow seam accents; sachet does NOT need a jar lid. No text except CHAHAR, no capacity, no claims, no people, no medical imagery. Two views only, no third-party brands. Packaging design concept.",
-      "change": "사용자 참조 사진의 새틴 펄 실버 포일 질감 적용. 참조 상표·광고 문구는 복제하지 않음."
-    }
-  ]
+  "pendingRevision": {
+    "file": "CHAHAR_마스크_시트형.png",
+    "status": "미생성 - usage_limit_reached",
+    "request": "원래 핑크 색감·로고·구도 유지, 표면만 은은하고 매끈한 새틴 포일 질감으로 변경",
+    "prompt": "Precise edit of IMAGE 1, the ORIGINAL PINK CHAHAR sheet mask pouch. IMAGE 2 is a material-reference-only silver commercial sachet. The user's correction is CRITICAL: KEEP THE ORIGINAL PINK COLORS EXACTLY, CHANGE ONLY TEXTURE. Do NOT change the pouch to silver, white, gray or pearl-white. Keep the original pastel rose PINK base on BOTH the left sealed hero and right opened pouch, cherry-red circular CHAHAR logo, pink background and all existing composition. Change only surface roughness and flexibility to the fine smooth SATIN LAMINATED FOIL TEXTURE seen on the front sachet of image 2: understated soft diffuse highlight, smooth flat flexible film, fine sealed perimeter and very subtle natural edge wrinkles, less inflated shiny plastic/candy-wrapper look. Think ORIGINAL PINK ink/coating printed over a foil sachet with satin finish; material reference does NOT dictate hue. Retain original pink's brightness and saturation in the pouch, with only gentle blush-pink shadows and pale-pink satin highlights, NO silver sheen and NO neutralization of pink. Keep left full sealed pink pouch, right rounded-rectangle detail with matching pink opened pouch and white wet sheet mask unchanged in arrangement and scale. Keep embossed pot shape subtle, CHAHAR only, no extra text. No reference brand, badges, boxes or ads. Photorealistic premium product render, landscape3:2. COLOR LOCK: original pink pouch, red logo, pink background remain original. TEXTURE-ONLY EDIT.",
+    "note": "은색 편집본은 사용자 색상 유지 요청에 따라 철회. 원래 핑크 생성본 복원; 요청 질감이 적용됐다고 표시하지 않음."
+  }
 }
