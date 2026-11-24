@@ -5,7 +5,7 @@ import {
 } from "../config/rules.js";
 import { eulReul, josa } from "../utils/text.js";
 
-/* ════════ 후보 풀 만들기: 원료 12종 × 원료마다 가진 모든 목적 ════════
+/* ════════ 후보 풀 만들기: 원료 48종 × 원료마다 가진 모든 목적 ════════
    계절·제철로 거르지 않아요. 계절의 기후 이슈는 설명(날씨·고민)에만 써요. */
 export const lineKey = l => `${l.herb}|${l.purpose}`;
 
