@@ -5,7 +5,7 @@ import { hasSupabase } from "../lib/supabase.js";
 import { esc } from "../utils/text.js";
 
 const root = () => document.querySelector("#view-my .page");
-let notice = [];       // 기획안 만들기 직후 이미지 실패 안내 (보기 화면 위에 보여 줘요)
+let notice = [];       // 보기 화면 위에 보여 줄 안내 (예: 기획안 만들기 직후 이미지 만드는 중)
 let seq = 0;           // 늦게 도착한 응답이 화면을 덮어쓰지 않게 해요
 let chat = null;       // 지금 기획안의 수정 챗봇 { planId, el } — 버전을 바꿔 다시 그려도 대화가 이어져요
 
@@ -112,19 +112,28 @@ async function afterEdit(planId, versionNo, regenerate) {
   }
 }
 
-export function openPlan(planId, versionNo, notes) {
+/* fillImages: 기획안을 막 만들었을 때 true. 저장된 기획안을 연 뒤 빈 이미지 칸(최대 3장)을 한꺼번에 채워요. */
+export function openPlan(planId, versionNo, notes, { fillImages = false } = {}) {
   const my = ++seq;
   notice = notes ?? [];
   return guard(async () => {
     message("<p>불러오는 중이에요…</p>");
     const d = await callApi("/api/plan-get", versionNo ? { plan_id: planId, version_no: versionNo } : { plan_id: planId });
     if (my !== seq) return;
+    const empty = fillImages && d.version.version_no === d.latest_version_no
+      ? [0, 1, 2].filter(i => d.version.content?.scenarios?.[i] && !d.image_urls?.[i]) : [];
+    if (empty.length) notice = [...notice, `기획안을 저장했어요. 제품 이미지 ${empty.length}장을 만드는 중이에요 (1~2분). 기다리는 동안 기획안을 읽어 보세요.`];
     render(d);
+    for (const i of empty) {
+      const btn = root().querySelector(`[data-fill="${i}"]`);
+      if (btn) makeImage(btn, i, false, { quiet: true });
+    }
   });
 }
 
-/* 빈 칸 채우기(regenerate:false) 또는 이미지 다시 만들기(regenerate:true). 한도(402)·만드는 중(409) 문구는 alert로 보여 줘요. */
-async function makeImage(btn, idx, regenerate) {
+/* 빈 칸 채우기(regenerate:false) 또는 이미지 다시 만들기(regenerate:true). 한도(402)·만드는 중(409) 문구는 alert로 보여 줘요.
+   quiet: 자동으로 채울 때는 alert 대신 그 칸에 실패 이유를 적어요 (3장이 한꺼번에 실패해도 창이 3번 뜨지 않게). */
+async function makeImage(btn, idx, regenerate, { quiet = false } = {}) {
   const page = root(), planId = page.dataset.plan, versionNo = Number(page.dataset.version);
   const slot = btn.closest("[data-slot]");
   const old = slot.innerHTML;
@@ -134,8 +143,13 @@ async function makeImage(btn, idx, regenerate) {
     const { url } = await callApi("/api/plan-image", { plan_id: planId, version_no: versionNo, idx, regenerate });
     if (same()) slot.innerHTML = slotHtml(idx, url, root().dataset.latest === "1");
   } catch (e) {
-    if (same()) slot.innerHTML = old;
-    if (!(e instanceof AuthRequired)) alert(e.message || "이미지를 만들지 못했어요. 잠시 후 다시 시도해 주세요.");
+    const why = e instanceof AuthRequired ? "로그인이 만료됐어요. 다시 로그인해 주세요." : (e.message || "이미지를 만들지 못했어요. 잠시 후 다시 시도해 주세요.");
+    if (!quiet) {
+      if (same()) slot.innerHTML = old;
+      if (!(e instanceof AuthRequired)) alert(why);
+      return;
+    }
+    if (same()) slot.innerHTML = `<div class="my-empty"><p>${esc(why)}</p><button type="button" class="btn-line" data-fill="${idx}">다시 만들기</button></div>`;
   }
 }
 
