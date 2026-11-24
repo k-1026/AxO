@@ -5,6 +5,14 @@
 .pw-box h2 { font-size: 1.15rem; margin: 18px 0 8px; }
 .pw-box p { margin: 0 0 6px; color: var(--muted); font-size: .92rem; line-height: 1.6; word-break: keep-all; }
 .pw-sub { color: var(--accent); font-weight: 700; }
+/* 로딩 캐릭터: 두 장면을 겹쳐 두고 위 장면을 천천히 나타났다 사라지게 해서 번갈아 보여요 */
+.loading-char { position: relative; width: min(100%, 260px); aspect-ratio: 3 / 2; margin: 0 auto; border-radius: 14px; overflow: hidden; background: #FBF5EC; }
+.loading-char img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.loading-char img + img { animation: loading-swap 3s linear infinite; }
+/* 장면마다 약 1.5초 머물고, 바뀔 때만 0.15초 동안 짧게 넘어가요 (두 사람이 겹쳐 보이는 시간을 줄여요) */
+@keyframes loading-swap { 0%, 45% { opacity: 0; } 50%, 95% { opacity: 1; } 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .loading-char img + img { animation-duration: 8s; } }
+.my-msg .loading-char { margin-bottom: 14px; }
 .pw-spin { width: 42px; height: 42px; margin: 0 auto; border-radius: 50%; border: 4px solid var(--line); border-top-color: var(--accent); animation: pw-rot 1s linear infinite; }
 @keyframes pw-rot { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .pw-spin { animation-duration: 3s; } }

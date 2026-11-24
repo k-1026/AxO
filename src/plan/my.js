@@ -5,6 +5,7 @@ import { mountEditChat } from "../chat/chat.js";
 import { hasSupabase } from "../lib/supabase.js";
 import { esc } from "../utils/text.js";
 import { productVisual } from "../app.js";
+import { LOADING_IMAGES } from "../config/assets.js";
 
 const root = () => document.querySelector("#view-my .page");
 let notice = [];       // 보기 화면 위에 보여 줄 안내 (예: 기획안 만들기 직후 이미지 만드는 중)
@@ -17,6 +18,8 @@ const ymd = s => { const d = new Date(s); return Number.isNaN(d.getTime()) ? "" 
 const list = arr => (arr?.length ? `<ul>${arr.map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : `<p class="my-none">없어요.</p>`);
 
 function message(html) { root().innerHTML = `<div class="my-msg">${html}</div>`; }
+/* 불러오는 동안 로딩 캐릭터(두 장면이 번갈아 나와요)와 문구를 보여 줘요 */
+const loading = text => message(`<div class="loading-char" aria-hidden="true">${LOADING_IMAGES.map(src => `<img src="${src}" alt="">`).join("")}</div><p>${esc(text)}</p>`);
 
 async function guard(fn) {
   if (!hasSupabase) return message("<p>로그인 기능이 아직 연결되지 않았어요. 관리자에게 문의해 주세요.</p>");
@@ -33,7 +36,7 @@ export function showList() {
   notice = [];
   chat = null;
   return guard(async () => {
-    message("<p>불러오는 중이에요…</p>");
+    loading("불러오는 중이에요…");
     const { plans } = await callApi("/api/plan-get", {});
     if (my !== seq) return;
     if (!plans.length) return message(`<p>아직 만든 기획안이 없어요.</p><p class="my-sub">출시 기획실에서 후보를 골라 [기획안 만들기]를 눌러 보세요.</p>`);
@@ -137,7 +140,7 @@ export function openPlan(planId, versionNo, notes, { fillImages = false } = {}) 
   const my = ++seq;
   notice = notes ?? [];
   return guard(async () => {
-    message("<p>불러오는 중이에요…</p>");
+    loading("불러오는 중이에요…");
     const d = await callApi("/api/plan-get", versionNo ? { plan_id: planId, version_no: versionNo } : { plan_id: planId });
     if (my !== seq) return;
     const empty = fillImages && d.version.version_no === d.latest_version_no
