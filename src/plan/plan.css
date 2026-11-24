@@ -53,3 +53,6 @@
 .my-cuts li { margin-bottom: 6px; line-height: 1.55; }
 .my-cuts span { display: block; color: var(--muted); font-size: .85rem; }
 .my-cuts q { quotes: none; font-weight: 700; }
+
+/* 마이 기획실 · 제품 이미지 (용기 샘플). 후보 카드에서 옮겨 왔어요. */
+.my-product { max-width: 560px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line, #e6e6e6); }

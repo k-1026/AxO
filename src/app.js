@@ -55,6 +55,14 @@ const tileHtml = (l, t, k, mode) => {
 const tiles = (l, mode = designMode) => l.lineup.map(([t, k]) => tileHtml(l, t, k, mode)).join("");
 const tileBg = l => `background:#FAF8F3`;
 
+/* 마이 기획실에서 기획안의 제품 이미지(용기 샘플)를 그릴 때 써요. 후보 카드에는 이미지를 띄우지 않아요.
+   계절·원료·목적으로 후보 라인을 다시 찾아요. 자료가 아직 없거나 라인을 못 찾으면 빈 문자열이에요. */
+export function productVisual(s, herb, purpose) {
+  if (!SEASONS || !SEASONS[s]) return "";
+  const l = buildCandidates(coreData(), s).find(x => x.herb === herb && x.purpose === purpose);
+  return l ? `<div class="visual" style="${tileBg(l)}">${tiles(l)}</div>` : "";
+}
+
 /* ════════ 화면 ════════ */
 function renderSeasons() {
   const el = document.getElementById("seasons");
@@ -176,7 +184,6 @@ function renderResults() {
   if (!RES.length) { el.innerHTML = `<div class="empty">더 추천할 후보가 없어요.</div>`; return; }
   el.innerHTML = `<div class="top3">${RES.map(r => `
     <button class="card" type="button" data-k="${esc(lineKey(r.l))}">
-      <div class="visual" style="${tileBg(r.l)}">${tiles(r.l)}</div>
       <div class="body">
         <div class="herb">${esc(r.l.herb)}${r.l.hanja ? `(${r.l.hanja})` : ""} · ${esc(r.l.purpose)} · ${r.l.functional ? "기능성 보고 필요" : "일반 화장품"}</div>
         <h3>${esc(r.l.name)}</h3>
