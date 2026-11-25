@@ -147,8 +147,8 @@ describe("designer", () => {
     expect(prompt).toContain("1개");
     for (const k of IMAGE_KINDS) expect(prompt).toContain(k);
   });
-  it("sampleFilesFor는 type별 중복 없이", () => {
+  it("sampleFilesFor는 type별 중복 없이, 로고 지운 사진으로", () => {
     const gel = { l: { lineup: [["toner", "토너", 1, 1], ["cream", "젤 크림", 1, 1], ["mist", "미스트", 1, 1]], extra: "클렌저" } };
-    expect(sampleFilesFor(gel)).toEqual(["toner.png", "cream.png", "mist.png"]);
+    expect(sampleFilesFor(gel)).toEqual(["toner-nologo.png", "cream-nologo.png", "mist-nologo.png"]);
   });
 });

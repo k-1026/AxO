@@ -122,10 +122,17 @@ export const SEASON_TREND_NOTES = {
   "겨울": { line: "한파·난방 환경에서는 ‘오래가는 보습·편안한 장벽 케어’를 소비자 관심 가설로 볼 수 있어요.", tip: "보습 지속감과 끈적임의 균형을 크림 기획의 비교 기준으로 잡아보세요." }
 };
 
-export const PRODUCT_BOX = { toner: [245, 75, 675, 965], serum: [245, 40, 690, 950], cream: [195, 275, 820, 830], lotion: [240, 260, 655, 935], mist: [250, 25, 590, 935] };
+export const PRODUCT_BOX = { toner: [245, 75, 675, 965], serum: [245, 40, 690, 950], cream: [195, 275, 820, 830], lotion: [240, 260, 655, 935], mist: [250, 25, 590, 935],
+  cleanser: [175, 205, 740, 935], eye: [245, 120, 500, 920], pad: [165, 180, 805, 850], mask: [145, 105, 755, 935] };
 
 /* 용기 샘플 파일 이름 (public/IMAGE/LOGO/cheonghyang-logo-02/application-examples) · 주소 앞부분은 config/assets.js */
-export const SAMPLE = { toner: "toner.png", serum: "serum.png", cream: "cream.png", lotion: "lotion-pump.png", mist: "mist.png" };
+export const SAMPLE = { toner: "toner.png", serum: "serum.png", cream: "cream.png", lotion: "lotion-pump.png", mist: "mist.png",
+  /* MEJ 추가샘플1 (클렌저 튜브·아이크림 튜브·패드 단지·마스크 시트) */
+  cleanser: "cleanser.png", eye: "eye.png", pad: "pad.png", mask: "mask.png" };
+/* 전용 샘플 사진이 없는 제품이 생기면 모양이 비슷한 용기 사진을 빌려 쓰도록 여기에 적어요 (예: { 새종류: "cream" }) */
+export const SAMPLE_AS = {};
+/** 제품 종류 → 그릴 샘플 종류 (전용·빌려 쓸 사진이 모두 없으면 null) */
+export const sampleType = t => (SAMPLE[t] ? t : SAMPLE[SAMPLE_AS[t]] ? SAMPLE_AS[t] : null);
 
 /* 의약품식 효능 표현 금지어 · 화장품 광고에 쓰지 않아요 */
 export const BANNED_PHRASES = ["여드름 치료", "치료", "완치", "염증", "항염", "소염", "재생", "혈액순환", "아토피", "처방"];

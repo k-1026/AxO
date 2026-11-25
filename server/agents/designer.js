@@ -2,7 +2,7 @@
 import { STRING, describeLine } from "./prompt.js";
 import { stripBanned } from "./verifier.js";
 import { PlanFormatError } from "./writer.js";
-import { BANNED_PHRASES, SAMPLE } from "../../src/config/rules.js";
+import { BANNED_PHRASES, SAMPLE, sampleType } from "../../src/config/rules.js";
 import { lineDesign, PALETTE_RANGE } from "../../src/core/palette.js";
 
 const CUT = { type: "OBJECT", properties: { scene: STRING, copy: STRING }, required: ["scene", "copy"] };
@@ -98,8 +98,9 @@ export function buildImagePrompt(scenario, cand, data, palette) {
   return out.join("\n");
 }
 
-/* 용기 샘플 파일 이름: 제품 종류별 하나씩 (extra는 샘플이 없어요) */
+/* 용기 샘플 파일 이름: 제품 종류별 하나씩. 전용 사진이 없는 클렌저·아이크림·패드는 비슷한 용기 사진(SAMPLE_AS)을 써요 */
 export function sampleFilesFor(cand) {
   const types = [...new Set((lineOf(cand).lineup || []).map(x => x[0]))];
-  return types.map(t => SAMPLE[t]).filter(Boolean);
+  // 로고를 지운 사진(scripts/remove-logos.py)을 넘겨서 AI가 샘플 로고를 따라 그리지 않게 해요
+  return [...new Set(types.map(t => SAMPLE[sampleType(t)]).filter(Boolean))].map(f => f.replace(/\.png$/, "-nologo.png"));
 }

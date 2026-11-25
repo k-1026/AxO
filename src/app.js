@@ -1,5 +1,5 @@
 import {
-  COMBO_KW, SEASON_TREND_NOTES, PRODUCT_BOX, SAMPLE, qty, unitOf, productOptions
+  COMBO_KW, SEASON_TREND_NOTES, PRODUCT_BOX, SAMPLE, sampleType, qty, unitOf, productOptions
 } from "./config/rules.js";
 import { SAMPLE_BASE } from "./config/assets.js";
 import { recolorPixels } from "./core/recolor.js";
@@ -52,23 +52,27 @@ if (typeof document !== "undefined") document.addEventListener("load", e => {
 /* 원본 1536×1024 사진에서 본품만 둘러싼 영역 [x0, y0, x1, y1] (기본 라인·후보 카드·상세 화면 공통) */
 const boxStyle = t => { const b = PRODUCT_BOX[t] || PRODUCT_BOX.toner, w = b[2] - b[0], h = b[3] - b[1], p = v => (+v.toFixed(3)) + "%";
   return { tile: `aspect-ratio:${w} / ${h};max-width:none;--w:${(w / 16).toFixed(3)}%;`, img: `position:absolute;max-width:none;object-fit:fill;width:${p(1536 / w * 100)};height:${p(1024 / h * 100)};left:${p(-b[0] / w * 100)};top:${p(-b[1] / h * 100)};` }; };
-const tileHtml = (l, t, k, mode) => {
+const tileHtml = (l, type, k, mode) => {
+  const t = sampleType(type) || type;
   const bx = boxStyle(t);
   if (!SAMPLE[t]) return `<span class="tile sample-pending" style="${bx.tile}"><span>${esc(k)}<small>청향 샘플 준비 중</small></span></span>`;
   /* 화면에는 바탕을 지운 누끼(-cutout.png, scripts/make-cutouts.py)를 써요 */
   const original = `${SAMPLE_BASE}${SAMPLE[t].replace(/.png$/, "-cutout.png")}`, recolor = mode === "tint";
   return `<span class="tile" style="${bx.tile}"><span class="product-cutout"><img src="${original}" alt="${esc(k)} · 청향 로고 2 적용 샘플 형태와 재질" loading="lazy" style="${bx.img}"${recolor ? ` data-tint="${l.design.cap}"` : ""}></span><span class="tl">${esc(k)}</span></span>`;
 };
-const tiles = (l, mode = designMode) => l.lineup.map(([t, k]) => tileHtml(l, t, k, mode)).join("");
+const tiles = (l, mode = designMode, rows = l.lineup) => rows.map(([t, k]) => tileHtml(l, t, k, mode)).join("");
 /* 배경은 용기 색에 맞춰 고른 색이에요 (core/palette.js) */
 const tileBg = l => `background:${l.design.bg || "#FAF8F3"}`;
 
 /* 마이 기획실에서 기획안의 제품 이미지(용기 샘플)를 그릴 때 써요. 후보 카드에는 이미지를 띄우지 않아요.
-   계절·원료·목적으로 후보 라인을 다시 찾아요. 자료가 아직 없거나 라인을 못 찾으면 빈 문자열이에요. */
-export function productVisual(s, herb, purpose) {
+   계절·원료·목적으로 후보 라인을 다시 찾아 색을 정하고, 제품은 기획안에 저장된 제품(사용자가 고른 것)을 그려요.
+   저장된 제품이 없으면(예전 기획안) 후보의 추천 구성을 그려요. 자료가 없거나 라인을 못 찾으면 빈 문자열이에요. */
+export function productVisual(s, herb, purpose, products) {
   if (!SEASONS || !SEASONS[s]) return "";
   const l = buildCandidates(coreData(), s).find(x => x.herb === herb && x.purpose === purpose);
-  return l ? `<div class="visual" style="${tileBg(l)}">${tiles(l)}</div>` : "";
+  if (!l) return "";
+  const rows = Array.isArray(products) && products.length ? products.map(p => [p?.type, p?.name]).filter(([t, k]) => t && k) : l.lineup;
+  return `<div class="visual" style="${tileBg(l)}">${tiles(l, designMode, rows)}</div>`;
 }
 
 /* ════════ 화면 ════════ */

@@ -98,7 +98,7 @@ function render(d) {
     ${isLatest ? "" : `<p class="my-old">지난 버전이에요. 이미지 다시 만들기는 최신 버전에서만 할 수 있어요.</p>`}
     <section class="my-sec"><h3>콘셉트</h3><p>${esc(p.concept ?? "")}</p><h3>타깃</h3><p>${esc(p.target ?? "")}</p></section>
     <section class="my-sec"><h3>핵심 문구</h3>${list(p.key_claims)}</section>
-    ${(v => v ? `<section class="my-sec"><h3>제품 이미지</h3><div class="my-product">${v}</div></section>` : "")(productVisual(d.plan.season, d.plan.herb, d.plan.purpose))}
+    ${(v => v ? `<section class="my-sec"><h3>제품 이미지</h3><div class="my-product">${v}</div></section>` : "")(productVisual(d.plan.season, d.plan.herb, d.plan.purpose, p.products))}
     <section class="my-sec"><h3>제품 구성</h3><div class="my-table"><table><thead><tr><th>이름</th><th>용량</th><th>정가</th><th>단위당 가격</th><th>역할</th><th>구분</th></tr></thead><tbody>${rows}</tbody></table></div></section>
     <section class="my-sec"><h3>근거 메모</h3>${list(p.notes)}</section>
     <section class="my-sec"><h3>주의사항</h3>${list(p.cautions)}</section>

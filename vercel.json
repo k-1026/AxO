@@ -5,7 +5,7 @@
     "api/plan-get.js": { "maxDuration": 60 },
     "api/plan-image.js": {
       "maxDuration": 300,
-      "includeFiles": "public/IMAGE/LOGO/cheonghyang-logo-02/application-examples/*.png"
+      "includeFiles": "public/IMAGE/LOGO/cheonghyang-logo-02/application-examples/*-nologo.png"
     },
     "api/plan-edit/*.js": { "maxDuration": 300 }
   }

@@ -93,3 +93,30 @@ describe("제품 고르기", () => {
     expect(keepSavedProducts(cand, undefined)).toBe(cand);
   });
 });
+
+describe("제품 샘플 사진", async () => {
+  const { sampleType, SAMPLE } = await import("../src/config/rules.js");
+  const { sampleFilesFor } = await import("../server/agents/designer.js");
+  it("클렌저·아이크림·패드·마스크도 전용 샘플 사진이 있어요", () => {
+    for (const t of ["toner", "serum", "cream", "lotion", "mist", "cleanser", "eye", "pad", "mask"]) expect(sampleType(t)).toBe(t);
+    expect(SAMPLE.cleanser).toBe("cleanser.png");
+    expect(sampleType("없는종류")).toBe(null);
+  });
+  it("고른 제품 3종(토너·크림·클렌저)이 모두 이미지 참고 사진으로 들어가요", () => {
+    const { line } = selectLine(lineOf("민감·장벽"));
+    expect(sampleFilesFor({ l: line })).toEqual(["toner-nologo.png", "cream-nologo.png", "cleanser-nologo.png"]);
+  });
+  it("후보에서 고를 수 있는 모든 제품에 샘플 사진이 있어요 (고른 제품은 모두 기획안 제품 이미지에 나와요)", () => {
+    for (const p of Object.keys(LINE_RULE)) {
+      for (const o of productOptions(lineOf(p))) expect(sampleType(o.type), `${p} · ${o.name}`).not.toBe(null);
+    }
+  });
+  it("모든 샘플에 로고 지운 사진과 화면용 누끼가 있어요", async () => {
+    const { existsSync } = await import("node:fs");
+    const dir = "public/IMAGE/LOGO/cheonghyang-logo-02/application-examples/";
+    for (const f of Object.values(SAMPLE)) {
+      expect(existsSync(dir + f.replace(/\.png$/, "-nologo.png")), f).toBe(true);
+      expect(existsSync(dir + f.replace(/\.png$/, "-cutout.png")), f).toBe(true);
+    }
+  });
+});

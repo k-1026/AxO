@@ -193,7 +193,7 @@ describe("/api/plan-image", () => {
     const req = deps.editImage.mock.calls[0][0];
     expect(req.images.length).toBeGreaterThan(0);
     expect(req.images.map(i => i.name)).toEqual(deps.readSample.mock.calls.map(x => x[0]));
-    expect(req.images.every(i => /^(toner|serum|cream|lotion-pump|mist)\.png$/.test(i.name))).toBe(true);
+    expect(req.images.every(i => /^(toner|serum|cream|lotion-pump|mist|cleanser|eye|pad|mask)-nologo\.png$/.test(i.name))).toBe(true);
     expect(req.prompt).toContain("no logo");
     expect(req.prompt).toContain("Scene: x1"); // 이미지 1번 설명(원료·질감 컷)을 써요
     const save = store.saveImage.mock.calls[0];
