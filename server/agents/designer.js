@@ -3,6 +3,7 @@ import { STRING, describeLine } from "./prompt.js";
 import { stripBanned } from "./verifier.js";
 import { PlanFormatError } from "./writer.js";
 import { BANNED_PHRASES, SAMPLE } from "../../src/config/rules.js";
+import { lineDesign, PALETTE_RANGE } from "../../src/core/palette.js";
 
 const CUT = { type: "OBJECT", properties: { scene: STRING, copy: STRING }, required: ["scene", "copy"] };
 export const SCENARIO_SCHEMA = {
@@ -84,12 +85,14 @@ export function assembleScenarios(raw) {
 
 /* 이미지 만들기용 프롬프트. 원료 색과 트렌드 색을 #코드로 넣어요 */
 export function buildImagePrompt(scenario, cand, data, palette) {
-  const l = lineOf(cand), d = (data?.DESIGN || {})[l.herb] || l.design || {};
+  const l = lineOf(cand), d = data?.DESIGN?.[l.herb] ? lineDesign(data.DESIGN, l.herb, l.purpose) : (l.design || {});
   const out = [
     `Scene: ${stripBanned(scenario.image_prompt)}`,
     "Premium Korean herbal skincare product photo, clean and natural lighting.",
     "The containers must have no logo, no text, no letters and no brand name on them (용기에 로고·글자·브랜드명 없음).",
-    `Container colors from the herb: body ${d.main}, cap ${d.cap}, liquid ${d.liquid}.`
+    `Container colors from the herb: body ${d.main}, cap ${d.cap}, liquid ${d.liquid}.`,
+    ...(d.bg ? [`Background color matched to the container: ${d.bg}.`] : []),
+    `Palette: any color in the full hex range ${PALETTE_RANGE.from}-${PALETTE_RANGE.to} (${PALETTE_RANGE.count.toLocaleString("en-US")} colors).`
   ];
   if (palette?.colors?.length) out.push(`트렌드 색 (trend palette accents): ${palette.colors.join(", ")}.`);
   return out.join("\n");

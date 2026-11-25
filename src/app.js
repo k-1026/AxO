@@ -27,33 +27,50 @@ function hsl(hex) {
 }
 /* 원본 사진의 픽셀 배치·알파는 유지하고 RGB 색상만 변환해요.
    뚜껑·로고 영역은 동일한 원본 이미지를 겹쳐 별도 포인트색을 적용해요. */
-const packageIndex = herb => Object.keys(DESIGN).indexOf(herb);
 const channelValues = (hex, point) => [1, 3, 5].map(i => {
   const c = parseInt(hex.slice(i, i + 2), 16) / 255;
   return [0, c * (point ? .65 : .68), c * (point ? .96 : .94), c, 1].map(v => v.toFixed(4)).join(" ");
 });
-function renderPackageFilters() {
-  document.getElementById("package-filters").innerHTML = Object.values(DESIGN).map((d, i) => ["body", "point"].map(part => {
+/* 샘플 사진의 연한 분홍 바탕(밝기 약 0.8 이상)만 흰색으로 올려요. 흰색은 곱하기(multiply)로 배경에 녹아서 제품 둘레 테두리가 안 생겨요.
+   그보다 어두운 용기 부분은 원래 밝기를 그대로 둬서 제품이 흐려지지 않아요.
+   뚜껑(point)은 반짝이는 부분이 날아가지 않게 적용하지 않아요. */
+const LIFT_TABLE = Array.from({ length: 21 }, (_, i) => i / 20).map(x => (x <= 0.72 ? x : x >= 0.8 ? 1 : 0.72 + (x - 0.72) / 0.08 * 0.28).toFixed(3)).join(" ");
+const LIFT = `<feComponentTransfer><feFuncR type="table" tableValues="${LIFT_TABLE}"/><feFuncG type="table" tableValues="${LIFT_TABLE}"/><feFuncB type="table" tableValues="${LIFT_TABLE}"/></feComponentTransfer>`;
+/* 라인마다 색이 달라서(core/palette.js) 필터는 그 라인이 처음 그려질 때 만들어요. */
+const madeFilters = new Set();
+function packageFilters(d) {
+  const i = d.key;
+  return ["body", "point"].map(part => {
     const point = part === "point", vals = channelValues(point ? d.cap : d.main, point);
     const input = point ? '<feColorMatrix type="matrix" values="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 1 0"/>' : '<feColorMatrix type="saturate" values="0"/>';
-    return `<filter id="pkg-${part}-${i}" color-interpolation-filters="sRGB">${input}<feComponentTransfer><feFuncR type="table" tableValues="${vals[0]}"/><feFuncG type="table" tableValues="${vals[1]}"/><feFuncB type="table" tableValues="${vals[2]}"/><feFuncA type="identity"/></feComponentTransfer></filter>`;
+    return `<filter id="pkg-${part}-${i}" color-interpolation-filters="sRGB">${input}${point ? "" : LIFT}<feComponentTransfer><feFuncR type="table" tableValues="${vals[0]}"/><feFuncG type="table" tableValues="${vals[1]}"/><feFuncB type="table" tableValues="${vals[2]}"/><feFuncA type="identity"/></feComponentTransfer></filter>`;
   }).join("") + ["dark", "light"].map(kind => {
     const mask = kind === "dark" ? "0 -3 0 0 1.15" : "0 4 0 0 -2.8";
     return `<filter id="pkg-ink-${kind}-${i}" color-interpolation-filters="sRGB"><feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ${mask}" result="ink"/><feFlood flood-color="${d.cap}" result="tone"/><feComposite in="tone" in2="ink" operator="in"/></filter>`;
-  }).join("")).join("");
+  }).join("");
 }
-const tintCss = l => `filter:url(#pkg-body-${packageIndex(l.herb)});`;
+function ensureFilters(l) {
+  const d = l.design;
+  if (madeFilters.has(d.key)) return;
+  madeFilters.add(d.key);
+  const defs = document.getElementById("package-filters");
+  if (defs) defs.insertAdjacentHTML("beforeend", packageFilters(d));
+}
+const packageIndex = l => l.design.key;
+const tintCss = l => `filter:url(#pkg-body-${packageIndex(l)});`;
 /* 원본 1536×1024 사진에서 본품만 둘러싼 영역 [x0, y0, x1, y1] (기본 라인·후보 카드·상세 화면 공통) */
 const boxStyle = t => { const b = PRODUCT_BOX[t] || PRODUCT_BOX.toner, w = b[2] - b[0], h = b[3] - b[1], p = v => (+v.toFixed(3)) + "%";
   return { tile: `aspect-ratio:${w} / ${h};max-width:none;--w:${(w / 16).toFixed(3)}%;`, img: `position:absolute;max-width:none;object-fit:fill;width:${p(1536 / w * 100)};height:${p(1024 / h * 100)};left:${p(-b[0] / w * 100)};top:${p(-b[1] / h * 100)};` }; };
 const tileHtml = (l, t, k, mode) => {
   const bx = boxStyle(t);
+  if (mode === "tint") ensureFilters(l);
   if (!SAMPLE[t]) return `<span class="tile sample-pending" style="${bx.tile}"><span>${esc(k)}<small>청향 샘플 준비 중</small></span></span>`;
   const original = `${SAMPLE_BASE}${SAMPLE[t]}`, recolor = mode === "tint";
-  return `<span class="tile" ${recolor ? `data-palette="color-only"` : ""} style="${bx.tile}${recolor ? `--package-accent:${l.design.cap};` : ""}"><span class="product-cutout" ><img src="${original}" alt="${esc(k)} · 청향 로고 2 적용 샘플 형태와 재질" loading="lazy" style="${bx.img}${recolor ? tintCss(l) : ""}">${recolor ? `<img class="palette-point" src="${original}" alt="" aria-hidden="true" loading="lazy" style="${bx.img}filter:url(#pkg-point-${packageIndex(l.herb)});clip-path:url(#pkg-clip-${t});"><img class="palette-logo" src="${original}" alt="" aria-hidden="true" loading="lazy" style="${bx.img}filter:url(#pkg-ink-${t === "cream" ? "light" : "dark"}-${packageIndex(l.herb)});clip-path:url(#pkg-logo-${t});">` : ""}</span><span class="tl">${esc(k)}</span></span>`;
+  return `<span class="tile" ${recolor ? `data-palette="color-only"` : ""} style="${bx.tile}${recolor ? `--package-accent:${l.design.cap};` : ""}"><span class="product-cutout" ><img src="${original}" alt="${esc(k)} · 청향 로고 2 적용 샘플 형태와 재질" loading="lazy" style="${bx.img}${recolor ? tintCss(l) : ""}">${recolor ? `<img class="palette-point" src="${original}" alt="" aria-hidden="true" loading="lazy" style="${bx.img}filter:url(#pkg-point-${packageIndex(l)});clip-path:url(#pkg-clip-${t});"><img class="palette-logo" src="${original}" alt="" aria-hidden="true" loading="lazy" style="${bx.img}filter:url(#pkg-ink-${t === "cream" ? "light" : "dark"}-${packageIndex(l)});clip-path:url(#pkg-logo-${t});">` : ""}</span><span class="tl">${esc(k)}</span></span>`;
 };
 const tiles = (l, mode = designMode) => l.lineup.map(([t, k]) => tileHtml(l, t, k, mode)).join("");
-const tileBg = l => `background:#FAF8F3`;
+/* 배경은 용기 색에 맞춰 고른 색이에요 (core/palette.js) */
+const tileBg = l => `background:${l.design.bg || "#FAF8F3"}`;
 
 /* 마이 기획실에서 기획안의 제품 이미지(용기 샘플)를 그릴 때 써요. 후보 카드에는 이미지를 띄우지 않아요.
    계절·원료·목적으로 후보 라인을 다시 찾아요. 자료가 아직 없거나 라인을 못 찾으면 빈 문자열이에요. */
@@ -269,5 +286,5 @@ export function startApp(data) {
   TREND = data.HERB_TREND;
   BEAUTY_TRENDS = data.BEAUTY_TRENDS;
   beautyFetchNote = data.note || "";
-  renderPackageFilters(); renderSeasons();
+  renderSeasons();
 }

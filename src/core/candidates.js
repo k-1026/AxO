@@ -4,6 +4,7 @@ import {
   FINISH, PURPOSE_LABEL, LINE_RULE, lineupFor, ROLE, COMBO_WHY, TALK, LIGHT, PRESETS
 } from "../config/rules.js";
 import { eulReul, josa } from "../utils/text.js";
+import { lineDesign } from "./palette.js";
 
 /* ════════ 후보 풀 만들기: 원료 48종 × 원료마다 가진 모든 목적 ════════
    계절·제철로 거르지 않아요. 계절의 기후 이슈는 설명(날씨·고민)에만 써요. */
@@ -81,7 +82,8 @@ export function buildCandidates(data, season) {
   const iss = SEASONS[season].issues;
   return HERBS.flatMap(h => h.purposes.map(p => {
     const issues = iss.filter(i => i[3].includes(p));
-    return { ...h, color: DESIGN[h.herb].main, design: DESIGN[h.herb], finish: FINISH[p], purpose: p, issues, name: `${h.herb} ${PURPOSE_LABEL[p]} 라인`, functional: p === "미백(톤)",
+    const design = lineDesign(DESIGN, h.herb, p);
+    return { ...h, color: design.main, design, finish: FINISH[p], purpose: p, issues, name: `${h.herb} ${PURPOSE_LABEL[p]} 라인`, functional: p === "미백(톤)",
       concern: issues.map(i => i[2]).join(" / "), lineup: lineupFor(p), next: (LINE_RULE[p] || {}).next || [], extra: (LINE_RULE[p] || {}).extra || "" };
   })).map(l => ({ ...l, why: comboWhy(l, season), talk: sellerTalk(l, season), persona: personaAppeal(l) }));
 }
