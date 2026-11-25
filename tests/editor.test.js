@@ -37,6 +37,7 @@ function makeStore(over = {}) {
     getPlan: vi.fn(async () => ({ id: "p1" })),
     getVersion: vi.fn(async () => BASE),
     editCount: vi.fn(async () => 0),
+    entitlements: vi.fn(async () => []),
     insertVersion: vi.fn(async () => ({ id: "v2", version_no: 2 })),
     ...over
   };
@@ -171,6 +172,12 @@ describe("/api/plan-edit/apply", () => {
     const out = await runRoute(planEdit.apply, APPLY(proposal()), ctx(deps));
     expect(out).toEqual({ status: 422, body: { error: "검증을 통과하지 못했어요.", issues: ["어색해요"] } });
     expect(store.insertVersion).not.toHaveBeenCalled();
+  });
+  it("테스트 계정(unlimited)은 수정 5회를 넘어도 저장돼요", async () => {
+    const store = makeStore({ editCount: vi.fn(async () => 9), entitlements: vi.fn(async () => [{ kind: "unlimited" }]) }), deps = mkDeps(store);
+    const out = await planEdit.apply(APPLY(proposal()), ctx(deps));
+    expect(out.version_no).toBe(2);
+    expect(store.insertVersion).toHaveBeenCalledTimes(1);
   });
   it("수정 5회를 다 쓴 기획안은 402, 검증도 안 해요", async () => {
     const store = makeStore({ editCount: vi.fn(async () => 5) }), deps = mkDeps(store);

@@ -88,7 +88,7 @@ async function apply(body, ctx) {
   if (!prop || typeof prop !== "object" || Array.isArray(prop) || !isText(prop.summary)) throw new HttpError(400, "수정안을 확인해 주세요.");
   if (prop.regenerate_images != null && !Array.isArray(prop.regenerate_images)) throw new HttpError(400, "수정안을 확인해 주세요.");
 
-  const ok = canEdit(await store.editCount(client, plan_id));
+  const ok = canEdit(await store.editCount(client, plan_id), await store.entitlements(client));
   if (!ok.ok) throw new HttpError(402, ok.reason);
 
   const base = await store.getVersion(client, plan_id, base_version_no);

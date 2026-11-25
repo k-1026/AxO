@@ -276,7 +276,7 @@ grant execute on function public.bump_image_regens(uuid) to authenticated;
 create table if not exists public.entitlements (
   id            uuid primary key default gen_random_uuid(),
   user_id       uuid not null references auth.users(id) on delete cascade,
-  kind          text not null check (kind in ('single','monthly')),
+  kind          text not null check (kind in ('single','monthly','unlimited')), -- unlimited: 테스트 계정 (횟수 제한 없음)
   remaining     int  check (remaining >= 0),
   period_start  date,
   period_end    date,

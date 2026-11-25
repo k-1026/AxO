@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { LIMITS, canCreate, canEdit, canRegenImage, LimitError } from "../server/limits.js";
+import { LIMITS, canCreate, canEdit, canRegenImage, isUnlimited, LimitError } from "../server/limits.js";
 
 const NOW = Date.parse("2026-11-23T12:00:00+09:00");
 const use = (totalPlans, plansThisMonth = totalPlans) => ({ totalPlans, plansThisMonth });
@@ -82,5 +82,21 @@ describe("LimitError", () => {
     expect(e).toBeInstanceOf(Error);
     expect(e.status).toBe(402);
     expect(e.message).toBe("요금제 안내");
+  });
+});
+
+describe("테스트 계정 (unlimited 이용권)", () => {
+  const unlimited = [{ kind: "unlimited", remaining: null, period_start: null, period_end: null }];
+  it("만들기·수정·이미지 다시 만들기 횟수를 세지 않아요", () => {
+    expect(isUnlimited(unlimited)).toBe(true);
+    expect(canCreate(use(999, 999), unlimited, NOW)).toEqual({ ok: true });
+    expect(canEdit(999, unlimited)).toEqual({ ok: true });
+    expect(canRegenImage(999, unlimited)).toEqual({ ok: true });
+  });
+  it("다른 이용권만 있으면 지금처럼 막아요", () => {
+    expect(isUnlimited([single(1)])).toBe(false);
+    expect(isUnlimited(undefined)).toBe(false);
+    expect(canEdit(5, [single(1)]).ok).toBe(false);
+    expect(canRegenImage(6, []).ok).toBe(false);
   });
 });

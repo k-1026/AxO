@@ -39,11 +39,12 @@ export default async function planImage(body, { token, deps }) {
   if (!imagePrompt) throw new HttpError(404, "그 번호의 이미지 설명이 없어요.");
 
   if (regenerate) {
-    const ok = canRegenImage(plan.image_regens);
+    const ents = await store.entitlements(client);
+    const ok = canRegenImage(plan.image_regens, ents);
     if (!ok.ok) throw new HttpError(402, ok.reason);
     const n = await store.bumpImageRegens(client, plan_id);
     // 동시에 눌러 한도를 넘었다면 만들지 않아요.
-    const over = canRegenImage(n - 1);
+    const over = canRegenImage(n - 1, ents);
     if (!over.ok) throw new HttpError(402, over.reason);
   }
 

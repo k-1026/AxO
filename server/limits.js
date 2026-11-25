@@ -25,6 +25,12 @@ export function todayKst(now) {
 
 const day = v => (v ? String(v).slice(0, 10) : null);
 
+/** 테스트 계정: 이용권 표에 kind='unlimited' 한 줄이 있으면 만들기·수정·이미지 다시 만들기 횟수를 세지 않아요.
+ *  이용권은 사용자가 직접 넣을 수 없고(읽기만 허용) Supabase SQL 로만 넣어요. */
+export function isUnlimited(entitlements) {
+  return Array.isArray(entitlements) && entitlements.some(e => e?.kind === "unlimited");
+}
+
 /**
  * 새 기획안을 만들 수 있는지 확인해요.
  * (기간 안 월 구독 && 이번 달 20건 미만) 또는 (전체 건수 < 무료 1 + 건당 이용권 남은 건수 합)
@@ -33,6 +39,7 @@ export function canCreate(usage, entitlements, now) {
   const totalPlans = usage?.totalPlans ?? 0;
   const plansThisMonth = usage?.plansThisMonth ?? 0;
   const ents = Array.isArray(entitlements) ? entitlements : [];
+  if (isUnlimited(ents)) return { ok: true };
   const today = todayKst(now);
 
   const monthlyActive = ents.some(e => {
@@ -56,14 +63,14 @@ export function canCreate(usage, entitlements, now) {
   return { ok: false, reason: `무료 체험 기획안 ${LIMITS.free}건을 이미 만들었어요. 더 만들려면 요금제 안내를 확인해 주세요.` };
 }
 
-/** 기획안 1건당 수정(적용) 횟수 확인 */
-export function canEdit(editCount) {
-  if ((Number(editCount) || 0) < LIMITS.editsPerPlan) return { ok: true };
+/** 기획안 1건당 수정(적용) 횟수 확인 (테스트 계정은 무제한) */
+export function canEdit(editCount, entitlements) {
+  if (isUnlimited(entitlements) || (Number(editCount) || 0) < LIMITS.editsPerPlan) return { ok: true };
   return { ok: false, reason: `기획안 1건당 수정은 ${LIMITS.editsPerPlan}회까지예요. 요금제 안내를 확인해 주세요.` };
 }
 
-/** 기획안 1건당 이미지 다시 만들기 횟수 확인 */
-export function canRegenImage(count) {
-  if ((Number(count) || 0) < LIMITS.imageRegensPerPlan) return { ok: true };
+/** 기획안 1건당 이미지 다시 만들기 횟수 확인 (테스트 계정은 무제한) */
+export function canRegenImage(count, entitlements) {
+  if (isUnlimited(entitlements) || (Number(count) || 0) < LIMITS.imageRegensPerPlan) return { ok: true };
   return { ok: false, reason: `이미지 다시 만들기는 기획안 1건당 ${LIMITS.imageRegensPerPlan}회까지예요.` };
 }

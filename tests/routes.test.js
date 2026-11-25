@@ -234,6 +234,17 @@ describe("/api/plan-image", () => {
     expect(deps.editImage).toHaveBeenCalledTimes(1);
     expect(store.saveImage).toHaveBeenCalledTimes(1);
   });
+  it("regenerate: 테스트 계정(unlimited)은 6회를 넘어도 만들어요", async () => {
+    const c = await makeContent();
+    const store = makeStore({
+      getVersion: vi.fn(async () => version(c)),
+      getPlan: vi.fn(async () => ({ id: "p1", season: "여름", herb: "어성초", purpose: "모공·피지", image_regens: 9 })),
+      bumpImageRegens: vi.fn(async () => 10),
+      entitlements: vi.fn(async () => [{ kind: "unlimited" }])
+    }), deps = imgDeps(store);
+    expect(await planImage({ ...B, regenerate: true }, ctx(deps))).toMatchObject({ idx: 1 });
+    expect(deps.editImage).toHaveBeenCalledTimes(1);
+  });
   it("regenerate: 6회를 다 썼으면 402, 만들지 않아요", async () => {
     const c = await makeContent();
     const store = makeStore({
