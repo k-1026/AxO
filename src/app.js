@@ -2,6 +2,7 @@ import {
   COMBO_KW, SEASON_TREND_NOTES, PRODUCT_BOX, SAMPLE, qty, unitOf, productOptions
 } from "./config/rules.js";
 import { SAMPLE_BASE } from "./config/assets.js";
+import { recolorPixels } from "./core/recolor.js";
 import { lineKey, buildCandidates, rankLines } from "./core/candidates.js";
 import { eulReul, josa, dots, chips, won, esc } from "./utils/text.js";
 import { fetchLatestBeautyTrends } from "./data/repository.js";
@@ -25,48 +26,38 @@ function hsl(hex) {
   const h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
   return [(h * 60 + 360) % 360, d / (1 - Math.abs(2 * l - 1)), l];
 }
-/* 원본 사진의 픽셀 배치·알파는 유지하고 RGB 색상만 변환해요.
-   뚜껑·로고 영역은 동일한 원본 이미지를 겹쳐 별도 포인트색을 적용해요. */
-const channelValues = (hex, point) => [1, 3, 5].map(i => {
-  const c = parseInt(hex.slice(i, i + 2), 16) / 255;
-  return [0, c * (point ? .65 : .68), c * (point ? .96 : .94), c, 1].map(v => v.toFixed(4)).join(" ");
-});
-/* 샘플 사진의 연한 분홍 바탕(밝기 약 0.8 이상)만 흰색으로 올려요. 흰색은 곱하기(multiply)로 배경에 녹아서 제품 둘레 테두리가 안 생겨요.
-   그보다 어두운 용기 부분은 원래 밝기를 그대로 둬서 제품이 흐려지지 않아요.
-   뚜껑(point)은 반짝이는 부분이 날아가지 않게 적용하지 않아요. */
-const LIFT_TABLE = Array.from({ length: 21 }, (_, i) => i / 20).map(x => (x <= 0.72 ? x : x >= 0.8 ? 1 : 0.72 + (x - 0.72) / 0.08 * 0.28).toFixed(3)).join(" ");
-const LIFT = `<feComponentTransfer><feFuncR type="table" tableValues="${LIFT_TABLE}"/><feFuncG type="table" tableValues="${LIFT_TABLE}"/><feFuncB type="table" tableValues="${LIFT_TABLE}"/></feComponentTransfer>`;
-/* 라인마다 색이 달라서(core/palette.js) 필터는 그 라인이 처음 그려질 때 만들어요. */
-const madeFilters = new Set();
-function packageFilters(d) {
-  const i = d.key;
-  return ["body", "point"].map(part => {
-    const point = part === "point", vals = channelValues(point ? d.cap : d.main, point);
-    const input = point ? '<feColorMatrix type="matrix" values="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 1 0"/>' : '<feColorMatrix type="saturate" values="0"/>';
-    return `<filter id="pkg-${part}-${i}" color-interpolation-filters="sRGB">${input}${point ? "" : LIFT}<feComponentTransfer><feFuncR type="table" tableValues="${vals[0]}"/><feFuncG type="table" tableValues="${vals[1]}"/><feFuncB type="table" tableValues="${vals[2]}"/><feFuncA type="identity"/></feComponentTransfer></filter>`;
-  }).join("") + ["dark", "light"].map(kind => {
-    const mask = kind === "dark" ? "0 -3 0 0 1.15" : "0 4 0 0 -2.8";
-    return `<filter id="pkg-ink-${kind}-${i}" color-interpolation-filters="sRGB"><feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ${mask}" result="ink"/><feFlood flood-color="${d.cap}" result="tone"/><feComposite in="tone" in2="ink" operator="in"/></filter>`;
-  }).join("");
+/* 용기 색 입히기: 누끼 사진을 캔버스에 그려 명암은 그대로 두고 색만 원료 색으로 바꿔요 (core/recolor.js).
+   같은 사진·같은 색은 한 번만 계산해서 다시 써요. 이미지가 로드되면(아래 load 리스너) 바꾼 그림으로 갈아 끼워요. */
+const tinted = new Map();
+function tintedUrl(src, hex) {
+  const key = src + "|" + hex;
+  if (!tinted.has(key)) tinted.set(key, new Promise((done, fail) => {
+    const img = new Image();
+    img.onload = () => {
+      const c = document.createElement("canvas"); c.width = img.naturalWidth; c.height = img.naturalHeight;
+      const x = c.getContext("2d", { willReadFrequently: true }); x.drawImage(img, 0, 0);
+      const d = x.getImageData(0, 0, c.width, c.height); recolorPixels(d.data, hex); x.putImageData(d, 0, 0);
+      c.toBlob(b => b ? done(URL.createObjectURL(b)) : fail(new Error("색 입히기 실패")), "image/png");
+    };
+    img.onerror = fail; img.src = src;
+  }));
+  return tinted.get(key);
 }
-function ensureFilters(l) {
-  const d = l.design;
-  if (madeFilters.has(d.key)) return;
-  madeFilters.add(d.key);
-  const defs = document.getElementById("package-filters");
-  if (defs) defs.insertAdjacentHTML("beforeend", packageFilters(d));
-}
-const packageIndex = l => l.design.key;
-const tintCss = l => `filter:url(#pkg-body-${packageIndex(l)});`;
+if (typeof document !== "undefined") document.addEventListener("load", e => {
+  const img = e.target;
+  if (!(img instanceof HTMLImageElement) || !img.dataset.tint || img.dataset.tinted) return;
+  img.dataset.tinted = "1";
+  tintedUrl(img.src, img.dataset.tint).then(u => { img.src = u; }).catch(() => {});
+}, true);
 /* 원본 1536×1024 사진에서 본품만 둘러싼 영역 [x0, y0, x1, y1] (기본 라인·후보 카드·상세 화면 공통) */
 const boxStyle = t => { const b = PRODUCT_BOX[t] || PRODUCT_BOX.toner, w = b[2] - b[0], h = b[3] - b[1], p = v => (+v.toFixed(3)) + "%";
   return { tile: `aspect-ratio:${w} / ${h};max-width:none;--w:${(w / 16).toFixed(3)}%;`, img: `position:absolute;max-width:none;object-fit:fill;width:${p(1536 / w * 100)};height:${p(1024 / h * 100)};left:${p(-b[0] / w * 100)};top:${p(-b[1] / h * 100)};` }; };
 const tileHtml = (l, t, k, mode) => {
   const bx = boxStyle(t);
-  if (mode === "tint") ensureFilters(l);
   if (!SAMPLE[t]) return `<span class="tile sample-pending" style="${bx.tile}"><span>${esc(k)}<small>청향 샘플 준비 중</small></span></span>`;
-  const original = `${SAMPLE_BASE}${SAMPLE[t]}`, recolor = mode === "tint";
-  return `<span class="tile" ${recolor ? `data-palette="color-only"` : ""} style="${bx.tile}${recolor ? `--package-accent:${l.design.cap};` : ""}"><span class="product-cutout" ><img src="${original}" alt="${esc(k)} · 청향 로고 2 적용 샘플 형태와 재질" loading="lazy" style="${bx.img}${recolor ? tintCss(l) : ""}">${recolor ? `<img class="palette-point" src="${original}" alt="" aria-hidden="true" loading="lazy" style="${bx.img}filter:url(#pkg-point-${packageIndex(l)});clip-path:url(#pkg-clip-${t});"><img class="palette-logo" src="${original}" alt="" aria-hidden="true" loading="lazy" style="${bx.img}filter:url(#pkg-ink-${t === "cream" ? "light" : "dark"}-${packageIndex(l)});clip-path:url(#pkg-logo-${t});">` : ""}</span><span class="tl">${esc(k)}</span></span>`;
+  /* 화면에는 바탕을 지운 누끼(-cutout.png, scripts/make-cutouts.py)를 써요 */
+  const original = `${SAMPLE_BASE}${SAMPLE[t].replace(/.png$/, "-cutout.png")}`, recolor = mode === "tint";
+  return `<span class="tile" style="${bx.tile}"><span class="product-cutout"><img src="${original}" alt="${esc(k)} · 청향 로고 2 적용 샘플 형태와 재질" loading="lazy" style="${bx.img}"${recolor ? ` data-tint="${l.design.cap}"` : ""}></span><span class="tl">${esc(k)}</span></span>`;
 };
 const tiles = (l, mode = designMode) => l.lineup.map(([t, k]) => tileHtml(l, t, k, mode)).join("");
 /* 배경은 용기 색에 맞춰 고른 색이에요 (core/palette.js) */

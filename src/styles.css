@@ -197,8 +197,9 @@ dl.kw dt { color: var(--muted); font-weight: 700; } dl.kw dd { margin: 0; displa
 .kwc { background: var(--accent-soft); color: var(--ink); border-radius: 999px; padding: 1px 9px; font-size: .76rem; }
 .visual { aspect-ratio: 1600 / 960; height: auto; box-sizing: border-box; }
 .visual .tile { flex: none !important; width: var(--w); height: auto; }
-/* 칸 바탕을 비워서 제품 뒤에 사각형이 보이지 않고 배경색이 그대로 보여요 */
+/* 누끼(투명 바탕) 이미지라 칸 바탕을 비우고, 곱하기 없이 그대로 얹어 제품이 배경에 묻히지 않아요 */
 .visual .tile { background: transparent; }
+.visual .product-cutout { mix-blend-mode: normal; }
 
 /* 하단 개인정보 처리방침 링크 */
 .site-footer { text-align: center; padding: 28px 16px 36px; font-size: .82rem; }
