@@ -2,7 +2,7 @@
    예전 기획안(시나리오 3개, 시나리오마다 이미지 1장)도 그대로 보여 줘요. */
 import { callApi, AuthRequired } from "./api.js";
 import { mountEditChat } from "../chat/chat.js";
-import { hasSupabase } from "../lib/supabase.js";
+import { hasSupabase, supabase } from "../lib/supabase.js";
 import { esc } from "../utils/text.js";
 import { productVisual } from "../app.js";
 import { LOADING_IMAGES } from "../config/assets.js";
@@ -12,6 +12,7 @@ const root = () => document.querySelector("#view-my .page");
 let notice = [];       // 보기 화면 위에 보여 줄 안내 (예: 기획안 만들기 직후 이미지 만드는 중)
 let seq = 0;           // 늦게 도착한 응답이 화면을 덮어쓰지 않게 해요
 let chat = null;       // 지금 기획안의 수정 챗봇 { planId, el } — 버전을 바꿔 다시 그려도 대화가 이어져요
+let needLogin = false; // 로그인 안내를 띄운 상태인지 (로그인하면 바로 목록을 다시 불러와요)
 
 const money = n => (Number.isFinite(n) ? `${n.toLocaleString("ko-KR")}원` : "-");
 /* 단위당 가격: 마스크·패드는 매당, 나머지는 ml당 */
@@ -20,14 +21,17 @@ const ymd = s => { const d = new Date(s); return Number.isNaN(d.getTime()) ? "" 
 const list = arr => (arr?.length ? `<ul>${arr.map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : `<p class="my-none">없어요.</p>`);
 
 function message(html) { root().innerHTML = `<div class="my-msg">${html}</div>`; }
+const showLoginNeeded = () => message(`<p>로그인하면 마이 기획실을 볼 수 있어요.</p>`);
+const myOpen = () => !document.getElementById("view-my")?.hidden;
 /* 불러오는 동안 로딩 캐릭터(두 장면이 번갈아 나와요)와 문구를 보여 줘요 */
 const loading = text => message(`<div class="loading-char" aria-hidden="true">${LOADING_IMAGES.map(src => `<img src="${src}" alt="">`).join("")}</div><p>${esc(text)}</p>`);
 
 async function guard(fn) {
   if (!hasSupabase) return message("<p>로그인 기능이 아직 연결되지 않았어요. 관리자에게 문의해 주세요.</p>");
+  needLogin = false;
   try { await fn(); }
   catch (e) {
-    if (e instanceof AuthRequired) message(`<p>로그인하면 내가 만든 기획안을 볼 수 있어요.</p><p class="my-sub">로그인한 뒤 위 메뉴의 마이 기획실을 다시 눌러 주세요.</p>`);
+    if (e instanceof AuthRequired) { needLogin = true; showLoginNeeded(); }
     else message(`<p>${esc(e.message || "불러오지 못했어요.")}</p><button class="btn-line" type="button" data-my-list>목록으로</button>`);
   }
 }
@@ -180,6 +184,16 @@ async function makeImage(btn, idx, regenerate, { quiet = false } = {}) {
 
 export function initMy() {
   document.querySelector('.menu [data-view="my"]')?.addEventListener("click", showList);
+  /* 로그인·로그아웃하면 새로고침 없이 마이 기획실을 바로 바꿔요.
+     Supabase 는 로그인이 유지된 상태에서도 탭으로 돌아올 때 세션을 다시 확인하고 SIGNED_IN 알림을 한 번 더 보내요.
+     (다시 로그인하는 게 아니라 "아직 로그인돼 있어요"라는 알림) 그래서 로그인 안내를 띄운 때만 목록을 다시 불러와요. */
+  supabase?.auth.onAuthStateChange(event => {
+    if (event === "SIGNED_IN" && needLogin && myOpen()) showList();
+    if (event === "SIGNED_OUT") {
+      ++seq; chat = null; needLogin = true;
+      if (myOpen()) showLoginNeeded(); else root().innerHTML = "";
+    }
+  });
   root()?.addEventListener("click", e => {
     const t = e.target.closest("button");
     if (!t) return;
