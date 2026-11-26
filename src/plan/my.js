@@ -4,7 +4,7 @@ import { callApi, AuthRequired } from "./api.js";
 import { mountEditChat } from "../chat/chat.js";
 import { hasSupabase, supabase } from "../lib/supabase.js";
 import { esc } from "../utils/text.js";
-import { productVisual } from "../app.js";
+import { productVisual, evidenceChartFor } from "../app.js";
 import { LOADING_IMAGES } from "../config/assets.js";
 import { qty, unitOf } from "../config/rules.js";
 
@@ -104,7 +104,7 @@ function render(d) {
     <section class="my-sec"><h3>핵심 문구</h3>${list(p.key_claims)}</section>
     ${(v => v ? `<section class="my-sec"><h3>제품 이미지</h3><div class="my-product">${v}</div></section>` : "")(productVisual(d.plan.season, d.plan.herb, d.plan.purpose, p.products))}
     <section class="my-sec"><h3>제품 구성</h3><div class="my-table"><table><thead><tr><th>이름</th><th>용량</th><th>정가</th><th>단위당 가격</th><th>역할</th><th>구분</th></tr></thead><tbody>${rows}</tbody></table></div></section>
-    <section class="my-sec"><h3>근거 메모</h3>${list(p.notes)}</section>
+    <section class="my-sec"><h3>근거 메모</h3>${evidenceChartFor(d.plan.herb)}${list(p.notes)}</section>
     <section class="my-sec"><h3>주의사항</h3>${list(p.cautions)}</section>
     <section class="my-sec"><h3>검토 의견</h3>${list(p.review_notes)}</section>
     ${scenarioSection(scenarios, d.image_urls || [], isLatest)}

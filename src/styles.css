@@ -173,6 +173,23 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
 .trend-line { font-size: .94rem; line-height: 1.65; color: var(--ink); }
 .trend-plan { margin-top: 5px; font-size: .84rem; color: var(--muted); }
 .trend-plan b { color: var(--ink); font-weight: 500; }
+/* 3초마다 넘어가는 트렌드 · 기획 포인트 강조 */
+.trend-line { min-height: 3.3em; }
+.trend-kind { display: block; margin-bottom: 2px; font-size: .72rem; font-weight: 700; letter-spacing: .02em; color: var(--accent); }
+.trend-plan { display: flex; align-items: baseline; gap: 8px; margin-top: 8px; padding: 9px 12px; border-left: 4px solid var(--accent); border-radius: 0 10px 10px 0; background: var(--accent-soft); color: var(--ink); font-size: .9rem; font-weight: 600; line-height: 1.5; }
+.trend-plan-tag { flex: 0 0 auto; padding: 2px 8px; border-radius: 999px; background: var(--accent); color: #fff; font-size: .7rem; font-weight: 700; }
+.trend-in { animation: trendIn .45s ease both; }
+@keyframes trendIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.trend-nav { display: flex; align-items: center; gap: 10px; margin-top: 9px; }
+.trend-dots { display: flex; align-items: center; gap: 5px; }
+.trend-dot { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 50%; background: var(--line); cursor: pointer; }
+.trend-dot.on { width: 18px; border-radius: 999px; background: var(--accent); }
+.trend-count { margin-left: 4px; font-size: .68rem; color: var(--muted); }
+.trend-track { flex: 1; height: 3px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.trend-bar { width: 0; height: 100%; background: var(--accent); }
+.trend-bar.run { animation: trendBar 3s linear forwards; }
+@keyframes trendBar { to { width: 100%; } }
+@media (prefers-reduced-motion: reduce) { .trend-in { animation: none; } .trend-bar.run { animation: none; width: 100%; } }
 .trend-source { display: block; margin-top: 7px; font-size: .7rem; color: var(--muted); }
 @media(max-width:600px) { .trend-assist { gap: 8px; } .trend-bubble { padding: 12px; } .trend-avatar { flex-basis: 30px; width: 30px; height: 30px; font-size: 1.1rem; } }
 .trend-refresh { margin-left: auto; padding: 3px 9px; border: 1px solid var(--line); border-radius: 999px; color: var(--accent); background: #fff; font: inherit; font-size: .7rem; cursor: pointer; }
@@ -227,3 +244,21 @@ dl.kw dt { color: var(--muted); font-weight: 700; } dl.kw dd { margin: 0; displa
 @media (prefers-reduced-motion: reduce) {
   .pick-rec { animation: none; text-shadow: 1px 0 0 #E6FF00, -1px 0 0 #E6FF00, 0 1px 0 #E6FF00, 0 -1px 0 #E6FF00; }
 }
+
+/* 근거 메모 막대그래프 (core/evidence.js) */
+.ev-chart { margin: 12px 0; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+.ev-chart-h { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; font-size: .9rem; }
+.ev-avg { margin-left: auto; padding: 2px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-size: .74rem; font-weight: 700; }
+.ev-row { display: grid; grid-template-columns: 7.5em 1fr 3em; align-items: center; gap: 2px 10px; padding: 5px 0; }
+.ev-label { font-size: .8rem; color: var(--ink); }
+.ev-bar { height: 12px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.ev-fill { display: block; height: 100%; width: var(--w); border-radius: 999px; background: var(--accent); animation: evGrow .7s ease var(--d) both; }
+.ev-fill.lv1, .ev-fill.lv2 { background: #C9A27A; }
+.ev-fill.lv3 { background: color-mix(in srgb, var(--accent) 60%, #fff); }
+.ev-score { font-size: .85rem; font-weight: 700; text-align: right; color: var(--ink); }
+.ev-score small { font-weight: 400; color: var(--muted); }
+.ev-note { grid-column: 2 / 4; font-size: .7rem; color: var(--muted); line-height: 1.4; }
+.ev-legend { margin-top: 8px; font-size: .68rem; color: var(--muted); }
+@keyframes evGrow { from { width: 0; } }
+@media (prefers-reduced-motion: reduce) { .ev-fill { animation: none; } }
+@media (max-width: 600px) { .ev-row { grid-template-columns: 6.5em 1fr 2.6em; } }

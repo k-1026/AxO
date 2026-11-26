@@ -3,6 +3,7 @@ import {
 } from "./config/rules.js";
 import { SAMPLE_BASE } from "./config/assets.js";
 import { recolorPixels } from "./core/recolor.js";
+import { evidenceChartHtml } from "./core/evidence.js";
 import { lineKey, buildCandidates, rankLines } from "./core/candidates.js";
 import { eulReul, josa, dots, chips, won, esc } from "./utils/text.js";
 import { fetchLatestBeautyTrends } from "./data/repository.js";
@@ -149,11 +150,58 @@ function beautyComment(s, data, now = Date.now()) {
   return { status: stale ? "갱신 확인 필요 · 저장된 근거" : "공식 콘텐츠·기사 기반", line: insight.line, tip: insight.tip,
     source: "매시간 확인 · 마지막 확인 " + checkedAt + " (한국시간) · " + (evidence.some(item => item.evidenceRole === "background") ? "시장 전망·기획 배경 포함" : "최근 90일 자료의 기획 해석") + (beautyFetchNote ? " · " + beautyFetchNote : ""), evidence };
 }
+/* ════════ 실시간 트렌드 박스: 3초마다 새 트렌드로 넘겨요 ════════
+   계절 피부 이슈(기후 통계)와 수집한 뷰티 트렌드 기사를 한 장씩 보여 주고, 장마다 '기획 포인트'를 강조해요. */
+const TICK_MS = 3000;
+let tickTimer = null, tickSlides = [], tickAt = 0, tickPaused = false;
+
+function trendSlides(s) {
+  const issues = (SEASONS[s] && SEASONS[s].issues) || [];
+  const fromIssues = issues.map(([title, stat, concern, purposes]) => ({
+    kind: `${s} 피부 이슈`, line: `${title} · ${stat}`,
+    plan: `${concern} → ${(purposes || []).join("·")} 라인을 먼저 검토해 보세요.`
+  }));
+  const fromNews = ((BEAUTY_TRENDS && BEAUTY_TRENDS.items) || []).filter(i => i && i.title).slice(0, 4).map(i => ({
+    kind: `${i.source || "트렌드 자료"}${i.publishedAt ? " · " + i.publishedAt : ""}`, line: i.title,
+    plan: (i.tags || []).length ? `'${i.tags.slice(0, 2).join("·")}'을 핵심 메시지로 잡아 보세요.` : "이 흐름을 기획 문구에 반영해 보세요."
+  }));
+  return [...fromIssues, ...fromNews];
+}
+
+function showTrendSlide(i) {
+  const lineEl = document.getElementById("trend-line"), planEl = document.getElementById("trend-plan"), dots = document.getElementById("trend-dots");
+  const sl = tickSlides[i];
+  if (!sl || !lineEl) return;
+  tickAt = i;
+  lineEl.innerHTML = `<span class="trend-kind">${esc(sl.kind)}</span>${esc(sl.line)}`;
+  planEl.innerHTML = `<span class="trend-plan-tag">기획 포인트</span>${esc(sl.plan)}`;
+  for (const el of [lineEl, planEl]) { el.classList.remove("trend-in"); void el.offsetWidth; el.classList.add("trend-in"); }
+  if (dots) dots.innerHTML = tickSlides.map((_, k) => `<button type="button" class="trend-dot${k === i ? " on" : ""}" data-slide="${k}" aria-label="${k + 1}번째 트렌드"></button>`).join("")
+    + `<span class="trend-count">${i + 1} / ${tickSlides.length}</span>`;
+  const bar = document.getElementById("trend-bar");
+  if (bar) { bar.classList.remove("run"); void bar.offsetWidth; if (!tickPaused && tickSlides.length > 1) bar.classList.add("run"); }
+}
+
+function runTicker() {
+  clearInterval(tickTimer);
+  if (tickSlides.length > 1) tickTimer = setInterval(() => { if (!tickPaused) showTrendSlide((tickAt + 1) % tickSlides.length); }, TICK_MS);
+}
+function startTrendTicker(slides) {
+  tickSlides = slides;
+  showTrendSlide(0);
+  runTicker();
+}
+
+/* 마우스를 올리면 멈추고, 점을 누르면 그 트렌드로 가요 */
+document.addEventListener("mouseover", e => { if (e.target.closest && e.target.closest(".trend-bubble") && !tickPaused) { tickPaused = true; document.getElementById("trend-bar")?.classList.remove("run"); } });
+document.addEventListener("mouseout", e => { const b = e.target.closest && e.target.closest(".trend-bubble"); if (b && !b.contains(e.relatedTarget) && tickPaused) { tickPaused = false; showTrendSlide(tickAt); } });
+document.addEventListener("click", e => { const d = e.target.closest && e.target.closest("[data-slide]"); if (d) { showTrendSlide(Number(d.dataset.slide)); runTicker(); } });
+
 function renderTrendComment() {
   const comment = beautyComment(season, BEAUTY_TRENDS) || trendComment(season, TREND);
   document.getElementById("trend-status").textContent = comment.status;
-  document.getElementById("trend-line").textContent = comment.line.replace(/올리브영의\s*|장업신문의\s*/g, "").replace(/올리브영은\s*/g, "관련 콘텐츠에서는 ").replace(/장업신문은\s*/g, "관련 기사에서는 ");
-  document.getElementById("trend-plan").innerHTML = "<b>기획 포인트</b> · " + esc(comment.tip);
+  const line = comment.line.replace(/올리브영의\s*|장업신문의\s*/g, "").replace(/올리브영은\s*/g, "관련 콘텐츠에서는 ").replace(/장업신문은\s*/g, "관련 기사에서는 ");
+  startTrendTicker([{ kind: "이번 시즌 방향", line, plan: comment.tip }, ...trendSlides(season)]);
   document.getElementById("trend-source").textContent = comment.source;
   const evHtml = (comment.evidence || []).map(item => `<a href="${esc(item.url)}" target="_blank" rel="noopener noreferrer" title="${esc(item.title)}">${esc(item.source)} · ${esc(item.publishedAt)} · ${esc(item.kind || "자료")} ↗</a>`).join("");
   const checksNow = (BEAUTY_TRENDS && BEAUTY_TRENDS.sourceChecks) || [];
@@ -250,6 +298,7 @@ function openDetail(r) {
     <dt>구분</dt><dd>${l.functional ? "기능성 보고 필요" : "일반 화장품"}</dd>
     <dt>대표 약재</dt><dd>${esc(l.herb)}${l.hanja ? `(${l.hanja})` : ""}</dd>
     <dt>쓸 수 있는 말</dt><dd>${esc(l.words)}</dd>`;
+  document.getElementById("d-evidence").innerHTML = evidenceChartHtml(HERBS.find(h => h.herb === l.herb), { title: `${l.herb} 근거 메모 한눈에 보기` });
   document.getElementById("d-why-combo").innerHTML = `<dt>목적</dt><dd>${chips([l.purpose])}</dd><dt>구성</dt><dd>${chips([l.lineup.map(([, k]) => k).join(" → ")])}</dd><dt>포인트</dt><dd>${chips(String(COMBO_KW[l.purpose] || "").split(" · "))}</dd>`;
   /* 추천 구성과 함께 낼 수 있는 제품을 한 표에. 추천 구성은 처음부터 골라 둬요 */
   document.getElementById("d-lineup").innerHTML = productOptions(l).map((o, i) => `<tr>
@@ -276,6 +325,9 @@ export function showView(v) {
 /* 화면 이동은 data-view 가 붙은 버튼·링크를 눌렀을 때만 해요 (본문을 눌러도 스크롤이 움직이지 않게) */
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("button[data-view], a[data-view]"); if (b) showView(b.dataset.view); });
 
+
+/** 기획안 화면(마이 기획실)에서 원료 근거 그래프를 그릴 때 써요 */
+export const evidenceChartFor = herb => evidenceChartHtml(HERBS && HERBS.find(h => h.herb === herb), { title: `${herb} 근거 메모 한눈에 보기` });
 
 export function startApp(data) {
   ({ SEASONS, HERBS, DESIGN, TREND_SOURCES, TREND_TIERS } = data);
