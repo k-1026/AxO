@@ -74,8 +74,20 @@ describe("cleanProposal", () => {
     expect(cleanProposal(null, content(), cand)).toBeNull();
     expect(cleanProposal({ summary: "x", changes: [], regenerate_images: [] }, content(), cand)).toBeNull();
   });
-  it("기획안 형식이 틀리면 PlanFormatError", () => {
-    expect(() => cleanProposal(proposal({ plan: { ...rawPlan(), key_claims: ["하나"] } }), content(), cand)).toThrow(PlanFormatError);
+  it("AI가 핵심 문구를 모자라게 보내면 지금 문구를 그대로 써요 (타깃만 바꾸는 수정이 튕기지 않게)", () => {
+    const out = cleanProposal(proposal({ plan: { ...rawPlan(), target: "20대 직장인", key_claims: ["하나"] } }), content(), cand);
+    expect(out.plan.target).toBe("20대 직장인");
+    expect(out.plan.key_claims).toEqual(rawPlan().key_claims);
+  });
+  it("시나리오를 일부만 보내면 빠진 장면·이미지 설명은 지금 시나리오로 채워요", () => {
+    const out = cleanProposal(proposal({ plan: undefined, scenarios: [{ target: "20대 직장인", cuts: [], image_prompts: ["하나"] }] }), content(), cand);
+    expect(out.scenarios[0].target).toBe("20대 직장인");
+    expect(out.scenarios[0].cuts).toHaveLength(3);
+    expect(out.scenarios[0].image_prompts).toEqual(["x0", "x1", "x2"]);
+  });
+  it("콘셉트 이름이 비는 등 채울 수 없는 형식이면 그래도 PlanFormatError", () => {
+    const c = content(); c.plan.concept_name = "";
+    expect(() => cleanProposal(proposal({ plan: { ...rawPlan(), concept_name: "" } }), c, cand)).toThrow(PlanFormatError);
   });
 });
 
@@ -126,7 +138,8 @@ describe("/api/plan-edit/preview", () => {
     expect(await status(planEdit.preview(PREVIEW(MSG), ctx(mkDeps(gone))))).toBe(409);
   });
   it("AI 수정안 형식이 틀리면 502", async () => {
-    const deps = mkDeps(makeStore(), { generate: vi.fn(async () => ({ reply: "네", proposal: { summary: "s", changes: [], regenerate_images: [], plan: { ...rawPlan(), key_claims: [] } } })) });
+    const bad = { ...BASE, content: { ...content(), plan: { ...content().plan, concept_name: "" } } };
+    const deps = mkDeps(makeStore({ getVersion: vi.fn(async () => bad) }), { generate: vi.fn(async () => ({ reply: "네", proposal: { summary: "s", changes: [], regenerate_images: [], plan: { ...rawPlan(), concept_name: "" } } })) });
     expect(await status(planEdit.preview(PREVIEW(MSG), ctx(deps)))).toBe(502);
   });
 });

@@ -68,6 +68,21 @@ export function buildEditPrompt(content, messages, cand, data) {
   ].join("\n");
 }
 
+const isStrings = a => Array.isArray(a) && a.every(x => typeof x === "string");
+const goodCut = c => c && typeof c.scene === "string" && typeof c.copy === "string";
+
+/* AI가 보낸 시나리오에서 형식이 맞는 칸만 쓰고, 빠지거나 어긋난 칸은 지금 시나리오로 채워요.
+   (예: 타깃만 바꿨는데 장면·이미지 설명을 빼고 보냄) */
+function mergeScenario(ai, cur) {
+  if (!ai || typeof ai !== "object") return cur;
+  const base = cur || {};
+  const out = { ...base };
+  for (const k of ["title", "concept", "target", "channel"]) if (str(ai[k])) out[k] = ai[k];
+  if (Array.isArray(ai.cuts) && ai.cuts.length >= 3 && ai.cuts.length <= 4 && ai.cuts.every(goodCut)) out.cuts = ai.cuts;
+  if (isStrings(ai.image_prompts) && ai.image_prompts.length >= 3 && ai.image_prompts.every(p => p.trim())) out.image_prompts = ai.image_prompts;
+  return out;
+}
+
 const picks = (arr, n) => (Array.isArray(arr) ? arr : []).slice(0, n);
 
 /* AI 제안 → 믿고 쓸 수 있는 제안. 글만 AI 것이고 숫자(제품 이름·용량·정가)는 코드 값으로 다시 채워요.
@@ -83,16 +98,19 @@ export function cleanProposal(raw, content, cand) {
 
   const out = { summary, changes, regenerate_images };
   if (raw.plan != null) {
-    // AI가 일부만 보냈으면 지금 기획안의 글로 빈 곳을 채워요.
+    // AI가 일부만 보냈거나 형식이 어긋난 칸은 지금 기획안의 글로 채워요. (예: 타깃만 바꿨는데 핵심 문구를 2개만 보냄)
     const old = rawPlanOf(content?.plan);
     const merged = { ...old };
     for (const [k, v] of Object.entries(raw.plan || {})) if (v != null && v !== "") merged[k] = v;
+    if (!isStrings(merged.key_claims) || merged.key_claims.filter(x => x.trim()).length < 3) merged.key_claims = old.key_claims;
+    if (merged.cautions != null && !isStrings(merged.cautions)) merged.cautions = old.cautions;
+    if (!Array.isArray(merged.product_roles)) merged.product_roles = old.product_roles;
     const plan = assemblePlan(merged, cand, content?.plan?.notes);
     out.plan = { ...plan, product_roles: plan.products.map(p => ({ name: p.name, role: p.role })) };
   }
   if (raw.scenarios != null) {
-    const list = Array.isArray(raw.scenarios) ? raw.scenarios : raw.scenarios?.scenarios;
-    out.scenarios = assembleScenarios({ scenarios: list }).scenarios;
+    const list = Array.isArray(raw.scenarios) ? raw.scenarios : (raw.scenarios?.scenarios ?? [raw.scenarios]);
+    out.scenarios = assembleScenarios({ scenarios: [mergeScenario(list[0], content?.scenarios?.[0])] }).scenarios;
   }
   if (!summary || (!out.plan && !out.scenarios && !regenerate_images.length)) return null;
   return out;
