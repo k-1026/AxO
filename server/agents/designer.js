@@ -83,12 +83,21 @@ export function assembleScenarios(raw) {
   return { scenarios: [scenario], notes };
 }
 
+/* 이미지에 나와야 할 제품 목록. 참고 사진(용기 샘플)과 짝지어 알려 줘요 */
+const PRODUCT_EN = { toner: "toner bottle", serum: "serum dropper bottle", cream: "cream jar", lotion: "lotion pump bottle", mist: "mist spray bottle",
+  cleanser: "cleanser tube", eye: "eye cream tube", pad: "pad jar", mask: "sheet mask pouch" };
+function productLine(l) {
+  const items = [...new Set((l.lineup || []).map(x => x[0]))].map(t => PRODUCT_EN[t] || t);
+  return items.length ? [`Products in this set (show every one, shaped like the matching reference photo): ${items.join(", ")}.`] : [];
+}
+
 /* 이미지 만들기용 프롬프트. 원료 색과 트렌드 색을 #코드로 넣어요 */
 export function buildImagePrompt(scenario, cand, data, palette) {
   const l = lineOf(cand), d = data?.DESIGN?.[l.herb] ? lineDesign(data.DESIGN, l.herb, l.purpose) : (l.design || {});
   const out = [
     `Scene: ${stripBanned(scenario.image_prompt)}`,
     "Premium Korean herbal skincare product photo, clean and natural lighting.",
+    ...productLine(l),
     "The containers must have no logo, no text, no letters and no brand name on them (용기에 로고·글자·브랜드명 없음).",
     `Container colors from the herb: body ${d.main}, cap ${d.cap}, liquid ${d.liquid}.`,
     ...(d.bg ? [`Background color matched to the container: ${d.bg}.`] : []),

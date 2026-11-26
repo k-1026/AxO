@@ -2,7 +2,7 @@
    POST /api/plan-edit/apply: {plan_id, base_version_no, proposal} → 글·숫자를 서버에서 다시 조립하고 검증한 뒤 새 버전으로 저장해요 → {version_no, regenerate_images}.
    proposal 은 화면이 오가며 들고 있는 값이라 믿지 않아요. 제품 이름·용량·정가는 코드 값으로 다시 채우고, 검증을 통과해야만 저장해요. */
 import { HttpError } from "../http.js";
-import { pickCandidate, applySelection, keepSavedProducts, InvalidCandidateError, InvalidSelectionError } from "../agents/research.js";
+import { pickCandidate, applySelection, keepSavedProducts, withProducts, InvalidCandidateError, InvalidSelectionError } from "../agents/research.js";
 import { assemblePlan, PlanFormatError } from "../agents/writer.js";
 import { assembleScenarios } from "../agents/designer.js";
 import { EDIT_SCHEMA, SCOPE, buildEditPrompt, cleanProposal, narrowForDirection } from "../agents/editor.js";
@@ -45,6 +45,7 @@ async function rebuild(client, content, deps) {
 /* 화면에 보내는 제안: 보여 줄 칸만 허용 목록으로 남겨요. image_prompts·product_roles 는 apply 가 다시 조립하는 데 필요해서 같이 보내요 */
 function toClient(p) {
   const out = { summary: p.summary, changes: p.changes, regenerate_images: p.regenerate_images };
+  if (p.products) out.products = p.products;
   if (p.plan) out.plan = { ...publicContent({ plan: p.plan }).plan, product_roles: p.plan.product_roles };
   if (p.scenarios) {
     out.scenarios = publicContent({ scenarios: p.scenarios }).scenarios.map((s, i) => ({ ...s, image_prompts: p.scenarios[i].image_prompts }));
@@ -112,15 +113,20 @@ async function apply(body, ctx) {
   if (latest && latest.version_no !== base.version_no) throw new HttpError(409, "최신 버전이 아니에요. 최신 버전을 불러온 뒤 다시 요청해 주세요.");
 
   const old = base.content ?? {};
-  const { data, cand } = await rebuild(client, old, deps);
+  const rebuilt = await rebuild(client, old, deps);
+  const { data } = rebuilt;
+  // 제품 구성을 바꾸는 수정이면 이름만 받고, 용량·정가는 저장된 값·기준표 값으로 다시 짜요.
+  if (prop.products != null && !Array.isArray(prop.products)) throw new HttpError(400, "수정안을 확인해 주세요.");
+  const swap = withProducts(rebuilt.cand, prop.products?.length ? prop.products : null);
+  const cand = swap ? swap.cand : rebuilt.cand;
   const regen = uniq((prop.regenerate_images ?? []).filter(i => Number.isInteger(i) && i >= 0 && i <= 2));
 
   // 글만 받고, 숫자·제품 목록은 코드 값으로 다시 조립해요.
   const notes = [];
   let plan = old.plan, scenarios = old.scenarios;
   try {
-    if (prop.plan != null) {
-      const p = prop.plan;
+    if (prop.plan != null || swap) {
+      const p = prop.plan ?? { concept_name: old.plan?.concept_name, concept: old.plan?.concept, target: old.plan?.target, key_claims: old.plan?.key_claims, cautions: old.plan?.cautions, products: old.plan?.products };
       const roles = Array.isArray(p?.product_roles) ? p.product_roles : (Array.isArray(p?.products) ? p.products.map(x => ({ name: x?.name, role: x?.role })) : []);
       plan = assemblePlan({ ...p, product_roles: roles }, cand, old.plan?.notes);
     }

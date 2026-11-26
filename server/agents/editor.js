@@ -3,7 +3,8 @@
 import { STRING, describeLine } from "./prompt.js";
 import { PLAN_SCHEMA, assemblePlan, PlanFormatError } from "./writer.js";
 import { SCENARIO_SCHEMA, assembleScenarios } from "./designer.js";
-import { BANNED_PHRASES } from "../../src/config/rules.js";
+import { BANNED_PHRASES, CATALOG_NAMES } from "../../src/config/rules.js";
+import { withProducts } from "./research.js";
 
 const CHANGE = { type: "OBJECT", properties: { part: STRING, before: STRING, after: STRING }, required: ["part", "before", "after"] };
 
@@ -28,7 +29,8 @@ export const EDIT_SCHEMA = {
         changes: { type: "ARRAY", items: CHANGE },
         plan: PLAN_SCHEMA,
         scenarios: SCENARIO_SCHEMA.properties.scenarios,
-        regenerate_images: { type: "ARRAY", items: { type: "INTEGER" } }
+        regenerate_images: { type: "ARRAY", items: { type: "INTEGER" } },
+        products: { type: "ARRAY", items: STRING }
       },
       required: ["summary", "changes", "regenerate_images"]
     }
@@ -74,7 +76,11 @@ export function buildEditPrompt(content, messages, cand, data) {
     "- 방향: 한 줄만 바꾸지 마세요. 새 방향에 맞춰 기획안 전체(콘셉트 이름·설명, 핵심 문구 3개 모두, 제품마다 맡는 역할과 쓰는 순서·상황, 주의사항)와 시나리오 전체(제목·콘셉트·타깃·채널·장면·카피·이미지 설명)를 새로 쓰세요.",
     "  [후보 정보]의 계절 피부 이슈와 뷰티 트렌드 자료를 근거로 삼고, 왜 그렇게 바꿨는지 reply에 한두 문장으로 알려 주세요. changes에는 바뀐 칸을 빠짐없이 적으세요.",
     "  사용자가 말하지 않은 것을 새로 정해야 하면(예: 타깃만 말했을 때 채널·분위기) 그 타깃에 가장 알맞게 직접 판단해서 정하세요.",
-    "- 제품 종류(라인 구성)는 후보 정보의 제품 목록으로 정해져 있어요. 제품을 더하거나 빼 달라고 하면 reply에서 그렇게 할 수 없다고 짧게 알리고, 대신 제품의 역할·쓰는 순서·주력 제품을 바꿔 제안하세요. 이때도 사용자가 말하지 않은 타깃·콘셉트는 바꾸지 마세요.",
+    "",
+    "[제품 구성 바꾸기]",
+    `- 사용자가 제품을 더하거나 빼 달라고 하면(예: '마스크팩도 같이 내고 싶어', '클렌저는 빼줘') proposal.products에 바뀐 뒤의 제품 이름 전체를 쓰세요. 넣을 수 있는 제품: ${CATALOG_NAMES.join(", ")}. ('마스크팩'은 '마스크'예요.)`,
+    "- 제품 구성을 바꾸면 그 자체로 '방향' 변경이에요. 새 제품이 라인 안에서 맡는 역할·쓰는 때(예: 주 2~3회 집중 케어)를 product_roles에 넣고, 콘셉트·핵심 문구·시나리오 장면·이미지 설명(특히 0 제품 대표 컷)에 새 제품이 나오게 다시 쓰세요. 뺀 제품은 어디에도 남기지 마세요.",
+    "- 제품을 바꾸지 않는다면 proposal.products는 비워 두세요(빈 목록).",
     "- 고칠 내용이 있으면 proposal을 채우고, 단순한 질문이나 인사라면 proposal을 null로 두세요.",
     "- proposal.summary는 한 줄 요약, changes에는 바뀌는 부분마다 part(어디), before(전), after(후)를 한 줄씩 적어 주세요.",
     "- 기획안 글을 바꾸면 proposal.plan에 바뀐 뒤의 기획안 전체(concept_name, concept, target, key_claims 정확히 3개, product_roles, cautions)를 빠짐없이 쓰세요.",
@@ -139,12 +145,19 @@ export function cleanProposal(raw, content, cand) {
   const regenerate_images = [...new Set(picks(raw.regenerate_images, 10).filter(i => Number.isInteger(i) && i >= 0 && i <= 2))].sort((a, b) => a - b);
 
   const out = { summary, changes, regenerate_images };
+  /* 제품 구성 바꾸기: 이름만 AI 것이고, 용량·정가는 저장된 값·기준표 값으로 코드가 채워요 */
+  const swap = withProducts(cand, Array.isArray(raw.products) && raw.products.length ? raw.products : null);
+  if (swap) {
+    cand = swap.cand;
+    out.products = swap.names;
+    if (!out.regenerate_images.includes(0)) out.regenerate_images = [0, ...out.regenerate_images]; // 대표 컷에 새 구성이 나오게
+  }
   /* AI 답은 모양이 매번 조금씩 달라요. 칸마다 쓸 수 있는 것만 쓰고, 빠지거나 어긋난 칸은 지금 기획안 글로 채워요.
      그래도 조립이 안 되는 부분은 버리고(지금 것 유지), 쓸 게 하나도 없을 때만 PlanFormatError 를 던져요. */
   let dropped = null;
-  if (raw.plan != null && typeof raw.plan === "object") {
+  if ((raw.plan != null && typeof raw.plan === "object") || swap) {
     const old = rawPlanOf(content?.plan);
-    const ai = raw.plan;
+    const ai = raw.plan && typeof raw.plan === "object" ? raw.plan : {};
     const merged = { ...old };
     for (const k of ["concept_name", "concept", "target"]) if (str(ai[k])) merged[k] = ai[k];
     if (isStrings(ai.key_claims) && ai.key_claims.filter(x => x.trim()).length >= 3) merged.key_claims = ai.key_claims;
@@ -168,7 +181,7 @@ export function cleanProposal(raw, content, cand) {
       dropped = e;
     }
   }
-  if (!out.plan && !out.scenarios && !regenerate_images.length) {
+  if (!out.plan && !out.scenarios && !out.regenerate_images.length) {
     if (dropped) throw dropped;
     return null;
   }

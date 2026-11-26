@@ -35,6 +35,18 @@ export const lineupFor = p => (LINE_RULE[p] || LINE_RULE["보습"]).first.map(k 
 /* 제품 이름 → 기준 용량·정가. 다른 라인에서 같은 제품을 쓸 때의 값을 그대로 써요 (예: 탄력 라인의 토너 = 다른 라인의 토너 200ml 15,000원). */
 const ITEM_BY_NAME = Object.fromEntries(Object.values(ITEM).map(x => [x[1], x]));
 
+/* 사용자가 부르는 다른 이름 → 제품 이름 (기획안 수정 채팅에서 "마스크팩 추가해줘" 같은 말을 받으려고) */
+const PRODUCT_ALIAS = { "마스크팩": "마스크", "시트마스크": "마스크", "시트 마스크": "마스크", "팩": "마스크", "아이 크림": "아이크림",
+  "스킨": "토너", "에센스": "세럼", "앰플": "세럼", "수분크림": "크림", "젤크림": "젤 크림", "리치크림": "리치 크림",
+  "폼클렌저": "클렌저", "클렌징폼": "클렌저", "토너패드": "패드", "에멀전": "로션" };
+/** 제품 이름(또는 별칭) → 이름을 맞춘 기준 제품 [type, name, ml, price]. 모르는 제품이면 null */
+export function catalogItem(name) {
+  const n = typeof name === "string" ? name.trim() : "";
+  return ITEM_BY_NAME[n] || ITEM_BY_NAME[PRODUCT_ALIAS[n] || PRODUCT_ALIAS[n.replace(/\s+/g, "")]] || null;
+}
+/** 기획안에 넣을 수 있는 제품 이름 전체 */
+export const CATALOG_NAMES = Object.keys(ITEM_BY_NAME);
+
 /* 후보 라인에서 고를 수 있는 제품 전체 (추천 구성 → 함께 낼 수 있는 제품 순서).
    기준값이 없는 제품은 ml·price 가 null 이에요(가격 준비 중). base = 처음부터 골라 둘 추천 구성 */
 export function productOptions(l) {

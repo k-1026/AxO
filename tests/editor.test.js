@@ -91,6 +91,28 @@ describe("cleanProposal", () => {
   });
 });
 
+describe("제품 구성 바꾸기", () => {
+  it("'마스크팩'을 더하면 마스크가 기준표 값으로 들어가고, 대표 컷을 다시 만들어요", () => {
+    const names = content().plan.products.map(p => p.name);
+    const out = cleanProposal(proposal({ products: [...names, "마스크팩"] }), content(), cand);
+    const m = out.plan.products.find(p => p.name === "마스크");
+    expect(m).toMatchObject({ type: "mask", ml: 5, price: 15000 });
+    expect(out.products).toContain("마스크");
+    expect(out.regenerate_images).toContain(0);
+  });
+  it("제품을 빼면 목록에서 빠지고, 모르는 제품 이름은 무시해요", () => {
+    const out = cleanProposal(proposal({ products: ["토너", "없는제품"] }), content(), cand);
+    expect(out.plan.products.map(p => p.name)).toEqual(["토너"]);
+  });
+  it("저장(apply)할 때도 마스크가 들어간 구성으로 저장돼요", async () => {
+    const store = makeStore();
+    const names = content().plan.products.map(p => p.name);
+    await planEdit.apply(APPLY(proposal({ products: [...names, "마스크"] })), ctx(mkDeps(store)));
+    const saved = store.insertVersion.mock.calls[0][3].content.plan.products;
+    expect(saved.find(p => p.name === "마스크")).toMatchObject({ ml: 5, price: 15000 });
+  });
+});
+
 describe("buildEditPrompt", () => {
   it("대화와 지금 기획안을 넣고, 옛 의견 글(금지어 인용 가능)은 빼요", () => {
     const p = buildEditPrompt(content(), MSG, cand, fallback);
