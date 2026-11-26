@@ -319,6 +319,15 @@ body.page-entering #view-home > *:nth-child(2) { animation-delay: 0.15s; }
   transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
 }
 
+/* 세 글자 이름: 고리는 가운데 그대로, 왼쪽 1글자 · 오른쪽 2글자 */
+.yj-intro .drawer-front.is-long {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  padding: 0 9%;
+}
+.yj-intro .drawer-front.is-long .herb-char:first-child { justify-self: start; }
+.yj-intro .drawer-front.is-long .herb-char:last-child { justify-self: end; white-space: nowrap; }
+
 .yj-intro .drawer-slot.is-open .drawer-front {
   transition: border-color 0.5s ease 0.12s, box-shadow 0.75s ease 0.12s, background 0.5s ease 0.12s;
 }
@@ -480,5 +489,12 @@ body.page-entering #view-home > *:nth-child(2) { animation-delay: 0.15s; }
   }
   .yj-intro .drawer-front {
     padding: 0 8%;
+  }
+  .yj-intro .drawer-front.is-long {
+    padding: 0 4%;
+    column-gap: 2px;
+  }
+  .yj-intro .drawer-front.is-long .herb-char {
+    font-size: clamp(0.53rem, 2.3vw, 0.75rem);
   }
 }
