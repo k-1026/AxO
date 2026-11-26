@@ -7,9 +7,19 @@ import { BANNED_PHRASES } from "../../src/config/rules.js";
 
 const CHANGE = { type: "OBJECT", properties: { part: STRING, before: STRING, after: STRING }, required: ["part", "before", "after"] };
 
+/* 수정 범위: 문구(그 부분만) / 방향(기획안·시나리오 전체 다시 쓰기) / 질문(고칠 것 없음) */
+export const SCOPE = { wording: "문구", direction: "방향", question: "질문" };
+
 export const EDIT_SCHEMA = {
   type: "OBJECT",
+  /* 답을 쓰기 전에 사용자의 속뜻부터 정하게 하려고 understanding 을 맨 앞에 둬요 */
+  propertyOrdering: ["understanding", "reply", "proposal"],
   properties: {
+    understanding: {
+      type: "OBJECT",
+      properties: { intent: STRING, scope: { type: "STRING", enum: Object.values(SCOPE) } },
+      required: ["intent", "scope"]
+    },
     reply: STRING,
     proposal: {
       type: "OBJECT", nullable: true,
@@ -23,7 +33,7 @@ export const EDIT_SCHEMA = {
       required: ["summary", "changes", "regenerate_images"]
     }
   },
-  required: ["reply", "proposal"]
+  required: ["understanding", "reply", "proposal"]
 };
 
 const str = v => (typeof v === "string" ? v.trim() : "");
@@ -46,13 +56,24 @@ export function buildEditPrompt(content, messages, cand, data) {
   const talk = (messages || []).map(m => `${m.role === "user" ? "사용자" : "챗봇"}: ${m.content}`);
   return [
     "당신은 한방 뷰티 화장품 출시 기획안을 고쳐 주는 수정 도우미예요. 사용자와 대화하며 아래 [지금 기획안]을 고쳐요.",
-    "- 존댓말로 답해 주세요. 답(reply)은 짧고 친절하게 써 주세요.",
-    "- 먼저 요청의 크기를 판단하세요.",
-    "  · 문장 다듬기·오타·말투처럼 작은 요청이면 그 부분만 바꾸고 나머지는 그대로 두세요.",
-    "  · 타깃 고객, 콘셉트, 출시 방향, 분위기, 판매 채널, 강조할 효과처럼 방향이 바뀌는 요청이면 그 한 줄만 바꾸지 마세요.",
-    "    새 방향에 맞춰 기획안 전체(콘셉트 이름·설명, 핵심 문구 3개, 제품마다 맡는 역할과 쓰는 순서·상황, 주의사항)와 시나리오 전체(제목·콘셉트·타깃·채널·장면·이미지 설명)를 다시 쓰세요.",
-    "    이때 [후보 정보]의 계절 피부 이슈와 뷰티 트렌드 자료를 근거로, 사용자가 말한 새 방향(타깃이라면 그 사람들의 하루 생활·피부 고민·제품을 쓰는 때)에 맞게 바꾸세요.",
-    "  · 사용자가 결과가 부족하다고 지적하면(예: '타깃만 바뀌었다') 그 지적을 받아들여 위처럼 전체를 다시 쓰세요.",
+    "- 존댓말로 답해 주세요. 답(reply)은 짧고 친절하게 쓰고, 첫 문장에서 요청을 어떻게 이해했는지 말해 주세요.",
+    "",
+    "[요청을 이해하는 법: 말 그대로 받아들이지 말고 속뜻을 판단하세요]",
+    "사용자는 AI에 맞춘 말투로 부탁하지 않아요. 평소 말투 그대로 짧게 말해요. 글자에 쓰인 부분만 보지 말고, 기획자라면 그 말이 기획안에 무엇을 바라는지 생각해서 understanding에 적으세요.",
+    "- understanding.intent: 사용자가 실제로 바라는 것을 한 문장으로 (예: '20대 직장인에 맞게 출시 방향 전체를 다시 잡아 달라').",
+    "- understanding.scope: 아래 기준으로 하나를 고르세요.",
+    "  · 문구: 특정 문장·단어·말투·오타만 고쳐 달라는 요청. 예) '핵심 문구 2번 어색해', '말투 좀 부드럽게', '콘셉트 이름 더 짧게', '오타 있어'.",
+    "  · 방향: 누구에게·무엇을·어떻게 팔지가 바뀌는 요청. 글자로는 한 칸만 말해도 방향이에요.",
+    "    예) '20대 직장인을 타깃으로 바꿔줘', '남자도 쓰게', '좀 더 고급스럽게', '가성비로 가자', 'MZ 느낌', '틱톡에 올릴 거야', '진정 말고 보습 위주로', '이거 별로야', '너무 평범해', '트렌드 반영해줘'.",
+    "    타깃이 바뀌면 그 사람들의 생활·피부 고민·제품 쓰는 때·좋아하는 채널과 말투가 바뀌니까, 콘셉트·핵심 문구·제품 역할·시나리오가 모두 따라 바뀌어야 해요.",
+    "  · 질문: 고칠 것 없이 묻거나 인사하는 말. proposal은 null.",
+    "  · 헷갈리면 '방향'을 고르세요. 사용자가 결과가 부족하다고 지적하면(예: '타깃만 바뀌었네', '달라진 게 없어') 언제나 '방향'이에요.",
+    "",
+    "[범위별로 고치는 법]",
+    "- 문구: 그 부분만 바꾸고 나머지는 그대로 두세요.",
+    "- 방향: 한 줄만 바꾸지 마세요. 새 방향에 맞춰 기획안 전체(콘셉트 이름·설명, 핵심 문구 3개 모두, 제품마다 맡는 역할과 쓰는 순서·상황, 주의사항)와 시나리오 전체(제목·콘셉트·타깃·채널·장면·카피·이미지 설명)를 새로 쓰세요.",
+    "  [후보 정보]의 계절 피부 이슈와 뷰티 트렌드 자료를 근거로 삼고, 왜 그렇게 바꿨는지 reply에 한두 문장으로 알려 주세요. changes에는 바뀐 칸을 빠짐없이 적으세요.",
+    "  사용자가 말하지 않은 것을 새로 정해야 하면(예: 타깃만 말했을 때 채널·분위기) 그 타깃에 가장 알맞게 직접 판단해서 정하세요.",
     "- 제품 종류(라인 구성)는 후보 정보의 제품 목록으로 정해져 있어요. 제품을 더하거나 빼 달라고 하면 reply에서 그렇게 할 수 없다고 짧게 알리고, 대신 제품의 역할·쓰는 순서·주력 제품을 바꿔 제안하세요. 이때도 사용자가 말하지 않은 타깃·콘셉트는 바꾸지 마세요.",
     "- 고칠 내용이 있으면 proposal을 채우고, 단순한 질문이나 인사라면 proposal을 null로 두세요.",
     "- proposal.summary는 한 줄 요약, changes에는 바뀌는 부분마다 part(어디), before(전), after(후)를 한 줄씩 적어 주세요.",
@@ -87,6 +108,21 @@ function mergeScenario(ai, cur) {
   if (Array.isArray(ai.cuts) && ai.cuts.length >= 3 && ai.cuts.length <= 4 && ai.cuts.every(goodCut)) out.cuts = ai.cuts;
   if (isStrings(ai.image_prompts) && ai.image_prompts.length >= 3 && ai.image_prompts.every(p => p.trim())) out.image_prompts = ai.image_prompts;
   return out;
+}
+
+/* '방향' 요청인데 수정안이 일부만 바꿨는지 봐요. 콘셉트·핵심 문구·시나리오가 함께 바뀌어야 해요.
+   모자란 점을 글로 돌려주고, 충분하면 null 이에요. */
+export function narrowForDirection(proposal, content) {
+  const why = [];
+  const old = content?.plan || {};
+  if (!proposal?.plan) why.push("기획안 전체(proposal.plan)를 새로 쓰지 않았어요.");
+  else {
+    if (str(proposal.plan.concept) === str(old.concept)) why.push("콘셉트 설명이 그대로예요.");
+    const same = (proposal.plan.key_claims || []).filter(k => (old.key_claims || []).includes(k)).length;
+    if (same >= 2) why.push("핵심 문구가 거의 그대로예요.");
+  }
+  if (!proposal?.scenarios) why.push("시나리오 전체(proposal.scenarios)를 새로 쓰지 않았어요.");
+  return why.length ? why.join(" ") : null;
 }
 
 const picks = (arr, n) => (Array.isArray(arr) ? arr : []).slice(0, n);

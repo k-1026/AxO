@@ -146,6 +146,25 @@ describe("/api/plan-edit/preview", () => {
     expect(out.proposal.plan.concept_name).toBe("새 이름");
     expect(generate.mock.calls[1][0]).toContain("[지난 답의 문제]");
   });
+  it("'방향' 요청인데 타깃 한 줄만 바꿔 오면 문제를 알려 주고 전체를 다시 받아요", async () => {
+    const narrow = { understanding: { intent: "타깃을 바꿔 달라", scope: "방향" }, reply: "타깃을 바꿨어요", proposal: { summary: "타깃 변경", changes: [], regenerate_images: [], plan: { ...rawPlan(), target: "20대 직장인" } } };
+    const full = { understanding: { intent: "20대 직장인에 맞게 방향 전체", scope: "방향" }, reply: "출근 루틴에 맞게 전체를 바꿨어요", proposal: {
+      summary: "방향 전환", changes: [], regenerate_images: [2],
+      plan: { ...rawPlan(), target: "20대 직장인", concept: "출근 전 1분 산뜻 루틴", key_claims: ["가", "나", "다"] },
+      scenarios: [{ ...rawScn().scenarios[0], title: "출근 루틴", target: "20대 직장인" }] } };
+    const generate = vi.fn().mockResolvedValueOnce(narrow).mockResolvedValueOnce(full);
+    const out = await planEdit.preview(PREVIEW(MSG), ctx(mkDeps(makeStore(), { generate })));
+    expect(generate).toHaveBeenCalledTimes(2);
+    expect(generate.mock.calls[1][0]).toContain("'방향' 변경");
+    expect(out.proposal.plan.concept).toBe("출근 전 1분 산뜻 루틴");
+    expect(out.proposal.scenarios[0].title).toBe("출근 루틴");
+  });
+  it("'문구' 요청이면 한 줄만 바꿔도 그대로 받아요 (다시 안 불러요)", async () => {
+    const small = { understanding: { intent: "콘셉트 문장만", scope: "문구" }, reply: "고쳤어요", proposal: proposal() };
+    const generate = vi.fn(async () => small);
+    await planEdit.preview(PREVIEW(MSG), ctx(mkDeps(makeStore(), { generate })));
+    expect(generate).toHaveBeenCalledTimes(1);
+  });
   it("두 번 다 형식이 틀려도 오류(502) 대신 다시 말해 달라는 답을 돌려줘요", async () => {
     const bad = { ...BASE, content: { ...content(), plan: { ...content().plan, concept_name: "" } } };
     const wrong = { reply: "네", proposal: { summary: "s", changes: [], regenerate_images: [], plan: { ...rawPlan(), concept_name: "" } } };

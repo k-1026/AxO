@@ -5,7 +5,7 @@ import { HttpError } from "../http.js";
 import { pickCandidate, applySelection, keepSavedProducts, InvalidCandidateError, InvalidSelectionError } from "../agents/research.js";
 import { assemblePlan, PlanFormatError } from "../agents/writer.js";
 import { assembleScenarios } from "../agents/designer.js";
-import { EDIT_SCHEMA, buildEditPrompt, cleanProposal } from "../agents/editor.js";
+import { EDIT_SCHEMA, SCOPE, buildEditPrompt, cleanProposal, narrowForDirection } from "../agents/editor.js";
 import { verifyContent } from "../orchestrator.js";
 import { latestPalette } from "../data.js";
 import { canEdit } from "../limits.js";
@@ -69,28 +69,30 @@ async function preview(body, ctx) {
 
   const { data, cand } = await rebuild(client, base.content, deps);
   const prompt = buildEditPrompt(base.content, body.messages, cand, data);
-  /* AI 답 모양이 어긋나면 무엇이 틀렸는지 알려 주고 한 번 더 받아요. 그래도 안 되면 오류 대신 다시 말해 달라고 답해요. */
-  let reply = "", proposal = null, problem = null;
+  /* AI 답 모양이 어긋나거나, '방향' 요청인데 한 줄만 바꿨으면 무엇이 문제인지 알려 주고 한 번 더 받아요.
+     두 번째도 형식이 틀리면 첫 번째 쓸 만한 답을 쓰고, 그것도 없으면 오류 대신 다시 말해 달라고 답해요. */
+  let best = null, problem = null;
   for (let attempt = 0; attempt < 2; attempt++) {
-    const raw = await deps.generate(attempt ? `${prompt}
-
-[지난 답의 문제]
-${problem}
-형식을 지켜 reply와 proposal을 빠짐없이 다시 써 주세요.` : prompt, EDIT_SCHEMA);
-    reply = isText(raw?.reply) ? raw.reply.trim() : "";
+    const raw = await deps.generate(attempt ? `${prompt}\n\n[지난 답의 문제]\n${problem}\n위 문제를 고쳐 understanding, reply, proposal을 빠짐없이 다시 써 주세요.` : prompt, EDIT_SCHEMA);
+    let reply = isText(raw?.reply) ? raw.reply.trim() : "", proposal;
     try {
       proposal = cleanProposal(raw?.proposal, base.content, cand);
     } catch (e) {
       if (!(e instanceof PlanFormatError)) throw e;
       console.warn("[plan-edit] 수정안 형식 오류, 다시 받아요:", e.message);
-      problem = e.message; proposal = null;
+      problem = e.message;
       continue;
     }
     if (!reply && proposal) reply = "이렇게 바꿔 볼게요.";
-    if (reply) { problem = null; break; }
-    problem = "reply(답)가 비어 있어요.";
+    if (!reply) { problem = "reply(답)가 비어 있어요."; continue; }
+    best = { reply, proposal };
+    const narrow = raw?.understanding?.scope === SCOPE.direction ? narrowForDirection(proposal, base.content) : null;
+    if (!narrow) break;
+    console.warn("[plan-edit] 방향 요청인데 일부만 바뀜, 다시 받아요:", narrow);
+    problem = `사용자의 요청은 '방향' 변경이에요. 그런데 ${narrow} 기획안과 시나리오 전체를 새 방향에 맞게 다시 쓰세요.`;
   }
-  if (problem) return { reply: "수정안을 만들다가 AI 답이 어긋났어요. 같은 요청을 조금 다르게 한 번 더 말씀해 주세요.", proposal: null };
+  if (!best) return { reply: "수정안을 만들다가 AI 답이 어긋났어요. 같은 요청을 조금 다르게 한 번 더 말씀해 주세요.", proposal: null };
+  const { reply, proposal } = best;
   return { reply, proposal: proposal ? toClient(proposal) : null };
 }
 
