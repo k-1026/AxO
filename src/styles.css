@@ -180,16 +180,9 @@ th { color: var(--muted); font-weight: 500; font-size: .76rem; }
 .trend-plan-tag { flex: 0 0 auto; padding: 2px 8px; border-radius: 999px; background: var(--accent); color: #fff; font-size: .7rem; font-weight: 700; }
 .trend-in { animation: trendIn .45s ease both; }
 @keyframes trendIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-.trend-nav { display: flex; align-items: center; gap: 10px; margin-top: 9px; }
-.trend-dots { display: flex; align-items: center; gap: 5px; }
-.trend-dot { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 50%; background: var(--line); cursor: pointer; }
-.trend-dot.on { width: 18px; border-radius: 999px; background: var(--accent); }
-.trend-count { margin-left: 4px; font-size: .68rem; color: var(--muted); }
-.trend-track { flex: 1; height: 3px; border-radius: 3px; background: var(--line); overflow: hidden; }
-.trend-bar { width: 0; height: 100%; background: var(--accent); }
-.trend-bar.run { animation: trendBar 3s linear forwards; }
-@keyframes trendBar { to { width: 100%; } }
-@media (prefers-reduced-motion: reduce) { .trend-in { animation: none; } .trend-bar.run { animation: none; width: 100%; } }
+.trend-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.trend-tags em { font-style: normal; font-size: .72rem; color: var(--accent); background: var(--accent-soft); border-radius: 999px; padding: 1px 8px; }
+@media (prefers-reduced-motion: reduce) { .trend-in { animation: none; } }
 .trend-source { display: block; margin-top: 7px; font-size: .7rem; color: var(--muted); }
 @media(max-width:600px) { .trend-assist { gap: 8px; } .trend-bubble { padding: 12px; } .trend-avatar { flex-basis: 30px; width: 30px; height: 30px; font-size: 1.1rem; } }
 .trend-refresh { margin-left: auto; padding: 3px 9px; border: 1px solid var(--line); border-radius: 999px; color: var(--accent); background: #fff; font: inherit; font-size: .7rem; cursor: pointer; }
