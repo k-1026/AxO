@@ -160,14 +160,17 @@ function hotTrends() {
     .filter(i => i && i.title)
     .sort((a, b) => String(b.publishedAt || "").localeCompare(String(a.publishedAt || "")))
     .slice(0, 5)
-    .map(i => ({ kind: `${i.source || "뷰티 트렌드"}${i.publishedAt ? " · " + i.publishedAt : ""}`, line: i.title, tags: (i.tags || []).slice(0, 4) }));
+    .filter(i => (i.tags || []).length) // 기사 제목(연예인·행사 이름 등)은 처음 보는 사람이 이해하기 어려워서, 핵심 키워드로만 보여 줘요
+    .map(i => ({ src: `${i.source || "뷰티 트렌드"}${i.kind ? " " + i.kind : ""}${i.publishedAt ? " · " + i.publishedAt : ""}`, tags: i.tags.slice(0, 3) }));
 }
 
 function showTrendSlide(i) {
   const lineEl = document.getElementById("trend-line"), sl = tickSlides[i];
   if (!sl || !lineEl) return;
   tickAt = i;
-  lineEl.innerHTML = `<span class="trend-kind">🔥 지금 뜨는 트렌드 · ${esc(sl.kind)}</span>${esc(sl.line)}${sl.tags && sl.tags.length ? `<span class="trend-tags">${sl.tags.map(t => `<em>#${esc(t)}</em>`).join("")}</span>` : ""}`;
+  lineEl.innerHTML = sl.tags
+    ? `<span class="trend-kind">🔥 요즘 뜨는 뷰티 키워드</span><strong class="trend-hot">${sl.tags.map(esc).join(" · ")}</strong>${josa(sl.tags[sl.tags.length - 1], "이", "가")} 주목받고 있어요.<small class="trend-from">근거: ${esc(sl.src)}</small>`
+    : `<span class="trend-kind">이번 시즌 방향</span>${esc(sl.line)}`;
   lineEl.classList.remove("trend-in"); void lineEl.offsetWidth; lineEl.classList.add("trend-in");
 }
 
@@ -187,7 +190,7 @@ function renderTrendComment() {
   document.getElementById("trend-status").textContent = comment.status;
   const line = comment.line.replace(/올리브영의\s*|장업신문의\s*/g, "").replace(/올리브영은\s*/g, "관련 콘텐츠에서는 ").replace(/장업신문은\s*/g, "관련 기사에서는 ");
   const hot = hotTrends();
-  startTrendTicker(hot.length ? hot : [{ kind: "이번 시즌 방향", line, tags: [] }]);
+  startTrendTicker(hot.length ? hot : [{ line }]);
   document.getElementById("trend-plan").innerHTML = `<span class="trend-plan-tag">기획 포인트</span>${esc(comment.tip)}`;
   document.getElementById("trend-source").textContent = comment.source;
   const evHtml = (comment.evidence || []).map(item => `<a href="${esc(item.url)}" target="_blank" rel="noopener noreferrer" title="${esc(item.title)}">${esc(item.source)} · ${esc(item.publishedAt)} · ${esc(item.kind || "자료")} ↗</a>`).join("");
