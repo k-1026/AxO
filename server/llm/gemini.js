@@ -3,7 +3,10 @@
 
 const ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models";
 export const DEFAULT_MODEL = "gemini-3.8-flash"; // 바꾸려면 환경변수 GEMINI_MODEL 을 넣어요
-const FALLBACK_MODELS = ["gemini-3.5-flash"];   // 기본 모델이 붐빌 때 대신 쓸 모델
+/* 기본 모델이 붐비거나 하루 무료 한도(모델마다 20번)를 다 쓰면 차례로 대신 쓸 모델이에요.
+   무료 한도는 모델마다 따로라서, 여러 개를 두면 하루에 쓸 수 있는 횟수가 그만큼 늘어요.
+   뒤쪽 lite 모델은 빠르고(1초 안팎) 한도에 여유가 있어서 마지막 안전망이에요. */
+const FALLBACK_MODELS = ["gemini-3.5-flash", "gemini-3.7-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-flash-lite-latest"];
 export const DEFAULT_IMAGE_MODEL = "gemini-3.1-flash-image"; // 이미지 모델. 바꾸려면 환경변수 GEMINI_IMAGE_MODEL 을 넣어요
 const IMAGE_TIMEOUT_MS = 150000; // 이미지 한 장 최대 대기 시간 (vercel.json 의 plan-image maxDuration 300초보다 짧게)
 
@@ -22,6 +25,8 @@ export class LlmError extends Error {
    기획안 1건은 AI를 4~6번 이어 부르는데, 매번 붐비는 모델을 기다리면 그만큼 느려지기 때문이에요. */
 const PRIMARY_TRY_MS = 25000;      // 대신 쓸 모델이 있을 때 기본 모델을 기다리는 최대 시간
 const BUSY_COOLDOWN_MS = 5 * 60000; // 붐빈 모델을 건너뛰는 시간
+const DAILY_COOLDOWN_MS = 60 * 60000; // 하루 한도를 다 쓴 모델을 건너뛰는 시간 (한 시간마다 다시 확인)
+const dailyLimit = msg => /per ?day|PerDay/i.test(msg || "");
 const busyUntil = new Map();        // 모델 → 이 시각까지 건너뜀
 
 async function callGemini(payload, apiKey, model, ErrorClass, { requestTimeoutMs = REQUEST_TIMEOUT_MS, totalTimeoutMs = TOTAL_TIMEOUT_MS } = {}) {
@@ -56,7 +61,7 @@ async function callGemini(payload, apiKey, model, ErrorClass, { requestTimeoutMs
       if (res.status !== 503 && res.status !== 429) break;
     }
     // 붐비거나 너무 오래 걸리면 이 모델은 잠시 건너뛰고 다음 모델로 바꿔요.
-    if (all.length > 1) busyUntil.set(useModel, Date.now() + BUSY_COOLDOWN_MS);
+    if (all.length > 1) busyUntil.set(useModel, Date.now() + (dailyLimit(data?.error?.message) ? DAILY_COOLDOWN_MS : BUSY_COOLDOWN_MS));
     console.warn("[gemini]", timedOut ? "시간 초과" : res.status, useModel, hasNext ? "→ 다른 모델로" : "");
   }
   if (!res) throw timeoutError();
