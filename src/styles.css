@@ -262,3 +262,9 @@ dl.kw dt { color: var(--muted); font-weight: 700; } dl.kw dd { margin: 0; displa
 @keyframes evGrow { from { width: 0; } }
 @media (prefers-reduced-motion: reduce) { .ev-fill { animation: none; } }
 @media (max-width: 600px) { .ev-row { grid-template-columns: 6.5em 1fr 2.6em; } }
+.ev-season { margin: 12px 0; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+.ev-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.ev-stat { display: flex; flex-direction: column; gap: 3px; padding: 10px 12px; border-radius: 10px; background: var(--accent-soft); }
+.ev-stat-t { font-size: .74rem; color: var(--muted); }
+.ev-stat strong { font-size: 1rem; color: var(--ink); }
+.ev-stat-c { font-size: .72rem; color: var(--accent); font-weight: 600; }

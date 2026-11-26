@@ -298,7 +298,6 @@ function openDetail(r) {
     <dt>구분</dt><dd>${l.functional ? "기능성 보고 필요" : "일반 화장품"}</dd>
     <dt>대표 약재</dt><dd>${esc(l.herb)}${l.hanja ? `(${l.hanja})` : ""}</dd>
     <dt>쓸 수 있는 말</dt><dd>${esc(l.words)}</dd>`;
-  document.getElementById("d-evidence").innerHTML = evidenceChartHtml(HERBS.find(h => h.herb === l.herb), { title: `${l.herb} 근거 메모 한눈에 보기` });
   document.getElementById("d-why-combo").innerHTML = `<dt>목적</dt><dd>${chips([l.purpose])}</dd><dt>구성</dt><dd>${chips([l.lineup.map(([, k]) => k).join(" → ")])}</dd><dt>포인트</dt><dd>${chips(String(COMBO_KW[l.purpose] || "").split(" · "))}</dd>`;
   /* 추천 구성과 함께 낼 수 있는 제품을 한 표에. 추천 구성은 처음부터 골라 둬요 */
   document.getElementById("d-lineup").innerHTML = productOptions(l).map((o, i) => `<tr>
@@ -326,8 +325,14 @@ export function showView(v) {
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("button[data-view], a[data-view]"); if (b) showView(b.dataset.view); });
 
 
-/** 기획안 화면(마이 기획실)에서 원료 근거 그래프를 그릴 때 써요 */
-export const evidenceChartFor = herb => evidenceChartHtml(HERBS && HERBS.find(h => h.herb === herb), { title: `${herb} 근거 메모 한눈에 보기` });
+/** 기획안 화면(마이 기획실)의 '수치로 보는 근거': 계절 기후 통계 + 원료 근거 점수 그래프 */
+export const evidenceChartFor = (herb, s) => seasonStatsHtml(s) + evidenceChartHtml(HERBS && HERBS.find(h => h.herb === herb), { title: `${herb} 원료 근거 점수` });
+function seasonStatsHtml(s) {
+  const issues = (SEASONS && SEASONS[s] && SEASONS[s].issues) || [];
+  if (!issues.length) return "";
+  return `<div class="ev-season"><div class="ev-chart-h"><b>${esc(s)} 피부 이슈 (기후 통계)</b></div><div class="ev-stats">${issues.map(([title, stat, concern, purposes]) =>
+    `<div class="ev-stat"><span class="ev-stat-t">${esc(title)}</span><strong>${esc(stat)}</strong><span class="ev-stat-c">${esc(concern)} → ${esc((purposes || []).join("·"))}</span></div>`).join("")}</div></div>`;
+}
 
 export function startApp(data) {
   ({ SEASONS, HERBS, DESIGN, TREND_SOURCES, TREND_TIERS } = data);
