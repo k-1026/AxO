@@ -23,8 +23,23 @@ export function describeLine(cand, season, data) {
     `경쟁 메모: ${memo("rival")} / ${memo("preempt")}`,
     `한방 브랜드 메모: ${memo("hanbang")}`,
     `제품 목록: ${items}${pending.length ? ` (+ ${pending.join(", ")}: 가격 준비 중, 용기 샘플 없음)` : ""}`,
-    `기능성 심사 필요: ${l.functional ? "예" : "아니요"}`
+    `기능성 심사 필요: ${l.functional ? "예" : "아니요"}`,
+    ...describeTrends(season, data)
   ].join("\n");
+}
+
+/* 계절 피부 이슈(통계)와 수집한 뷰티 트렌드를 프롬프트용 줄로 바꿔요. 자료가 없으면 빈 목록이에요.
+   기획안이 타깃·방향을 정하거나 바꿀 때 근거로 써요. */
+export function describeTrends(season, data) {
+  const out = [];
+  const issues = data?.SEASONS?.[season]?.issues || [];
+  if (issues.length) out.push(`${season} 피부 이슈: ${issues.map(([title, stat, concern]) => `${title}(${stat}, 고민: ${concern})`).join(" / ")}`);
+  const bt = data?.BEAUTY_TRENDS;
+  const ins = bt?.insights?.[season];
+  if (ins) out.push(`${season} 뷰티 트렌드 방향: ${ins.line} ${ins.tip || ""}`.trim());
+  const items = (bt?.items || []).slice(0, 5);
+  if (items.length) out.push(`최근 뷰티 트렌드 자료: ${items.map(i => `${i.source} 「${i.title}」(${(i.tags || []).join("·")})`).join(" / ")}`);
+  return out;
 }
 
 export const REVIEW_SCHEMA = {

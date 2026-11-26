@@ -137,10 +137,29 @@ describe("/api/plan-edit/preview", () => {
     const gone = makeStore({ getVersion: vi.fn(async () => ({ ...BASE, content: { ...content(), herb: "없는약재" } })) });
     expect(await status(planEdit.preview(PREVIEW(MSG), ctx(mkDeps(gone))))).toBe(409);
   });
-  it("AI 수정안 형식이 틀리면 502", async () => {
+  it("AI 수정안 형식이 틀리면 한 번 더 받고, 두 번째가 맞으면 그걸 보여 줘요", async () => {
     const bad = { ...BASE, content: { ...content(), plan: { ...content().plan, concept_name: "" } } };
-    const deps = mkDeps(makeStore({ getVersion: vi.fn(async () => bad) }), { generate: vi.fn(async () => ({ reply: "네", proposal: { summary: "s", changes: [], regenerate_images: [], plan: { ...rawPlan(), concept_name: "" } } })) });
-    expect(await status(planEdit.preview(PREVIEW(MSG), ctx(deps)))).toBe(502);
+    const wrong = { reply: "네", proposal: { summary: "s", changes: [], regenerate_images: [], plan: { ...rawPlan(), concept_name: "" } } };
+    const right = { reply: "바꿨어요", proposal: { summary: "s", changes: [], regenerate_images: [], plan: { ...rawPlan(), concept_name: "새 이름" } } };
+    const generate = vi.fn().mockResolvedValueOnce(wrong).mockResolvedValueOnce(right);
+    const out = await planEdit.preview(PREVIEW(MSG), ctx(mkDeps(makeStore({ getVersion: vi.fn(async () => bad) }), { generate })));
+    expect(out.proposal.plan.concept_name).toBe("새 이름");
+    expect(generate.mock.calls[1][0]).toContain("[지난 답의 문제]");
+  });
+  it("두 번 다 형식이 틀려도 오류(502) 대신 다시 말해 달라는 답을 돌려줘요", async () => {
+    const bad = { ...BASE, content: { ...content(), plan: { ...content().plan, concept_name: "" } } };
+    const wrong = { reply: "네", proposal: { summary: "s", changes: [], regenerate_images: [], plan: { ...rawPlan(), concept_name: "" } } };
+    const out = await planEdit.preview(PREVIEW(MSG), ctx(mkDeps(makeStore({ getVersion: vi.fn(async () => bad) }), { generate: vi.fn(async () => wrong) })));
+    expect(out.proposal).toBeNull();
+    expect(out.reply).toContain("한 번 더");
+  });
+  it("AI가 칸을 이상하게 보내도(숫자·빈 목록·일부만) 지금 기획안으로 채워 튕기지 않아요", async () => {
+    const odd = { reply: "네", proposal: { summary: "", changes: [], regenerate_images: [], plan: { concept_name: 3, target: "20대 직장인", key_claims: "문자열", product_roles: [] }, scenarios: { cuts: [{ scene: 1 }] } } };
+    const out = await planEdit.preview(PREVIEW(MSG), ctx(mkDeps(makeStore(), { generate: vi.fn(async () => odd) })));
+    expect(out.proposal.plan.target).toBe("20대 직장인");
+    expect(out.proposal.plan.concept_name).toBe(rawPlan().concept_name);
+    expect(out.proposal.scenarios[0].cuts).toHaveLength(3);
+    expect(out.proposal.summary).toBeTruthy();
   });
 });
 

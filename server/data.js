@@ -12,7 +12,7 @@ async function rows(query) {
 function fallbackData() {
   return {
     SEASONS: fallback.SEASONS, HERBS: fallback.HERBS, DESIGN: fallback.DESIGN,
-    HERB_TREND: fallback.HERB_TREND, COLOR_TRENDS: [], source: "fallback",
+    HERB_TREND: fallback.HERB_TREND, BEAUTY_TRENDS: fallback.BEAUTY_TRENDS, COLOR_TRENDS: [], source: "fallback",
   };
 }
 
@@ -25,16 +25,27 @@ async function colorTrends(client) {
   }
 }
 
+/* 뷰티 트렌드 수집본(가장 최근 1건). 없거나 조회가 실패하면 기본 수집본을 써요. */
+async function beautyTrends(client) {
+  try {
+    const r = await rows(client.from("beauty_trend_snapshots").select("payload").order("updated_at", { ascending: false }).limit(1));
+    return r[0]?.payload ?? fallback.BEAUTY_TRENDS;
+  } catch {
+    return fallback.BEAUTY_TRENDS;
+  }
+}
+
 /** 서버가 쓸 데이터를 불러와요. client가 없거나 조회가 실패하면 기본 데이터를 써요. */
 export async function loadServerData(client) {
   if (!client) return fallbackData();
   try {
-    const [seasons, issues, herbs, trend, colors] = await Promise.all([
+    const [seasons, issues, herbs, trend, colors, beauty] = await Promise.all([
       rows(client.from("seasons").select("name, eng, icon").order("sort_order")),
       rows(client.from("season_issues").select("season, title, stat, concern, purposes").order("sort_order")),
       rows(client.from("herbs").select("*, herb_designs(main, cap, liquid, motif, from_label)").order("sort_order")),
       rows(client.from("herb_trend_snapshots").select("collected_at, herbs").order("collected_at", { ascending: false }).limit(1)),
       colorTrends(client),
+      beautyTrends(client),
     ]);
     if (!seasons.length || !herbs.length) throw new Error("seasons/herbs 테이블이 비어 있어요.");
     return {
@@ -43,6 +54,7 @@ export async function loadServerData(client) {
       DESIGN: toDesign(herbs),
       HERB_TREND: trend[0] ? { collectedAt: trend[0].collected_at, herbs: trend[0].herbs } : null,
       COLOR_TRENDS: colors,
+      BEAUTY_TRENDS: beauty,
       source: "supabase",
     };
   } catch (e) {

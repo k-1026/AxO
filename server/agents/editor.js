@@ -1,7 +1,7 @@
 /* 수정 에이전트: 사용자의 수정 요청을 듣고 답과 "바꿀 내용" 제안을 만들어요. 저장은 하지 않아요.
    AI가 글만 바꾸고, 제품 이름·용량·정가는 작성 에이전트의 assemble 이 코드 값으로 다시 채워요. */
 import { STRING, describeLine } from "./prompt.js";
-import { PLAN_SCHEMA, assemblePlan } from "./writer.js";
+import { PLAN_SCHEMA, assemblePlan, PlanFormatError } from "./writer.js";
 import { SCENARIO_SCHEMA, assembleScenarios } from "./designer.js";
 import { BANNED_PHRASES } from "../../src/config/rules.js";
 
@@ -47,11 +47,17 @@ export function buildEditPrompt(content, messages, cand, data) {
   return [
     "당신은 한방 뷰티 화장품 출시 기획안을 고쳐 주는 수정 도우미예요. 사용자와 대화하며 아래 [지금 기획안]을 고쳐요.",
     "- 존댓말로 답해 주세요. 답(reply)은 짧고 친절하게 써 주세요.",
-    "- 사용자가 부탁한 부분만 바꾸세요. 부탁하지 않은 글은 그대로 두세요.",
+    "- 먼저 요청의 크기를 판단하세요.",
+    "  · 문장 다듬기·오타·말투처럼 작은 요청이면 그 부분만 바꾸고 나머지는 그대로 두세요.",
+    "  · 타깃 고객, 콘셉트, 출시 방향, 분위기, 판매 채널, 강조할 효과처럼 방향이 바뀌는 요청이면 그 한 줄만 바꾸지 마세요.",
+    "    새 방향에 맞춰 기획안 전체(콘셉트 이름·설명, 핵심 문구 3개, 제품마다 맡는 역할과 쓰는 순서·상황, 주의사항)와 시나리오 전체(제목·콘셉트·타깃·채널·장면·이미지 설명)를 다시 쓰세요.",
+    "    이때 [후보 정보]의 계절 피부 이슈와 뷰티 트렌드 자료를 근거로, 사용자가 말한 새 방향(타깃이라면 그 사람들의 하루 생활·피부 고민·제품을 쓰는 때)에 맞게 바꾸세요.",
+    "  · 사용자가 결과가 부족하다고 지적하면(예: '타깃만 바뀌었다') 그 지적을 받아들여 위처럼 전체를 다시 쓰세요.",
+    "- 제품 종류(라인 구성)는 후보 정보의 제품 목록으로 정해져 있어요. 제품을 더하거나 빼 달라고 하면 reply에서 그렇게 할 수 없다고 짧게 알리고, 대신 제품의 역할·쓰는 순서·주력 제품을 바꿔 제안하세요. 이때도 사용자가 말하지 않은 타깃·콘셉트는 바꾸지 마세요.",
     "- 고칠 내용이 있으면 proposal을 채우고, 단순한 질문이나 인사라면 proposal을 null로 두세요.",
     "- proposal.summary는 한 줄 요약, changes에는 바뀌는 부분마다 part(어디), before(전), after(후)를 한 줄씩 적어 주세요.",
-    "- 기획안 글을 바꾸면 proposal.plan에 바뀐 뒤의 기획안 전체(concept_name, concept, target, key_claims 정확히 3개, product_roles, cautions)를 쓰세요.",
-    "- 시나리오를 바꾸면 proposal.scenarios에 바뀐 뒤의 시나리오 1개 전체를 쓰세요 (장면은 3~4개, image_prompts는 이미지 설명 정확히 3개: 0 제품 대표 컷, 1 원료·질감 컷, 2 사용 장면 컷).",
+    "- 기획안 글을 바꾸면 proposal.plan에 바뀐 뒤의 기획안 전체(concept_name, concept, target, key_claims 정확히 3개, product_roles, cautions)를 빠짐없이 쓰세요.",
+    "- 시나리오를 바꾸면 proposal.scenarios에 바뀐 뒤의 시나리오 1개 전체를 빠짐없이 쓰세요 (title, concept, target, channel, 장면 cuts 3~4개(scene, copy), image_prompts는 이미지 설명 정확히 3개: 0 제품 대표 컷, 1 원료·질감 컷, 2 사용 장면 컷).",
     "- 가격·용량 같은 숫자는 쓰지 마세요. 제품 이름·용량·가격은 코드가 채워요.",
     "- 후보 정보에 있는 사실만 쓰고, 후보 원료 말고 다른 원료는 언급하지 마세요.",
     `- 의약품처럼 낫는다는 표현은 쓰지 마세요 (${BANNED_PHRASES.join(", ")}).`,
@@ -97,21 +103,39 @@ export function cleanProposal(raw, content, cand) {
   const regenerate_images = [...new Set(picks(raw.regenerate_images, 10).filter(i => Number.isInteger(i) && i >= 0 && i <= 2))].sort((a, b) => a - b);
 
   const out = { summary, changes, regenerate_images };
-  if (raw.plan != null) {
-    // AI가 일부만 보냈거나 형식이 어긋난 칸은 지금 기획안의 글로 채워요. (예: 타깃만 바꿨는데 핵심 문구를 2개만 보냄)
+  /* AI 답은 모양이 매번 조금씩 달라요. 칸마다 쓸 수 있는 것만 쓰고, 빠지거나 어긋난 칸은 지금 기획안 글로 채워요.
+     그래도 조립이 안 되는 부분은 버리고(지금 것 유지), 쓸 게 하나도 없을 때만 PlanFormatError 를 던져요. */
+  let dropped = null;
+  if (raw.plan != null && typeof raw.plan === "object") {
     const old = rawPlanOf(content?.plan);
+    const ai = raw.plan;
     const merged = { ...old };
-    for (const [k, v] of Object.entries(raw.plan || {})) if (v != null && v !== "") merged[k] = v;
-    if (!isStrings(merged.key_claims) || merged.key_claims.filter(x => x.trim()).length < 3) merged.key_claims = old.key_claims;
-    if (merged.cautions != null && !isStrings(merged.cautions)) merged.cautions = old.cautions;
-    if (!Array.isArray(merged.product_roles)) merged.product_roles = old.product_roles;
-    const plan = assemblePlan(merged, cand, content?.plan?.notes);
-    out.plan = { ...plan, product_roles: plan.products.map(p => ({ name: p.name, role: p.role })) };
+    for (const k of ["concept_name", "concept", "target"]) if (str(ai[k])) merged[k] = ai[k];
+    if (isStrings(ai.key_claims) && ai.key_claims.filter(x => x.trim()).length >= 3) merged.key_claims = ai.key_claims;
+    if (isStrings(ai.cautions)) merged.cautions = ai.cautions;
+    if (Array.isArray(ai.product_roles) && ai.product_roles.length) merged.product_roles = ai.product_roles;
+    else if (Array.isArray(ai.products) && ai.products.length) merged.product_roles = ai.products.map(x => ({ name: x?.name, role: x?.role }));
+    try {
+      const plan = assemblePlan(merged, cand, content?.plan?.notes);
+      out.plan = { ...plan, product_roles: plan.products.map(p => ({ name: p.name, role: p.role })) };
+    } catch (e) {
+      if (!(e instanceof PlanFormatError)) throw e;
+      dropped = e;
+    }
   }
   if (raw.scenarios != null) {
     const list = Array.isArray(raw.scenarios) ? raw.scenarios : (raw.scenarios?.scenarios ?? [raw.scenarios]);
-    out.scenarios = assembleScenarios({ scenarios: [mergeScenario(list[0], content?.scenarios?.[0])] }).scenarios;
+    try {
+      out.scenarios = assembleScenarios({ scenarios: [mergeScenario(list[0], content?.scenarios?.[0])] }).scenarios;
+    } catch (e) {
+      if (!(e instanceof PlanFormatError)) throw e;
+      dropped = e;
+    }
   }
-  if (!summary || (!out.plan && !out.scenarios && !regenerate_images.length)) return null;
+  if (!out.plan && !out.scenarios && !regenerate_images.length) {
+    if (dropped) throw dropped;
+    return null;
+  }
+  if (!out.summary) out.summary = out.changes[0]?.part ? `${out.changes[0].part} 수정` : "기획안 수정";
   return out;
 }

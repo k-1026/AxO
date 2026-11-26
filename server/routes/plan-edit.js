@@ -68,16 +68,29 @@ async function preview(body, ctx) {
   if (latest && latest.version_no !== base.version_no) throw new HttpError(409, "최신 버전이 아니에요. 최신 버전을 불러온 뒤 다시 요청해 주세요.");
 
   const { data, cand } = await rebuild(client, base.content, deps);
-  const raw = await deps.generate(buildEditPrompt(base.content, body.messages, cand, data), EDIT_SCHEMA);
-  const reply = isText(raw?.reply) ? raw.reply.trim() : "";
-  if (!reply) throw new HttpError(502, "AI가 만든 답 형식이 맞지 않아요. 다시 시도해 주세요.");
-  let proposal;
-  try {
-    proposal = cleanProposal(raw.proposal, base.content, cand);
-  } catch (e) {
-    if (e instanceof PlanFormatError) throw new HttpError(502, "AI가 만든 수정안 형식이 맞지 않아요. 다시 시도해 주세요.");
-    throw e;
+  const prompt = buildEditPrompt(base.content, body.messages, cand, data);
+  /* AI 답 모양이 어긋나면 무엇이 틀렸는지 알려 주고 한 번 더 받아요. 그래도 안 되면 오류 대신 다시 말해 달라고 답해요. */
+  let reply = "", proposal = null, problem = null;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const raw = await deps.generate(attempt ? `${prompt}
+
+[지난 답의 문제]
+${problem}
+형식을 지켜 reply와 proposal을 빠짐없이 다시 써 주세요.` : prompt, EDIT_SCHEMA);
+    reply = isText(raw?.reply) ? raw.reply.trim() : "";
+    try {
+      proposal = cleanProposal(raw?.proposal, base.content, cand);
+    } catch (e) {
+      if (!(e instanceof PlanFormatError)) throw e;
+      console.warn("[plan-edit] 수정안 형식 오류, 다시 받아요:", e.message);
+      problem = e.message; proposal = null;
+      continue;
+    }
+    if (!reply && proposal) reply = "이렇게 바꿔 볼게요.";
+    if (reply) { problem = null; break; }
+    problem = "reply(답)가 비어 있어요.";
   }
+  if (problem) return { reply: "수정안을 만들다가 AI 답이 어긋났어요. 같은 요청을 조금 다르게 한 번 더 말씀해 주세요.", proposal: null };
   return { reply, proposal: proposal ? toClient(proposal) : null };
 }
 
