@@ -266,14 +266,15 @@ document.getElementById("detail").addEventListener("click", e => { if (e.target.
 
 /* ════════ 화면 전환: 첫 화면 · 출시 기획실 · 요금제 · 마이 기획실 ════════ */
 export function showView(v) {
-  document.body.dataset.view = v; // 인트로에서는 상단바를 숨겨요
+  document.body.dataset.page = v; // 지금 화면 이름 (data-view 로 쓰면 아래 클릭 처리가 body 를 메뉴 버튼으로 착각해요)
   document.querySelectorAll("[data-view-panel]").forEach(p => { p.hidden = p.dataset.viewPanel !== v; });
   document.querySelectorAll(".menu [data-view]").forEach(b => b.classList.toggle("on", b.dataset.view === v));
   // 계절 색은 출시 기획실에서 계절을 고른 뒤에만 써요. 다른 화면은 사이트 기본 색 하나로 보여요.
   if (v === "launch" && season) document.body.dataset.season = season; else delete document.body.dataset.season;
   window.scrollTo(0, 0);
 }
-document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-view]"); if (b) showView(b.dataset.view); });
+/* 화면 이동은 data-view 가 붙은 버튼·링크를 눌렀을 때만 해요 (본문을 눌러도 스크롤이 움직이지 않게) */
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("button[data-view], a[data-view]"); if (b) showView(b.dataset.view); });
 
 
 export function startApp(data) {
