@@ -156,13 +156,26 @@ function beautyComment(s, data, now = Date.now()) {
 const TICK_MS = 3000;
 let tickTimer = null, tickSlides = [], tickAt = 0, tickPaused = false;
 
-function hotTrends() {
-  return ((BEAUTY_TRENDS && BEAUTY_TRENDS.items) || [])
-    .filter(i => i && i.title)
+/* 출시할 계절에 맞는 트렌드만 골라요.
+   - 자료에 seasons 칸이 있으면 그 계절만, 없으면 그 계절 인사이트가 근거로 쓴 자료(evidenceIds)만 써요.
+   - 제목·요약에 다른 계절이 적힌 자료(예: 여름인데 '가을 환절기')는 빼요.
+   - 맨 앞에는 그 계절 트렌드 방향(인사이트)을 보여 줘요. */
+const SEASON_ICON = { "봄": "🌸", "여름": "☀️", "가을": "🍂", "겨울": "❄️" };
+function hotTrends(s) {
+  const items = (BEAUTY_TRENDS && BEAUTY_TRENDS.items) || [];
+  const insight = BEAUTY_TRENDS && BEAUTY_TRENDS.insights && BEAUTY_TRENDS.insights[s];
+  const ids = new Set((insight && insight.evidenceIds) || []);
+  const others = Object.keys(SEASON_ICON).filter(x => x !== s);
+  const fits = i => Array.isArray(i.seasons) ? i.seasons.includes(s) : ids.has(i.id);
+  const saysOther = i => others.some(o => `${i.title || ""} ${i.summary || ""} ${i.easy || ""} ${TREND_EASY[i.id] || ""}`.includes(o));
+  const picked = items.filter(i => i && i.title && fits(i) && !saysOther(i))
     .sort((a, b) => String(b.publishedAt || "").localeCompare(String(a.publishedAt || "")))
     .slice(0, 5)
-    .map(i => ({ src: `${i.source || "뷰티 트렌드"}${i.kind ? " " + i.kind : ""}${i.publishedAt ? " · " + i.publishedAt : ""}`, easy: easyTrend(i) }))
+    .map(i => ({ head: `🔥 요즘 ${s} 뷰티 트렌드`, src: `${i.source || "뷰티 트렌드"}${i.kind ? " " + i.kind : ""}${i.publishedAt ? " · " + i.publishedAt : ""}`, easy: easyTrend(i) }))
     .filter(x => x.easy);
+  const lead = insight && typeof insight.line === "string"
+    ? [{ head: `${SEASON_ICON[s] || "🔥"} ${s} 뷰티 트렌드 방향`, easy: insight.line.replace(/잡아보세요/g, "잡아 보세요"), src: "수집한 트렌드 자료를 바탕으로 정리" }] : [];
+  return [...lead, ...picked];
 }
 
 /* 기사 제목(연예인·행사 이름 등)은 처음 보는 사람이 이해하기 어려워서, 자료 내용을 쉬운 말로 풀어 보여 줘요 */
@@ -178,7 +191,7 @@ function showTrendSlide(i) {
   if (!sl || !lineEl) return;
   tickAt = i;
   lineEl.innerHTML = sl.easy
-    ? `<span class="trend-kind">🔥 요즘 뷰티 트렌드</span>${esc(sl.easy)}<small class="trend-from">출처: ${esc(sl.src)}</small>`
+    ? `<span class="trend-kind">${esc(sl.head)}</span>${esc(sl.easy)}<small class="trend-from">${sl.src.startsWith("수집한") ? esc(sl.src) : "출처: " + esc(sl.src)}</small>`
     : `<span class="trend-kind">이번 시즌 방향</span>${esc(sl.line)}`;
   lineEl.classList.remove("trend-in"); void lineEl.offsetWidth; lineEl.classList.add("trend-in");
 }
@@ -198,7 +211,7 @@ function renderTrendComment() {
   const comment = beautyComment(season, BEAUTY_TRENDS) || trendComment(season, TREND);
   document.getElementById("trend-status").textContent = comment.status;
   const line = comment.line.replace(/올리브영의\s*|장업신문의\s*/g, "").replace(/올리브영은\s*/g, "관련 콘텐츠에서는 ").replace(/장업신문은\s*/g, "관련 기사에서는 ");
-  const hot = hotTrends();
+  const hot = hotTrends(season);
   startTrendTicker(hot.length ? hot : [{ line }]);
   document.getElementById("trend-plan").innerHTML = `<span class="trend-plan-tag">기획 포인트</span>${esc(comment.tip)}`;
   document.getElementById("trend-source").textContent = comment.source;
