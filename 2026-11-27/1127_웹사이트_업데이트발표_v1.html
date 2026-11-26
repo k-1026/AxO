@@ -110,7 +110,7 @@ body{background:#BDBDBD;font-family:'Noto Sans KR','Malgun Gothic',sans-serif;co
 .it{border-top:1.5px solid #E3E3E3;padding-top:12px}
 .it .h{font-weight:900;font-size:18px;line-height:1.4;display:flex;gap:8px;align-items:flex-start}
 .it .h .p{flex:none;font-family:'Archivo Black',sans-serif;font-size:12px;border-radius:10px;padding:3px 8px;margin-top:2px}
-.p1{background:var(--ink);color:var(--lime)} .p2{background:var(--pink)} .p3{background:#E6E6E6}
+.p1{background:var(--ink);color:var(--lime)} .p2{background:var(--pink)} .p3{background:#E6E6E6} .pw{background:var(--lime);border:1.5px solid var(--ink)}
 .it .x{font-size:15px;line-height:1.5;color:#444;margin-top:4px}
 .it .w{font-size:13px;color:#777;margin-top:3px}
 /* 1600×900 화면을 채우도록 키운 크기 */
@@ -186,7 +186,7 @@ body{background:#BDBDBD;font-family:'Noto Sans KR','Malgun Gothic',sans-serif;co
     <div class="vs new"><span class="vn">3</span><div class="vt">추천 후보 3개</div><div class="vd">마음에 안 들면 재추천</div></div>
     <div class="vs new"><span class="vn">4</span><div class="vt">출시 구성 고르기</div><div class="vd">상세카드의 체크박스 표</div></div>
     <div class="vs new"><span class="vn">5</span><div class="vt">기획안 만들기</div><div class="vd">로그인 → 대기 화면 (1~3분)</div></div>
-    <div class="vs new"><span class="vn">6</span><div class="vt">마이 기획실</div><div class="vd">기획안 · 광고 시나리오 · 이미지 3장</div></div>
+    <div class="vs new"><span class="vn">6</span><div class="vt">마이 기획실</div><div class="vd">기획안 · 제품 패키징 · 팝업 행사 디자인</div></div>
     <div class="vs new"><span class="vn">7</span><div class="vt">챗봇에 수정 요청</div><div class="vd">평소 말투로 요청</div></div>
     <div class="vs new"><span class="vn">8</span><div class="vt">미리보기</div><div class="vd">무엇을 → 어떻게, 적용 / 취소</div></div>
     <div class="vs new"><span class="vn">9</span><div class="vt">적용 = 새 버전</div><div class="vd">지난 버전도 그대로 보관</div></div>
@@ -201,7 +201,7 @@ body{background:#BDBDBD;font-family:'Noto Sans KR','Malgun Gothic',sans-serif;co
 <section class="slide graybg">
  <a class="pill mvp" href="https://cosmeticai.vercel.app" target="_blank" rel="noopener">MVP_v2</a>
  <div class="seclb">Planning Agents</div>
- <div class="d title">후보 하나 → <span class="hl">기획안 + 광고 시나리오 + 이미지 3장</span></div>
+ <div class="d title" style="font-size:46px;max-width:1220px">후보 하나 → <span class="hl">기획안 + 제품 패키징 디자인 + 팝업 행사 디자인</span></div>
  <div class="sub">에이전트마다 <b>코드가 하는 확인</b>과 <b>AI가 하는 일</b>을 나눴어요. 총괄 에이전트가 차례로 부르고, 결과는 버전 1로 저장해요.</div>
  <div class="pipe" style="margin-top:40px">
   <div class="pp code"><div class="n">1</div><span class="k">코드</span><div class="t">후보 다시 계산</div><div class="x">점수 · 라인 구성 · 가격을 서버에서 다시 계산. 브라우저 값은 안 씀</div></div>
@@ -209,14 +209,14 @@ body{background:#BDBDBD;font-family:'Noto Sans KR','Malgun Gothic',sans-serif;co
   <div class="pp ai"><div class="n">3</div><span class="k">AI</span><div class="t">기획안 작성</div><div class="x">콘셉트 · 타깃 · 핵심 문구 · 제품별 역할</div></div>
   <div class="pp code" style="border-width:2.5px"><div class="n">4</div><span class="k">코드</span><div class="t">규칙 대조</div><div class="x">금지어 · 숫자 · 가격 범위 · 후보 밖 원료</div></div>
   <div class="pp ai" style="border-width:2.5px"><div class="n">5</div><span class="k">AI</span><div class="t">표현 · 근거 검토</div><div class="x">문제가 있으면 3번으로 한 번 돌려보냄</div><div class="back">↩ 3번으로 1회 재작성</div></div>
-  <div class="pp ai"><div class="n">6</div><span class="k">AI</span><div class="t">광고 시나리오</div><div class="x">시나리오 1개 + 이미지 설명 3개</div></div>
+  <div class="pp ai"><div class="n">6</div><span class="k">AI</span><div class="t">제품 패키징</div><div class="x">패키징 이미지 1개</div></div>
   <div class="pp code"><div class="n">7</div><span class="k">코드</span><div class="t">문구 대조</div><div class="x">걸린 문구는 빼고 검토 의견에 남김</div></div>
   <div class="pp code"><div class="n">8</div><span class="k">코드</span><div class="t">버전 1 저장</div><div class="x">글이 저장되면 바로 마이 기획실로 이동</div></div>
-  <div class="pp img"><div class="n">9</div><span class="k">Gemini 이미지</span><div class="t">이미지 3장</div><div class="x">따로 만들어 빈칸을 채움. 실패한 장만 다시 만들기</div></div>
+  <div class="pp img"><div class="n">9</div><span class="k">Gemini 이미지</span><div class="t">제품 패키징 + 팝업 행사 디자인</div><div class="x">따로 만들어 빈칸을 채움. 팝업 행사 디자인은 이미지 또는 영상 (아직 미확정)</div></div>
  </div>
  <div style="display:flex;gap:16px;margin-top:62px;align-items:center;font-size:16px">
   <span class="chip w">코드</span><span class="chip">AI (Gemini)</span><span class="chip l">Gemini 이미지</span>
-  <span style="color:#555;margin-left:12px">설계 때는 시나리오 3개였는데, 11/24에 <b>시나리오 1개 + 이미지 3장</b>으로 바꿨어요. 예전 기획안(3개)도 그대로 열려요.</span>
+  <span style="color:#555;margin-left:12px">팝업 행사 디자인을 <b>이미지</b>로 만들지 <b>영상</b>으로 만들지는 아직 정하지 않았어요.</span>
  </div>
  <div class="pgno">03</div>
 </section>
@@ -228,20 +228,20 @@ body{background:#BDBDBD;font-family:'Noto Sans KR','Malgun Gothic',sans-serif;co
  <div class="todo" style="margin-top:28px">
   <div class="col">
    <h3>검증 <span class="tag k">사람</span></h3>
-   <div class="it"><div class="h"><span class="p p1">1순위</span>기획자 시범 사용</div><div class="x">신생 한방뷰티 브랜드 기획자에게 써 보게 하고, 직접 쓸 때와 기획 시간을 비교</div><div class="w">근거: v3 가설 2 미판정</div></div>
-   <div class="it"><div class="h"><span class="p p1">1순위</span>도달 · 전환 가정 확인</div><div class="x">도달 10% · 유료 전환 5%를 시범 사용 결과로 바꿔 손익분기 다시 계산</div><div class="w">근거: v3 요청사항(손익 역산)</div></div>
+   <div class="it"><div class="h"><span class="p p2">2순위</span>기획자 시범 사용</div><div class="x">신생 한방뷰티 브랜드 기획자에게 써 보게 하고, 직접 쓸 때와 기획 시간을 비교</div><div class="w">근거: v3 가설 2 미판정</div></div>
+   <div class="it"><div class="h"><span class="p p2">2순위</span>도달 · 전환 가정 확인</div><div class="x">도달 10% · 유료 전환 5%를 시범 사용 결과로 바꿔 손익분기 다시 계산</div><div class="w">근거: v3 요청사항(손익 역산)</div></div>
   </div>
   <div class="col">
    <h3>비용 · 운영 <span class="tag k">BM</span></h3>
-   <div class="it"><div class="h"><span class="p p1">1순위</span>1건 AI 비용 실측 → 가격 재계산</div><div class="x">글 4~6회 + 이미지 3장 실제 비용으로 월 20건 · ₩29,000이 맞는지 다시 계산</div><div class="w">근거: 설계 문서 [확인필요]</div></div>
-   <div class="it"><div class="h"><span class="p p2">2순위</span>결제 연동</div><div class="x">지금은 이용권을 관리자가 직접 넣음. 실제 판매 전에 결제를 붙여야 함</div><div class="w">근거: 설계 문서 9-1절</div></div>
-   <div class="it"><div class="h"><span class="p p3">3순위</span>이미지 품질 · 비용 관리</div><div class="x">이미지 모델은 결제(Billing)를 켜야 동작. 지운 로고 글자가 남으면 지금은 다시 만들기로만 대응</div><div class="w">근거: 설계 문서 8절</div></div>
+   <div class="it"><div class="h"><span class="p p1">1순위</span>이미지 품질 · 비용 관리</div><div class="x">이미지 모델은 결제(Billing)를 켜야 동작. 지운 로고 글자가 남으면 지금은 다시 만들기로만 대응</div><div class="w">근거: 설계 문서 8절</div></div>
+   <div class="it"><div class="h"><span class="p p3">3순위</span>1건 AI 비용 실측 → 가격 재계산</div><div class="x">글 4~6회 + 이미지 생성 실제 비용으로 월 20건 · ₩29,000이 맞는지 다시 계산</div><div class="w">근거: 설계 문서 [확인필요]</div></div>
+   <div class="it"><div class="h"><span class="p p3">3순위</span>결제 연동</div><div class="x">지금은 이용권을 관리자가 직접 넣음. 실제 판매 전에 결제를 붙여야 함</div><div class="w">근거: 설계 문서 9-1절</div></div>
   </div>
   <div class="col">
    <h3>기능 <span class="tag k">제품</span></h3>
-   <div class="it"><div class="h"><span class="p p2">2순위</span>트렌드 분석 에이전트</div><div class="x">뉴스 · 트렌드 수집으로 '뜨는 원료'와 계절 컬러 팔레트를 채움 (팔레트 출처 조사 필요)</div><div class="w">근거: v3 가설 3 · 설계 문서 범위 밖</div></div>
-   <div class="it"><div class="h"><span class="p p2">2순위</span>사업성 검토 · 출시 계획</div><div class="x">목표 원가 · MOQ 계산. 요금제 화면에 꺼진 항목으로 표시 중</div><div class="w">근거: 요금제 화면 · 설계 문서 범위 밖</div></div>
-   <div class="it"><div class="h"><span class="p p3">3순위</span>결과 내보내기 · 진행 표시</div><div class="x">HTML · PDF 내보내기(요금제에 꺼진 항목), 대기 중 진행 단계 표시, 상세페이지 제작</div><div class="w">근거: 요금제 화면 · 설계 문서 범위 밖</div></div>
+   <div class="it"><div class="h"><span class="p p1">1순위</span>결과 내보내기 · 진행 표시</div><div class="x">HTML · PDF 내보내기(요금제에 꺼진 항목), 대기 중 진행 단계 표시, 상세페이지 제작</div><div class="w">근거: 요금제 화면 · 설계 문서 범위 밖</div></div>
+   <div class="it"><div class="h"><span class="p pw">보완중</span>트렌드 분석 에이전트</div><div class="x">뉴스 · 트렌드 수집으로 '뜨는 원료'와 계절 컬러 팔레트를 채움 (팔레트 출처 조사 필요)</div><div class="w">근거: v3 가설 3 · 설계 문서 범위 밖</div></div>
+   <div class="it"><div class="h"><span class="p p3">3순위</span>사업성 검토 · 출시 계획</div><div class="x">목표 원가 · MOQ 계산. 요금제 화면에 꺼진 항목으로 표시 중</div><div class="w">근거: 요금제 화면 · 설계 문서 범위 밖</div></div>
   </div>
  </div>
  <div class="pgno">04</div>
