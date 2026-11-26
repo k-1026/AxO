@@ -1,0 +1,84 @@
+{
+  "created": "2026-11-24",
+  "actor": "MEJ",
+  "tool": "built-in image_gen",
+  "use": "⚠️ AI 생성 디자인 검토용 시안",
+  "basis": "IMAGE/수정1/CHAHAR_이미지생성_통합지시문.txt",
+  "references": [
+    "IMAGE/수정1/CHAHAR_로션_튜브형.png",
+    "IMAGE/수정1/CHAHAR_크림.png"
+  ],
+  "notes": [
+    "기존 CHAHAR 원형 마크와 체리 레드·밀키 핑크 제품군 기준을 적용한 추가 제품 시안.",
+    "제품별 용기 종류는 이번 시안 제작을 위한 디자인 제안이며 실제 제조 사양이 아님.",
+    "실제 수용량·부품 치수·재질·배합·효능 및 상업 사용 가능 여부 미검증.",
+    "기존 이미지와 생성 기록은 덮어쓰지 않음. 사이트 연결은 변경하지 않음."
+  ],
+  "items": [
+    {
+      "file": "CHAHAR_클렌저_튜브형.png",
+      "type": "클렌저",
+      "prompt": "Create a NEW CHAHAR facial foam CLEANSER packaging sample extending the attached reference product family. Reference1 is tube lotion: use same smooth Korean herbal pot-inspired CHERRY RED sculpted rounded flip cap, reference2 cream establishes family palette. Photorealistic premium 3D cosmetic studio render, NOT cartoon. Bright pale PINK and white seamless studio background. Landscape 3:2 composition matching references: LEFT full upright product centered around x30%, bottom at90%; RIGHT large rounded-rectangle inset closeup of SAME product's open flip cap showing standard short round nozzle and corresponding sealing peg, a tiny pearly pale pink cleanser dab. Main cleanser is a short plump squeezable tube with flat crimped top, fully OPAQUE milky light pink body (no internal capsules or liquid visible), standing cap-down on glossy cherry-red smooth pot-shaped flip cap. Family curved shoulder and smooth bulging rounded cap belly, no fluting, grooves, decorative bands or metal. Front ONLY thin circular mark containing exact uppercase CHAHAR, no other wording or product type or capacity. Main hero closed cap; detail open lid attached by realistic hinge and matching round outlet/sealing plug. Use plausible functional structure. Contents are cleanser cream, not capsule beads. Same polished lighting/materials/color as reference family. One product + one detail, no extra floating products, no people, no third-party brands. AI packaging design concept only; don't imply measured physical capacity.",
+      "size": [
+        1536,
+        1024
+      ],
+      "format": "PNG",
+      "sha256": "bec94e352a11816b836c073323ba1d645b97d3d314a92b4d3061861ddf4b0ab7"
+    },
+    {
+      "file": "CHAHAR_마스크_시트형.png",
+      "type": "마스크",
+      "prompt": "Precise product packaging edit. Image 1 is the edit target: original PINK CHAHAR sheet-mask sachet image. Image 2 is ONLY a surface-material reference. Keep image1 composition, pink background, pink hue and brightness, red circular CHAHAR logos, rounded rectangular inset, left sealed pouch and right opened pouch with emerging white wet sheet mask exactly as designed. TWO CHANGES ONLY: (1) REMOVE the embossed cream-jar/pot silhouette from BOTH pouch fronts, including cropped pot at bottom of right detail. Fill with seamless plain pink surface, no icon, no replacement ornament. (2) Make pouch surfaces flatter, smooth premium SATIN laminated foil like the FRONT sachet in image2: gentle diffuse highlights and delicate natural flexible-film edge creases, less inflated glossy plastic. Strict COLOR LOCK: retain original pastel rose PINK on both pouches; no silver, white, gray conversion or desaturation. Keep thin cherry red sealed edge and circular red CHAHAR branding. Do not copy image2 brand, words, badges, box or advertising. Preserve original 3:2 landscape framing, proportions, lighting and sheet mask. Photorealistic packaging sample.",
+      "size": [
+        1536,
+        1024
+      ],
+      "format": "PNG",
+      "sha256": "893e4bba7edc54ef3981dcb49fa8a30d44b416564024d21b2b06eacb5f716d9e"
+    },
+    {
+      "file": "CHAHAR_패드_단지형.png",
+      "type": "패드 / 패드 팩",
+      "prompt": "Create a NEW CHAHAR facial TONER PAD packaging sample extending attached cream/tube product family. Premium photorealistic 3D cosmetic studio render, landscape3:2. Exact bright cherry-red and milky pink family from reference cream, pink-white seamless background. LEFT large closed product hero centered x30%, fully visible from12% to90% height. A wide medium-height cylindrical OPAQUE milky pink PAD TUB, softly rounded shoulders and base with subtle herbal-pot bulging belly, taller cylindrical storage proportions than cream jar to hold stacked pads. Smooth glossy CHERRY RED broad pot-inspired removable screw lid with shallow rounded crown and clean sides, no ribs, grooves or metallic bands. Front thin WHITE circle containing only exact uppercase CHAHAR. RIGHT rounded-rectangle inset of SAME tub with lid removed and set behind, open top clearly exposing a neat stack of thin circular WHITE saturated cotton toner pads, one top pad partly lifted by small pale pink tweezers resting across rim, tiny clean essence sheen. No floating tools, no human hand. Closed hero tub must be completely opaque; pads only visible at open top in detail. NOT cream swirl, NOT capsules, NOT cotton balls, not face sheet mask. Same camera family, soft studio lighting, natural short ground shadow. Main product + one detail. No extra text, capacity, efficacy or third-party branding. AI packaging design concept.",
+      "size": [
+        1536,
+        1024
+      ],
+      "format": "PNG",
+      "sha256": "7100adc03db28e64bfdddb87814cb655e191a7bdc4f1324a532a22a606b0c9a0"
+    },
+    {
+      "file": "CHAHAR_아이크림_튜브형.png",
+      "type": "아이크림",
+      "prompt": "Create a NEW CHAHAR EYE CREAM packaging sample extending attached tube lotion and cream family. Premium photorealistic 3D cosmetic studio render, NOT cartoon. Bright pink-white studio background, cherry red glossy rounded pot-inspired cap and completely OPAQUE milky pastel pink tube. Landscape3:2 composition: LEFT full compact SLENDER EYE CREAM TUBE upright centered x30%, cap-down; top at14%, bottom at90%. Tube much narrower/slimmer than broad lotion tube reference, elegant small eye-care proportions, flat sealed crimped top, smooth shoulder, short sculpted bulbous CHERRY RED screw cap with subtly pinched foot and rounded pot-family silhouette. No ribs, grooves, gold or metallic bands. Tube front ONLY thin cherry-red circle with uppercase CHAHAR, no product name/capacity/claims. RIGHT matching rounded rectangle inset: SAME tube tilted horizontally with cap removed and placed alongside, visible short narrow tapered precision dispensing nozzle and TINY pale pink eye cream bead at tip. No needle, no metal massage roller, no pipette, no giant swirl, no capsules visible through opaque body. The removed cap screw opening must plausibly fit over tapered nozzle, mechanically coherent. Same soft light and refined realistic packaging materials as references. Only closed hero plus one nozzle detail, no people, no third-party brands. AI packaging design concept, physical dimensions/capacity unverified.",
+      "size": [
+        1536,
+        1024
+      ],
+      "format": "PNG",
+      "sha256": "af10bd63cacbfc47d4e4ac471a7f6fe9d57e43fd69cb6ece499978a1857d7b3f"
+    }
+  ],
+  "revisions": [
+    {
+      "date": "2026-11-25",
+      "file": "CHAHAR_마스크_시트형.png",
+      "tool": "built-in image_gen",
+      "previousSha256": "9d40f28bd6e794b140f2755a6185a43c699f52326b3956c981010712f885ae82",
+      "sha256": "893e4bba7edc54ef3981dcb49fa8a30d44b416564024d21b2b06eacb5f716d9e",
+      "prompt": "Precise product packaging edit. Image 1 is the edit target: original PINK CHAHAR sheet-mask sachet image. Image 2 is ONLY a surface-material reference. Keep image1 composition, pink background, pink hue and brightness, red circular CHAHAR logos, rounded rectangular inset, left sealed pouch and right opened pouch with emerging white wet sheet mask exactly as designed. TWO CHANGES ONLY: (1) REMOVE the embossed cream-jar/pot silhouette from BOTH pouch fronts, including cropped pot at bottom of right detail. Fill with seamless plain pink surface, no icon, no replacement ornament. (2) Make pouch surfaces flatter, smooth premium SATIN laminated foil like the FRONT sachet in image2: gentle diffuse highlights and delicate natural flexible-film edge creases, less inflated glossy plastic. Strict COLOR LOCK: retain original pastel rose PINK on both pouches; no silver, white, gray conversion or desaturation. Keep thin cherry red sealed edge and circular red CHAHAR branding. Do not copy image2 brand, words, badges, box or advertising. Preserve original 3:2 landscape framing, proportions, lighting and sheet mask. Photorealistic packaging sample.",
+      "changes": [
+        "왼쪽 본품·오른쪽 상세 파우치의 단지 모양 양각 제거",
+        "원래 핑크 색감·빨간 CHAHAR 원형 로고·구도·배경 유지",
+        "표면을 은은하고 매끈한 새틴 포일 질감으로 수정"
+      ],
+      "checks": [
+        "생성 이미지 직접 시각 검토",
+        "양쪽 단지 장식 제거 확인",
+        "색감·로고·시트·레이아웃 유지 확인"
+      ]
+    }
+  ],
+  "updated": "2026-11-25"
+}
