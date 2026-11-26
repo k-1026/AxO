@@ -4,6 +4,7 @@ import {
 import { SAMPLE_BASE } from "./config/assets.js";
 import { recolorPixels } from "./core/recolor.js";
 import { evidenceChartHtml } from "./core/evidence.js";
+import { TREND_EASY } from "./config/trend-easy.js";
 import { lineKey, buildCandidates, rankLines } from "./core/candidates.js";
 import { eulReul, josa, dots, chips, won, esc } from "./utils/text.js";
 import { fetchLatestBeautyTrends } from "./data/repository.js";
@@ -160,16 +161,24 @@ function hotTrends() {
     .filter(i => i && i.title)
     .sort((a, b) => String(b.publishedAt || "").localeCompare(String(a.publishedAt || "")))
     .slice(0, 5)
-    .filter(i => (i.tags || []).length) // 기사 제목(연예인·행사 이름 등)은 처음 보는 사람이 이해하기 어려워서, 핵심 키워드로만 보여 줘요
-    .map(i => ({ src: `${i.source || "뷰티 트렌드"}${i.kind ? " " + i.kind : ""}${i.publishedAt ? " · " + i.publishedAt : ""}`, tags: i.tags.slice(0, 3) }));
+    .map(i => ({ src: `${i.source || "뷰티 트렌드"}${i.kind ? " " + i.kind : ""}${i.publishedAt ? " · " + i.publishedAt : ""}`, easy: easyTrend(i) }))
+    .filter(x => x.easy);
+}
+
+/* 기사 제목(연예인·행사 이름 등)은 처음 보는 사람이 이해하기 어려워서, 자료 내용을 쉬운 말로 풀어 보여 줘요 */
+function easyTrend(i) {
+  if (typeof i.easy === "string" && i.easy.trim()) return i.easy.trim();
+  if (TREND_EASY[i.id]) return TREND_EASY[i.id];
+  const first = String(i.summary || "").split(/(?<=다\.)\s+/)[0].trim();
+  return first ? first.replace(/다\.$/, "어요.") : "";
 }
 
 function showTrendSlide(i) {
   const lineEl = document.getElementById("trend-line"), sl = tickSlides[i];
   if (!sl || !lineEl) return;
   tickAt = i;
-  lineEl.innerHTML = sl.tags
-    ? `<span class="trend-kind">🔥 요즘 뜨는 뷰티 키워드</span><strong class="trend-hot">${sl.tags.map(esc).join(" · ")}</strong>${josa(sl.tags[sl.tags.length - 1], "이", "가")} 주목받고 있어요.<small class="trend-from">근거: ${esc(sl.src)}</small>`
+  lineEl.innerHTML = sl.easy
+    ? `<span class="trend-kind">🔥 요즘 뷰티 트렌드</span>${esc(sl.easy)}<small class="trend-from">출처: ${esc(sl.src)}</small>`
     : `<span class="trend-kind">이번 시즌 방향</span>${esc(sl.line)}`;
   lineEl.classList.remove("trend-in"); void lineEl.offsetWidth; lineEl.classList.add("trend-in");
 }
