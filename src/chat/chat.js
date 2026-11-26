@@ -38,6 +38,7 @@ function cardHtml(p) {
   return `<div class="edit-card">
     <p class="ec-sum">${esc(p.summary)}</p>
     ${changes ? `<ul class="ec-list">${changes}</ul>` : ""}
+    ${(p.notices || []).map(n => `<p class="ec-img">⚠️ ${esc(n)}</p>`).join("")}
     <p class="ec-img">${imgs ? `새로 만들 이미지: ${esc(imgs)}` : "이미지는 그대로 둬요."}</p>
     <div class="ec-actions"><button type="button" class="btn-line" data-ec="cancel">취소</button><button type="button" class="btn-solid" data-ec="apply">적용</button></div>
   </div>`;

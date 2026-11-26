@@ -44,6 +44,16 @@ export function catalogItem(name) {
   const n = typeof name === "string" ? name.trim() : "";
   return ITEM_BY_NAME[n] || ITEM_BY_NAME[PRODUCT_ALIAS[n] || PRODUCT_ALIAS[n.replace(/\s+/g, "")]] || null;
 }
+/* 챗봇 용량 수정 (HSJ 결정 2026-11-26)
+   - 정가 = 기준표의 단위당 정가(기준 정가 ÷ 기준 용량) × 바꾼 용량, 100원 단위 반올림
+   - 최소 용량 = 지금 기준 용량 (엑셀 가정!D58:D68 과 같은 값) */
+export const minVolume = name => catalogItem(name)?.[2] ?? null;
+export function priceForVolume(name, ml) {
+  const item = catalogItem(name);
+  if (!item || !(ml > 0)) return null;
+  return Math.round((item[3] / item[2]) * ml / 100) * 100;
+}
+
 /** 기획안에 넣을 수 있는 제품 이름 전체 */
 export const CATALOG_NAMES = Object.keys(ITEM_BY_NAME);
 

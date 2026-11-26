@@ -3,8 +3,8 @@
 import { STRING, describeLine } from "./prompt.js";
 import { PLAN_SCHEMA, assemblePlan, PlanFormatError } from "./writer.js";
 import { SCENARIO_SCHEMA, assembleScenarios } from "./designer.js";
-import { BANNED_PHRASES, CATALOG_NAMES } from "../../src/config/rules.js";
-import { withProducts } from "./research.js";
+import { BANNED_PHRASES, CATALOG_NAMES, catalogItem, qty } from "../../src/config/rules.js";
+import { withProducts, withVolumes } from "./research.js";
 
 const CHANGE = { type: "OBJECT", properties: { part: STRING, before: STRING, after: STRING }, required: ["part", "before", "after"] };
 
@@ -30,7 +30,8 @@ export const EDIT_SCHEMA = {
         plan: PLAN_SCHEMA,
         scenarios: SCENARIO_SCHEMA.properties.scenarios,
         regenerate_images: { type: "ARRAY", items: { type: "INTEGER" } },
-        products: { type: "ARRAY", items: STRING }
+        products: { type: "ARRAY", items: STRING },
+        volumes: { type: "ARRAY", items: { type: "OBJECT", properties: { name: STRING, ml: { type: "INTEGER" } }, required: ["name", "ml"] } }
       },
       required: ["summary", "changes", "regenerate_images"]
     }
@@ -85,7 +86,13 @@ export function buildEditPrompt(content, messages, cand, data) {
     "- proposal.summary는 한 줄 요약, changes에는 바뀌는 부분마다 part(어디), before(전), after(후)를 한 줄씩 적어 주세요.",
     "- 기획안 글을 바꾸면 proposal.plan에 바뀐 뒤의 기획안 전체(concept_name, concept, target, key_claims 정확히 3개, product_roles, cautions)를 빠짐없이 쓰세요.",
     "- 시나리오를 바꾸면 proposal.scenarios에 바뀐 뒤의 시나리오 1개 전체를 빠짐없이 쓰세요 (title, concept, target, channel, 장면 cuts 3~4개(scene, copy), image_prompts는 이미지 설명 정확히 3개: 0 제품 대표 컷, 1 원료·질감 컷, 2 사용 장면 컷).",
-    "- 가격·용량 같은 숫자는 쓰지 마세요. 제품 이름·용량·가격은 코드가 채워요.",
+    "",
+    "[제품 용량 바꾸기]",
+    "- 사용자가 제품 용량을 바꿔 달라고 하면(예: '토너 300ml, 미스트 150ml로') proposal.volumes에 [{name, ml}]로 사용자가 말한 용량만 적으세요. 마스크·패드는 ml 대신 매수예요.",
+    `- 정가는 쓰지 마세요. 코드가 단위당 기준 정가 × 용량으로 계산해요. 최소 용량(이보다 작게는 못 바꿔요): ${CATALOG_NAMES.map(n => { const it = catalogItem(n); return `${n} ${qty(it[0], it[2])}`; }).join(", ")}.`,
+    "- 사용자가 최소 용량보다 작게 말하면 volumes에 넣지 말고, reply에서 최소 용량을 알려 주세요.",
+    "- 용량만 바꾸는 요청이면 기획안 글·시나리오는 그대로 두세요(proposal.plan·scenarios 비움).",
+    "- 기획안 글(콘셉트·핵심 문구·시나리오)에는 가격·용량 숫자를 쓰지 마세요. 제품 이름·용량·가격은 코드가 제품 표에 채워요.",
     "- 후보 정보에 있는 사실만 쓰고, 후보 원료 말고 다른 원료는 언급하지 마세요.",
     `- 의약품처럼 낫는다는 표현은 쓰지 마세요 (${BANNED_PHRASES.join(", ")}).`,
     "- regenerate_images는 사용자가 이미지를 바꿔 달라고 분명히 말했을 때만 이미지 번호(0 대표 컷, 1 원료·질감 컷, 2 사용 장면 컷)를 넣고, 아니면 빈 목록으로 두세요. 이미지 설명(image_prompts)을 바꿨다면 그 번호도 넣으세요.",
@@ -152,10 +159,18 @@ export function cleanProposal(raw, content, cand) {
     out.products = swap.names;
     if (!out.regenerate_images.includes(0)) out.regenerate_images = [0, ...out.regenerate_images]; // 대표 컷에 새 구성이 나오게
   }
+  /* 용량 바꾸기: 용량만 AI(사용자 말) 것이고, 정가는 코드가 계산해요. 최소 용량보다 작으면 바꾸지 않고 안내해요 */
+  const vol = withVolumes(cand, Array.isArray(raw.volumes) ? raw.volumes : null);
+  if (vol.volumes.length) {
+    cand = vol.cand;
+    out.volumes = vol.volumes;
+    out.changes = [...vol.changes, ...out.changes.filter(c => !/용량|정가/.test(c.part))];
+  }
+  if (vol.rejected.length) out.notices = vol.rejected;
   /* AI 답은 모양이 매번 조금씩 달라요. 칸마다 쓸 수 있는 것만 쓰고, 빠지거나 어긋난 칸은 지금 기획안 글로 채워요.
      그래도 조립이 안 되는 부분은 버리고(지금 것 유지), 쓸 게 하나도 없을 때만 PlanFormatError 를 던져요. */
   let dropped = null;
-  if ((raw.plan != null && typeof raw.plan === "object") || swap) {
+  if ((raw.plan != null && typeof raw.plan === "object") || swap || vol.volumes.length) {
     const old = rawPlanOf(content?.plan);
     const ai = raw.plan && typeof raw.plan === "object" ? raw.plan : {};
     const merged = { ...old };
@@ -183,7 +198,7 @@ export function cleanProposal(raw, content, cand) {
   }
   if (!out.plan && !out.scenarios && !out.regenerate_images.length) {
     if (dropped) throw dropped;
-    return null;
+    return null; // 최소 용량 미달 같은 안내(notices)는 답(reply)으로 전해요
   }
   if (!out.summary) out.summary = out.changes[0]?.part ? `${out.changes[0].part} 수정` : "기획안 수정";
   return out;
