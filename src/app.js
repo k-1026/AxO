@@ -184,7 +184,7 @@ function hotTrends(s) {
   const bySeason = items.filter(i => matchesSeason(i, s, extra(i)));
   const general = items.filter(i => Array.isArray(i.seasons) && !i.seasons.length);
   const byDate = (a, b) => String(b.publishedAt || "").localeCompare(String(a.publishedAt || ""));
-  const slide = (i, head) => ({ head, src: `${i.source || "뷰티 트렌드"}${i.kind ? " " + i.kind : ""}${i.publishedAt ? " · " + i.publishedAt : ""}`, easy: easyTrend(i) });
+  const slide = (i, head) => ({ head, src: `${i.source || "뷰티 트렌드"}${i.kind ? " " + i.kind : ""}${i.publishedAt ? " · " + i.publishedAt : ""}`, easy: easyTrend(i), tags: (i.tags || []).slice(0, 3) });
   const seasonSlides = bySeason.sort(byDate).slice(0, 5).map(i => slide(i, `🔥 요즘 ${s} 뷰티 트렌드`));
   const climate = seasonSlides.length ? [] : ((SEASONS[s] && SEASONS[s].issues) || []).map(([title, stat, concern]) =>
     ({ head: `${SEASON_ICON[s] || ""} ${s} 기후 데이터`, easy: `${title} · ${stat} → ${concern} 고민이 커져요.`, from: `${s} 기후 통계` }));
@@ -205,13 +205,21 @@ function easyTrend(i) {
   return first ? first.replace(/다\.$/, "어요.") : "";
 }
 
+/* 문장 단위로 나눠요 ("…해요. …했어요." → 두 문장) */
+const splitSentences = t => String(t).split(/(?<=[.!?])\s+/).map(x => x.trim()).filter(Boolean);
+
 function showTrendSlide(i) {
   const lineEl = document.getElementById("trend-line"), sl = tickSlides[i];
   if (!sl || !lineEl) return;
   tickAt = i;
-  lineEl.innerHTML = sl.easy
-    ? `<span class="trend-kind">${esc(sl.head)}</span>${esc(sl.easy)}<small class="trend-from">${sl.from ? esc(sl.from) : "출처: " + esc(sl.src)}</small>`
-    : `<span class="trend-kind">이번 시즌 방향</span>${esc(sl.line)}`;
+  /* 긴 글도 한눈에: 첫 문장은 굵게 요점으로, 나머지 문장은 작게 덧붙이고, 키워드는 칩으로 보여 줘요 */
+  const [first, ...rest] = splitSentences(sl.easy || sl.line || "");
+  const tags = (sl.tags || []).filter(Boolean);
+  lineEl.innerHTML = `<span class="trend-kind">${esc(sl.easy ? sl.head : "이번 시즌 방향")}</span>`
+    + `<span class="trend-main">${esc(first || "")}</span>`
+    + (rest.length ? `<span class="trend-sub">${esc(rest.join(" "))}</span>` : "")
+    + (tags.length ? `<span class="trend-tags">${tags.map(t => `<em>#${esc(t)}</em>`).join("")}</span>` : "")
+    + (sl.easy ? `<small class="trend-from">${sl.from ? esc(sl.from) : "출처: " + esc(sl.src)}</small>` : "");
   lineEl.classList.remove("trend-in"); void lineEl.offsetWidth; lineEl.classList.add("trend-in");
 }
 
