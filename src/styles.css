@@ -268,3 +268,7 @@ dl.kw dt { color: var(--muted); font-weight: 700; } dl.kw dd { margin: 0; displa
 .ev-stat-t { font-size: .74rem; color: var(--muted); }
 .ev-stat strong { font-size: 1rem; color: var(--ink); }
 .ev-stat-c { font-size: .72rem; color: var(--accent); font-weight: 600; }
+
+/* 기획 포인트를 트렌드 박스 아래로: 박스 말풍선과 왼쪽 끝을 맞춰요 (아바타 38px + 간격 12px) */
+.trend-plan.trend-plan-out { grid-column: 1 / -1; margin: 10px 0 0 50px; }
+@media (max-width: 600px) { .trend-plan.trend-plan-out { margin-left: 38px; } }
