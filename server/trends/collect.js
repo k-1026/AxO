@@ -4,7 +4,8 @@
    3) 이전 묶음의 계절 인사이트와 그 근거 기사는 그대로 이어 붙여 새 트렌드 묶음(beauty_trend_snapshots)으로 저장해요.
    DOM·네트워크 없이 돌아가는 부분(파싱·거르기·검증·합치기)은 함수로 나눠서 테스트해요. */
 import { BANNED_PHRASES } from "../../src/config/rules.js";
-import { matchesSeason } from "../../src/core/trend-season.js";
+import { matchesSeason, seasonGuide } from "../../src/core/trend-season.js";
+import { SEASONS as SEASON_DATA } from "../../src/data/fallback.js";
 
 export const FEEDS = [
   { id: "jangup", source: "장업신문", kind: "업계 기사", url: "https://www.jangup.com/rss/allArticle.xml" },
@@ -93,7 +94,12 @@ export function buildPickPrompt(candidates) {
     "  · 해외 시장(중국·미국 등) 이야기라면 어느 나라 이야기인지 꼭 문장에 넣으세요. 국내 흐름처럼 쓰면 안 돼요.",
     `  · 의약품처럼 낫는다는 표현은 쓰지 마세요 (${BANNED_PHRASES.join(", ")}).`,
     "- tags: 기사에 나온 핵심 키워드 2~4개 (예: 보습, 진정, 산뜻한 사용감).",
-    "- seasons: 기사에 계절이나 계절 상황(환절기, 폭염, 장마, 건조주의보, 한파 등)이 적혀 있을 때만 그 계절을 넣고, 아니면 빈 목록으로 두세요.",
+    "- seasons: 이 트렌드가 어느 계절의 기초라인 출시 기획에 맞는지 아래 [계절별 피부 고민]을 기준으로 판단해 넣으세요.",
+    "  · 기사 속 피부 고민·제형·사용감이 그 계절 고민에 분명히 맞을 때만 넣어요 (예: 장벽 보습·고보습 크림 → 겨울, 쿨링·피지 관리 → 여름). 여러 계절이어도 돼요.",
+    "  · 기사에 계절이 적혀 있지 않아도 내용이 맞으면 넣어요. 어느 계절에도 두드러지게 맞지 않으면 빈 목록으로 두세요.",
+    "",
+    "[계절별 피부 고민]",
+    ...seasonGuide(SEASON_DATA),
     "- id 는 아래 [기사]의 id 를 그대로 쓰세요.",
     "",
     "[기사]",
@@ -170,7 +176,7 @@ export function seasonPools(items) {
 export function buildInsightPrompt(pools) {
   return [
     "당신은 한방 기초 화장품 출시 기획을 돕는 트렌드 정리 담당이에요.",
-    "아래는 계절마다 그 계절이 적힌 업계 기사예요. 계절마다 기초라인 기획 방향을 정리해 주세요.",
+    "아래는 계절마다 그 계절 피부 고민에 맞는 뷰티 트렌드 기사예요. 계절마다 기초라인 기획 방향을 정리해 주세요.",
     "- line: 그 계절 기초라인 방향 1~2문장 (쉬운 존댓말). tip: 기획할 때 비교·검토할 점 1문장.",
     "- 반드시 그 계절 기사 내용만 근거로 쓰고, 기사에 없는 사실·숫자는 더하지 마세요. 근거로 쓴 기사 id 를 evidenceIds 에 넣으세요.",
     "- 해외 시장 기사라면 어느 나라 이야기인지 밝히세요.",
