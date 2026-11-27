@@ -272,3 +272,5 @@ dl.kw dt { color: var(--muted); font-weight: 700; } dl.kw dd { margin: 0; displa
 /* 기획 포인트를 트렌드 박스 아래로: 박스 너비에 늘이지 않고 글 길이만큼만, 왼쪽 끝은 말풍선과 맞춰요 (아바타 38px + 간격 12px) */
 .trend-plan.trend-plan-out { grid-column: 1 / -1; justify-self: start; width: fit-content; max-width: calc(100% - 50px); margin: -8px 0 0 50px; } /* 위 칸과의 기본 간격(18px)을 줄여 박스에 가깝게 */
 @media (max-width: 600px) { .trend-plan.trend-plan-out { margin-left: 38px; max-width: calc(100% - 38px); } }
+/* 자료 상태 표시(예: 기후 자료 기반 가설)는 [근거 보기] 안에서만 */
+.trend-details .trend-status { display: inline-block; margin: 6px 0 2px; }
