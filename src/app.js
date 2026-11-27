@@ -52,17 +52,26 @@ if (typeof document !== "undefined") document.addEventListener("load", e => {
   tintedUrl(img.src, img.dataset.tint).then(u => { img.src = u; }).catch(() => {});
 }, true);
 /* 원본 1536×1024 사진에서 본품만 둘러싼 영역 [x0, y0, x1, y1] (기본 라인·후보 카드·상세 화면 공통) */
-const boxStyle = t => { const b = PRODUCT_BOX[t] || PRODUCT_BOX.toner, w = b[2] - b[0], h = b[3] - b[1], p = v => (+v.toFixed(3)) + "%";
-  return { tile: `aspect-ratio:${w} / ${h};max-width:none;--w:${(w / 16).toFixed(3)}%;`, img: `position:absolute;max-width:none;object-fit:fill;width:${p(1536 / w * 100)};height:${p(1024 / h * 100)};left:${p(-b[0] / w * 100)};top:${p(-b[1] / h * 100)};` }; };
-const tileHtml = (l, type, k, mode) => {
+const boxOf = t => PRODUCT_BOX[t] || PRODUCT_BOX.toner;
+/* scale: 제품이 많아 한 줄에 다 안 들어갈 때 모든 제품을 같은 비율로 줄여요 (잘리지 않게) */
+const boxStyle = (t, scale = 1) => { const b = boxOf(t), w = b[2] - b[0], h = b[3] - b[1], p = v => (+v.toFixed(3)) + "%";
+  return { tile: `aspect-ratio:${w} / ${h};max-width:none;--w:${(w / 16 * scale).toFixed(3)}%;`, img: `position:absolute;max-width:none;object-fit:fill;width:${p(1536 / w * 100)};height:${p(1024 / h * 100)};left:${p(-b[0] / w * 100)};top:${p(-b[1] / h * 100)};` }; };
+const tileHtml = (l, type, k, mode, scale = 1) => {
   const t = sampleType(type) || type;
-  const bx = boxStyle(t);
+  const bx = boxStyle(t, scale);
   if (!SAMPLE[t]) return `<span class="tile sample-pending" style="${bx.tile}"><span>${esc(k)}<small>청향 샘플 준비 중</small></span></span>`;
   /* 화면에는 바탕을 지운 누끼(-cutout.png, scripts/make-cutouts.py)를 써요 */
   const original = `${SAMPLE_BASE}${SAMPLE[t].replace(/.png$/, "-cutout.png")}`, recolor = mode === "tint";
   return `<span class="tile" style="${bx.tile}"><span class="product-cutout"><img src="${original}" alt="${esc(k)} · 청향 로고 2 적용 샘플 형태와 재질" loading="lazy" style="${bx.img}"${recolor ? ` data-tint="${l.design.cap}"` : ""}></span><span class="tl">${esc(k)}</span></span>`;
 };
-const tiles = (l, mode = designMode, rows = l.lineup) => rows.map(([t, k]) => tileHtml(l, t, k, mode)).join("");
+/* 한 줄에 쓸 수 있는 너비(%)와 제품 사이 간격(%). 제품 너비 합이 넘치면 전체를 같은 비율로 줄여요 */
+const ROW_WIDTH = 96, GAP_PCT = 0.8;
+const fitScale = rows => {
+  const total = rows.reduce((a, [t]) => { const b = boxOf(sampleType(t) || t); return a + (b[2] - b[0]) / 16; }, 0);
+  const room = ROW_WIDTH - GAP_PCT * Math.max(0, rows.length - 1);
+  return total > room ? room / total : 1;
+};
+const tiles = (l, mode = designMode, rows = l.lineup) => { const sc = fitScale(rows); return rows.map(([t, k]) => tileHtml(l, t, k, mode, sc)).join(""); };
 /* 배경은 용기 색에 맞춰 고른 색이에요 (core/palette.js) */
 const tileBg = l => `background:${l.design.bg || "#FAF8F3"}`;
 
