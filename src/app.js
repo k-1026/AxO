@@ -158,10 +158,10 @@ function beautyComment(s, data, now = Date.now()) {
   });
   const evidence = insight.evidenceIds.map(id => valid.find(item => item.id === id));
   if (evidence.some(item => !item)) return null;
-  const stale = now - checked > 150 * 60000;
+  const stale = now - checked > (data.intervalMinutes >= 1440 ? 26 * 60 : 150) * 60000; // 매일 수집이면 하루+2시간, 매시간이면 2시간 반 넘으면 오래된 자료
   const checkedAt = new Date(checked).toLocaleString("ko-KR", { timeZone: "Asia/Seoul", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false });
   return { status: stale ? "갱신 확인 필요 · 저장된 근거" : "공식 콘텐츠·기사 기반", line: insight.line, tip: insight.tip,
-    source: "매시간 확인 · 마지막 확인 " + checkedAt + " (한국시간) · " + (evidence.some(item => item.evidenceRole === "background") ? "시장 전망·기획 배경 포함" : "최근 90일 자료의 기획 해석") + (beautyFetchNote ? " · " + beautyFetchNote : ""), evidence };
+    source: (data.intervalMinutes >= 1440 ? "매일 확인" : "매시간 확인") + " · 마지막 확인 " + checkedAt + " (한국시간) · " + (evidence.some(item => item.evidenceRole === "background") ? "시장 전망·기획 배경 포함" : "최근 90일 자료의 기획 해석") + (beautyFetchNote ? " · " + beautyFetchNote : ""), evidence };
 }
 /* ════════ 실시간 트렌드 박스 ════════
    가장 최근(핫한) 뷰티 트렌드만 3초마다 하나씩 넘겨 보여 줘요. 기획 포인트는 이번 시즌 것으로 고정해요. */
@@ -180,11 +180,14 @@ function hotTrends(s) {
   const others = Object.keys(SEASON_ICON).filter(x => x !== s);
   // 자동 수집 트렌드는 seasons 칸이 있어요: 계절이 적혀 있으면 그 계절만, 빈 목록이면 계절과 상관없는 트렌드라 모든 계절에 보여요
   const fits = i => Array.isArray(i.seasons) ? (!i.seasons.length || i.seasons.includes(s)) : ids.has(i.id);
+  const seasonal = i => (Array.isArray(i.seasons) ? i.seasons.includes(s) : ids.has(i.id)) ? 1 : 0;
   const saysOther = i => others.some(o => `${i.title || ""} ${i.summary || ""} ${i.easy || ""} ${TREND_EASY[i.id] || ""}`.includes(o));
   const picked = items.filter(i => i && i.title && fits(i) && !saysOther(i))
-    .sort((a, b) => String(b.publishedAt || "").localeCompare(String(a.publishedAt || "")))
+    // 그 계절 트렌드(계절이 적힌 자료·계절 인사이트의 근거)를 먼저, 그다음 계절 무관 트렌드를 최신순으로
+    .sort((a, b) => seasonal(b) - seasonal(a) || String(b.publishedAt || "").localeCompare(String(a.publishedAt || "")))
     .slice(0, 5)
-    .map(i => ({ head: `🔥 요즘 ${s} 뷰티 트렌드`, src: `${i.source || "뷰티 트렌드"}${i.kind ? " " + i.kind : ""}${i.publishedAt ? " · " + i.publishedAt : ""}`, easy: easyTrend(i) }))
+    // 계절이 정해지지 않은 트렌드(seasons 빈 목록)에는 계절 이름을 붙이지 않아요 (겨울 트렌드처럼 보이지 않게)
+    .map(i => ({ head: Array.isArray(i.seasons) && !i.seasons.length ? "🔥 요즘 뷰티 트렌드" : `🔥 요즘 ${s} 뷰티 트렌드`, src: `${i.source || "뷰티 트렌드"}${i.kind ? " " + i.kind : ""}${i.publishedAt ? " · " + i.publishedAt : ""}`, easy: easyTrend(i) }))
     .filter(x => x.easy);
   const lead = insight && typeof insight.line === "string"
     ? [{ head: `${SEASON_ICON[s] || "🔥"} ${s} 뷰티 트렌드 방향`, easy: insight.line.replace(/잡아보세요/g, "잡아 보세요"), src: "수집한 트렌드 자료를 바탕으로 정리" }] : [];
