@@ -151,7 +151,7 @@ function beautyComment(s, data, now = Date.now()) {
   const insight = data && data.insights && data.insights[s];
   const checked = data && Date.parse(data.updatedAt);
   if (!insight || typeof insight.line !== "string" || typeof insight.tip !== "string" || !Number.isFinite(checked) || checked > now + 300000 || !Array.isArray(insight.evidenceIds) || !insight.evidenceIds.length) return null;
-  const hosts = ["corp.oliveyoung.com","www.oliveyoung.co.kr","m.oliveyoung.co.kr","www.jangup.com","m.jangup.com","jangup.com","trends.google.com","support.google.com","www.spate.nyc","spate.nyc","www.mintel.com","mintel.com","store.mintel.com","www.gnpd.com","gnpd.com","nielseniq.com","www.nielseniq.com","investors.nielseniq.com","shop.nielseniq.com","www.mckinsey.com","mckinsey.com","www.cosmeticsbusiness.com","cosmeticsbusiness.com","lp.cosmoprof.com","www.cosmoprof.com","cosmoprof.com","cosmoprofnorthamerica.com","www.cosmoprofnorthamerica.com","www.beautystreams.com","beautystreams.com","business.pinterest.com","newsroom.pinterest.com","trends.pinterest.com","s.cosme.net","www.cosme.net","cosme.net"];
+  const hosts = ["corp.oliveyoung.com","www.oliveyoung.co.kr","m.oliveyoung.co.kr","www.jangup.com","m.jangup.com","jangup.com","www.thebk.co.kr","thebk.co.kr","trends.google.com","support.google.com","www.spate.nyc","spate.nyc","www.mintel.com","mintel.com","store.mintel.com","www.gnpd.com","gnpd.com","nielseniq.com","www.nielseniq.com","investors.nielseniq.com","shop.nielseniq.com","www.mckinsey.com","mckinsey.com","www.cosmeticsbusiness.com","cosmeticsbusiness.com","lp.cosmoprof.com","www.cosmoprof.com","cosmoprof.com","cosmoprofnorthamerica.com","www.cosmoprofnorthamerica.com","www.beautystreams.com","beautystreams.com","business.pinterest.com","newsroom.pinterest.com","trends.pinterest.com","s.cosme.net","www.cosme.net","cosme.net"];
   const valid = (data.items || []).filter(item => {
     const age = (now - Date.parse(item.publishedAt)) / 864e5;
     try { const url = new URL(item.url); return url.protocol === "https:" && hosts.includes(url.hostname) && age >= 0 && age <= (item.evidenceRole === "background" ? 400 : 90) && typeof item.title === "string" && typeof item.source === "string"; } catch (_) { return false; }
@@ -178,7 +178,8 @@ function hotTrends(s) {
   const insight = BEAUTY_TRENDS && BEAUTY_TRENDS.insights && BEAUTY_TRENDS.insights[s];
   const ids = new Set((insight && insight.evidenceIds) || []);
   const others = Object.keys(SEASON_ICON).filter(x => x !== s);
-  const fits = i => Array.isArray(i.seasons) ? i.seasons.includes(s) : ids.has(i.id);
+  // 자동 수집 트렌드는 seasons 칸이 있어요: 계절이 적혀 있으면 그 계절만, 빈 목록이면 계절과 상관없는 트렌드라 모든 계절에 보여요
+  const fits = i => Array.isArray(i.seasons) ? (!i.seasons.length || i.seasons.includes(s)) : ids.has(i.id);
   const saysOther = i => others.some(o => `${i.title || ""} ${i.summary || ""} ${i.easy || ""} ${TREND_EASY[i.id] || ""}`.includes(o));
   const picked = items.filter(i => i && i.title && fits(i) && !saysOther(i))
     .sort((a, b) => String(b.publishedAt || "").localeCompare(String(a.publishedAt || "")))

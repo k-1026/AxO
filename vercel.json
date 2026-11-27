@@ -1,12 +1,27 @@
 {
   "cleanUrls": true,
   "functions": {
-    "api/plan.js": { "maxDuration": 300 },
-    "api/plan-get.js": { "maxDuration": 60 },
+    "api/plan.js": {
+      "maxDuration": 300
+    },
+    "api/plan-get.js": {
+      "maxDuration": 60
+    },
     "api/plan-image.js": {
       "maxDuration": 300,
       "includeFiles": "public/IMAGE/LOGO/cheonghyang-logo-02/application-examples/*-nologo.png"
     },
-    "api/plan-edit/*.js": { "maxDuration": 300 }
-  }
+    "api/plan-edit/*.js": {
+      "maxDuration": 300
+    },
+    "api/trend-collect.js": {
+      "maxDuration": 120
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/trend-collect",
+      "schedule": "0 0 * * *"
+    }
+  ]
 }
