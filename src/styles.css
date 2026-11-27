@@ -269,6 +269,6 @@ dl.kw dt { color: var(--muted); font-weight: 700; } dl.kw dd { margin: 0; displa
 .ev-stat strong { font-size: 1rem; color: var(--ink); }
 .ev-stat-c { font-size: .72rem; color: var(--accent); font-weight: 600; }
 
-/* 기획 포인트를 트렌드 박스 아래로: 박스 말풍선과 왼쪽 끝을 맞춰요 (아바타 38px + 간격 12px) */
-.trend-plan.trend-plan-out { grid-column: 1 / -1; margin: 10px 0 0 50px; }
-@media (max-width: 600px) { .trend-plan.trend-plan-out { margin-left: 38px; } }
+/* 기획 포인트를 트렌드 박스 아래로: 박스 너비에 늘이지 않고 글 길이만큼만, 왼쪽 끝은 말풍선과 맞춰요 (아바타 38px + 간격 12px) */
+.trend-plan.trend-plan-out { grid-column: 1 / -1; justify-self: start; width: fit-content; max-width: calc(100% - 50px); margin: -8px 0 0 50px; } /* 위 칸과의 기본 간격(18px)을 줄여 박스에 가깝게 */
+@media (max-width: 600px) { .trend-plan.trend-plan-out { margin-left: 38px; max-width: calc(100% - 38px); } }
