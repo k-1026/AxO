@@ -212,12 +212,11 @@ function showTrendSlide(i) {
   const lineEl = document.getElementById("trend-line"), sl = tickSlides[i];
   if (!sl || !lineEl) return;
   tickAt = i;
-  /* 긴 글도 한눈에: 첫 문장은 굵게 요점으로, 나머지 문장은 작게 덧붙이고, 키워드는 칩으로 보여 줘요 */
-  const [first, ...rest] = splitSentences(sl.easy || sl.line || "");
+  /* 긴 글도 한눈에: 문장마다 줄을 바꿔 왼쪽에 가지런히 놓고, 키워드는 칩으로 보여 줘요 */
+  const sentences = splitSentences(sl.easy || sl.line || "");
   const tags = (sl.tags || []).filter(Boolean);
   lineEl.innerHTML = `<span class="trend-kind">${esc(sl.easy ? sl.head : "이번 시즌 방향")}</span>`
-    + `<span class="trend-main">${esc(first || "")}</span>`
-    + (rest.length ? `<span class="trend-sub">${esc(rest.join(" "))}</span>` : "")
+    + sentences.map(t => `<span class="trend-main">${esc(t)}</span>`).join("")
     + (tags.length ? `<span class="trend-tags">${tags.map(t => `<em>#${esc(t)}</em>`).join("")}</span>` : "")
     + (sl.easy ? `<small class="trend-from">${sl.from ? esc(sl.from) : "출처: " + esc(sl.src)}</small>` : "");
   lineEl.classList.remove("trend-in"); void lineEl.offsetWidth; lineEl.classList.add("trend-in");
