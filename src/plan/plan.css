@@ -42,12 +42,22 @@
 .my-head h2 { margin: 4px 0 0; }
 .my-ver select { font: inherit; margin-left: 6px; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--line); }
 .my-old { background: #FFF8E1; border-radius: 10px; padding: 8px 12px; font-size: .88rem; }
+/* 기획안 글이 글자 중간에서 끊기지 않게 (단어 단위로 줄바꿈, 너무 긴 낱말만 쪼개요) */
+.my-main { min-width: 0; word-break: keep-all; overflow-wrap: anywhere; }
 .my-sec { margin-top: 22px; }
 .my-sec h3 { font-size: 1rem; margin: 0 0 6px; }
 .my-sec p, .my-sec li { line-height: 1.65; word-break: keep-all; }
 .my-table { overflow-x: auto; }
-.my-table table { border-collapse: collapse; width: 100%; min-width: 480px; font-size: .88rem; }
-.my-table th, .my-table td { border-bottom: 1px solid var(--line); padding: 8px 6px; text-align: left; }
+.my-table table { border-collapse: collapse; width: 100%; font-size: .88rem; }
+.my-table th, .my-table td { border-bottom: 1px solid var(--line); padding: 8px 6px; text-align: left; vertical-align: top; line-height: 1.5; }
+.my-table th, .my-table td:nth-child(-n+4), .my-table td:last-child { white-space: nowrap; }
+.my-cautions { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 12px; }
+.my-caution { border: 1px solid var(--line); border-radius: 14px; padding: 12px 16px; background: var(--surface); }
+.my-caution h4 { margin: 0 0 4px; font-size: .92rem; }
+.my-caution ul { margin: 0; padding-left: 18px; }
+.my-ban-h { margin: 10px 0 6px; font-size: .8rem; color: var(--muted); }
+.my-bans { display: flex; flex-wrap: wrap; gap: 6px; }
+.my-bans span { font-size: .78rem; padding: 2px 9px; border-radius: 999px; background: #FDECEA; color: #A23B2A; }
 .my-scns { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; }
 .my-scn { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--surface); }
 .my-img { position: relative; aspect-ratio: 1 / 1; background: var(--accent-soft); display: flex; align-items: center; justify-content: center; }
@@ -70,4 +80,9 @@
 .my-shot { margin: 0; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--surface); }
 .my-shot figcaption { padding: 8px 12px; font-size: .88rem; font-weight: 700; color: var(--muted); }
 .my-spin { display: inline-block; width: 26px; height: 26px; border-radius: 50%; border: 3px solid var(--line); border-top-color: var(--accent); animation: pw-rot 1s linear infinite; }
-@media (max-width: 640px) { .my-shots { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 640px) {
+  .my-shots { grid-template-columns: minmax(0, 1fr); }
+  /* 휴대폰에서도 제품 표가 옆으로 넘치지 않게 */
+  .my-table table { font-size: .78rem; }
+  .my-table th, .my-table td { padding: 7px 4px; }
+}

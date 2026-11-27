@@ -83,7 +83,10 @@ export function productVisual(s, herb, purpose, products) {
   const l = buildCandidates(coreData(), s).find(x => x.herb === herb && x.purpose === purpose);
   if (!l) return "";
   const rows = Array.isArray(products) && products.length ? products.map(p => [p?.type, p?.name]).filter(([t, k]) => t && k) : l.lineup;
-  return `<div class="visual" style="${tileBg(l)}">${tiles(l, designMode, rows)}</div>`;
+  /* 용기 크기는 제품 3개 기준이에요. 제품이 많아 한 줄을 넘으면 모두 같은 비율로 줄여 잘리지 않게 해요 (--k) */
+  const sum = rows.reduce((a, [t]) => { const b = PRODUCT_BOX[sampleType(t) || t] || PRODUCT_BOX.toner; return a + (b[2] - b[0]) / 16; }, 0);
+  const k = Math.min(1, (92 - (rows.length - 1) * 1.2) / (sum || 1));
+  return `<div class="visual" style="${tileBg(l)};--k:${k.toFixed(3)}">${tiles(l, designMode, rows)}</div>`;
 }
 
 /* ════════ 화면 ════════ */

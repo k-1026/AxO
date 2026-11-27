@@ -6,7 +6,8 @@ import { hasSupabase, supabase } from "../lib/supabase.js";
 import { esc } from "../utils/text.js";
 import { productVisual, evidenceChartFor } from "../app.js";
 import { LOADING_IMAGES } from "../config/assets.js";
-import { qty, unitOf } from "../config/rules.js";
+import { qty, unitOf, BANNED_PHRASES } from "../config/rules.js";
+import { splitCautions } from "./cautions.js";
 
 const root = () => document.querySelector("#view-my .page");
 let notice = [];       // 보기 화면 위에 보여 줄 안내 (예: 기획안 만들기 직후 이미지 만드는 중)
@@ -19,6 +20,15 @@ const money = n => (Number.isFinite(n) ? `${n.toLocaleString("ko-KR")}원` : "-"
 const perUnit = (type, price, n) => (Number.isFinite(price) && Number.isFinite(n) && n > 0 ? `${unitOf(type)}당 ${Math.round(price / n).toLocaleString("ko-KR")}원` : "-");
 const ymd = s => { const d = new Date(s); return Number.isNaN(d.getTime()) ? "" : `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`; };
 const list = arr => (arr?.length ? `<ul>${arr.map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : `<p class="my-none">없어요.</p>`);
+
+function cautionsHtml(arr) {
+  const { herb, claim } = splitCautions(arr);
+  return `<div class="my-cautions">
+      <div class="my-caution"><h4>원료 주의사항</h4>${list(herb)}</div>
+      <div class="my-caution"><h4>금지 표현 주의사항</h4>${list(claim)}
+        <p class="my-ban-h">쓰지 않는 표현</p><div class="my-bans">${BANNED_PHRASES.map(b => `<span>${esc(b)}</span>`).join("")}</div></div>
+    </div>`;
+}
 
 function message(html) { root().innerHTML = `<div class="my-msg">${html}</div>`; }
 const showLoginNeeded = () => message(`<p>로그인하면 마이 기획실을 볼 수 있어요.</p>`);
@@ -104,10 +114,8 @@ function render(d) {
     <section class="my-sec"><h3>핵심 문구</h3>${list(p.key_claims)}</section>
     ${(v => v ? `<section class="my-sec my-evidence"><h3>수치로 보는 근거</h3>${v}</section>` : "")(evidenceChartFor(d.plan.herb, d.plan.season))}
     ${(v => v ? `<section class="my-sec"><h3>제품 이미지</h3><div class="my-product">${v}</div></section>` : "")(productVisual(d.plan.season, d.plan.herb, d.plan.purpose, p.products))}
-    <section class="my-sec"><h3>제품 구성</h3><div class="my-table"><table><thead><tr><th>이름</th><th>용량</th><th>정가</th><th>단위당 가격</th><th>역할</th><th>구분</th></tr></thead><tbody>${rows}</tbody></table></div></section>
-    <section class="my-sec"><h3>근거 메모</h3>${list(p.notes)}</section>
-    <section class="my-sec"><h3>주의사항</h3>${list(p.cautions)}</section>
-    <section class="my-sec"><h3>검토 의견</h3>${list(p.review_notes)}</section>
+    <section class="my-sec"><h3>제품 구성 예시</h3><div class="my-table"><table><thead><tr><th>이름</th><th>용량</th><th>정가</th><th>단위당 가격</th><th>역할</th><th>구분</th></tr></thead><tbody>${rows}</tbody></table></div></section>
+    <section class="my-sec"><h3>주의사항</h3>${cautionsHtml(p.cautions)}</section>
     ${scenarioSection(scenarios, d.image_urls || [], isLatest)}
     </div><aside class="my-side" aria-label="기획안 수정"></aside></div>`;
   root().dataset.plan = d.plan.id;

@@ -5,6 +5,7 @@ import { PLAN_SCHEMA, assemblePlan, PlanFormatError } from "./writer.js";
 import { SCENARIO_SCHEMA, assembleScenarios } from "./designer.js";
 import { BANNED_PHRASES, CATALOG_NAMES, catalogItem, qty } from "../../src/config/rules.js";
 import { withProducts, withVolumes } from "./research.js";
+import { PLAN_STYLE, CAUTION_RULE } from "./writer.js";
 
 const CHANGE = { type: "OBJECT", properties: { part: STRING, before: STRING, after: STRING }, required: ["part", "before", "after"] };
 
@@ -85,6 +86,9 @@ export function buildEditPrompt(content, messages, cand, data) {
     "- 고칠 내용이 있으면 proposal을 채우고, 단순한 질문이나 인사라면 proposal을 null로 두세요.",
     "- proposal.summary는 한 줄 요약, changes에는 바뀌는 부분마다 part(어디), before(전), after(후)를 한 줄씩 적어 주세요.",
     "- 기획안 글을 바꾸면 proposal.plan에 바뀐 뒤의 기획안 전체(concept_name, concept, target, key_claims 정확히 3개, product_roles, cautions)를 빠짐없이 쓰세요.",
+    "  기획안 글은 아래 말투·주의사항 형식을 따르세요 (답 reply는 그대로 존댓말).",
+    "  " + PLAN_STYLE,
+    "  " + CAUTION_RULE,
     "- 시나리오를 바꾸면 proposal.scenarios에 바뀐 뒤의 시나리오 1개 전체를 빠짐없이 쓰세요 (title, concept, target, channel, 장면 cuts 3~4개(scene, copy), image_prompts는 이미지 설명 정확히 3개: 0 제품 대표 컷, 1 원료·질감 컷, 2 사용 장면 컷).",
     "",
     "[제품 용량 바꾸기]",
