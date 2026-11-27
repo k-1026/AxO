@@ -1,6 +1,6 @@
 /* 수정 에이전트: 사용자의 수정 요청을 듣고 답과 "바꿀 내용" 제안을 만들어요. 저장은 하지 않아요.
    AI가 글만 바꾸고, 제품 이름·용량·정가는 작성 에이전트의 assemble 이 코드 값으로 다시 채워요. */
-import { STRING, describeLine } from "./prompt.js";
+import { STRING, describeLine, FACT_IDEA_RULE } from "./prompt.js";
 import { PLAN_SCHEMA, assemblePlan, PlanFormatError } from "./writer.js";
 import { DESIGN_SCHEMA, DESIGN_KINDS, assembleDesigns } from "./designer.js";
 import { BANNED_PHRASES, CATALOG_NAMES, catalogItem, qty } from "../../src/config/rules.js";
@@ -76,7 +76,10 @@ export function buildEditPrompt(content, messages, cand, data) {
     "[범위별로 고치는 법]",
     "- 문구: 그 부분만 바꾸고 나머지는 그대로 두세요.",
     "- 방향: 한 줄만 바꾸지 마세요. 새 방향에 맞춰 기획안 전체(콘셉트 이름·설명, 핵심 문구 3개 모두, 제품마다 맡는 역할과 쓰는 순서·상황, 주의사항)와 디자인 2개 전체(제품 패키징·오프라인 팝업 디자인의 이름·설명·이미지 설명)를 새로 쓰세요.",
-    "  [후보 정보]의 계절 피부 이슈와 뷰티 트렌드 자료를 근거로 삼고, 왜 그렇게 바꿨는지 reply에 한두 문장으로 알려 주세요. changes에는 바뀐 칸을 빠짐없이 적으세요.",
+    "  기존 콘셉트에 타깃 이름만 붙이지 마세요. 새 타깃의 생활·소비 습관에서 출발해 기획 각도(무엇을 내세울지, 언제·어떻게 쓰게 할지, 어디서 팔지, 어떤 분위기로 보일지)를 새로 잡으세요. 사실(숫자·효능)은 [후보 정보] 근거, 아이디어는 자유롭게 제안해요.",
+    "  지금 콘셉트·핵심 문구 문장을 고쳐 쓰지 말고 처음부터 새로 쓰세요 (같은 표현을 다시 쓰지 마세요).",
+    "  새 타깃에 맞는 구체적인 아이디어를 2개 이상 담으세요. 예) 사용 상황(출근 전 1분, 사무실 책상, 운동 후), 제형·용기(휴대용 미니, 올인원, 펌프·스틱), 판매·체험 채널(라이브커머스, 회사 근처 팝업), 패키지·팝업 분위기(미니멀 오피스룩 등).",
+    "  왜 그렇게 바꿨는지 reply에 한두 문장으로 알려 주세요. changes에는 바뀐 칸을 빠짐없이 적으세요.",
     "  사용자가 말하지 않은 것을 새로 정해야 하면(예: 타깃만 말했을 때 채널·분위기) 그 타깃에 가장 알맞게 직접 판단해서 정하세요.",
     "",
     "[제품 구성 바꾸기]",
@@ -98,7 +101,7 @@ export function buildEditPrompt(content, messages, cand, data) {
     "- 사용자가 최소 용량보다 작게 말하면 volumes에 넣지 말고, reply에서 최소 용량을 알려 주세요.",
     "- 용량만 바꾸는 요청이면 기획안 글·디자인은 그대로 두세요(proposal.plan·designs 비움).",
     "- 기획안 글(콘셉트·핵심 문구·디자인 설명)에는 가격·용량 숫자를 쓰지 마세요. 제품 이름·용량·가격은 코드가 제품 표에 채워요.",
-    "- 후보 정보에 있는 사실만 쓰고, 후보 원료 말고 다른 원료는 언급하지 마세요.",
+    FACT_IDEA_RULE,
     `- 의약품처럼 낫는다는 표현은 쓰지 마세요 (${BANNED_PHRASES.join(", ")}).`,
     "- regenerate_images는 사용자가 이미지를 바꿔 달라고 분명히 말했을 때만 이미지 번호(0 제품 패키징, 1 오프라인 팝업 디자인)를 넣고, 아니면 빈 목록으로 두세요. 디자인의 image_prompt를 바꿨다면 그 번호도 넣으세요.",
     "",

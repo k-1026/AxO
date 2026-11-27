@@ -1,7 +1,7 @@
 /* 디자인 에이전트: 제품 패키징(용기 + 단상자 세트)과 오프라인 팝업스토어 디자인, 2가지의 짧은 설명과 이미지 프롬프트를 만들어요.
    용기·상자·공간에는 로고·글자를 넣지 않아요. (HSJ 결정 2026-11-27: 광고 시나리오 + 이미지 3장 → 패키징·팝업 디자인 이미지 2장)
    예전 기획안(광고 시나리오 + 이미지 3장, 시나리오 3개 + 이미지 각 1장)은 새로 만들지 않고, 이미지 설명을 읽는 함수만 남겨 둬요. */
-import { STRING, describeLine } from "./prompt.js";
+import { STRING, describeLine, FACT_IDEA_RULE } from "./prompt.js";
 import { stripBanned } from "./verifier.js";
 import { PlanFormatError } from "./writer.js";
 import { BANNED_PHRASES, SAMPLE, sampleType } from "../../src/config/rules.js";
@@ -47,7 +47,7 @@ export function buildDesignPrompt(plan, cand, season, data, palette) {
     "- image_prompt: 이미지 AI에게 줄 장면 설명 (한국어 또는 영어). 무엇이 어디에 어떻게 놓이는지 구체적으로.",
     "- 용기·단상자·간판·벽 어디에도 로고·글자·브랜드 이름이 보이지 않게 써요.",
     "- 가격·용량 같은 숫자는 쓰지 마세요.",
-    "- 후보 정보에 있는 사실만 쓰고, 후보 원료 말고 다른 원료는 언급하지 마세요.",
+    FACT_IDEA_RULE,
     `- 의약품처럼 낫는다는 표현은 쓰지 마세요 (${BANNED_PHRASES.join(", ")}).`,
     "",
     "[후보 정보]",

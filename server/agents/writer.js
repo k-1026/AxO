@@ -1,5 +1,5 @@
 /* 작성 에이전트: AI는 글(콘셉트·문구·역할)만 쓰고, 제품 이름·용량·정가는 코드가 후보에서 채워요. */
-import { STRING, STRINGS, isStringArray, describeLine } from "./prompt.js";
+import { STRING, STRINGS, isStringArray, describeLine, FACT_IDEA_RULE } from "./prompt.js";
 import { BANNED_PHRASES, ROLE, extrasOf } from "../../src/config/rules.js";
 
 /* 제품 상태: 용량·정가가 정해진 제품 / 기준값이 아직 없는 제품 */
@@ -31,8 +31,7 @@ export function buildPlanPrompt(cand, season, data, notes, revise) {
     PLAN_STYLE,
     "- product_roles에는 제품 목록의 제품마다 이름을 그대로 쓰고, 그 제품이 하는 일을 짧게 적어 주세요.",
     "- 가격·용량 같은 숫자는 쓰지 마세요. 제품 이름·용량·가격은 코드가 채워요.",
-    "- 후보 정보에 있는 사실만 쓰세요. 없는 수치나 근거를 지어내지 마세요.",
-    "- 후보 원료 말고 다른 원료는 언급하지 마세요.",
+    FACT_IDEA_RULE,
     `- 의약품처럼 낫는다는 표현은 쓰지 마세요 (${BANNED_PHRASES.join(", ")}).`,
     CAUTION_RULE,
     "",
