@@ -5,6 +5,7 @@ import { SAMPLE_BASE } from "./config/assets.js";
 import { recolorPixels } from "./core/recolor.js";
 import { evidenceChartHtml } from "./core/evidence.js";
 import { TREND_EASY } from "./config/trend-easy.js";
+import { matchesSeason } from "./core/trend-season.js";
 import { lineKey, buildCandidates, rankLines } from "./core/candidates.js";
 import { eulReul, josa, dots, chips, won, esc } from "./utils/text.js";
 import { fetchLatestBeautyTrends } from "./data/repository.js";
@@ -131,8 +132,8 @@ function trendComment(s, data, now = Date.now()) {
     tip: note.tip,
     source: `네이버 데이터랩 · ${data.collectedAt} 수집 · 최근 4주 / 이전 12주 · 비교 기준 1.2배 이상 상승`
   };
-  return { status: "예시 인사이트 · 수집 전", line: note.line, tip: note.tip,
-    source: "기후 정보를 바탕으로 한 기획 가설이에요. 최신 검색·판매 트렌드가 확인된 내용은 아니에요." };
+  return { status: `${s} 트렌드 기사 없음 · 기후 자료 기반 가설`, line: note.line, tip: note.tip,
+    source: `아직 ${s}에 해당하는 트렌드 기사가 없어 ${s} 기후 통계로 세운 기획 가설이에요. ${s} 기사가 모이면 자동으로 바뀌어요.` };
 }
 document.addEventListener("click", e => { if (e.target && e.target.id === "beauty-refresh") refreshBeautyTrends(); });
 async function refreshBeautyTrends() {
@@ -157,7 +158,8 @@ function beautyComment(s, data, now = Date.now()) {
     try { const url = new URL(item.url); return url.protocol === "https:" && hosts.includes(url.hostname) && age >= 0 && age <= (item.evidenceRole === "background" ? 400 : 90) && typeof item.title === "string" && typeof item.source === "string"; } catch (_) { return false; }
   });
   const evidence = insight.evidenceIds.map(id => valid.find(item => item.id === id));
-  if (evidence.some(item => !item)) return null;
+  // 근거가 모두 이 계절 자료여야 해요. (예: 가을 기사·8월 행사 기사로 겨울 기획 포인트를 만들면 안 돼요)
+  if (evidence.some(item => !item || !matchesSeason(item, s, TREND_EASY[item.id] || ""))) return null;
   const stale = now - checked > (data.intervalMinutes >= 1440 ? 26 * 60 : 150) * 60000; // 매일 수집이면 하루+2시간, 매시간이면 2시간 반 넘으면 오래된 자료
   const checkedAt = new Date(checked).toLocaleString("ko-KR", { timeZone: "Asia/Seoul", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false });
   return { status: stale ? "갱신 확인 필요 · 저장된 근거" : "공식 콘텐츠·기사 기반", line: insight.line, tip: insight.tip,
@@ -169,29 +171,27 @@ const TICK_MS = 3000;
 let tickTimer = null, tickSlides = [], tickAt = 0, tickPaused = false;
 
 /* 출시할 계절에 맞는 트렌드만 골라요.
-   - 자료에 seasons 칸이 있으면 그 계절만, 없으면 그 계절 인사이트가 근거로 쓴 자료(evidenceIds)만 써요.
-   - 제목·요약에 다른 계절이 적힌 자료(예: 여름인데 '가을 환절기')는 빼요.
-   - 맨 앞에는 그 계절 트렌드 방향(인사이트)을 보여 줘요. */
+   - 맨 앞: 그 계절 트렌드 방향. 그 계절 기사로 만든 인사이트가 있으면 그걸, 없으면 그 계절 기후 통계로 세운 가설이라고 밝혀요.
+   - 그 계절 기사(계절이 적힌 자료)를 먼저, 그다음 계절과 상관없는 최근 트렌드를 보여 줘요. 다른 계절 기사는 빼요.
+   - 그 계절 기사가 없으면 그 계절 기후 통계(폭염 일수·습도 등)를 대신 보여 줘요. */
 const SEASON_ICON = { "봄": "🌸", "여름": "☀️", "가을": "🍂", "겨울": "❄️" };
 function hotTrends(s) {
-  const items = (BEAUTY_TRENDS && BEAUTY_TRENDS.items) || [];
-  const insight = BEAUTY_TRENDS && BEAUTY_TRENDS.insights && BEAUTY_TRENDS.insights[s];
-  const ids = new Set((insight && insight.evidenceIds) || []);
-  const others = Object.keys(SEASON_ICON).filter(x => x !== s);
-  // 자동 수집 트렌드는 seasons 칸이 있어요: 계절이 적혀 있으면 그 계절만, 빈 목록이면 계절과 상관없는 트렌드라 모든 계절에 보여요
-  const fits = i => Array.isArray(i.seasons) ? (!i.seasons.length || i.seasons.includes(s)) : ids.has(i.id);
-  const seasonal = i => (Array.isArray(i.seasons) ? i.seasons.includes(s) : ids.has(i.id)) ? 1 : 0;
-  const saysOther = i => others.some(o => `${i.title || ""} ${i.summary || ""} ${i.easy || ""} ${TREND_EASY[i.id] || ""}`.includes(o));
-  const picked = items.filter(i => i && i.title && fits(i) && !saysOther(i))
-    // 그 계절 트렌드(계절이 적힌 자료·계절 인사이트의 근거)를 먼저, 그다음 계절 무관 트렌드를 최신순으로
-    .sort((a, b) => seasonal(b) - seasonal(a) || String(b.publishedAt || "").localeCompare(String(a.publishedAt || "")))
-    .slice(0, 5)
-    // 계절이 정해지지 않은 트렌드(seasons 빈 목록)에는 계절 이름을 붙이지 않아요 (겨울 트렌드처럼 보이지 않게)
-    .map(i => ({ head: Array.isArray(i.seasons) && !i.seasons.length ? "🔥 요즘 뷰티 트렌드" : `🔥 요즘 ${s} 뷰티 트렌드`, src: `${i.source || "뷰티 트렌드"}${i.kind ? " " + i.kind : ""}${i.publishedAt ? " · " + i.publishedAt : ""}`, easy: easyTrend(i) }))
-    .filter(x => x.easy);
-  const lead = insight && typeof insight.line === "string"
-    ? [{ head: `${SEASON_ICON[s] || "🔥"} ${s} 뷰티 트렌드 방향`, easy: insight.line.replace(/잡아보세요/g, "잡아 보세요"), src: "수집한 트렌드 자료를 바탕으로 정리" }] : [];
-  return [...lead, ...picked];
+  const items = ((BEAUTY_TRENDS && BEAUTY_TRENDS.items) || []).filter(i => i && i.title);
+  const extra = i => TREND_EASY[i.id] || "";
+  const bySeason = items.filter(i => matchesSeason(i, s, extra(i)));
+  const general = items.filter(i => Array.isArray(i.seasons) && !i.seasons.length);
+  const byDate = (a, b) => String(b.publishedAt || "").localeCompare(String(a.publishedAt || ""));
+  const slide = (i, head) => ({ head, src: `${i.source || "뷰티 트렌드"}${i.kind ? " " + i.kind : ""}${i.publishedAt ? " · " + i.publishedAt : ""}`, easy: easyTrend(i) });
+  const seasonSlides = bySeason.sort(byDate).slice(0, 5).map(i => slide(i, `🔥 요즘 ${s} 뷰티 트렌드`));
+  const climate = seasonSlides.length ? [] : ((SEASONS[s] && SEASONS[s].issues) || []).map(([title, stat, concern]) =>
+    ({ head: `${SEASON_ICON[s] || ""} ${s} 기후 데이터`, easy: `${title} · ${stat} → ${concern} 고민이 커져요.`, from: `${s} 기후 통계` }));
+  const generalSlides = general.sort(byDate).slice(0, Math.max(0, 5 - seasonSlides.length)).map(i => slide(i, "🔥 요즘 뷰티 트렌드"));
+  const insight = beautyComment(s, BEAUTY_TRENDS);
+  const note = SEASON_TREND_NOTES[s];
+  const lead = insight
+    ? [{ head: `${SEASON_ICON[s] || "🔥"} ${s} 뷰티 트렌드 방향`, easy: insight.line.replace(/잡아보세요/g, "잡아 보세요"), from: `수집한 ${s} 트렌드 기사를 바탕으로 정리` }]
+    : note ? [{ head: `${SEASON_ICON[s] || "🔥"} ${s} 뷰티 트렌드 방향 (기후 기반 가설)`, easy: note.line, from: `${s} 트렌드 기사가 아직 없어 ${s} 기후 통계로 세운 가설이에요` }] : [];
+  return [...lead, ...seasonSlides, ...climate, ...generalSlides].filter(x => x.easy);
 }
 
 /* 기사 제목(연예인·행사 이름 등)은 처음 보는 사람이 이해하기 어려워서, 자료 내용을 쉬운 말로 풀어 보여 줘요 */
@@ -207,7 +207,7 @@ function showTrendSlide(i) {
   if (!sl || !lineEl) return;
   tickAt = i;
   lineEl.innerHTML = sl.easy
-    ? `<span class="trend-kind">${esc(sl.head)}</span>${esc(sl.easy)}<small class="trend-from">${sl.src.startsWith("수집한") ? esc(sl.src) : "출처: " + esc(sl.src)}</small>`
+    ? `<span class="trend-kind">${esc(sl.head)}</span>${esc(sl.easy)}<small class="trend-from">${sl.from ? esc(sl.from) : "출처: " + esc(sl.src)}</small>`
     : `<span class="trend-kind">이번 시즌 방향</span>${esc(sl.line)}`;
   lineEl.classList.remove("trend-in"); void lineEl.offsetWidth; lineEl.classList.add("trend-in");
 }

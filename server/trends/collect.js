@@ -4,6 +4,7 @@
    3) 이전 묶음의 계절 인사이트와 그 근거 기사는 그대로 이어 붙여 새 트렌드 묶음(beauty_trend_snapshots)으로 저장해요.
    DOM·네트워크 없이 돌아가는 부분(파싱·거르기·검증·합치기)은 함수로 나눠서 테스트해요. */
 import { BANNED_PHRASES } from "../../src/config/rules.js";
+import { matchesSeason } from "../../src/core/trend-season.js";
 
 export const FEEDS = [
   { id: "jangup", source: "장업신문", kind: "업계 기사", url: "https://www.jangup.com/rss/allArticle.xml" },
@@ -120,22 +121,78 @@ export function cleanPicks(raw, candidates) {
 }
 
 /* ── 새 묶음 만들기 ───────────────────────── */
-/** 이전 묶음 + 오늘 고른 트렌드 → 새 묶음. 계절 인사이트와 그 근거 기사는 그대로 이어 가요 */
-export function mergeSnapshot(prev, picks, checks, now = Date.now()) {
+/** 이전 묶음 + 오늘 고른 트렌드 → 새 묶음.
+ *  insights: 오늘 그 계절 기사로 새로 만든 계절 인사이트. 없는 계절은 이전 인사이트를 쓰되, 근거가 그 계절 자료일 때만 남겨요 */
+export function mergeSnapshot(prev, picks, checks, now = Date.now(), insights = {}) {
   const nowIso = new Date(now).toISOString().replace(/\.\d+Z$/, "Z");
-  const insights = prev?.insights || {};
-  const evidence = new Set(Object.values(insights).flatMap(i => i?.evidenceIds || []));
+  const prevItems = prev?.items || [];
   const fresh = picks.map(p => ({
     id: p.id, source: p.source, kind: p.kind, title: p.title, url: p.link, publishedAt: p.publishedAt, checkedAt: nowIso,
     summary: p.summary, tags: p.tags, easy: p.easy, seasons: p.seasons
   }));
   const ids = new Set(fresh.map(i => i.id));
-  const recent = (prev?.items || []).filter(i => i && !ids.has(i.id) && (now - Date.parse(i.publishedAt)) / 864e5 <= LOOKBACK_DAYS);
+  const recent = prevItems.filter(i => i && !ids.has(i.id) && (now - Date.parse(i.publishedAt)) / 864e5 <= LOOKBACK_DAYS);
   const keep = [...fresh, ...recent].slice(0, MAX_ITEMS);
+  const all = [...keep, ...prevItems.filter(i => i && !keep.some(k => k.id === i.id))];
+  const keptPrev = Object.fromEntries(Object.entries(prev?.insights || {}).filter(([season, ins]) => {
+    const ev = (ins?.evidenceIds || []).map(id => all.find(i => i.id === id));
+    return ev.length && ev.every(i => i && matchesSeason(i, season));
+  }));
+  const nextInsights = { ...keptPrev, ...insights };
+  const evidence = new Set(Object.values(nextInsights).flatMap(i => i?.evidenceIds || []));
   const kept = new Set(keep.map(i => i.id));
-  const evidenceItems = (prev?.items || []).filter(i => evidence.has(i.id) && !kept.has(i.id));
+  const evidenceItems = prevItems.filter(i => evidence.has(i.id) && !kept.has(i.id));
   const sourceChecks = [...(prev?.sourceChecks || []).filter(c => !checks.some(n => n.id === c.id)), ...checks];
-  return { version: 1, updatedAt: nowIso, intervalMinutes: 1440, lookbackDays: LOOKBACK_DAYS, sourceChecks, items: [...keep, ...evidenceItems], insights };
+  return { version: 1, updatedAt: nowIso, intervalMinutes: 1440, lookbackDays: LOOKBACK_DAYS, sourceChecks, items: [...keep, ...evidenceItems], insights: nextInsights };
+}
+
+/* ── 계절 인사이트 (그 계절 기사만 근거) ───────── */
+export const INSIGHT_SCHEMA = {
+  type: "OBJECT",
+  properties: {
+    insights: {
+      type: "ARRAY",
+      items: {
+        type: "OBJECT",
+        properties: { season: { type: "STRING", enum: SEASONS }, line: { type: "STRING" }, tip: { type: "STRING" }, evidenceIds: { type: "ARRAY", items: { type: "STRING" } } },
+        required: ["season", "line", "tip", "evidenceIds"]
+      }
+    }
+  },
+  required: ["insights"]
+};
+
+/** 계절마다 그 계절 기사만 모아요 → { 계절: [기사] } (기사가 없는 계절은 빼요) */
+export function seasonPools(items) {
+  return Object.fromEntries(SEASONS.map(s => [s, items.filter(i => matchesSeason(i, s))]).filter(([, l]) => l.length));
+}
+
+export function buildInsightPrompt(pools) {
+  return [
+    "당신은 한방 기초 화장품 출시 기획을 돕는 트렌드 정리 담당이에요.",
+    "아래는 계절마다 그 계절이 적힌 업계 기사예요. 계절마다 기초라인 기획 방향을 정리해 주세요.",
+    "- line: 그 계절 기초라인 방향 1~2문장 (쉬운 존댓말). tip: 기획할 때 비교·검토할 점 1문장.",
+    "- 반드시 그 계절 기사 내용만 근거로 쓰고, 기사에 없는 사실·숫자는 더하지 마세요. 근거로 쓴 기사 id 를 evidenceIds 에 넣으세요.",
+    "- 해외 시장 기사라면 어느 나라 이야기인지 밝히세요.",
+    `- 의약품처럼 낫는다는 표현은 쓰지 마세요 (${BANNED_PHRASES.join(", ")}).`,
+    "- 아래에 없는 계절은 쓰지 마세요.",
+    "",
+    ...Object.entries(pools).flatMap(([season, list]) => [`[${season}]`, ...list.map(i => `- id: ${i.id} | ${i.source} ${i.publishedAt} | ${i.title} | ${i.easy || i.summary || ""}`)])
+  ].join("\n");
+}
+
+/** AI 답 → 계절 인사이트. 근거 id 가 그 계절 기사 안에 있어야 하고, 금지 표현이 있으면 버려요 */
+export function cleanInsights(raw, pools) {
+  const out = {};
+  for (const r of Array.isArray(raw?.insights) ? raw.insights : []) {
+    const pool = pools[r?.season];
+    if (!pool || out[r.season]) continue;
+    const line = typeof r.line === "string" ? r.line.trim() : "", tip = typeof r.tip === "string" ? r.tip.trim() : "";
+    const ev = [...new Set((Array.isArray(r.evidenceIds) ? r.evidenceIds : []).filter(id => pool.some(i => i.id === id)))];
+    if (!line || !tip || !ev.length || banned(line) || banned(tip) || line.length > 200 || tip.length > 200) continue;
+    out[r.season] = { line, tip, evidenceIds: ev };
+  }
+  return out;
 }
 
 /* ── 실행 ─────────────────────────────────── */
@@ -164,7 +221,15 @@ export async function collectTrends(deps) {
   const picks = cleanPicks(await deps.generate(buildPickPrompt(list), PICK_SCHEMA), list);
   if (!picks.length) return { saved: false, picked: 0, candidates: list.length, checks };
   const prev = await deps.loadLatest();
-  const payload = mergeSnapshot(prev, picks, checks, now);
+  // 계절 인사이트: 오늘 고른 기사 + 남아 있는 기사 중 그 계절 기사만 근거로 새로 만들어요 (기사가 있는 계절만, AI 1번 더)
+  const draft = mergeSnapshot(prev, picks, checks, now);
+  const pools = seasonPools(draft.items);
+  let insights = {};
+  if (Object.keys(pools).length) {
+    try { insights = cleanInsights(await deps.generate(buildInsightPrompt(pools), INSIGHT_SCHEMA), pools); }
+    catch (e) { console.warn("[trend-collect] 계절 인사이트 정리 실패, 이전 것 유지:", e?.message || e); }
+  }
+  const payload = mergeSnapshot(prev, picks, checks, now, insights);
   await deps.save(payload);
   return { saved: true, picked: picks.length, candidates: list.length, checks };
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { parseRss, isSkincareTrend, articleId, cleanPicks, mergeSnapshot, collectTrends, FEEDS } from "../server/trends/collect.js";
+import { parseRss, isSkincareTrend, articleId, cleanPicks, mergeSnapshot, collectTrends, cleanInsights, FEEDS } from "../server/trends/collect.js";
 import { authorized } from "../api/trend-collect.js";
 
 const NOW = Date.parse("2026-11-27T09:00:00+09:00");
@@ -43,7 +43,7 @@ describe("AI 답 검증", () => {
 describe("새 묶음 합치기", () => {
   const prev = {
     insights: { "봄": { line: "l", tip: "t", evidenceIds: ["old-1"] } },
-    items: [{ id: "old-1", publishedAt: "2026-10-01" }, { id: "old-2", publishedAt: "2026-09-01" }],
+    items: [{ id: "old-1", title: "봄 환절기 보습", publishedAt: "2026-10-01" }, { id: "old-2", publishedAt: "2026-09-01" }],
     sourceChecks: [{ id: "jangup", status: "checked" }]
   };
   it("새 트렌드를 앞에 두고, 계절 인사이트와 그 근거 기사는 이어 가요", () => {
@@ -54,16 +54,36 @@ describe("새 묶음 합치기", () => {
     expect(p.sourceChecks.map(c => c.id)).toEqual(["jangup", "rss-jangup"]);
     expect(p).toHaveProperty("version", 1);
   });
+  it("계절 인사이트의 근거가 그 계절 자료가 아니면 버려요 (예: 겨울 포인트를 계절 없는 10월 기사로)", () => {
+    const winter = { insights: { "겨울": { line: "l", tip: "t", evidenceIds: ["oy"] } }, items: [{ id: "oy", title: "앵커로 변신한 코르티스", publishedAt: "2026-10-26" }] };
+    expect(mergeSnapshot(winter, [], [], NOW).insights).toEqual({});
+  });
+});
+
+describe("계절 인사이트 검증", () => {
+  const pools = { "가을": [{ id: "a1" }] };
+  it("그 계절 기사 id 만 근거로 인정하고, 없는 계절·금지 표현은 버려요", () => {
+    const out = cleanInsights({ insights: [
+      { season: "겨울", line: "x", tip: "y", evidenceIds: ["a1"] },
+      { season: "가을", line: "치료 효과", tip: "y", evidenceIds: ["a1"] },
+      { season: "가을", line: "보습 레이어링", tip: "마무리감 비교", evidenceIds: ["a1", "없음"] }
+    ] }, pools);
+    expect(out).toEqual({ "가을": { line: "보습 레이어링", tip: "마무리감 비교", evidenceIds: ["a1"] } });
+  });
 });
 
 describe("수집 한 번", () => {
-  it("RSS → AI 1번 → 저장", async () => {
+  it("RSS → AI(기사 고르기 + 그 계절 인사이트) → 저장", async () => {
     const save = vi.fn();
-    const generate = vi.fn(async () => ({ picks: [{ id: "jangup-101", easy: "환절기 보습 크림이 소개됐어요.", tags: ["보습"], seasons: ["가을"] }] }));
+    const generate = vi.fn(async (_p, schema) => schema.properties.picks
+      ? { picks: [{ id: "jangup-101", easy: "환절기 보습 크림이 소개됐어요.", tags: ["보습"], seasons: ["가을"] }] }
+      : { insights: [{ season: "가을", line: "가을엔 장벽 보습 중심으로 잡아 보세요.", tip: "보습 크림 사용감을 비교해 보세요.", evidenceIds: ["jangup-101"] }] });
     const r = await collectTrends({ now: () => NOW, fetchText: async u => ({ status: 200, text: u === FEEDS[0].url ? RSS : "<rss></rss>" }), generate, loadLatest: async () => null, save });
     expect(r).toMatchObject({ saved: true, picked: 1, candidates: 1 });
-    expect(generate).toHaveBeenCalledTimes(1);
-    expect(save.mock.calls[0][0].items[0]).toMatchObject({ id: "jangup-101", seasons: ["가을"] });
+    expect(generate).toHaveBeenCalledTimes(2);
+    const saved = save.mock.calls[0][0];
+    expect(saved.items[0]).toMatchObject({ id: "jangup-101", seasons: ["가을"] });
+    expect(saved.insights).toEqual({ "가을": { line: "가을엔 장벽 보습 중심으로 잡아 보세요.", tip: "보습 크림 사용감을 비교해 보세요.", evidenceIds: ["jangup-101"] } });
   });
   it("RSS가 막히면 AI를 부르지 않고 저장도 안 해요 (이전 자료 유지)", async () => {
     const generate = vi.fn(), save = vi.fn();
