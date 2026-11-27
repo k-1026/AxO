@@ -4,7 +4,7 @@ import * as fallback from "../src/data/fallback.js";
 import { priceForVolume, minVolume } from "../src/config/rules.js";
 import { pickCandidate, applySelection, withVolumes } from "../server/agents/research.js";
 import { assemblePlan } from "../server/agents/writer.js";
-import { assembleScenarios } from "../server/agents/designer.js";
+import { assembleDesigns } from "../server/agents/designer.js";
 import { REVIEW_SCHEMA, checkRules } from "../server/agents/verifier.js";
 import { cleanProposal, buildEditPrompt } from "../server/agents/editor.js";
 import planEdit from "../server/routes/plan-edit.js";
@@ -12,8 +12,8 @@ import planEdit from "../server/routes/plan-edit.js";
 const NOW = Date.parse("2026-11-23T00:00:00+09:00");
 const cand = applySelection(pickCandidate(fallback, { season: "여름", herb: "어성초", purpose: "모공·피지" }, NOW));
 const raw = { concept_name: "어성초 산뜻 토너", concept: "번들거림을 가볍게 정돈해요.", target: "20대", key_claims: ["산지가 확인돼요", "가볍게 마무리돼요", "수시로 쓰기 좋아요"], product_roles: [], cautions: [] };
-const scn = assembleScenarios({ scenarios: [{ title: "t", concept: "c", target: "t", channel: "인스타", cuts: [{ scene: "a", copy: "산뜻해요" }, { scene: "b", copy: "보송해요" }, { scene: "c", copy: "좋아요" }], image_prompts: ["x0", "x1", "x2"] }] }).scenarios;
-const content = () => ({ season: "여름", herb: "어성초", purpose: "모공·피지", candidate: { selected: cand.l.selected }, plan: { ...assemblePlan(raw, cand, []), review_notes: [] }, scenarios: scn });
+const dsn = assembleDesigns({ designs: [{ title: "a", description: "갈색 단상자 구성", image_prompt: "d0" }, { title: "b", description: "원목 부스 연출", image_prompt: "d1" }] }).designs;
+const content = () => ({ season: "여름", herb: "어성초", purpose: "모공·피지", candidate: { selected: cand.l.selected }, plan: { ...assemblePlan(raw, cand, []), review_notes: [] }, designs: dsn, scenarios: [] });
 const product = (plan, name) => plan.products.find(p => p.name === name);
 
 describe("용량 → 정가 계산", () => {
@@ -55,7 +55,7 @@ describe("수정 챗봇 미리보기 (cleanProposal)", () => {
     expect(out.volumes).toEqual([{ name: "토너", ml: 300 }]);
     expect(out.changes[0].after).toBe("300ml · 22,500원");
     const v = withVolumes(cand, out.volumes);
-    expect(checkRules({ plan: out.plan, scenarios: scn }, v.cand, fallback).fix).toEqual([]);
+    expect(checkRules({ plan: out.plan, designs: dsn }, v.cand, fallback).fix).toEqual([]);
   });
   it("최소 용량 미달이면 수정안 없이 안내만 남겨요", () => {
     expect(cleanProposal({ summary: "토너 150ml", changes: [], regenerate_images: [], volumes: [{ name: "토너", ml: 150 }] }, content(), cand)).toBe(null);

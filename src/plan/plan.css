@@ -74,14 +74,20 @@
 
 /* 마이 기획실 · 제품 이미지 (용기 샘플). 후보 카드에서 옮겨 왔어요. */
 .my-product { max-width: 560px; border-radius: 12px; overflow: hidden; border: 0; }
-/* 광고 시나리오 1개 + 이미지 3장 */
+/* 예전 형식: 광고 시나리오 1개 + 이미지 3장 */
 .my-scn-one { max-width: 760px; }
 .my-shots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .my-shot { margin: 0; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--surface); }
 .my-shot figcaption { padding: 8px 12px; font-size: .88rem; font-weight: 700; color: var(--muted); }
+/* 제품 패키징 · 오프라인 팝업 디자인: 이미지 1장 + 간단한 설명 */
+.my-design { margin: 0; display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 16px; align-items: start; }
+.my-design .my-img { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.my-design figcaption b { display: block; margin-bottom: 4px; }
+.my-design figcaption p { margin: 0; line-height: 1.65; }
 .my-spin { display: inline-block; width: 26px; height: 26px; border-radius: 50%; border: 3px solid var(--line); border-top-color: var(--accent); animation: pw-rot 1s linear infinite; }
 @media (max-width: 640px) {
   .my-shots { grid-template-columns: minmax(0, 1fr); }
+  .my-design { grid-template-columns: minmax(0, 1fr); }
   /* 휴대폰에서도 제품 표가 옆으로 넘치지 않게 */
   .my-table table { font-size: .78rem; }
   .my-table th, .my-table td { padding: 7px 4px; }

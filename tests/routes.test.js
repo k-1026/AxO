@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import * as fallback from "../src/data/fallback.js";
 import { RESEARCH_SCHEMA } from "../server/agents/research.js";
 import { PLAN_SCHEMA } from "../server/agents/writer.js";
-import { SCENARIO_SCHEMA } from "../server/agents/designer.js";
+import { DESIGN_SCHEMA } from "../server/agents/designer.js";
 import { REVIEW_SCHEMA } from "../server/agents/verifier.js";
 import { LlmError } from "../server/llm/gemini.js";
 import { HttpError, bearer, runRoute } from "../server/http.js";
@@ -24,9 +24,15 @@ const rawScn = () => ({
     cuts: [{ scene: "a", copy: "산뜻해요" }, { scene: "b", copy: "보송해요" }, { scene: "c", copy: "좋아요" }], image_prompts: ["x0", "x1", "x2"]
   }))
 });
+const rawDsn = () => ({
+  designs: [
+    { title: "패키징", description: "갈색 단상자와 크림색 용기 세트 구성", image_prompt: "d0" },
+    { title: "팝업", description: "한지 소재 부스와 원목 진열대 연출", image_prompt: "d1" }
+  ]
+});
 const answers = new Map([
   [RESEARCH_SCHEMA, { notes: ["메모 하나"] }], [PLAN_SCHEMA, rawPlan()],
-  [REVIEW_SCHEMA, { approved: true, issues: [] }], [SCENARIO_SCHEMA, rawScn()]
+  [REVIEW_SCHEMA, { approved: true, issues: [] }], [DESIGN_SCHEMA, rawDsn()]
 ]);
 
 function makeStore(over = {}) {
@@ -118,7 +124,8 @@ describe("/api/plan", () => {
     expect(store.createPlan).toHaveBeenCalledTimes(1);
     const [, arg] = store.createPlan.mock.calls[0];
     expect(arg).toMatchObject({ season: "여름", herb: "어성초", purpose: "모공·피지", title: "어성초 산뜻 토너" });
-    expect(arg.content.scenarios).toHaveLength(1);
+    expect(arg.content.designs).toHaveLength(2);
+    expect(arg.content.scenarios).toEqual([]);
     expect(arg.log.length).toBeGreaterThan(0);
   });
   it("generate가 LlmError(504)면 504, createPlan은 안 불려요", async () => {
@@ -195,7 +202,8 @@ describe("/api/plan-image", () => {
     expect(req.images.map(i => i.name)).toEqual(deps.readSample.mock.calls.map(x => x[0]));
     expect(req.images.every(i => /^(toner|serum|cream|lotion-pump|mist|cleanser|eye|pad|mask)-nologo\.png$/.test(i.name))).toBe(true);
     expect(req.prompt).toContain("no logo");
-    expect(req.prompt).toContain("Scene: x1"); // 이미지 1번 설명(원료·질감 컷)을 써요
+    expect(req.prompt).toContain("Scene: d1"); // 이미지 1번 설명(오프라인 팝업 디자인)을 써요
+    expect(req.prompt).toContain("pop-up store");
     const save = store.saveImage.mock.calls[0];
     expect(save.slice(1, 5)).toEqual(["u1", "p1", "v1", 1]);
     expect(save[5]).toEqual(new Uint8Array([9, 9]));
@@ -203,10 +211,19 @@ describe("/api/plan-image", () => {
   });
   it("예전 형식(시나리오 3개)도 idx 번째 시나리오의 설명으로 만들어요", async () => {
     const c = await makeContent();
-    c.scenarios = [0, 1, 2].map(i => ({ ...c.scenarios[0], image_prompts: undefined, image_prompt: `old${i}` }));
+    c.designs = [];
+    c.scenarios = [0, 1, 2].map(i => ({ title: `s${i}`, concept: "c", target: "t", channel: "ch", cuts: [], image_prompt: `old${i}` }));
     const store = makeStore({ getVersion: vi.fn(async () => version(c)) }), deps = imgDeps(store);
     await planImage(B, ctx(deps));
     expect(deps.editImage.mock.calls[0][0].prompt).toContain("Scene: old1");
+  });
+  it("지금 형식(디자인 2개)은 이미지 0번 패키징, 2번은 없어서 404", async () => {
+    const c = await makeContent();
+    const store = makeStore({ getVersion: vi.fn(async () => version(c)) }), deps = imgDeps(store);
+    await planImage({ ...B, idx: 0 }, ctx(deps));
+    expect(deps.editImage.mock.calls[0][0].prompt).toContain("Scene: d0");
+    expect(deps.editImage.mock.calls[0][0].prompt).toContain("outer carton");
+    expect(await status(planImage({ ...B, idx: 2 }, ctx(deps)))).toBe(404);
   });
   it("남의 기획안(안 보임)이면 404", async () => {
     const store = makeStore({ getPlan: vi.fn(async () => null) }), deps = imgDeps(store);
@@ -317,6 +334,7 @@ describe("/api/plan-get", () => {
     plan: { concept_name: "c", concept: "k", target: "t", key_claims: ["a"], notes: [], cautions: [], review_notes: [], secret_internal: 1,
       products: [{ type: "toner", name: "p", ml: 100, price: 1000, role: "r", status: "1차", secret_internal: 1 }] },
     scenarios: [0, 1, 2].map(i => ({ title: `s${i}`, concept: "c", target: "t", channel: "ch", image_prompt: "secret", secret_internal: 1, cuts: [{ scene: "a", copy: "b", secret_internal: 1 }] })),
+    designs: [{ kind: "제품 패키징", title: "t0", description: "d0", image_prompt: "secret", secret_internal: 1 }],
     secret_internal: 1,
     log: { x: 1 }
   };
@@ -361,7 +379,8 @@ describe("/api/plan-get", () => {
     const text = JSON.stringify(out);
     expect(text).not.toMatch(/image_prompt|secret|"log"|"mid"|"evid"|candidate/);
     const c = out.version.content;
-    expect(Object.keys(c).sort()).toEqual(["herb", "plan", "purpose", "scenarios", "season"]);
+    expect(Object.keys(c).sort()).toEqual(["designs", "herb", "plan", "purpose", "scenarios", "season"]);
+    expect(Object.keys(c.designs[0]).sort()).toEqual(["description", "kind", "title"]);
     expect(Object.keys(c.plan).sort()).toEqual(["cautions", "concept", "concept_name", "key_claims", "notes", "products", "review_notes", "target"]);
     expect(Object.keys(c.plan.products[0]).sort()).toEqual(["ml", "name", "price", "role", "status", "type"]);
     expect(Object.keys(c.scenarios[0]).sort()).toEqual(["channel", "concept", "cuts", "target", "title"]);

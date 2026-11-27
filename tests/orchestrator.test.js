@@ -3,7 +3,7 @@ import * as fallback from "../src/data/fallback.js";
 import { runPlanPipeline, verifyContent, MAX_REVISIONS } from "../server/orchestrator.js";
 import { RESEARCH_SCHEMA, pickCandidate } from "../server/agents/research.js";
 import { PLAN_SCHEMA, assemblePlan } from "../server/agents/writer.js";
-import { SCENARIO_SCHEMA } from "../server/agents/designer.js";
+import { DESIGN_SCHEMA } from "../server/agents/designer.js";
 import { REVIEW_SCHEMA } from "../server/agents/verifier.js";
 import { LlmError } from "../server/llm/gemini.js";
 
@@ -15,17 +15,17 @@ const rawPlan = (concept = "번들거림을 가볍게 정돈해요.") => ({
   key_claims: ["산지가 확인돼요", "가볍게 마무리돼요", "수시로 쓰기 좋아요"],
   product_roles: [{ name: "토너", role: "결 정돈" }], cautions: []
 });
-const rawScn = () => ({
-  scenarios: Array.from({ length: 1 }, (_, i) => ({
-    title: `시나리오${i}`, concept: "c", target: "t", channel: "인스타",
-    cuts: [{ scene: "a", copy: "산뜻해요" }, { scene: "b", copy: "보송해요" }, { scene: "c", copy: "좋아요" }], image_prompts: ["x0", "x1", "x2"]
-  }))
+const rawDsn = () => ({
+  designs: [
+    { title: "패키징", description: "갈색 단상자와 크림색 용기 세트 구성", image_prompt: "d0" },
+    { title: "팝업", description: "한지 소재 부스와 원목 진열대 연출", image_prompt: "d1" }
+  ]
 });
 
 /* schema별로 큐에서 응답을 꺼내는 가짜 generate. 큐가 비면 마지막 값을 되풀이해요 */
 function fake(queues) {
   const calls = [];
-  const names = new Map([[RESEARCH_SCHEMA, "RESEARCH"], [PLAN_SCHEMA, "PLAN"], [REVIEW_SCHEMA, "REVIEW"], [SCENARIO_SCHEMA, "SCENARIO"]]);
+  const names = new Map([[RESEARCH_SCHEMA, "RESEARCH"], [PLAN_SCHEMA, "PLAN"], [REVIEW_SCHEMA, "REVIEW"], [DESIGN_SCHEMA, "DESIGN"]]);
   const generate = async (prompt, schema) => {
     const name = names.get(schema);
     calls.push(name);
@@ -38,7 +38,7 @@ function fake(queues) {
 }
 const ok = () => ({ approved: true, issues: [] });
 const base = (over = {}) => ({
-  RESEARCH: [{ notes: ["메모 하나"] }], PLAN: [rawPlan()], REVIEW: [ok()], SCENARIO: [rawScn()], ...over
+  RESEARCH: [{ notes: ["메모 하나"] }], PLAN: [rawPlan()], REVIEW: [ok()], DESIGN: [rawDsn()], ...over
 });
 
 describe("runPlanPipeline", () => {
@@ -47,11 +47,12 @@ describe("runPlanPipeline", () => {
   it("정상: 호출 순서와 rounds", async () => {
     const f = fake(base());
     const { content, log } = await runPlanPipeline({ data: fallback, ...args, generate: f.generate });
-    expect(f.calls).toEqual(["RESEARCH", "PLAN", "REVIEW", "SCENARIO"]);
+    expect(f.calls).toEqual(["RESEARCH", "PLAN", "REVIEW", "DESIGN"]);
     expect(content.review.rounds).toBe(1);
     expect(content.review.approved).toBe(true);
-    expect(content.scenarios).toHaveLength(1);
-    expect(content.scenarios[0].image_prompts).toHaveLength(3);
+    expect(content.scenarios).toEqual([]);
+    expect(content.designs.map(d => d.kind)).toEqual(["제품 패키징", "오프라인 팝업 디자인"]);
+    expect(content.designs[1].image_prompt).toBe("d1");
     expect(content.candidate.name).toBeTruthy();
     expect(content.candidate.lineup.length).toBeGreaterThan(0);
     expect(content.plan.products.length).toBeGreaterThan(0);
@@ -62,7 +63,7 @@ describe("runPlanPipeline", () => {
   it("첫 검토 거절 → 다시 쓰고 통과, rounds 2", async () => {
     const f = fake(base({ REVIEW: [{ approved: false, issues: ["문구가 길어요."] }, ok()] }));
     const { content } = await runPlanPipeline({ data: fallback, ...args, generate: f.generate });
-    expect(f.calls).toEqual(["RESEARCH", "PLAN", "REVIEW", "PLAN", "REVIEW", "SCENARIO"]);
+    expect(f.calls).toEqual(["RESEARCH", "PLAN", "REVIEW", "PLAN", "REVIEW", "DESIGN"]);
     expect(content.review.rounds).toBe(2);
     expect(content.review.approved).toBe(true);
   });
@@ -71,7 +72,7 @@ describe("runPlanPipeline", () => {
     const f = fake(base({ REVIEW: [{ approved: false, issues: ["아쉬워요."] }] }));
     const { content } = await runPlanPipeline({ data: fallback, ...args, generate: f.generate });
     expect(f.calls.filter(c => c === "PLAN")).toHaveLength(2);
-    expect(f.calls).toContain("SCENARIO");
+    expect(f.calls).toContain("DESIGN");
     expect(content.plan.review_notes.length).toBeGreaterThan(0);
     expect(content.review.approved).toBe(false);
     expect(content.review.rounds).toBe(2);

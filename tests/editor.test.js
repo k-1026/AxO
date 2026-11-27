@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import * as fallback from "../src/data/fallback.js";
 import { pickCandidate } from "../server/agents/research.js";
 import { assemblePlan, PlanFormatError } from "../server/agents/writer.js";
-import { assembleScenarios } from "../server/agents/designer.js";
+import { assembleDesigns } from "../server/agents/designer.js";
 import { REVIEW_SCHEMA } from "../server/agents/verifier.js";
 import { EDIT_SCHEMA, buildEditPrompt, cleanProposal } from "../server/agents/editor.js";
 import { runRoute } from "../server/http.js";
@@ -16,16 +16,19 @@ const rawPlan = () => ({
   key_claims: ["산지가 확인돼요", "가볍게 마무리돼요", "수시로 쓰기 좋아요"],
   product_roles: [{ name: "토너", role: "결 정돈" }], cautions: []
 });
-const rawScn = () => ({
-  scenarios: Array.from({ length: 1 }, (_, i) => ({
-    title: `시나리오${i}`, concept: "c", target: "t", channel: "인스타",
-    cuts: [{ scene: "a", copy: "산뜻해요" }, { scene: "b", copy: "보송해요" }, { scene: "c", copy: "좋아요" }], image_prompts: ["x0", "x1", "x2"]
-  }))
+const rawDsn = () => ({
+  designs: [
+    { title: "패키징", description: "갈색 단상자와 크림색 용기 세트 구성", image_prompt: "d0" },
+    { title: "팝업", description: "한지 소재 부스와 원목 진열대 연출", image_prompt: "d1" }
+  ]
 });
+/* 예전 형식(광고 시나리오 1개 + 이미지 3장) */
+const oldScenarios = () => [{ title: "시나리오0", concept: "c", target: "t", channel: "인스타",
+  cuts: [{ scene: "a", copy: "산뜻해요" }, { scene: "b", copy: "보송해요" }, { scene: "c", copy: "좋아요" }], image_prompts: ["x0", "x1", "x2"] }];
 const content = () => ({
   season: "여름", herb: "어성초", purpose: "모공·피지", candidate: { name: "n" }, palette: { colors: ["#fff"] },
   plan: { ...assemblePlan(rawPlan(), cand, ["메모"]), review_notes: ["치료 같은 말을 인용한 옛 의견"] },
-  scenarios: assembleScenarios(rawScn()).scenarios,
+  designs: assembleDesigns(rawDsn()).designs, scenarios: [],
   review: { approved: true, issues: [], rounds: 1 }
 });
 
@@ -68,9 +71,11 @@ describe("cleanProposal", () => {
     expect(t.ml).toBe(codeOf("토너")[2]);
     expect(out.plan.concept).toBe("수정된 콘셉트예요.");
   });
-  it("이미지 번호는 0~2 정수만 남기고, 보여 줄 게 없으면 null", () => {
+  it("이미지 번호는 형식에 맞는 정수만 남기고(지금 형식 0~1, 예전 형식 0~2), 보여 줄 게 없으면 null", () => {
     const out = cleanProposal(proposal({ regenerate_images: [1, 1, 5, -1, "a", 2] }), content(), cand);
-    expect(out.regenerate_images).toEqual([1, 2]);
+    expect(out.regenerate_images).toEqual([1]);
+    const old = { ...content(), designs: undefined, scenarios: oldScenarios() };
+    expect(cleanProposal(proposal({ regenerate_images: [2, 1] }), old, cand).regenerate_images).toEqual([1, 2]);
     expect(cleanProposal(null, content(), cand)).toBeNull();
     expect(cleanProposal({ summary: "x", changes: [], regenerate_images: [] }, content(), cand)).toBeNull();
   });
@@ -79,11 +84,17 @@ describe("cleanProposal", () => {
     expect(out.plan.target).toBe("20대 직장인");
     expect(out.plan.key_claims).toEqual(rawPlan().key_claims);
   });
-  it("시나리오를 일부만 보내면 빠진 장면·이미지 설명은 지금 시나리오로 채워요", () => {
-    const out = cleanProposal(proposal({ plan: undefined, scenarios: [{ target: "20대 직장인", cuts: [], image_prompts: ["하나"] }] }), content(), cand);
-    expect(out.scenarios[0].target).toBe("20대 직장인");
-    expect(out.scenarios[0].cuts).toHaveLength(3);
-    expect(out.scenarios[0].image_prompts).toEqual(["x0", "x1", "x2"]);
+  it("디자인을 일부만 보내면 빠진 칸은 지금 디자인으로 채워요", () => {
+    const out = cleanProposal(proposal({ plan: undefined, designs: [{ description: "새 패키징 설명 구성" }] }), content(), cand);
+    expect(out.designs[0].description).toBe("새 패키징 설명 구성");
+    expect(out.designs[0].image_prompt).toBe("d0");
+    expect(out.designs[1]).toMatchObject({ kind: "오프라인 팝업 디자인", description: "한지 소재 부스와 원목 진열대 연출", image_prompt: "d1" });
+  });
+  it("예전 형식 기획안에 디자인 2개가 새로 생기면 이미지 2장을 모두 새로 만들어요", () => {
+    const old = { ...content(), designs: undefined, scenarios: oldScenarios() };
+    const out = cleanProposal(proposal({ plan: undefined, designs: rawDsn().designs }), old, cand);
+    expect(out.designs).toHaveLength(2);
+    expect(out.regenerate_images).toEqual([0, 1]);
   });
   it("콘셉트 이름이 비는 등 채울 수 없는 형식이면 그래도 PlanFormatError", () => {
     const c = content(); c.plan.concept_name = "";
@@ -173,13 +184,15 @@ describe("/api/plan-edit/preview", () => {
     const full = { understanding: { intent: "20대 직장인에 맞게 방향 전체", scope: "방향" }, reply: "출근 루틴에 맞게 전체를 바꿨어요", proposal: {
       summary: "방향 전환", changes: [], regenerate_images: [2],
       plan: { ...rawPlan(), target: "20대 직장인", concept: "출근 전 1분 산뜻 루틴", key_claims: ["가", "나", "다"] },
-      scenarios: [{ ...rawScn().scenarios[0], title: "출근 루틴", target: "20대 직장인" }] } };
+      designs: [{ ...rawDsn().designs[0], title: "출근 루틴 패키징" }, rawDsn().designs[1]] } };
     const generate = vi.fn().mockResolvedValueOnce(narrow).mockResolvedValueOnce(full);
     const out = await planEdit.preview(PREVIEW(MSG), ctx(mkDeps(makeStore(), { generate })));
     expect(generate).toHaveBeenCalledTimes(2);
     expect(generate.mock.calls[1][0]).toContain("'방향' 변경");
     expect(out.proposal.plan.concept).toBe("출근 전 1분 산뜻 루틴");
-    expect(out.proposal.scenarios[0].title).toBe("출근 루틴");
+    expect(out.proposal.designs[0].title).toBe("출근 루틴 패키징");
+    expect(out.proposal.designs[0].image_prompt).toBe("d0"); // apply 가 다시 조립하는 데 필요
+    expect(out.proposal.regenerate_images).toEqual([]); // 2번은 지금 형식에 없어요
   });
   it("'문구' 요청이면 한 줄만 바꿔도 그대로 받아요 (다시 안 불러요)", async () => {
     const small = { understanding: { intent: "콘셉트 문장만", scope: "문구" }, reply: "고쳤어요", proposal: proposal() };
@@ -195,11 +208,11 @@ describe("/api/plan-edit/preview", () => {
     expect(out.reply).toContain("한 번 더");
   });
   it("AI가 칸을 이상하게 보내도(숫자·빈 목록·일부만) 지금 기획안으로 채워 튕기지 않아요", async () => {
-    const odd = { reply: "네", proposal: { summary: "", changes: [], regenerate_images: [], plan: { concept_name: 3, target: "20대 직장인", key_claims: "문자열", product_roles: [] }, scenarios: { cuts: [{ scene: 1 }] } } };
+    const odd = { reply: "네", proposal: { summary: "", changes: [], regenerate_images: [], plan: { concept_name: 3, target: "20대 직장인", key_claims: "문자열", product_roles: [] }, designs: { description: 1 } } };
     const out = await planEdit.preview(PREVIEW(MSG), ctx(mkDeps(makeStore(), { generate: vi.fn(async () => odd) })));
     expect(out.proposal.plan.target).toBe("20대 직장인");
     expect(out.proposal.plan.concept_name).toBe(rawPlan().concept_name);
-    expect(out.proposal.scenarios[0].cuts).toHaveLength(3);
+    expect(out.proposal.designs[0].description).toBe("갈색 단상자와 크림색 용기 세트 구성");
     expect(out.proposal.summary).toBeTruthy();
   });
 });
@@ -211,17 +224,31 @@ describe("/api/plan-edit/apply", () => {
     expect(out).toEqual({ version_no: 2, regenerate_images: [1] });
     const [, planId, baseNo, arg] = store.insertVersion.mock.calls[0];
     expect([planId, baseNo]).toEqual(["p1", 1]);
-    expect(arg).toMatchObject({ source: "edit", edit_request: "콘셉트 문구 수정", copyImagesFrom: { versionId: "v1", idx: [0, 2] } });
+    expect(arg).toMatchObject({ source: "edit", edit_request: "콘셉트 문구 수정", copyImagesFrom: { versionId: "v1", idx: [0] } });
     expect(arg.content.plan.concept).toBe("수정된 콘셉트예요.");
     expect(arg.content.plan.review_notes.join()).not.toContain("옛 의견");
     expect(arg.content.season).toBe("여름");
-    expect(arg.content.scenarios).toHaveLength(1);
+    expect(arg.content.designs).toHaveLength(2);
     expect(arg.content.palette).toEqual({ colors: ["#fff"] });
   });
-  it("기획안 글만 바뀌면 시나리오는 그대로 남아요", async () => {
+  it("기획안 글만 바뀌면 디자인은 그대로 남아요", async () => {
     const store = makeStore();
     await planEdit.apply(APPLY(proposal()), ctx(mkDeps(store)));
-    expect(store.insertVersion.mock.calls[0][3].content.scenarios).toEqual(BASE.content.scenarios);
+    expect(store.insertVersion.mock.calls[0][3].content.designs).toEqual(BASE.content.designs);
+  });
+  it("예전 형식 기획안: 글만 바꾸면 시나리오·이미지 3장을 그대로 두고, 디자인이 생기면 지금 형식으로 바꿔요", async () => {
+    const OLD = { ...BASE, content: { ...content(), designs: undefined, scenarios: oldScenarios() } };
+    const s1 = makeStore({ getVersion: vi.fn(async () => OLD) });
+    expect(await planEdit.apply(APPLY(proposal({ regenerate_images: [2] })), ctx(mkDeps(s1)))).toEqual({ version_no: 2, regenerate_images: [2] });
+    expect(s1.insertVersion.mock.calls[0][3].copyImagesFrom.idx).toEqual([0, 1]);
+    expect(s1.insertVersion.mock.calls[0][3].content.scenarios).toEqual(oldScenarios());
+    const s2 = makeStore({ getVersion: vi.fn(async () => OLD) });
+    const out = await planEdit.apply(APPLY(proposal({ designs: rawDsn().designs })), ctx(mkDeps(s2)));
+    expect(out.regenerate_images).toEqual([0, 1]);
+    const arg = s2.insertVersion.mock.calls[0][3];
+    expect(arg.copyImagesFrom.idx).toEqual([]);
+    expect(arg.content.scenarios).toEqual([]);
+    expect(arg.content.designs.map(d => d.kind)).toEqual(["제품 패키징", "오프라인 팝업 디자인"]);
   });
   it("클라이언트가 바꾼 가격은 코드 값으로 되돌려 저장해요", async () => {
     const store = makeStore();
@@ -274,6 +301,6 @@ describe("/api/plan-edit/apply", () => {
     const store = makeStore();
     const out = await planEdit.apply(APPLY({ summary: "이미지 다시", changes: [], regenerate_images: [0] }), ctx(mkDeps(store)));
     expect(out.regenerate_images).toEqual([0]);
-    expect(store.insertVersion.mock.calls[0][3].copyImagesFrom.idx).toEqual([1, 2]);
+    expect(store.insertVersion.mock.calls[0][3].copyImagesFrom.idx).toEqual([1]);
   });
 });

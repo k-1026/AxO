@@ -4,7 +4,7 @@ import { findLine } from "../src/core/candidates.js";
 import { checkRules } from "../server/agents/verifier.js";
 import { pickCandidate, InvalidCandidateError, RESEARCH_SCHEMA, buildResearchPrompt, cleanNotes } from "../server/agents/research.js";
 import { PLAN_SCHEMA, buildPlanPrompt, assemblePlan, PlanFormatError } from "../server/agents/writer.js";
-import { SCENARIO_SCHEMA, buildScenarioPrompt, assembleScenarios, buildImagePrompt, sampleFilesFor, imagePromptAt, IMAGE_KINDS } from "../server/agents/designer.js";
+import { DESIGN_SCHEMA, DESIGN_KINDS, buildDesignPrompt, assembleDesigns, buildImagePrompt, sampleFilesFor, imagePromptAt, imageSlotsOf } from "../server/agents/designer.js";
 
 const NOW = Date.parse("2026-11-23T00:00:00+09:00");
 const cand = findLine(fallback, "여름", "어성초", "모공·피지", NOW);
@@ -21,11 +21,12 @@ const rawPlan = () => ({
   product_roles: [{ name: "토너", role: "결 정돈" }, { name: "세럼", role: "AI가 쓴 역할" }, { name: "클렌저", role: "순한 세안" }],
   cautions: []
 });
-const rawScn = n => ({
-  scenarios: Array.from({ length: n }, (_, i) => ({
-    title: `시나리오${i}`, concept: "c", target: "t", channel: "인스타",
-    cuts: [{ scene: "a", copy: "산뜻해요" }, { scene: "b", copy: "보송해요" }, { scene: "c", copy: "좋아요" }], image_prompts: ["x0", "x1", "x2"]
-  }))
+const rawDsn = () => ({
+  designs: [
+    { title: "패키징", description: "갈색 단상자와 크림색 용기 세트 구성", image_prompt: "d0" },
+    { title: "팝업", description: "한지 소재 부스와 원목 진열대 연출", image_prompt: "d1" },
+    { title: "남는 것", description: "x", image_prompt: "x" }
+  ]
 });
 
 describe("research", () => {
@@ -85,67 +86,68 @@ describe("writer", () => {
 });
 
 describe("designer", () => {
-  it("시나리오는 1개만 남기고, 없으면 throw", () => {
-    const r = assembleScenarios(rawScn(3));
-    expect(r.scenarios).toHaveLength(1);
-    expect(r.scenarios[0].title).toBe("시나리오0");
-    expect(() => assembleScenarios(rawScn(0))).toThrow(PlanFormatError);
+  it("디자인은 2개(패키징·팝업) 순서로 남기고, 모자라면 throw", () => {
+    const r = assembleDesigns(rawDsn());
+    expect(r.designs.map(d => d.kind)).toEqual(DESIGN_KINDS);
+    expect(r.designs.map(d => d.image_prompt)).toEqual(["d0", "d1"]);
+    expect(() => assembleDesigns({ designs: rawDsn().designs.slice(0, 1) })).toThrow(PlanFormatError);
+    expect(() => assembleDesigns({})).toThrow(PlanFormatError);
   });
-  it("이미지 설명은 3개로 자르고, 3개보다 적으면 throw", () => {
-    const raw = rawScn(1); raw.scenarios[0].image_prompts = ["a", "b", "c", "d"];
-    expect(assembleScenarios(raw).scenarios[0].image_prompts).toEqual(["a", "b", "c"]);
-    raw.scenarios[0].image_prompts = ["a", "b"];
-    expect(() => assembleScenarios(raw)).toThrow(PlanFormatError);
-    delete raw.scenarios[0].image_prompts;
-    expect(() => assembleScenarios(raw)).toThrow(PlanFormatError);
+  it("설명·이미지 설명이 비면 throw, 이름이 비면 종류 이름으로", () => {
+    const raw = rawDsn(); raw.designs[1].description = " ";
+    expect(() => assembleDesigns(raw)).toThrow(PlanFormatError);
+    const r2 = rawDsn(); r2.designs[0].title = "";
+    expect(assembleDesigns(r2).designs[0].title).toBe("제품 패키징");
   });
-  it("imagePromptAt: 지금 형식과 예전 형식(시나리오 3개)을 모두 읽어요", () => {
-    expect(imagePromptAt([{ image_prompts: ["a", "b", "c"] }], 2)).toBe("c");
-    expect(imagePromptAt([{ image_prompt: "p0" }, { image_prompt: "p1" }, { image_prompt: "p2" }], 1)).toBe("p1");
-    expect(imagePromptAt([], 0)).toBe("");
-    expect(imagePromptAt(undefined, 0)).toBe("");
-  });
-  it("금지 문장을 빼고 notes에 남겨요", () => {
-    const raw = rawScn(3); raw.scenarios[0].cuts[0].copy = "염증 완화 미스트";
-    const r = assembleScenarios(raw);
-    expect(r.scenarios[0].cuts[0].copy).toBe("");
-    expect(r.notes.length).toBe(1);
-  });
-  it("제목·이미지 설명의 금지 표현도 빼고 notes에 남겨요", () => {
-    const raw = rawScn(3);
-    raw.scenarios[0].title = "염증 케어";
-    raw.scenarios[0].image_prompts[1] = "Mint bottle on marble. Anti-inflammatory serum.";
-    const r = assembleScenarios(raw);
-    expect(r.scenarios[0].title).toBe("");
-    expect(r.scenarios[0].image_prompts[1]).toBe("Mint bottle on marble.");
+  it("금지 표현이 든 문장은 빼고 notes에 남겨요", () => {
+    const raw = rawDsn();
+    raw.designs[0].description = "갈색 단상자 구성. 염증 완화 콘셉트 강조.";
+    raw.designs[1].image_prompt = "Wooden booth. Anti-inflammatory serum.";
+    const r = assembleDesigns(raw);
+    expect(r.designs[0].description).toBe("갈색 단상자 구성.");
+    expect(r.designs[1].image_prompt).toBe("Wooden booth.");
     expect(r.notes.length).toBe(2);
+  });
+  it("imagePromptAt·imageSlotsOf: 지금 형식(디자인 2개)과 예전 형식을 모두 읽어요", () => {
+    const now = { designs: assembleDesigns(rawDsn()).designs };
+    expect(imagePromptAt(now, 1)).toBe("d1");
+    expect(imagePromptAt(now, 2)).toBe("");
+    expect(imageSlotsOf(now)).toEqual([0, 1]);
+    const one = { scenarios: [{ image_prompts: ["a", "b", "c"] }] };
+    expect(imagePromptAt(one, 2)).toBe("c");
+    expect(imageSlotsOf(one)).toEqual([0, 1, 2]);
+    const three = { scenarios: [{ image_prompt: "p0" }, { image_prompt: "p1" }, { image_prompt: "p2" }] };
+    expect(imagePromptAt(three, 1)).toBe("p1");
+    expect(imagePromptAt({}, 0)).toBe("");
+    expect(imagePromptAt(undefined, 0)).toBe("");
+    expect(imageSlotsOf({})).toEqual([]);
   });
   it("buildImagePrompt는 금지 표현을 다시 걸러요", () => {
     const t = buildImagePrompt({ image_prompt: "Mint bottle. Anti-inflammatory serum. 염증 완화" }, cand, fallback, null);
     expect(t).not.toMatch(/inflammatory|염증/i);
     expect(t).toContain("Mint bottle");
   });
-  it("컷이 3~4개가 아니면 throw", () => {
-    const raw = rawScn(1); raw.scenarios[0].cuts = raw.scenarios[0].cuts.slice(0, 2);
-    expect(() => assembleScenarios(raw)).toThrow(PlanFormatError);
-  });
-  it("이미지 프롬프트", () => {
-    const sc = { image_prompt: imagePromptAt(assembleScenarios(rawScn(1)).scenarios, 0) };
+  it("이미지 프롬프트: 종류별 앞머리 + 색", () => {
+    const [pack, pop] = assembleDesigns(rawDsn()).designs;
     const pal = { name: "p", colors: ["#112233", "#445566"] };
-    const t = buildImagePrompt(sc, cand, fallback, pal);
+    const t = buildImagePrompt(pack, cand, fallback, pal);
     expect(t).toMatch(/#[0-9A-Fa-f]{6}/);
     expect(t).toContain("로고");
+    expect(t).toContain("outer carton");
     expect(t).toContain("#112233");
-    expect(buildImagePrompt(sc, cand, fallback, null)).not.toContain("트렌드");
-    expect(t).toContain("트렌드");
+    expect(buildImagePrompt(pack, cand, fallback, null)).not.toContain("트렌드");
+    const u = buildImagePrompt(pop, cand, fallback, null);
+    expect(u).toContain("pop-up store");
+    expect(u).toContain("No signage text");
   });
   it("프롬프트·스키마", () => {
-    expect(SCENARIO_SCHEMA.properties.scenarios).toBeTruthy();
+    expect(DESIGN_SCHEMA.properties.designs).toBeTruthy();
     const plan = assemblePlan(rawPlan(), cand, []);
-    const prompt = buildScenarioPrompt(plan, cand, "여름", fallback, null);
+    const prompt = buildDesignPrompt(plan, cand, "여름", fallback, null);
     expect(prompt).toContain("어성초");
-    expect(prompt).toContain("1개");
-    for (const k of IMAGE_KINDS) expect(prompt).toContain(k);
+    expect(prompt).toContain("단상자");
+    expect(prompt).toContain("팝업스토어");
+    expect(prompt).not.toContain("시나리오");
   });
   it("sampleFilesFor는 type별 중복 없이, 로고 지운 사진으로", () => {
     const gel = { l: { lineup: [["toner", "토너", 1, 1], ["cream", "젤 크림", 1, 1], ["mist", "미스트", 1, 1]], extra: "클렌저" } };

@@ -7,8 +7,9 @@ import { callApi, ApiError, AuthRequired } from "../plan/api.js";
 const MAX_INPUT = 2000;   // 서버가 받는 메시지 한 개 최대 길이
 const MAX_HISTORY = 20;   // 서버가 받는 대화 최대 개수
 const GREETING = "이 기획안에서 고치고 싶은 부분을 말씀해 주세요. 바뀌는 내용을 먼저 보여 드리고, **[적용]**을 누르면 새 버전으로 저장해요.";
-const SUGGESTIONS = ["타깃을 20대 직장인으로 바꿔 줘", "핵심 문구를 더 짧게 다듬어 줘", "사용 장면 이미지를 다시 만들어 줘"];
-const IMAGE_KINDS = ["제품 대표 컷", "원료·질감 컷", "사용 장면 컷"]; // server/agents/designer.js 와 같은 순서
+const SUGGESTIONS = ["타깃을 20대 직장인으로 바꿔 줘", "핵심 문구를 더 짧게 다듬어 줘", "팝업 디자인 이미지를 다시 만들어 줘"];
+/* 이미지 번호 → 이름 (server/agents/designer.js 와 같은 순서). 예전 형식 기획안은 my.js 가 getImageKinds 로 알려 줘요 */
+const IMAGE_KINDS = ["제품 패키징", "오프라인 팝업 디자인"];
 const RETRY_TEXT = "검증에서 걸린 부분을 피해서 고친 안을 다시 제안해 줘";
 
 /* 아주 작은 마크다운: **굵게**, 목록(- / 1.), 줄바꿈. 먼저 이스케이프해서 HTML 주입을 막아요. */
@@ -32,9 +33,10 @@ function md(text) {
   return out.join("");
 }
 
-function cardHtml(p) {
+function cardHtml(p, kinds = IMAGE_KINDS) {
   const changes = (p.changes || []).map(c => `<li><b>${esc(c.part)}</b>${c.before ? `<span class="ec-before">${esc(c.before)}</span>` : ""}<span class="ec-after">→ ${esc(c.after)}</span></li>`).join("");
-  const imgs = (p.regenerate_images || []).map(i => IMAGE_KINDS[i] || `이미지 ${i + 1}`).join(", ");
+  const names = p.designs ? IMAGE_KINDS : kinds; // 디자인이 새로 생기면 지금 형식 이름
+  const imgs = (p.regenerate_images || []).map(i => names[i] || `이미지 ${i + 1}`).join(", ");
   return `<div class="edit-card">
     <p class="ec-sum">${esc(p.summary)}</p>
     ${changes ? `<ul class="ec-list">${changes}</ul>` : ""}
@@ -46,10 +48,10 @@ function cardHtml(p) {
 
 /**
  * @param {HTMLElement} container 패널을 넣을 자리
- * @param {{ planId: string, getVersionNo: () => number, onApplied: (versionNo: number, regenerate: number[]) => void, onStale: () => void }} opts
+ * @param {{ planId: string, getVersionNo: () => number, getImageKinds?: () => string[], onApplied: (versionNo: number, regenerate: number[]) => void, onStale: () => void }} opts
  * @returns {HTMLElement} 패널 (화면을 다시 그릴 때 옮겨 붙여 대화를 이어 가요)
  */
-export function mountEditChat(container, { planId, getVersionNo, onApplied, onStale }) {
+export function mountEditChat(container, { planId, getVersionNo, getImageKinds, onApplied, onStale }) {
   container.insertAdjacentHTML("beforeend", `<section class="edit-chat" aria-labelledby="edit-chat-title">
     <header class="chat-head"><div><strong id="edit-chat-title">기획안 수정</strong><span class="chat-sub">AI에게 말로 고쳐 달라고 해 보세요</span></div></header>
     <div class="chat-log" aria-live="polite"></div>
@@ -99,7 +101,7 @@ export function mountEditChat(container, { planId, getVersionNo, onApplied, onSt
     try {
       const { reply, proposal } = await callApi("/api/plan-edit/preview", { plan_id: planId, base_version_no: getVersionNo(), messages: history });
       remember("assistant", reply);
-      wait.querySelector(".chat-bubble").innerHTML = md(reply) + (proposal ? cardHtml(proposal) : "");
+      wait.querySelector(".chat-bubble").innerHTML = md(reply) + (proposal ? cardHtml(proposal, getImageKinds?.() || IMAGE_KINDS) : "");
       if (proposal) wait._proposal = proposal;
     } catch (e) {
       history.pop(); // 실패한 요청은 대화 기록에서 빼요

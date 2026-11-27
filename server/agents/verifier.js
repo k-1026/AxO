@@ -7,7 +7,7 @@ export { REVIEW_SCHEMA, buildReviewPrompt, cleanReview } from "./prompt.js";
 const lineOf = c => (c && c.l) || c;
 const strs = v => (Array.isArray(v) ? v : [v]).filter(x => typeof x === "string");
 
-/* 기획안·시나리오의 모든 글을 이어 붙여요 (이미지 문구 포함) */
+/* 기획안·디자인(예전 기획안은 시나리오)의 모든 글을 이어 붙여요 (이미지 문구 포함) */
 export function textOf(content) {
   const p = content?.plan || {};
   const out = [
@@ -19,6 +19,7 @@ export function textOf(content) {
     out.push(...strs([s?.title, s?.concept, s?.target, s?.channel, s?.image_prompt, ...(Array.isArray(s?.image_prompts) ? s.image_prompts : [])]));
     for (const c of s?.cuts || []) out.push(...strs([c?.scene, c?.copy]));
   }
+  for (const d of content?.designs || []) out.push(...strs([d?.title, d?.description, d?.image_prompt]));
   return out.join("\n");
 }
 

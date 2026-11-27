@@ -4,8 +4,8 @@
 import { HttpError } from "../http.js";
 import { pickCandidate, applySelection, keepSavedProducts, withProducts, withVolumes, InvalidCandidateError, InvalidSelectionError } from "../agents/research.js";
 import { assemblePlan, PlanFormatError } from "../agents/writer.js";
-import { assembleScenarios } from "../agents/designer.js";
-import { EDIT_SCHEMA, SCOPE, buildEditPrompt, cleanProposal, narrowForDirection } from "../agents/editor.js";
+import { assembleDesigns, DESIGN_KINDS } from "../agents/designer.js";
+import { EDIT_SCHEMA, SCOPE, buildEditPrompt, cleanProposal, narrowForDirection, maxImageIdx } from "../agents/editor.js";
 import { verifyContent } from "../orchestrator.js";
 import { latestPalette } from "../data.js";
 import { canEdit } from "../limits.js";
@@ -42,15 +42,15 @@ async function rebuild(client, content, deps) {
   }
 }
 
-/* 화면에 보내는 제안: 보여 줄 칸만 허용 목록으로 남겨요. image_prompts·product_roles 는 apply 가 다시 조립하는 데 필요해서 같이 보내요 */
+/* 화면에 보내는 제안: 보여 줄 칸만 허용 목록으로 남겨요. image_prompt·product_roles 는 apply 가 다시 조립하는 데 필요해서 같이 보내요 */
 function toClient(p) {
   const out = { summary: p.summary, changes: p.changes, regenerate_images: p.regenerate_images };
   if (p.products) out.products = p.products;
   if (p.volumes) out.volumes = p.volumes;
   if (p.notices) out.notices = p.notices;
   if (p.plan) out.plan = { ...publicContent({ plan: p.plan }).plan, product_roles: p.plan.product_roles };
-  if (p.scenarios) {
-    out.scenarios = publicContent({ scenarios: p.scenarios }).scenarios.map((s, i) => ({ ...s, image_prompts: p.scenarios[i].image_prompts }));
+  if (p.designs) {
+    out.designs = publicContent({ designs: p.designs }).designs.map((d, i) => ({ ...d, image_prompt: p.designs[i].image_prompt }));
   }
   return out;
 }
@@ -125,33 +125,40 @@ async function apply(body, ctx) {
   const vol = withVolumes(swap ? swap.cand : rebuilt.cand, prop.volumes?.length ? prop.volumes : null);
   if (vol.rejected.length) throw new HttpError(400, vol.rejected.join(" "));
   const cand = vol.cand;
-  const regen = uniq((prop.regenerate_images ?? []).filter(i => Number.isInteger(i) && i >= 0 && i <= 2));
+  let regen = uniq((prop.regenerate_images ?? []).filter(i => Number.isInteger(i) && i >= 0 && i <= 2));
 
   // 글만 받고, 숫자·제품 목록은 코드 값으로 다시 조립해요.
   const notes = [];
-  let plan = old.plan, scenarios = old.scenarios;
+  let plan = old.plan, scenarios = Array.isArray(old.scenarios) ? old.scenarios : [], designs = Array.isArray(old.designs) ? old.designs : [];
   try {
     if (prop.plan != null || swap || vol.volumes.length) {
       const p = prop.plan ?? { concept_name: old.plan?.concept_name, concept: old.plan?.concept, target: old.plan?.target, key_claims: old.plan?.key_claims, cautions: old.plan?.cautions, products: old.plan?.products };
       const roles = Array.isArray(p?.product_roles) ? p.product_roles : (Array.isArray(p?.products) ? p.products.map(x => ({ name: x?.name, role: x?.role })) : []);
       plan = assemblePlan({ ...p, product_roles: roles }, cand, old.plan?.notes);
     }
-    if (prop.scenarios != null) {
-      const list = Array.isArray(prop.scenarios) ? prop.scenarios : prop.scenarios?.scenarios;
-      const s = assembleScenarios({ scenarios: list });
-      scenarios = s.scenarios;
-      notes.push(...s.notes);
+    if (prop.designs != null) {
+      const list = Array.isArray(prop.designs) ? prop.designs : prop.designs?.designs;
+      const d = assembleDesigns({ designs: list });
+      designs = d.designs;
+      notes.push(...d.notes);
     }
   } catch (e) {
     if (e instanceof PlanFormatError) throw new HttpError(400, "수정안 형식이 맞지 않아요. 미리보기를 다시 받아 주세요.");
     throw e;
   }
-  if (!plan || !Array.isArray(scenarios)) throw new HttpError(409, "저장된 기획안 내용이 올바르지 않아 수정할 수 없어요.");
+  if (!plan) throw new HttpError(409, "저장된 기획안 내용이 올바르지 않아 수정할 수 없어요.");
+
+  /* 예전 형식(시나리오) 기획안에 디자인이 새로 생기면 지금 형식으로 바꾸고, 이미지 2장은 모두 새로 만들어요 (예전 이미지는 복사하지 않아요) */
+  const converted = designs.length > 0 && !(Array.isArray(old.designs) && old.designs.length);
+  if (converted) { scenarios = []; regen = DESIGN_KINDS.map((_, i) => i); }
+  const last = maxImageIdx({ designs });
+  regen = regen.filter(i => i <= last);
+  const keep = converted ? [] : Array.from({ length: last + 1 }, (_, i) => i).filter(i => !regen.includes(i));
 
   // 이전 의견 글에는 금지 표현이 인용돼 있을 수 있어서 비우고, 이번 검증 결과를 새로 써요.
   plan = { ...plan, review_notes: [] };
-  const content = { ...old, plan, scenarios };
-  const verdict = await verifyContent({ season: old.season, plan, scenarios }, cand, data, deps.generate);
+  const content = { ...old, plan, scenarios, designs };
+  const verdict = await verifyContent({ season: old.season, plan, scenarios, designs }, cand, data, deps.generate);
   if (!verdict.approved) throw new HttpError(422, "검증을 통과하지 못했어요.", { issues: verdict.issues });
 
   const palette = old.palette ?? latestPalette(data, old.season);
@@ -161,7 +168,7 @@ async function apply(body, ctx) {
 
   const saved = await store.insertVersion(client, plan_id, base.version_no, {
     content, source: "edit", edit_request: prop.summary.trim().slice(0, 200),
-    copyImagesFrom: { versionId: base.id, idx: [0, 1, 2].filter(i => !regen.includes(i)) }
+    copyImagesFrom: { versionId: base.id, idx: keep }
   });
   return { version_no: saved.version_no, regenerate_images: regen };
 }

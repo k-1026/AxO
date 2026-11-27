@@ -21,7 +21,9 @@ export function publicContent(c) {
         ...pick(s, ["title", "concept", "target", "channel"]),
         cuts: Array.isArray(s?.cuts) ? s.cuts.map(x => pick(x, ["scene", "copy"])) : []
       }))
-      : []
+      : [],
+    /* 제품 패키징·오프라인 팝업 디자인 (이미지 프롬프트는 빼요) */
+    designs: Array.isArray(c?.designs) ? c.designs.map(d => pick(d, ["kind", "title", "description"])) : []
   };
 }
 

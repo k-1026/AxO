@@ -1,5 +1,5 @@
-/* 마이 기획실: 내 기획안 목록 → 기획안 보기(버전 선택, 광고 시나리오 1개 + 이미지 3장, 이미지 다시 만들기, 오른쪽 수정 챗봇).
-   예전 기획안(시나리오 3개, 시나리오마다 이미지 1장)도 그대로 보여 줘요. */
+/* 마이 기획실: 내 기획안 목록 → 기획안 보기(버전 선택, 제품 패키징·오프라인 팝업 디자인 이미지 2장과 간단한 설명, 이미지 다시 만들기, 오른쪽 수정 챗봇).
+   예전 기획안(광고 시나리오 1개 + 이미지 3장, 시나리오 3개 + 이미지 각 1장)도 그대로 보여 줘요. */
 import { callApi, AuthRequired } from "./api.js";
 import { mountEditChat } from "../chat/chat.js";
 import { hasSupabase, supabase } from "../lib/supabase.js";
@@ -65,12 +65,20 @@ export function showList() {
 }
 
 /* ── 보기 ── */
-const IMAGE_KINDS = ["제품 대표 컷", "원료·질감 컷", "사용 장면 컷"]; // server/agents/designer.js 와 같은 순서
-let legacy = false;    // 지금 보는 버전이 예전 형식(시나리오 3개)인지
+const DESIGN_KINDS = ["제품 패키징", "오프라인 팝업 디자인"]; // server/agents/designer.js 와 같은 순서 (이미지 0·1)
+const SHOT_KINDS = ["제품 대표 컷", "원료·질감 컷", "사용 장면 컷"]; // 예전 형식: 광고 시나리오 1개 + 이미지 3장
+/* 지금 보는 버전의 형식: design(지금) / one(시나리오 1개 + 이미지 3장) / legacy(시나리오 3개 + 이미지 각 1장) */
+let mode = "design";
+const modeOf = c => (Array.isArray(c?.designs) && c.designs.length ? "design" : (c?.scenarios || []).length > 1 ? "legacy" : "one");
+const kindsOf = m => (m === "design" ? DESIGN_KINDS : m === "one" ? SHOT_KINDS : [1, 2, 3].map(n => `시나리오 ${n}`));
 
-const imgLabel = i => (legacy ? `시나리오 ${i + 1}` : IMAGE_KINDS[i]);
-/* 이 버전에 있어야 할 이미지 칸 번호: 지금 형식은 시나리오 1개에 3장, 예전 형식은 시나리오마다 1장 */
-const imageSlots = scenarios => (scenarios.length > 1 ? scenarios.slice(0, 3).map((_, i) => i) : scenarios.length ? [0, 1, 2] : []);
+const imgLabel = i => kindsOf(mode)[i] || `이미지 ${i + 1}`;
+/* 이 버전에 있어야 할 이미지 칸 번호 (server/agents/designer.js 의 imageSlotsOf 와 같은 규칙) */
+const imageSlots = c => {
+  if (modeOf(c) === "design") return c.designs.slice(0, DESIGN_KINDS.length).map((_, i) => i);
+  const s = c?.scenarios || [];
+  return s.length > 1 ? s.slice(0, 3).map((_, i) => i) : s.length ? [0, 1, 2] : [];
+};
 
 function slotHtml(i, url, isLatest) {
   if (url) return `<img src="${esc(url)}" alt="${esc(imgLabel(i))} 이미지" loading="lazy">${isLatest ? `<button type="button" class="my-regen" data-regen="${i}">이미지 다시 만들기</button>` : ""}`;
@@ -89,18 +97,29 @@ function legacyScenarioHtml(s, i, url, isLatest) {
   return `<article class="my-scn"><div class="my-img" data-slot>${slotHtml(i, url, isLatest)}</div>${scenarioBody(s)}</article>`;
 }
 
-/* 지금 형식: 광고 시나리오 1개 + 이미지 3장 */
+/* 지금 형식: 제품 패키징 · 오프라인 팝업 디자인, 이미지 1장씩 + 간단한 설명 */
+function designSection(designs, urls, isLatest) {
+  return DESIGN_KINDS.map((k, i) => {
+    const d = designs[i] || {};
+    return `<section class="my-sec"><h3>${esc(k)}</h3><figure class="my-design">
+      <div class="my-img" data-slot>${slotHtml(i, urls[i], isLatest)}</div>
+      <figcaption>${d.title && d.title !== k ? `<b>${esc(d.title)}</b>` : ""}<p>${esc(d.description ?? "")}</p></figcaption>
+    </figure></section>`;
+  }).join("");
+}
+
+/* 예전 형식: 광고 시나리오 1개 + 이미지 3장 / 시나리오 3개 + 이미지 각 1장 */
 function scenarioSection(scenarios, urls, isLatest) {
-  if (legacy) return `<section class="my-sec"><h3>시나리오</h3><div class="my-scns">${scenarios.slice(0, 3).map((s, i) => legacyScenarioHtml(s, i, urls[i], isLatest)).join("")}</div></section>`;
+  if (mode === "legacy") return `<section class="my-sec"><h3>시나리오</h3><div class="my-scns">${scenarios.slice(0, 3).map((s, i) => legacyScenarioHtml(s, i, urls[i], isLatest)).join("")}</div></section>`;
   const s = scenarios[0];
   return `<section class="my-sec"><h3>광고 시나리오</h3>${s ? `<article class="my-scn my-scn-one">${scenarioBody(s)}</article>` : `<p class="my-none">없어요.</p>`}</section>
-    <section class="my-sec"><h3>광고 이미지</h3><div class="my-shots">${IMAGE_KINDS.map((k, i) => `<figure class="my-shot"><div class="my-img" data-slot>${slotHtml(i, urls[i], isLatest)}</div><figcaption>${esc(k)}</figcaption></figure>`).join("")}</div></section>`;
+    <section class="my-sec"><h3>광고 이미지</h3><div class="my-shots">${SHOT_KINDS.map((k, i) => `<figure class="my-shot"><div class="my-img" data-slot>${slotHtml(i, urls[i], isLatest)}</div><figcaption>${esc(k)}</figcaption></figure>`).join("")}</div></section>`;
 }
 
 function render(d) {
   const c = d.version.content, p = c.plan ?? {}, isLatest = d.version.version_no === d.latest_version_no;
   const scenarios = c.scenarios || [];
-  legacy = scenarios.length > 1;
+  mode = modeOf(c);
   const rows = (p.products || []).map(x => `<tr><td>${esc(x.name)}</td><td>${x.ml ? esc(qty(x.type, x.ml)) : "-"}</td><td>${money(x.price)}</td><td>${perUnit(x.type, x.price, x.ml)}</td><td>${esc(x.role ?? "")}</td><td>${esc(x.status ?? "")}</td></tr>`).join("");
   root().innerHTML = `<div class="my-layout"><div class="my-main">
     <button class="btn-line my-back" type="button" data-my-list>← 목록</button>
@@ -116,7 +135,7 @@ function render(d) {
     ${(v => v ? `<section class="my-sec"><h3>제품 이미지</h3><div class="my-product">${v}</div></section>` : "")(productVisual(d.plan.season, d.plan.herb, d.plan.purpose, p.products))}
     <section class="my-sec"><h3>제품 구성 예시</h3><div class="my-table"><table><thead><tr><th>이름</th><th>용량</th><th>정가</th><th>단위당 가격</th><th>역할</th><th>구분</th></tr></thead><tbody>${rows}</tbody></table></div></section>
     <section class="my-sec"><h3>주의사항</h3>${cautionsHtml(p.cautions)}</section>
-    ${scenarioSection(scenarios, d.image_urls || [], isLatest)}
+    ${mode === "design" ? designSection(c.designs, d.image_urls || [], isLatest) : scenarioSection(scenarios, d.image_urls || [], isLatest)}
     </div><aside class="my-side" aria-label="기획안 수정"></aside></div>`;
   root().dataset.plan = d.plan.id;
   root().dataset.version = d.version.version_no;
@@ -135,6 +154,7 @@ function attachChat(planId, isLatest) {
   chat = { planId, el: mountEditChat(side, {
     planId,
     getVersionNo: () => Number(root().dataset.version),
+    getImageKinds: () => kindsOf(mode),
     onApplied: (versionNo, regenerate) => afterEdit(planId, versionNo, regenerate),
     onStale: () => openPlan(planId)
   }) };
@@ -159,8 +179,8 @@ export function openPlan(planId, versionNo, notes, { fillImages = false } = {}) 
     const d = await callApi("/api/plan-get", versionNo ? { plan_id: planId, version_no: versionNo } : { plan_id: planId });
     if (my !== seq) return;
     const empty = fillImages && d.version.version_no === d.latest_version_no
-      ? imageSlots(d.version.content?.scenarios || []).filter(i => !d.image_urls?.[i]) : [];
-    if (empty.length) notice = [...notice, `기획안을 저장했어요. 광고 이미지 ${empty.length}장을 만드는 중이에요 (1~2분). 기다리는 동안 기획안을 읽어 보세요.`];
+      ? imageSlots(d.version.content || {}).filter(i => !d.image_urls?.[i]) : [];
+    if (empty.length) notice = [...notice, `기획안을 저장했어요. ${modeOf(d.version.content) === "design" ? "패키징·팝업 디자인" : "광고"} 이미지 ${empty.length}장을 만드는 중이에요 (1~2분). 기다리는 동안 기획안을 읽어 보세요.`];
     render(d);
     for (const i of empty) {
       const btn = root().querySelector(`[data-fill="${i}"]`);

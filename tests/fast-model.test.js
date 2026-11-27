@@ -39,7 +39,7 @@ describe("기획안 만들기에서 fast 는 자료 정리에만", () => {
       seen.push([schema === RESEARCH_SCHEMA, !!opts?.fast]);
       if (schema === RESEARCH_SCHEMA) return { notes: ["메모"] };
       if (schema.properties?.approved) return { approved: true, issues: [] };
-      if (schema.properties?.scenarios) return { scenarios: [{ title: "t", concept: "c", target: "t", channel: "인스타", cuts: [{ scene: "a", copy: "산뜻해요" }, { scene: "b", copy: "보송해요" }, { scene: "c", copy: "좋아요" }], image_prompts: ["x0", "x1", "x2"] }] };
+      if (schema.properties?.designs) return { designs: [{ title: "a", description: "b", image_prompt: "c" }, { title: "d", description: "e", image_prompt: "f" }] };
       return { concept_name: "어성초 산뜻 토너", concept: "번들거림 정돈", target: "20대", key_claims: ["산지 확인", "가벼운 마무리", "수시 사용"], product_roles: [{ name: "토너", role: "결 정돈" }], cautions: [] };
     };
     await runPlanPipeline({ data: fallback, season: "여름", herb: "어성초", purpose: "모공·피지", now: Date.parse("2026-11-23T00:00:00+09:00"), generate });

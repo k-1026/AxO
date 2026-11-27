@@ -1,7 +1,7 @@
-/* 총괄: 후보 선택 → 자료 정리 → 기획안 → 검증(필요하면 1회 재작성) → 시나리오 순서로 에이전트를 이어 불러요. */
+/* 총괄: 후보 선택 → 자료 정리 → 기획안 → 검증(필요하면 1회 재작성) → 패키징·팝업 디자인 순서로 에이전트를 이어 불러요. */
 import { pickCandidate, applySelection, RESEARCH_SCHEMA, buildResearchPrompt, cleanNotes } from "./agents/research.js";
 import { PLAN_SCHEMA, buildPlanPrompt, assemblePlan } from "./agents/writer.js";
-import { SCENARIO_SCHEMA, buildScenarioPrompt, assembleScenarios } from "./agents/designer.js";
+import { DESIGN_SCHEMA, buildDesignPrompt, assembleDesigns } from "./agents/designer.js";
 import { checkRules, REVIEW_SCHEMA, buildReviewPrompt, cleanReview } from "./agents/verifier.js";
 import { latestPalette } from "./data.js";
 
@@ -39,7 +39,7 @@ export async function runPlanPipeline({ data, season, herb, purpose, products, g
   const content = {
     season, herb, purpose,
     candidate: { name: l.name, lineup: l.lineup, extras: l.extras, selected: l.selected, functional: l.functional, mid: cand.mid, evid: cand.evid },
-    plan, scenarios: [], palette: latestPalette(data, season), review: { approved: false, issues: [], rounds: 0 }
+    plan, designs: [], scenarios: [], palette: latestPalette(data, season), review: { approved: false, issues: [], rounds: 0 }
   };
 
   let verdict = await verifyContent({ season, plan }, cand, data, generate);
@@ -57,12 +57,12 @@ export async function runPlanPipeline({ data, season, herb, purpose, products, g
   const review_notes = [...verdict.notes];
   if (!verdict.approved) review_notes.unshift(...verdict.issues);
 
-  const scn = assembleScenarios(await generate(buildScenarioPrompt(plan, cand, season, data, content.palette), SCENARIO_SCHEMA));
-  content.scenarios = scn.scenarios;
+  const dsn = assembleDesigns(await generate(buildDesignPrompt(plan, cand, season, data, content.palette), DESIGN_SCHEMA));
+  content.designs = dsn.designs;
   /* 기획안의 의견 글은 빼고 검사해요 (의견 속 금지어가 다시 잡히지 않게) */
-  const after = checkRules({ plan: { ...plan, review_notes: [] }, scenarios: scn.scenarios }, cand, data);
-  review_notes.push(...after.fix, ...after.notes, ...scn.notes);
-  step("디자인", true, "광고 시나리오 1개와 이미지 설명 3개를 만들었어요.");
+  const after = checkRules({ plan: { ...plan, review_notes: [] }, designs: dsn.designs }, cand, data);
+  review_notes.push(...after.fix, ...after.notes, ...dsn.notes);
+  step("디자인", true, "제품 패키징·오프라인 팝업 디자인 설명 2개를 만들었어요.");
 
   if (!content.palette) review_notes.push("트렌드 팔레트 자료 없음");
   plan.review_notes = uniq(review_notes);
