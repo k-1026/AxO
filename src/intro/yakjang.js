@@ -33,7 +33,7 @@ const drawerHtml = ([name, note], large) => `
       <div class="drawer-front${name.length > 2 ? " is-long" : ""}">
         <span class="herb-char">${name[0]}</span>
         <span class="brass-ring" aria-hidden="true"></span>
-        <span class="herb-char">${name.slice(1)}</span>
+        <span class="herb-char">${[...name.slice(1)].map(c => `<span>${c}</span>`).join("")}</span>
       </div>
     </div>
   </div>`;
