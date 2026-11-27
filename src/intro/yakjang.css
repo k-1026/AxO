@@ -268,13 +268,13 @@ body.page-entering #view-home > *:nth-child(2) { animation-delay: 0.15s; }
   opacity: 1;
 }
 
-/* 서랍 속 약초 그림 (public/IMAGE/HERBS/{약재}.png): 서랍 상자 안, 앞판 뒤에 놓여서 열리면 앞판 위로 소복이 보여요.
+/* 서랍 속 약초 그림 (public/IMAGE/HERBS/{약재}.png): 서랍 상자 안, 앞판 뒤에 낮고 고르게 깔려서 열리면 앞판 위로 살짝 보여요.
    닫혀 있을 때는 약장 틀 위로 튀어나오지 않게 숨겨요 */
 .yj-intro .drawer-herb-img {
   position: absolute;
   left: 50%;
-  bottom: 62%;
-  width: 78%;
+  bottom: 84%;
+  width: 92%;
   height: auto;
   max-width: none;
   transform: translateX(-50%) translateZ(-6px) translateY(6px);
