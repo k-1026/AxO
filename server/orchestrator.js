@@ -28,7 +28,8 @@ export async function runPlanPipeline({ data, season, herb, purpose, products, g
   const l = cand.l;
   step("후보 생성", true, `${l.name} 후보를 골랐어요.`);
 
-  const notes = cleanNotes(await generate(buildResearchPrompt(cand, season, data), RESEARCH_SCHEMA));
+  /* 자료 정리는 단순 요약이라 빠른 모델로 불러요 (fast) */
+  const notes = cleanNotes(await generate(buildResearchPrompt(cand, season, data), RESEARCH_SCHEMA, { fast: true }));
   step("후보 생성", true, `근거 메모 ${notes.length}개를 정리했어요.`);
 
   const writePlan = async revise => assemblePlan(await generate(buildPlanPrompt(cand, season, data, notes, revise), PLAN_SCHEMA), cand, notes);

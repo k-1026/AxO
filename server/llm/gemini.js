@@ -7,6 +7,9 @@ export const DEFAULT_MODEL = "gemini-3.8-flash"; // 바꾸려면 환경변수 GE
    무료 한도는 모델마다 따로라서, 여러 개를 두면 하루에 쓸 수 있는 횟수가 그만큼 늘어요.
    뒤쪽 lite 모델은 빠르고(1초 안팎) 한도에 여유가 있어서 마지막 안전망이에요. */
 const FALLBACK_MODELS = ["gemini-3.5-flash", "gemini-3.7-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-flash-lite-latest"];
+/* 단순 작업(자료 정리: 후보 정보를 근거 메모 몇 줄로 요약)에 쓰는 빠른 모델이에요. 바꾸려면 환경변수 GEMINI_FAST_MODEL 을 넣어요.
+   기본 모델과 무료 한도가 따로라서 기본 모델의 하루 한도도 덜 써요. 실패하면 위 대신 쓸 모델 목록으로 넘어가요. (HSJ 결정 2026-11-27) */
+export const DEFAULT_FAST_MODEL = "gemini-3.5-flash-lite";
 export const DEFAULT_IMAGE_MODEL = "gemini-3.1-flash-image"; // 이미지 모델. 바꾸려면 환경변수 GEMINI_IMAGE_MODEL 을 넣어요
 const IMAGE_TIMEOUT_MS = 150000; // 이미지 한 장 최대 대기 시간 (vercel.json 의 plan-image maxDuration 300초보다 짧게)
 
