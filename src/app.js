@@ -217,8 +217,10 @@ function showTrendSlide(i) {
   const tags = (sl.tags || []).filter(Boolean);
   lineEl.innerHTML = `<span class="trend-kind">${esc(sl.easy ? sl.head : "이번 시즌 방향")}</span>`
     + sentences.map(t => `<span class="trend-main">${esc(t)}</span>`).join("")
-    + (tags.length ? `<span class="trend-tags">${tags.map(t => `<em>#${esc(t)}</em>`).join("")}</span>` : "")
-    + (sl.easy ? `<small class="trend-from">${sl.from ? esc(sl.from) : "출처: " + esc(sl.src)}</small>` : "");
+    + (tags.length ? `<span class="trend-tags">${tags.map(t => `<em>#${esc(t)}</em>`).join("")}</span>` : "");
+  /* 출처·가설 설명은 꼭 필요한 정보가 아니라서 [근거 보기]를 펼쳤을 때만 보여요 */
+  const fromEl = document.getElementById("trend-slide-from");
+  if (fromEl) fromEl.textContent = sl.easy ? (sl.from ? `지금 보는 트렌드: ${sl.from}` : `지금 보는 트렌드 출처: ${sl.src}`) : "";
   lineEl.classList.remove("trend-in"); void lineEl.offsetWidth; lineEl.classList.add("trend-in");
 }
 
