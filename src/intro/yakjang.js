@@ -22,6 +22,11 @@ const LEAVE_MS = 380;  // 약장이 사라지는 시간 (빈 바탕만 남음)
 const GONE_MS = 450;   // 인트로 바탕이 걷히는 시간
 const PAGE_IN_MS = 1200; // 메인이 나타나는 애니메이션 시간
 
+/* 서랍을 열면 서랍 안에 담긴 약초가 앞판 위로 보여요: public/IMAGE/HERBS/{약재 이름}.png (팀이 GPT로 만든 이미지, 예: 인삼.png)
+   배경이 투명한 PNG 가 좋아요. 그림이 아직 없는 약재는 지금처럼 보여요 (아래 error 처리) */
+const HERB_IMG_BASE = `${import.meta.env.BASE_URL}IMAGE/HERBS/`;
+const herbImage = name => HERB_IMG_BASE + encodeURIComponent(name) + ".png";
+
 const drawerHtml = ([name, note], large) => `
   <div class="drawer-slot ${large ? "is-large" : "is-small"}" data-drawer="${name}">
     <div class="drawer-cavity"><span class="drawer-cavity-herb">${note}</span></div>
@@ -30,6 +35,7 @@ const drawerHtml = ([name, note], large) => `
       <div class="drawer-side-left"></div>
       <div class="drawer-side-right"></div>
       <div class="drawer-bottom-wall"></div>
+      <img class="drawer-herb-img" src="${herbImage(name)}" alt="${name}" decoding="async">
       <div class="drawer-front${name.length > 2 ? " is-long" : ""}">
         <span class="herb-char">${name[0]}</span>
         <span class="brass-ring" aria-hidden="true"></span>
@@ -119,6 +125,13 @@ export function initYakjang() {
       setTimeout(() => document.body.classList.remove("page-entering"), PAGE_IN_MS);
     }, LEAVE_MS);
   }
+
+  /* 약초 그림: 불러와지면 서랍이 열릴 때 서랍 위로 약초가 보여요. 아직 없으면(404) 그림을 지워요 */
+  root.querySelectorAll(".drawer-herb-img").forEach(img => {
+    const ok = () => img.closest(".drawer-slot")?.classList.add("has-img");
+    if (img.complete && img.naturalWidth) ok();
+    else { img.addEventListener("load", ok, { once: true }); img.addEventListener("error", () => img.remove(), { once: true }); }
+  });
 
   root.querySelectorAll("[data-drawer]").forEach(slot => {
     slot.addEventListener("pointerenter", e => { if (e.pointerType === "mouse") open(slot); });
