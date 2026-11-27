@@ -166,8 +166,11 @@ function beautyComment(s, data, now = Date.now()) {
     source: (data.intervalMinutes >= 1440 ? "매일 확인" : "매시간 확인") + " · 마지막 확인 " + checkedAt + " (한국시간) · " + (evidence.some(item => item.evidenceRole === "background") ? "시장 전망·기획 배경 포함" : "최근 90일 자료의 기획 해석") + (beautyFetchNote ? " · " + beautyFetchNote : ""), evidence };
 }
 /* ════════ 실시간 트렌드 박스 ════════
-   가장 최근(핫한) 뷰티 트렌드만 3초마다 하나씩 넘겨 보여 줘요. 기획 포인트는 이번 시즌 것으로 고정해요. */
-const TICK_MS = 3000;
+   가장 최근(핫한) 뷰티 트렌드를 한 장씩 넘겨 보여 줘요 (글 길이에 맞춰 읽을 시간을 둬요). 기획 포인트는 이번 시즌 것으로 고정해요. */
+/* 한 장을 보여 주는 시간: 글자가 길면 충분히 읽을 수 있게 늘려요.
+   한국어를 편하게 읽는 속도(1초에 약 8글자)에 1.5초 여유를 더하고, 최소 4초·최대 15초로 둬요 */
+const READ_MIN_MS = 4000, READ_MAX_MS = 15000, READ_MS_PER_CHAR = 125, READ_EXTRA_MS = 1500;
+const readMs = sl => Math.min(READ_MAX_MS, Math.max(READ_MIN_MS, READ_EXTRA_MS + String((sl && (sl.easy || sl.line)) || "").length * READ_MS_PER_CHAR));
 let tickTimer = null, tickSlides = [], tickAt = 0, tickPaused = false;
 
 /* 출시할 계절에 맞는 트렌드만 골라요.
@@ -212,11 +215,20 @@ function showTrendSlide(i) {
   lineEl.classList.remove("trend-in"); void lineEl.offsetWidth; lineEl.classList.add("trend-in");
 }
 
+/* 지금 장의 글 길이만큼 기다렸다가 다음 장으로 넘겨요. 마우스를 올려 둔 동안은 기다려요 */
+function scheduleNext() {
+  clearTimeout(tickTimer);
+  if (tickSlides.length < 2) return;
+  tickTimer = setTimeout(function tick() {
+    if (tickPaused) { tickTimer = setTimeout(tick, 500); return; }
+    showTrendSlide((tickAt + 1) % tickSlides.length);
+    scheduleNext();
+  }, readMs(tickSlides[tickAt]));
+}
 function startTrendTicker(slides) {
-  clearInterval(tickTimer);
   tickSlides = slides;
   showTrendSlide(0);
-  if (slides.length > 1) tickTimer = setInterval(() => { if (!tickPaused) showTrendSlide((tickAt + 1) % tickSlides.length); }, TICK_MS);
+  scheduleNext();
 }
 
 /* 마우스를 올리면 읽을 수 있게 멈춰요 */
