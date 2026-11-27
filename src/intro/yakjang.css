@@ -512,3 +512,7 @@ body.page-entering #view-home > *:nth-child(2) { animation-delay: 0.15s; }
     font-size: clamp(0.53rem, 2.3vw, 0.75rem);
   }
 }
+
+/* 서랍 위에서는 커서를 손 모양으로: 펼친 손(잡으려는 손) → 누르는 동안 쥔 손(서랍을 꺼내는 손) */
+.yj-intro .drawer-slot { cursor: grab; }
+.yj-intro .drawer-slot:active { cursor: grabbing; }
